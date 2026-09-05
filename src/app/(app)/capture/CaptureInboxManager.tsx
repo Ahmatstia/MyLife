@@ -61,7 +61,7 @@ export function CaptureInboxManager({
 
   // Convert Modal State
   const [activeCapture, setActiveCapture] = useState<CaptureItem | null>(null);
-  const [convertType, setConvertType] = useState<"TASK" | "GOAL" | null>(null);
+  const [convertType, setConvertType] = useState<"TASK" | "GOAL" | "PROJECT" | null>(null);
   const [converting, setConverting] = useState(false);
 
   // Convert to Task Form State
@@ -79,6 +79,13 @@ export function CaptureInboxManager({
   const [goalAreaId, setGoalAreaId] = useState<string>(areas[0]?.id || "");
   const [goalType, setGoalType] = useState<"LEARNING" | "ACHIEVEMENT" | "HABIT" | "MAINTENANCE">("LEARNING");
   const [goalPriority, setGoalPriority] = useState<"LOW" | "MEDIUM" | "HIGH" | "URGENT">("MEDIUM");
+
+  // Convert to Project Form State
+  const [projectTitle, setProjectTitle] = useState("");
+  const [projectAreaId, setProjectAreaId] = useState<string>(areas[0]?.id || "");
+  const [projectGoalId, setProjectGoalId] = useState<string>("");
+  const [projectPriority, setProjectPriority] = useState<"LOW" | "MEDIUM" | "HIGH" | "URGENT">("MEDIUM");
+  const [projectTargetDate, setProjectTargetDate] = useState("");
 
   const { toast } = useToast();
   const router = useRouter();
@@ -157,6 +164,16 @@ export function CaptureInboxManager({
     setConvertType("GOAL");
   }
 
+  function openConvertToProject(item: CaptureItem) {
+    setActiveCapture(item);
+    setProjectTitle(item.content.slice(0, 100));
+    setProjectAreaId(areas[0]?.id || "");
+    setProjectGoalId(goals[0]?.id || "");
+    setProjectPriority("MEDIUM");
+    setProjectTargetDate("");
+    setConvertType("PROJECT");
+  }
+
   async function handleConvertSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (!activeCapture) return;
@@ -188,7 +205,7 @@ export function CaptureInboxManager({
             estimatedHours: taskEstimatedHours,
           },
         };
-      } else {
+      } else if (convertType === "GOAL") {
         payload = {
           target: "GOAL",
           data: {
@@ -196,6 +213,17 @@ export function CaptureInboxManager({
             areaId: goalAreaId || undefined,
             type: goalType,
             priority: goalPriority,
+          },
+        };
+      } else {
+        payload = {
+          target: "PROJECT",
+          data: {
+            title: projectTitle.trim(),
+            areaId: projectAreaId || undefined,
+            goalId: projectGoalId || undefined,
+            priority: projectPriority,
+            targetDate: projectTargetDate ? new Date(projectTargetDate).toISOString() : undefined,
           },
         };
       }
@@ -212,7 +240,11 @@ export function CaptureInboxManager({
         prev.map((c) => (c.id === activeCapture.id ? data.data.capture : c))
       );
       toast(
-        convertType === "TASK" ? "Berhasil dikonversi menjadi Task!" : "Berhasil dikonversi menjadi Goal!",
+        convertType === "TASK"
+          ? "Berhasil dikonversi menjadi Task!"
+          : convertType === "GOAL"
+          ? "Berhasil dikonversi menjadi Goal!"
+          : "Berhasil dikonversi menjadi Proyek!",
         "success"
       );
       setActiveCapture(null);
@@ -369,6 +401,12 @@ export function CaptureInboxManager({
                       <Icon name="target" size={12} /> Ke Goal
                     </button>
                     <button
+                      onClick={() => openConvertToProject(item)}
+                      className="inline-flex items-center gap-1 rounded-lg border border-amber-200 bg-amber-50 px-2 py-1 text-[11.5px] font-semibold text-amber-700 hover:bg-amber-100 transition"
+                    >
+                      <Icon name="layers" size={12} /> Ke Proyek
+                    </button>
+                    <button
                       onClick={() => handleArchive(item.id)}
                       className="ml-auto rounded-lg p-1 text-surface-400 hover:bg-surface-100 hover:text-surface-600 transition"
                       title="Arsipkan"
@@ -425,11 +463,19 @@ export function CaptureInboxManager({
           setConvertType(null);
           setActiveCapture(null);
         }}
-        title={convertType === "TASK" ? "Konversi Catatan ke Task" : "Konversi Catatan ke Goal"}
+        title={
+          convertType === "TASK"
+            ? "Konversi Catatan ke Task"
+            : convertType === "GOAL"
+            ? "Konversi Catatan ke Goal"
+            : "Konversi Catatan ke Proyek"
+        }
         description={
           convertType === "TASK"
             ? "Tentukan nama task dan induk strukturalnya (Proyek, Tahapan Goal, atau Area)."
-            : "Buat Goal baru berdasarkan pemikiran ini dan kaitkan ke Area yang relevan."
+            : convertType === "GOAL"
+            ? "Buat Goal baru berdasarkan pemikiran ini dan kaitkan ke Area yang relevan."
+            : "Buat Proyek baru lengkap dengan pilar Area dan target tanggal selesai."
         }
       >
         <form onSubmit={handleConvertSubmit} className="space-y-4">
@@ -660,6 +706,86 @@ export function CaptureInboxManager({
                     <option value="HIGH">Tinggi (High)</option>
                     <option value="URGENT">Mendesak (Urgent)</option>
                   </select>
+                </div>
+              </div>
+            </>
+          )}
+
+          {convertType === "PROJECT" && (
+            <>
+              <div>
+                <label className="block text-xs font-semibold text-surface-700 mb-1">
+                  Judul Proyek
+                </label>
+                <input
+                  type="text"
+                  required
+                  value={projectTitle}
+                  onChange={(e) => setProjectTitle(e.target.value)}
+                  className="w-full rounded-xl border border-surface-200 bg-white p-2.5 text-sm text-surface-900 focus:border-primary-400 focus:ring-1 focus:ring-primary-400"
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-semibold text-surface-700 mb-1">
+                  Pilar Area Kehidupan
+                </label>
+                <select
+                  value={projectAreaId}
+                  onChange={(e) => setProjectAreaId(e.target.value)}
+                  className="w-full rounded-xl border border-surface-200 bg-white p-2.5 text-sm"
+                >
+                  <option value="">-- Pilih Area --</option>
+                  {areas.map((a) => (
+                    <option key={a.id} value={a.id}>{a.name}</option>
+                  ))}
+                </select>
+              </div>
+
+              {goals.length > 0 && (
+                <div>
+                  <label className="block text-xs font-semibold text-surface-700 mb-1">
+                    Kaitkan ke Goal (Opsional)
+                  </label>
+                  <select
+                    value={projectGoalId}
+                    onChange={(e) => setProjectGoalId(e.target.value)}
+                    className="w-full rounded-xl border border-surface-200 bg-white p-2.5 text-sm"
+                  >
+                    <option value="">-- Tanpa Goal --</option>
+                    {goals.map((g) => (
+                      <option key={g.id} value={g.id}>{g.title}</option>
+                    ))}
+                  </select>
+                </div>
+              )}
+
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-xs font-semibold text-surface-700 mb-1">
+                    Prioritas
+                  </label>
+                  <select
+                    value={projectPriority}
+                    onChange={(e) => setProjectPriority(e.target.value as typeof projectPriority)}
+                    className="w-full rounded-xl border border-surface-200 bg-white p-2 text-xs"
+                  >
+                    <option value="LOW">Rendah (Low)</option>
+                    <option value="MEDIUM">Sedang (Medium)</option>
+                    <option value="HIGH">Tinggi (High)</option>
+                    <option value="URGENT">Mendesak (Urgent)</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-xs font-semibold text-surface-700 mb-1">
+                    Target Tanggal Selesai
+                  </label>
+                  <input
+                    type="date"
+                    value={projectTargetDate}
+                    onChange={(e) => setProjectTargetDate(e.target.value)}
+                    className="w-full rounded-xl border border-surface-200 bg-white p-2 text-xs"
+                  />
                 </div>
               </div>
             </>

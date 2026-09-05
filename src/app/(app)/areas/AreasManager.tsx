@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Icon } from "@/app/components/ui/Icon";
 import { useToast } from "@/app/components/ui/Toast";
+import NewGoalButton from "@/app/components/NewGoalButton";
 
 type AreaItem = {
   id: string;
@@ -239,6 +240,24 @@ export function AreasManager({ initialAreas }: { initialAreas: AreaItem[] }) {
               <span className="font-semibold text-surface-600">{area._count?.projects ?? 0} Proyek</span>
               <span>•</span>
               <span className="font-semibold text-surface-600">{area._count?.tasks ?? 0} Tasks</span>
+            </div>
+
+            {/* Quick Actions */}
+            <div className="mt-3 flex items-center gap-2 pt-2.5 border-t border-surface-100">
+              <NewGoalButton
+                areas={initialAreas.map((a) => ({ id: a.id, name: a.name, color: a.color }))}
+                defaultAreaId={area.id}
+                buttonLabel="+ Goal"
+                buttonVariant="secondary"
+                buttonSize="sm"
+              />
+              <Link
+                href={`/projects?new=true&areaId=${area.id}`}
+                className="inline-flex h-8 items-center gap-1 rounded-xl border border-surface-200 bg-white px-3 text-xs font-semibold text-surface-700 shadow-soft hover:border-primary-200 hover:bg-primary-50 hover:text-primary-700 transition"
+              >
+                <Icon name="plus" size={13} />
+                + Proyek
+              </Link>
             </div>
           </div>
         ))}

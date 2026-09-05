@@ -15,6 +15,9 @@ import { HistoryDeleteButton } from "@/app/components/ui/HistoryDeleteButton";
 import { NeedsAttentionCard, type NeedsAttentionItem } from "@/app/components/core/NeedsAttentionCard";
 import { findNotifications } from "@/repositories/notification.repository";
 import { formatDuration } from "@/lib/format";
+import { getAreas } from "@/services/area.service";
+import { prisma } from "@/lib/prisma";
+import { TodayTaskCreator } from "@/app/components/today/TodayTaskCreator";
 
 export const dynamic = "force-dynamic";
 
@@ -37,11 +40,17 @@ function formatCaptureTime(value: Date) {
 
 export default async function TodayPage() {
   const user = await requirePageUser();
-  const [today, recentCaptures, insightsSummary, unreadNotifs] = await Promise.all([
+  const [today, recentCaptures, insightsSummary, unreadNotifs, areas, projects] = await Promise.all([
     getToday(new Date(), user.id),
     getRecentCaptures(user.id, 6),
     getTodayInsightsSummary(user.id),
     findNotifications({ userId: user.id, isRead: false, limit: 3 }),
+    getAreas(user.id, { isActive: true }),
+    prisma.project.findMany({
+      where: { userId: user.id, status: { not: "COMPLETED" } },
+      select: { id: true, title: true },
+      orderBy: { updatedAt: "desc" },
+    }),
   ]);
 
   const primaryFocus = today.focusTasks[0]?.task;
@@ -267,6 +276,9 @@ export default async function TodayPage() {
         ) : (
           <NextActionSpotlight nextAction={nextActionCard} />
         )}
+
+        {/* Quick Task Creator for Today */}
+        <TodayTaskCreator areas={areas} projects={projects} />
 
         <FocusPanel focus={today.focusTasks} available={today.availableTasks} />
 

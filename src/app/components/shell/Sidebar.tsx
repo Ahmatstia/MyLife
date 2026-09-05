@@ -12,24 +12,46 @@ type NavItem = {
   color: string;
 };
 
-const primaryNav: NavItem[] = [
-  { href: "/", label: "Beranda", verb: "Orient", icon: "compass", color: "text-primary-600" },
-  { href: "/today", label: "Hari Ini", verb: "Today", icon: "sun", color: "text-warning-600" },
-  { href: "/focus", label: "Fokus Harian", verb: "Focus", icon: "target", color: "text-warning-600" },
-  { href: "/capture", label: "Inbox Catatan", verb: "Capture", icon: "inbox", color: "text-primary-600" },
-  { href: "/insights", label: "Insights", verb: "Smart", icon: "sparkles", color: "text-primary-600" },
-  { href: "/notifications", label: "Notifikasi", verb: "Alert", icon: "bell", color: "text-danger-600" },
-  { href: "/goals", label: "Goals", verb: "Plan", icon: "flag", color: "text-ai-600" },
-  { href: "/dashboard", label: "Analitik", verb: "Insight", icon: "chart", color: "text-success-600" },
-  { href: "/review", label: "Refleksi", verb: "Review", icon: "capture", color: "text-info-500" },
-  { href: "/tutorial", label: "Tutorial Sistem", verb: "Guide", icon: "bookOpen", color: "text-amber-500" },
-];
+type NavGroup = {
+  title: string;
+  items: NavItem[];
+};
 
-const domainNav: NavItem[] = [
-  { href: "/projects", label: "Projects", verb: "Build", icon: "layers", color: "text-primary-600" },
-  { href: "/areas", label: "Areas", verb: "Scope", icon: "compass", color: "text-ai-600" },
-  { href: "/calendar", label: "Kalender", verb: "Time", icon: "calendar", color: "text-warning-600" },
-  { href: "/activity", label: "Aktivitas", verb: "Track", icon: "clock", color: "text-success-600" },
+const navigationGroups: NavGroup[] = [
+  {
+    title: "Eksekusi Harian",
+    items: [
+      { href: "/", label: "Beranda", verb: "Orientasi", icon: "compass", color: "text-primary-600" },
+      { href: "/today", label: "Hari Ini", verb: "Tugas", icon: "sun", color: "text-warning-600" },
+      { href: "/focus", label: "Fokus Harian", verb: "Pomodoro", icon: "target", color: "text-warning-600" },
+    ],
+  },
+  {
+    title: "Arah & Fondasi",
+    items: [
+      { href: "/areas", label: "Areas (Pilar)", verb: "Pilar", icon: "compass", color: "text-ai-600" },
+      { href: "/goals", label: "Goals (Target)", verb: "Target", icon: "flag", color: "text-ai-600" },
+      { href: "/projects", label: "Projects", verb: "Proyek", icon: "layers", color: "text-primary-600" },
+    ],
+  },
+  {
+    title: "Pencatatan & Waktu",
+    items: [
+      { href: "/capture", label: "Inbox Catatan", verb: "Inbox", icon: "inbox", color: "text-primary-600" },
+      { href: "/calendar", label: "Kalender", verb: "Jadwal", icon: "calendar", color: "text-warning-600" },
+      { href: "/activity", label: "Aktivitas", verb: "Log Waktu", icon: "clock", color: "text-success-600" },
+    ],
+  },
+  {
+    title: "Evaluasi & Panduan",
+    items: [
+      { href: "/insights", label: "Insights", verb: "Kesehatan", icon: "sparkles", color: "text-primary-600" },
+      { href: "/dashboard", label: "Analitik", verb: "Grafik", icon: "chart", color: "text-success-600" },
+      { href: "/review", label: "Refleksi", verb: "Evaluasi", icon: "capture", color: "text-info-500" },
+      { href: "/notifications", label: "Notifikasi", verb: "Info", icon: "bell", color: "text-danger-600" },
+      { href: "/tutorial", label: "Panduan Tutorial", verb: "Panduan", icon: "bookOpen", color: "text-amber-500" },
+    ],
+  },
 ];
 
 const navItemActiveBg: Record<string, string> = {
@@ -133,111 +155,65 @@ export function Sidebar({
         </span>
       </Link>
 
-      {/* Primary nav */}
-      <nav aria-label="Navigasi utama" className="mt-6 flex-1 space-y-0.5">
-        <p className="mb-2 px-3 text-[9px] font-bold uppercase tracking-[0.2em] text-surface-300">
-          Navigasi
-        </p>
-        {primaryNav.map((item) => {
-          const active = isActive(item.href, pathname);
-          const activeBg = navItemActiveBg[item.href] ?? navItemActiveBg["/"];
-          const activeText = navItemActiveText[item.href] ?? "text-primary-700";
-          return (
-            <Link
-              key={item.href}
-              href={item.href}
-              onClick={onNavigate}
-              aria-current={active ? "page" : undefined}
-              className={`group relative flex items-center gap-2.5 rounded-xl px-3 py-2 text-[13px] font-medium transition-all duration-200 ${
-                active
-                  ? `bg-gradient-to-r ${activeBg} border ${activeText}`
-                  : "text-surface-600 hover:bg-surface-100 hover:text-surface-900 border border-transparent"
-              }`}
-            >
-              {active && (
-                <span
-                  aria-hidden="true"
-                  className="absolute left-0 top-1/2 h-4 w-0.5 -translate-y-1/2 rounded-r-full bg-current opacity-60"
-                />
-              )}
-              <span className={`${active ? item.color : "text-surface-400 group-hover:text-surface-600"} transition-colors`}>
-                <Icon name={item.icon} size={16} />
-              </span>
-              <span className="min-w-0 flex-1 truncate">{item.label}</span>
-              {item.href === "/notifications" && unreadCount > 0 ? (
-                <span className="rounded-full bg-danger-500 px-1.5 py-0.5 text-[10px] font-bold leading-none text-white animate-pulse">
-                  {unreadCount > 99 ? "99+" : unreadCount}
-                </span>
-              ) : (
-                <span
-                  className={`chip transition-all ${
+      {/* Grouped Navigation */}
+      <nav aria-label="Navigasi utama" className="mt-5 flex-1 space-y-4 overflow-y-auto pr-1">
+        {navigationGroups.map((group) => (
+          <div key={group.title} className="space-y-0.5">
+            <p className="px-3 pb-1 text-[9.5px] font-bold uppercase tracking-[0.16em] text-surface-400">
+              {group.title}
+            </p>
+            {group.items.map((item) => {
+              const active = isActive(item.href, pathname);
+              const activeBg = navItemActiveBg[item.href] ?? navItemActiveBg["/"];
+              const activeText = navItemActiveText[item.href] ?? "text-primary-700";
+              return (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  onClick={onNavigate}
+                  aria-current={active ? "page" : undefined}
+                  className={`group relative flex items-center gap-2.5 rounded-xl px-3 py-2 text-[13px] font-medium transition-all duration-200 ${
                     active
-                      ? "bg-current/10 text-current"
-                      : "bg-surface-100 text-surface-400 group-hover:bg-surface-150"
+                      ? `bg-gradient-to-r ${activeBg} border ${activeText}`
+                      : "text-surface-600 hover:bg-surface-100 hover:text-surface-900 border border-transparent"
                   }`}
                 >
-                  {item.verb}
-                </span>
-              )}
-              {active && (
-                <span
-                  aria-hidden="true"
-                  className="waypoint-pulse absolute -right-0.5 top-1/2 h-1.5 w-1.5 -translate-y-1/2 rounded-full bg-current"
-                />
-              )}
-            </Link>
-          );
-        })}
-
-        <div className="pt-3">
-          <p className="mb-2 px-3 text-[9px] font-bold uppercase tracking-[0.2em] text-surface-300">
-            Domain & Waktu
-          </p>
-          {domainNav.map((item) => {
-            const active = isActive(item.href, pathname);
-            const activeBg = navItemActiveBg[item.href] ?? navItemActiveBg["/"];
-            const activeText = navItemActiveText[item.href] ?? "text-primary-700";
-            return (
-              <Link
-                key={item.href}
-                href={item.href}
-                onClick={onNavigate}
-                aria-current={active ? "page" : undefined}
-                className={`group relative flex items-center gap-2.5 rounded-xl px-3 py-2 text-[13px] font-medium transition-all duration-200 ${
-                  active
-                    ? `bg-gradient-to-r ${activeBg} border ${activeText}`
-                    : "text-surface-600 hover:bg-surface-100 hover:text-surface-900 border border-transparent"
-                }`}
-              >
-                {active && (
-                  <span
-                    aria-hidden="true"
-                    className="absolute left-0 top-1/2 h-4 w-0.5 -translate-y-1/2 rounded-r-full bg-current opacity-60"
-                  />
-                )}
-                <span className={`${active ? item.color : "text-surface-400 group-hover:text-surface-600"} transition-colors`}>
-                  <Icon name={item.icon} size={16} />
-                </span>
-                <span className="min-w-0 flex-1 truncate">{item.label}</span>
-                <span
-                  className={`chip transition-all ${
-                    active
-                      ? "bg-current/10 text-current"
-                      : "bg-surface-100 text-surface-400 group-hover:bg-surface-150"
-                  }`}
-                >
-                  {item.verb}
-                </span>
-                {active && (
-                  <span
-                    aria-hidden="true"
-                    className="waypoint-pulse absolute -right-0.5 top-1/2 h-1.5 w-1.5 -translate-y-1/2 rounded-full bg-current"
-                  />
-                )}
-              </Link>
-            );
-          })}
-        </div>
+                  {active && (
+                    <span
+                      aria-hidden="true"
+                      className="absolute left-0 top-1/2 h-4 w-0.5 -translate-y-1/2 rounded-r-full bg-current opacity-60"
+                    />
+                  )}
+                  <span className={`${active ? item.color : "text-surface-400 group-hover:text-surface-600"} transition-colors`}>
+                    <Icon name={item.icon} size={16} />
+                  </span>
+                  <span className="min-w-0 flex-1 truncate">{item.label}</span>
+                  {item.href === "/notifications" && unreadCount > 0 ? (
+                    <span className="rounded-full bg-danger-500 px-1.5 py-0.5 text-[10px] font-bold leading-none text-white animate-pulse">
+                      {unreadCount > 99 ? "99+" : unreadCount}
+                    </span>
+                  ) : (
+                    <span
+                      className={`chip transition-all ${
+                        active
+                          ? "bg-current/10 text-current"
+                          : "bg-surface-100 text-surface-400 group-hover:bg-surface-150"
+                      }`}
+                    >
+                      {item.verb}
+                    </span>
+                  )}
+                  {active && (
+                    <span
+                      aria-hidden="true"
+                      className="waypoint-pulse absolute -right-0.5 top-1/2 h-1.5 w-1.5 -translate-y-1/2 rounded-full bg-current"
+                    />
+                  )}
+                </Link>
+              );
+            })}
+          </div>
+        ))}
       </nav>
 
       {/* Bottom section */}

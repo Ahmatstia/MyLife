@@ -8,6 +8,7 @@ import { Badge } from "@/app/components/ui/Badge";
 import { Button } from "@/app/components/ui/Button";
 import { EmptyState } from "@/app/components/ui/EmptyState";
 import { useToast } from "@/app/components/ui/Toast";
+import { PomodoroPanel } from "@/app/components/core/PomodoroPanel";
 
 interface FocusItem {
   id: string;
@@ -33,21 +34,43 @@ interface TaskItem {
   area?: { name: string } | null;
 }
 
+interface ActiveSessionProp {
+  id: string;
+  startedAt: string;
+  taskId: string;
+  taskTitle: string;
+}
+
 interface Props {
   initialFocus: FocusItem[];
   initialHistory: FocusItem[];
   availableTasks: TaskItem[];
+  activeSession?: ActiveSessionProp | null;
 }
 
 export function FocusManager({
   initialFocus,
   initialHistory,
   availableTasks,
+  activeSession,
 }: Props) {
   const [activeTab, setActiveTab] = useState<"today" | "history">("today");
   const [focusList, setFocusList] = useState<FocusItem[]>(initialFocus);
   const [selectedTaskId, setSelectedTaskId] = useState<string>("");
   const [loading, setLoading] = useState(false);
+  const [activePomodoroTask, setActivePomodoroTask] = useState<FocusItem["task"] | null>(() => {
+    if (activeSession) {
+      const match = initialFocus.find((f) => f.task.id === activeSession.taskId);
+      if (match) return match.task;
+      return {
+        id: activeSession.taskId,
+        title: activeSession.taskTitle,
+        status: "IN_PROGRESS",
+        priority: "HIGH",
+      };
+    }
+    return initialFocus[0]?.task ?? null;
+  });
 
   const { toast } = useToast();
   const router = useRouter();
@@ -193,6 +216,53 @@ export function FocusManager({
             </div>
           </form>
 
+          {/* Active Pomodoro Timer Section */}
+          {activePomodoroTask && (
+            <section className="rounded-2xl border-2 border-warning-300 bg-gradient-to-b from-warning-50/50 via-white to-white p-5 shadow-soft">
+              <div className="flex flex-wrap items-center justify-between gap-3 mb-4">
+                <div className="flex items-center gap-2.5">
+                  <span className="flex h-8 w-8 items-center justify-center rounded-xl bg-warning-500 text-white font-bold text-base shadow-sm">
+                    🍅
+                  </span>
+                  <div>
+                    <div className="flex items-center gap-2">
+                      <h3 className="text-sm font-bold text-surface-900">
+                        Sesi Pomodoro: {activePomodoroTask.title}
+                      </h3>
+                      <span className="chip bg-warning-100 text-warning-800 font-semibold">
+                        Fokus Aktif
+                      </span>
+                    </div>
+                    <p className="text-xs text-surface-500">
+                      Jalankan timer fokus 25 menit. Satu task, satu tujuan, tanpa distraksi.
+                    </p>
+                  </div>
+                </div>
+
+                <button
+                  type="button"
+                  onClick={() => setActivePomodoroTask(null)}
+                  className="rounded-lg border border-surface-200 bg-white px-2.5 py-1 text-xs font-semibold text-surface-500 hover:text-surface-800 hover:bg-surface-50 transition"
+                >
+                  Tutup Panel Timer
+                </button>
+              </div>
+
+              <PomodoroPanel
+                key={activePomodoroTask.id}
+                taskId={activePomodoroTask.id}
+                taskName={activePomodoroTask.title}
+                goalName={activePomodoroTask.stage?.goal?.title || activePomodoroTask.project?.goal?.title}
+                stageName={activePomodoroTask.stage?.name}
+                activeSession={
+                  activeSession && activeSession.taskId === activePomodoroTask.id
+                    ? { id: activeSession.id, startedAt: activeSession.startedAt }
+                    : null
+                }
+              />
+            </section>
+          )}
+
           {/* Current Focus List */}
           {focusList.length === 0 ? (
             <EmptyState
@@ -204,9 +274,9 @@ export function FocusManager({
               {focusList.map((item, idx) => (
                 <div
                   key={item.id}
-                  className="flex items-center justify-between gap-3 rounded-2xl border border-surface-200 bg-white p-4 shadow-soft"
+                  className="flex flex-wrap sm:flex-nowrap items-center justify-between gap-3 rounded-2xl border border-surface-200 bg-white p-4 shadow-soft"
                 >
-                  <div className="flex items-center gap-3 min-w-0">
+                  <div className="flex items-center gap-3 min-w-0 flex-1">
                     <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-primary-100 text-xs font-bold text-primary-700">
                       {idx + 1}
                     </span>
@@ -236,30 +306,46 @@ export function FocusManager({
                     </div>
                   </div>
 
-                  <div className="flex items-center gap-1.5 shrink-0">
+                  <div className="flex items-center gap-2 shrink-0">
                     <button
-                      disabled={idx === 0}
-                      onClick={() => handleReorder(item.id, "up")}
-                      className="rounded-lg p-1.5 text-surface-400 hover:bg-surface-100 disabled:opacity-30"
-                      title="Pindah Naik"
+                      type="button"
+                      onClick={() => setActivePomodoroTask(item.task)}
+                      className={`inline-flex items-center gap-1.5 rounded-xl border px-3 py-1.5 text-xs font-semibold transition ${
+                        activePomodoroTask?.id === item.task.id
+                          ? "border-warning-400 bg-warning-50 text-warning-800 shadow-xs ring-2 ring-warning-200"
+                          : "border-surface-200 bg-white text-surface-700 hover:border-warning-300 hover:bg-warning-50/50"
+                      }`}
+                      title="Mulai sesi fokus pomodoro untuk task ini"
                     >
-                      <Icon name="chevronUp" size={14} />
+                      <span className="text-xs">🍅</span>
+                      {activePomodoroTask?.id === item.task.id ? "Sedang Fokus" : "Mulai Fokus"}
                     </button>
-                    <button
-                      disabled={idx === focusList.length - 1}
-                      onClick={() => handleReorder(item.id, "down")}
-                      className="rounded-lg p-1.5 text-surface-400 hover:bg-surface-100 disabled:opacity-30"
-                      title="Pindah Turun"
-                    >
-                      <Icon name="chevronDown" size={14} />
-                    </button>
-                    <button
-                      onClick={() => handleRemove(item.id)}
-                      className="rounded-lg p-1.5 text-danger-400 hover:bg-danger-50 hover:text-danger-600 transition"
-                      title="Hapus dari Fokus"
-                    >
-                      <Icon name="trash" size={14} />
-                    </button>
+
+                    <div className="flex items-center gap-0.5 border-l border-surface-200 pl-2">
+                      <button
+                        disabled={idx === 0}
+                        onClick={() => handleReorder(item.id, "up")}
+                        className="rounded-lg p-1.5 text-surface-400 hover:bg-surface-100 disabled:opacity-30"
+                        title="Pindah Naik"
+                      >
+                        <Icon name="chevronUp" size={14} />
+                      </button>
+                      <button
+                        disabled={idx === focusList.length - 1}
+                        onClick={() => handleReorder(item.id, "down")}
+                        className="rounded-lg p-1.5 text-surface-400 hover:bg-surface-100 disabled:opacity-30"
+                        title="Pindah Turun"
+                      >
+                        <Icon name="chevronDown" size={14} />
+                      </button>
+                      <button
+                        onClick={() => handleRemove(item.id)}
+                        className="rounded-lg p-1.5 text-danger-400 hover:bg-danger-50 hover:text-danger-600 transition"
+                        title="Hapus dari Fokus"
+                      >
+                        <Icon name="trash" size={14} />
+                      </button>
+                    </div>
                   </div>
                 </div>
               ))}

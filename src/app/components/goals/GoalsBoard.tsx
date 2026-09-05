@@ -262,72 +262,137 @@ export function GoalsBoard({
   completedGoals: GoalCard[];
 }) {
   const [tab, setTab] = useState<"active" | "completed">("active");
+  const [selectedAreaId, setSelectedAreaId] = useState<string>("ALL");
   const hasCompleted = completedGoals.length > 0;
+
+  // Extract unique areas
+  const areasMap = new Map<string, { id: string; name: string; color: string }>();
+  [...activeGoals, ...completedGoals].forEach((g) => {
+    if (g.area) areasMap.set(g.area.id, g.area);
+  });
+  const availableAreas = Array.from(areasMap.values());
+
+  const displayedActiveGoals =
+    selectedAreaId === "ALL"
+      ? activeGoals
+      : activeGoals.filter((g) => g.area?.id === selectedAreaId);
+
+  const displayedCompletedGoals =
+    selectedAreaId === "ALL"
+      ? completedGoals
+      : completedGoals.filter((g) => g.area?.id === selectedAreaId);
 
   return (
     <div className="space-y-5">
       <StatStrip active={activeGoals} completed={completedGoals} />
 
-      {/* Tab nav */}
-      <div className="flex items-center gap-1 rounded-xl border border-surface-150 bg-surface-50 p-1 w-fit">
-        <button
-          type="button"
-          onClick={() => setTab("active")}
-          className={`relative flex items-center gap-1.5 rounded-lg px-3.5 py-1.5 text-[13px] font-semibold transition-all ${
-            tab === "active"
-              ? "bg-white text-surface-900 shadow-soft border border-surface-150"
-              : "text-surface-500 hover:text-surface-700"
-          }`}
-        >
-          Aktif
-          <span
-            className={`chip ${
-              tab === "active"
-                ? "bg-primary-100 text-primary-700"
-                : "bg-surface-100 text-surface-400"
-            }`}
-          >
-            {activeGoals.length}
-          </span>
-        </button>
-        {hasCompleted && (
+      {/* Filter toolbar: Status & Areas */}
+      <div className="flex flex-wrap items-center justify-between gap-3 border-b border-surface-150 pb-3">
+        {/* Tab nav */}
+        <div className="flex items-center gap-1 rounded-xl border border-surface-150 bg-surface-50 p-1 w-fit">
           <button
             type="button"
-            onClick={() => setTab("completed")}
+            onClick={() => setTab("active")}
             className={`relative flex items-center gap-1.5 rounded-lg px-3.5 py-1.5 text-[13px] font-semibold transition-all ${
-              tab === "completed"
+              tab === "active"
                 ? "bg-white text-surface-900 shadow-soft border border-surface-150"
                 : "text-surface-500 hover:text-surface-700"
             }`}
           >
-            Tuntas
+            Aktif
             <span
               className={`chip ${
-                tab === "completed"
-                  ? "bg-success-100 text-success-700"
+                tab === "active"
+                  ? "bg-primary-100 text-primary-700"
                   : "bg-surface-100 text-surface-400"
               }`}
             >
-              {completedGoals.length}
+              {displayedActiveGoals.length}
             </span>
           </button>
+          {hasCompleted && (
+            <button
+              type="button"
+              onClick={() => setTab("completed")}
+              className={`relative flex items-center gap-1.5 rounded-lg px-3.5 py-1.5 text-[13px] font-semibold transition-all ${
+                tab === "completed"
+                  ? "bg-white text-surface-900 shadow-soft border border-surface-150"
+                  : "text-surface-500 hover:text-surface-700"
+              }`}
+            >
+              Tuntas
+              <span
+                className={`chip ${
+                  tab === "completed"
+                    ? "bg-success-100 text-success-700"
+                    : "bg-surface-100 text-surface-400"
+                }`}
+              >
+                {displayedCompletedGoals.length}
+              </span>
+            </button>
+          )}
+        </div>
+
+        {/* Area filter */}
+        {availableAreas.length > 0 && (
+          <div className="flex flex-wrap items-center gap-1.5">
+            <span className="text-xs text-surface-400 font-medium mr-1">Pilar:</span>
+            <button
+              type="button"
+              onClick={() => setSelectedAreaId("ALL")}
+              className={`rounded-lg px-2.5 py-1 text-xs font-semibold transition ${
+                selectedAreaId === "ALL"
+                  ? "bg-surface-800 text-white shadow-xs"
+                  : "bg-surface-100 text-surface-600 hover:bg-surface-200"
+              }`}
+            >
+              Semua
+            </button>
+            {availableAreas.map((area) => (
+              <button
+                key={area.id}
+                type="button"
+                onClick={() => setSelectedAreaId(area.id)}
+                className={`inline-flex items-center gap-1.5 rounded-lg px-2.5 py-1 text-xs font-semibold transition ${
+                  selectedAreaId === area.id
+                    ? "bg-primary-600 text-white shadow-xs"
+                    : "bg-surface-100 text-surface-600 hover:bg-surface-200"
+                }`}
+              >
+                <span
+                  className="h-2 w-2 rounded-full ring-1 ring-white"
+                  style={{ backgroundColor: area.color }}
+                />
+                {area.name}
+              </button>
+            ))}
+          </div>
         )}
       </div>
 
       {tab === "active" ? (
-        activeGoals.length === 0 ? (
+        displayedActiveGoals.length === 0 ? (
           <p className="py-4 text-[13px] text-surface-500">
-            Belum ada goal aktif. Buat satu untuk memulai.
+            {selectedAreaId !== "ALL"
+              ? "Belum ada goal aktif di pilar ini."
+              : "Belum ada goal aktif. Buat satu untuk memulai."}
           </p>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {activeGoals.map((goal) => (
+            {displayedActiveGoals.map((goal) => (
               <GoalCardRow key={goal.id} goal={goal} />
             ))}
           </div>
         )
       ) : (
-        <CompletedGrid goals={completedGoals} />
+        displayedCompletedGoals.length === 0 ? (
+          <p className="py-4 text-[13px] text-surface-500">
+            Belum ada goal tuntas di pilar ini.
+          </p>
+        ) : (
+          <CompletedGrid goals={displayedCompletedGoals} />
+        )
       )}
     </div>
   );

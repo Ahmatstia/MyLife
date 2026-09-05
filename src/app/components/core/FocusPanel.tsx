@@ -53,6 +53,16 @@ export function FocusPanel({ focus, available }: { focus: Focus[]; available: Ta
     }
   }
 
+  async function toggleComplete(taskId: string, currentStatus: string) {
+    try {
+      const nextStatus = currentStatus === "COMPLETED" ? "TODO" : "COMPLETED";
+      await request(`/api/tasks/${taskId}`, "PATCH", { status: nextStatus });
+      toast(nextStatus === "COMPLETED" ? "Tugas selesai! 🎉" : "Tugas dibuka kembali.", "success");
+    } catch {
+      toast("Gagal mengubah status tugas.", "error");
+    }
+  }
+
   return (
     <section>
       <div className="flex items-start justify-between gap-3">
@@ -74,20 +84,41 @@ export function FocusPanel({ focus, available }: { focus: Focus[]; available: Ta
           </div>
         ) : (
           <ol className="divide-y divide-surface-150">
-            {focus.map((item, index) => (
-              <li key={item.id} className="flex items-center gap-3 py-3.5">
-                <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-primary-50 text-xs font-bold text-primary-600">
-                  {index + 1}
-                </span>
-                <div className="min-w-0 flex-1">
-                  <Link href={`/tasks/${item.task.id}`} className="block truncate text-sm font-semibold text-surface-800 hover:text-primary-700">
-                    {item.task.title}
-                  </Link>
-                  <p className="mt-0.5 truncate text-xs text-surface-500">
-                    {item.task.stage?.goal.title} · {item.task.stage?.name} · {item.task.priority}
-                  </p>
-                </div>
-                <div className="flex shrink-0 items-center gap-0.5">
+            {focus.map((item, index) => {
+              const isDone = item.task.status === "COMPLETED";
+              return (
+                <li key={item.id} className="flex items-center gap-3 py-3.5">
+                  <button
+                    onClick={() => toggleComplete(item.task.id, item.task.status)}
+                    aria-label={isDone ? "Buka kembali" : "Tandai selesai"}
+                    title={isDone ? "Buka kembali tugas" : "Tandai selesai"}
+                    className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-full border transition ${
+                      isDone
+                        ? "border-success-500 bg-success-500 text-white shadow-xs"
+                        : "border-surface-300 bg-white text-transparent hover:border-success-500 hover:text-success-600 hover:bg-success-50"
+                    }`}
+                  >
+                    <Icon name="check" size={12} strokeWidth={3} />
+                  </button>
+                  <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-primary-50 text-[11px] font-bold text-primary-600">
+                    {index + 1}
+                  </span>
+                  <div className="min-w-0 flex-1">
+                    <Link
+                      href={`/tasks/${item.task.id}`}
+                      className={`block truncate text-sm font-semibold transition ${
+                        isDone
+                          ? "line-through text-surface-400"
+                          : "text-surface-800 hover:text-primary-700"
+                      }`}
+                    >
+                      {item.task.title}
+                    </Link>
+                    <p className="mt-0.5 truncate text-xs text-surface-500">
+                      {item.task.stage?.goal.title} · {item.task.stage?.name} · {item.task.priority}
+                    </p>
+                  </div>
+                  <div className="flex shrink-0 items-center gap-0.5">
                   <button
                     onClick={() => change(item.id, "up")}
                     disabled={index === 0}
@@ -111,9 +142,10 @@ export function FocusPanel({ focus, available }: { focus: Focus[]; available: Ta
                   >
                     <Icon name="x" size={16} />
                   </button>
-                </div>
-              </li>
-            ))}
+                  </div>
+                </li>
+              );
+            })}
           </ol>
         )}
       </div>

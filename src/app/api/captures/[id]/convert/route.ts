@@ -3,9 +3,11 @@ import {
   CaptureServiceError,
   convertToGoal,
   convertToTask,
+  convertToProject,
 } from "@/services/capture.service";
 import { TaskServiceError } from "@/services/task.service";
 import { GoalServiceError } from "@/services/goal.service";
+import { ProjectServiceError } from "@/services/project.service";
 import { requireCurrentUser, authErrorResponse } from "@/lib/auth";
 import { ZodError } from "zod";
 
@@ -35,8 +37,13 @@ export async function POST(request: Request, context: Context) {
       return NextResponse.json({ success: true, data: result }, { status: 201 });
     }
 
+    if (target === "PROJECT") {
+      const result = await convertToProject(id, body.data ?? {}, user.id);
+      return NextResponse.json({ success: true, data: result }, { status: 201 });
+    }
+
     return NextResponse.json(
-      { success: false, error: { message: "Target konversi harus berupa 'TASK' atau 'GOAL'.", code: "INVALID_TARGET" } },
+      { success: false, error: { message: "Target konversi harus berupa 'TASK', 'GOAL', atau 'PROJECT'.", code: "INVALID_TARGET" } },
       { status: 400 }
     );
   } catch (error) {
@@ -53,7 +60,7 @@ export async function POST(request: Request, context: Context) {
         { status }
       );
     }
-    if (error instanceof TaskServiceError || error instanceof GoalServiceError) {
+    if (error instanceof TaskServiceError || error instanceof GoalServiceError || error instanceof ProjectServiceError) {
       return NextResponse.json(
         { success: false, error: { message: error.message, code: error.code } },
         { status: 400 }

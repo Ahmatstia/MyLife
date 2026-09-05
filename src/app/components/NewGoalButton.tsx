@@ -21,16 +21,26 @@ export type AreaOption = {
 
 type NewGoalButtonProps = {
   areas?: AreaOption[];
+  defaultAreaId?: string;
+  buttonLabel?: string;
+  buttonVariant?: "primary" | "secondary" | "ghost";
+  buttonSize?: "sm" | "md" | "lg";
 };
 
-export default function NewGoalButton({ areas: initialAreas }: NewGoalButtonProps = {}) {
+export default function NewGoalButton({
+  areas: initialAreas,
+  defaultAreaId = "",
+  buttonLabel = "Goal baru",
+  buttonVariant = "primary",
+  buttonSize = "md",
+}: NewGoalButtonProps = {}) {
   const router = useRouter();
   const { toast } = useToast();
 
   const [open, setOpen] = useState(false);
   const [name, setName] = useState("");
   const [type, setType] = useState("LEARNING");
-  const [areaId, setAreaId] = useState("");
+  const [areaId, setAreaId] = useState(defaultAreaId);
   const [description, setDescription] = useState("");
   const [loading, setLoading] = useState(false);
   const [fetchedAreas, setFetchedAreas] = useState<AreaOption[]>([]);
@@ -86,8 +96,16 @@ export default function NewGoalButton({ areas: initialAreas }: NewGoalButtonProp
 
   return (
     <>
-      <Button icon="plus" onClick={() => setOpen(true)}>
-        Goal baru
+      <Button
+        icon="plus"
+        variant={buttonVariant}
+        size={buttonSize}
+        onClick={() => {
+          setAreaId(defaultAreaId);
+          setOpen(true);
+        }}
+      >
+        {buttonLabel}
       </Button>
 
       <Dialog

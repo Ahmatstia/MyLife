@@ -7,16 +7,19 @@ import {
 } from "@/repositories/capture.repository";
 import { createTask } from "@/services/task.service";
 import { createGoal } from "@/services/goal.service";
+import { createProject } from "@/services/project.service";
 import { requireUserId } from "@/lib/ownership";
 import {
   createCaptureSchema,
   updateCaptureSchema,
   convertToTaskSchema,
   convertToGoalSchema,
+  convertToProjectSchema,
   type CreateCaptureInput,
   type UpdateCaptureInput,
   type ConvertToTaskInput,
   type ConvertToGoalInput,
+  type ConvertToProjectInput,
 } from "@/schemas/capture.schema";
 import type { CaptureCategory, CaptureStatus } from "@/generated/prisma/client";
 
@@ -172,4 +175,37 @@ export async function convertToGoal(id: string, input: ConvertToGoalInput, userI
   });
 
   return { capture: updatedCapture, goal };
+}
+
+export async function convertToProject(id: string, input: ConvertToProjectInput, userId?: string) {
+  const owner = requireUserId(userId);
+  const capture = await findCaptureRecord(owner, id);
+  if (!capture) {
+    throw new CaptureServiceError("Capture tidak ditemukan.", "CAPTURE_NOT_FOUND");
+  }
+  if (capture.status === "PROCESSED") {
+    throw new CaptureServiceError("Catatan ini sudah pernah dikonversi.", "ALREADY_PROCESSED");
+  }
+
+  const parsed = convertToProjectSchema.parse(input);
+  const title = parsed.title || capture.content.slice(0, 150);
+
+  const project = await createProject(
+    {
+      title,
+      description: parsed.description ?? (capture.content !== title ? capture.content : undefined),
+      areaId: parsed.areaId ?? undefined,
+      goalId: parsed.goalId ?? undefined,
+      priority: parsed.priority,
+      targetDate: parsed.targetDate ?? undefined,
+    },
+    owner
+  );
+
+  const updatedCapture = await updateCaptureRecord(owner, id, {
+    status: "PROCESSED",
+    processedAt: new Date(),
+  });
+
+  return { capture: updatedCapture, project };
 }

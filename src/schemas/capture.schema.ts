@@ -39,7 +39,17 @@ export const convertToGoalSchema = z.object({
   targetDate: z.string().datetime({ offset: true }).or(z.string().date()).optional().nullable(),
 });
 
+export const convertToProjectSchema = z.object({
+  title: z.string().trim().min(1, "Judul project wajib diisi").max(200).optional(),
+  description: z.string().trim().max(2000).optional().nullable(),
+  areaId: z.string().trim().cuid().optional().nullable(),
+  goalId: z.string().trim().cuid().optional().nullable(),
+  priority: z.enum(["LOW", "MEDIUM", "HIGH", "URGENT"]).default("MEDIUM"),
+  targetDate: z.string().datetime({ offset: true }).or(z.string().date()).optional().nullable(),
+});
+
 export type CreateCaptureInput = z.input<typeof createCaptureSchema>;
 export type UpdateCaptureInput = z.input<typeof updateCaptureSchema>;
 export type ConvertToTaskInput = z.input<typeof convertToTaskSchema>;
 export type ConvertToGoalInput = z.input<typeof convertToGoalSchema>;
+export type ConvertToProjectInput = z.input<typeof convertToProjectSchema>;
