@@ -1,7 +1,14 @@
 import { prisma } from "@/lib/prisma";
 import type { Prisma } from "@/generated/prisma/client";
 
-const taskInclude = { stage: { include: { goal: true } }, sessions: true } as const satisfies Prisma.TaskInclude;
+const taskInclude = {
+  stage: { include: { goal: true } },
+  project: { include: { goal: true } },
+  area: true,
+  goal: true,
+  milestone: true,
+  sessions: true,
+} as const satisfies Prisma.TaskInclude;
 
 export function findTodayFocus(userId: string, date: Date) {
   return prisma.dailyFocus.findMany({ where: { userId, date }, orderBy: { order: "asc" }, include: { task: { include: taskInclude } } });

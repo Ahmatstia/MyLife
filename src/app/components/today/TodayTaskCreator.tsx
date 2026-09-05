@@ -29,6 +29,7 @@ export function TodayTaskCreator({ areas, projects }: Props) {
   const [title, setTitle] = useState("");
   const [estimatedHours, setEstimatedHours] = useState(1);
   const [priority, setPriority] = useState<"LOW" | "MEDIUM" | "HIGH" | "URGENT">("MEDIUM");
+  const [dueDate, setDueDate] = useState<string>(() => new Date().toISOString().slice(0, 10));
   const [parentType, setParentType] = useState<"area" | "project" | "none">(
     areas.length > 0 ? "area" : projects.length > 0 ? "project" : "none"
   );
@@ -43,13 +44,13 @@ export function TodayTaskCreator({ areas, projects }: Props) {
 
     setLoading(true);
     try {
-      const todayIso = new Date().toISOString();
+      const selectedDue = dueDate ? new Date(dueDate).toISOString() : new Date().toISOString();
       const payload: Record<string, unknown> = {
         title: title.trim(),
         estimatedHours,
         priority,
-        dueDate: todayIso,
-        scheduledDate: todayIso,
+        dueDate: selectedDue,
+        scheduledDate: selectedDue,
       };
 
       if (parentType === "area" && selectedAreaId) {
@@ -137,7 +138,7 @@ export function TodayTaskCreator({ areas, projects }: Props) {
             />
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
             {/* Estimasi Jam */}
             <div>
               <label className="block text-xs font-semibold text-surface-700 mb-1">
@@ -172,6 +173,19 @@ export function TodayTaskCreator({ areas, projects }: Props) {
                 <option value="HIGH">Tinggi (High)</option>
                 <option value="URGENT">Mendesak (Urgent)</option>
               </select>
+            </div>
+
+            {/* Tenggat Waktu (Deadline) */}
+            <div>
+              <label className="block text-xs font-semibold text-surface-700 mb-1">
+                Tenggat (Deadline)
+              </label>
+              <input
+                type="date"
+                value={dueDate}
+                onChange={(e) => setDueDate(e.target.value)}
+                className="w-full rounded-xl border border-surface-200 bg-white px-2.5 py-1.5 text-xs text-surface-800"
+              />
             </div>
 
             {/* Kaitkan ke Pilar / Proyek */}
