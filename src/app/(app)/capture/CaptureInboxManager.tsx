@@ -73,6 +73,7 @@ export function CaptureInboxManager({
   const [selectedAreaId, setSelectedAreaId] = useState<string>(areas[0]?.id || "");
   const [taskPriority, setTaskPriority] = useState<"LOW" | "MEDIUM" | "HIGH" | "URGENT">("MEDIUM");
   const [taskEstimatedHours, setTaskEstimatedHours] = useState(1);
+  const [taskDueDate, setTaskDueDate] = useState("");
 
   // Convert to Goal Form State
   const [goalTitle, setGoalTitle] = useState("");
@@ -203,6 +204,8 @@ export function CaptureInboxManager({
             ...parentData,
             priority: taskPriority,
             estimatedHours: taskEstimatedHours,
+            dueDate: taskDueDate ? new Date(taskDueDate).toISOString() : undefined,
+            scheduledDate: taskDueDate ? new Date(taskDueDate).toISOString() : undefined,
           },
         };
       } else if (convertType === "GOAL") {
@@ -249,6 +252,7 @@ export function CaptureInboxManager({
       );
       setActiveCapture(null);
       setConvertType(null);
+      setTaskDueDate("");
       router.refresh();
     } catch (err: unknown) {
       const message = err instanceof Error ? err.message : "Gagal mengonversi.";
@@ -641,6 +645,18 @@ export function CaptureInboxManager({
                     className="w-full rounded-xl border border-surface-200 bg-white p-2 text-xs"
                   />
                 </div>
+              </div>
+
+              <div>
+                <label className="block text-xs font-semibold text-surface-700 mb-1">
+                  Tenggat Waktu / Deadline (Opsional)
+                </label>
+                <input
+                  type="date"
+                  value={taskDueDate}
+                  onChange={(e) => setTaskDueDate(e.target.value)}
+                  className="w-full rounded-xl border border-surface-200 bg-white p-2 text-xs"
+                />
               </div>
             </>
           )}

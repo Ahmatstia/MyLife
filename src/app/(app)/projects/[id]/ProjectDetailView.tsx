@@ -11,6 +11,7 @@ type TaskItem = {
   title: string;
   status: string;
   priority: string;
+  dueDate?: string | Date | null;
   milestone?: { id: string; title: string } | null;
   milestoneId?: string | null;
 };
@@ -55,6 +56,7 @@ export function ProjectDetailView({ project }: { project: ProjectDetail }) {
   const [isAddingTask, setIsAddingTask] = useState(false);
   const [taskTitle, setTaskTitle] = useState("");
   const [taskPriority, setTaskPriority] = useState<"LOW" | "MEDIUM" | "HIGH" | "URGENT">("MEDIUM");
+  const [taskDueDate, setTaskDueDate] = useState("");
   const [taskMilestoneId, setTaskMilestoneId] = useState("");
   const [loadingTask, setLoadingTask] = useState(false);
 
@@ -131,6 +133,8 @@ export function ProjectDetailView({ project }: { project: ProjectDetail }) {
           title: taskTitle.trim(),
           priority: taskPriority,
           milestoneId: taskMilestoneId || null,
+          dueDate: taskDueDate ? new Date(taskDueDate).toISOString() : null,
+          scheduledDate: taskDueDate ? new Date(taskDueDate).toISOString() : null,
         }),
       });
       const data = await res.json();
@@ -138,6 +142,7 @@ export function ProjectDetailView({ project }: { project: ProjectDetail }) {
       toast("Task berhasil ditambahkan ke project", "success");
       setTaskTitle("");
       setTaskMilestoneId("");
+      setTaskDueDate("");
       setIsAddingTask(false);
       router.refresh();
     } catch (err: unknown) {
@@ -263,23 +268,35 @@ export function ProjectDetailView({ project }: { project: ProjectDetail }) {
               </div>
             </div>
 
-            {project.milestones.length > 0 && (
+            <div className="grid gap-3 sm:grid-cols-2">
               <div>
-                <label className="block text-xs font-semibold text-surface-600 mb-1">Tautkan ke Milestone (Opsional)</label>
-                <select
-                  value={taskMilestoneId}
-                  onChange={(e) => setTaskMilestoneId(e.target.value)}
+                <label className="block text-xs font-semibold text-surface-600 mb-1">Tenggat Waktu / Deadline (Opsional)</label>
+                <input
+                  type="date"
+                  value={taskDueDate}
+                  onChange={(e) => setTaskDueDate(e.target.value)}
                   className="w-full rounded-lg border border-surface-200 px-3 py-1.5 text-xs focus:outline-none focus:border-primary-500"
-                >
-                  <option value="">-- Tanpa Milestone Khusus --</option>
-                  {project.milestones.map((m) => (
-                    <option key={m.id} value={m.id}>
-                      {m.title}
-                    </option>
-                  ))}
-                </select>
+                />
               </div>
-            )}
+
+              {project.milestones.length > 0 && (
+                <div>
+                  <label className="block text-xs font-semibold text-surface-600 mb-1">Tautkan ke Milestone (Opsional)</label>
+                  <select
+                    value={taskMilestoneId}
+                    onChange={(e) => setTaskMilestoneId(e.target.value)}
+                    className="w-full rounded-lg border border-surface-200 px-3 py-1.5 text-xs focus:outline-none focus:border-primary-500"
+                  >
+                    <option value="">-- Tanpa Milestone Khusus --</option>
+                    {project.milestones.map((m) => (
+                      <option key={m.id} value={m.id}>
+                        {m.title}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              )}
+            </div>
 
             <div className="flex justify-end gap-2 pt-1">
               <button
@@ -333,6 +350,11 @@ export function ProjectDetailView({ project }: { project: ProjectDetail }) {
                 </div>
 
                 <div className="flex items-center gap-2 shrink-0">
+                  {t.dueDate && (
+                    <span className="rounded-md bg-amber-50 border border-amber-200/80 px-2 py-0.5 text-[10px] font-medium text-amber-800">
+                      📅 {new Date(t.dueDate).toLocaleDateString("id-ID", { day: "numeric", month: "short" })}
+                    </span>
+                  )}
                   {t.milestone && (
                     <span className="rounded-md bg-surface-100 px-2 py-0.5 text-[10px] font-medium text-surface-600">
                       🎯 {t.milestone.title}

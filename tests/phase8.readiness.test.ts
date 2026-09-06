@@ -188,6 +188,8 @@ describe("Phase 8: Stabilization, Performance, UX Polish & Production Readiness"
         where: {
           stageId: null,
           projectId: null,
+          areaId: null,
+          milestoneId: null,
         },
       });
       expect(orphanTasks).toBe(0);

@@ -69,14 +69,7 @@ export async function exportUserData(userId?: string): Promise<UserDataExport> {
     prisma.project.findMany({ where: { userId: owner } }),
     prisma.milestone.findMany({ where: { userId: owner } }),
     prisma.stage.findMany({ where: { goal: { userId: owner } } }),
-    prisma.task.findMany({
-      where: {
-        OR: [
-          { stage: { goal: { userId: owner } } },
-          { project: { userId: owner } },
-        ],
-      },
-    }),
+    prisma.task.findMany({ where: { userId: owner } }),
     prisma.session.findMany({ where: { userId: owner } }),
     prisma.dailyFocus.findMany({ where: { userId: owner } }),
     prisma.review.findMany({ where: { userId: owner } }),

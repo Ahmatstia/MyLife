@@ -16,7 +16,7 @@ import { NeedsAttentionCard, type NeedsAttentionItem } from "@/app/components/co
 import { findNotifications } from "@/repositories/notification.repository";
 import { formatDuration } from "@/lib/format";
 import { getAreas } from "@/services/area.service";
-import { prisma } from "@/lib/prisma";
+import { getProjects } from "@/services/project.service";
 import { TodayTaskCreator } from "@/app/components/today/TodayTaskCreator";
 
 export const dynamic = "force-dynamic";
@@ -40,18 +40,18 @@ function formatCaptureTime(value: Date) {
 
 export default async function TodayPage() {
   const user = await requirePageUser();
-  const [today, recentCaptures, insightsSummary, unreadNotifs, areas, projects] = await Promise.all([
+  const [today, recentCaptures, insightsSummary, unreadNotifs, areas, allProjects] = await Promise.all([
     getToday(new Date(), user.id),
     getRecentCaptures(user.id, 6),
     getTodayInsightsSummary(user.id),
     findNotifications({ userId: user.id, isRead: false, limit: 3 }),
     getAreas(user.id, { isActive: true }),
-    prisma.project.findMany({
-      where: { userId: user.id, status: { not: "COMPLETED" } },
-      select: { id: true, title: true },
-      orderBy: { updatedAt: "desc" },
-    }),
+    getProjects(user.id),
   ]);
+
+  const projects = allProjects
+    .filter((p) => p.status !== "COMPLETED")
+    .map((p) => ({ id: p.id, title: p.title }));
 
   const primaryFocus = today.focusTasks[0]?.task;
   const ranked = today.nextAction;

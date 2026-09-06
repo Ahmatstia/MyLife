@@ -142,12 +142,9 @@ export async function runReminderCycle(
   // ==========================================
   const openTasks = await prisma.task.findMany({
     where: {
+      userId: owner,
       status: { in: ["TODO", "IN_PROGRESS", "BLOCKED"] },
       dueDate: { not: null },
-      OR: [
-        { stage: { goal: { userId: owner } } },
-        { project: { userId: owner } },
-      ],
     },
     select: {
       id: true,

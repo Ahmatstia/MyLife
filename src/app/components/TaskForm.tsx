@@ -20,6 +20,7 @@ export default function TaskForm({ stageId, label = "Tambah task" }: TaskFormPro
   const [description, setDescription] = useState("");
   const [priority, setPriority] = useState("MEDIUM");
   const [estimatedHours, setEstimatedHours] = useState("");
+  const [dueDate, setDueDate] = useState("");
   const [notes, setNotes] = useState("");
   const [submitting, setSubmitting] = useState(false);
 
@@ -41,6 +42,8 @@ export default function TaskForm({ stageId, label = "Tambah task" }: TaskFormPro
           type: "TASK",
           priority,
           estimatedHours: estimatedHours === "" ? 0 : Number(estimatedHours),
+          dueDate: dueDate ? new Date(dueDate).toISOString() : null,
+          scheduledDate: dueDate ? new Date(dueDate).toISOString() : null,
           notes,
         }),
       });
@@ -50,6 +53,7 @@ export default function TaskForm({ stageId, label = "Tambah task" }: TaskFormPro
       setDescription("");
       setPriority("MEDIUM");
       setEstimatedHours("");
+      setDueDate("");
       setNotes("");
       setOpen(false);
       toast("Task ditambahkan.", "success");
@@ -127,6 +131,16 @@ export default function TaskForm({ stageId, label = "Tambah task" }: TaskFormPro
               />
             </label>
           </div>
+
+          <label className="block">
+            <span className="mb-1.5 block text-sm font-medium text-surface-700">Tenggat Waktu / Deadline (Opsional)</span>
+            <input
+              type="date"
+              value={dueDate}
+              onChange={(e) => setDueDate(e.target.value)}
+              className="w-full rounded-xl border border-surface-200 bg-surface-50 px-3.5 py-2.5 text-sm text-surface-900 outline-none focus:border-primary-400 focus:ring-2 focus:ring-primary-100"
+            />
+          </label>
 
           <label className="block">
             <span className="mb-1.5 block text-sm font-medium text-surface-700">Catatan</span>
