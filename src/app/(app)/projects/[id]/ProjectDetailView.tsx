@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Icon } from "@/app/components/ui/Icon";
 import { useToast } from "@/app/components/ui/Toast";
+import { Dialog } from "@/app/components/ui/Dialog";
 
 type TaskItem = {
   id: string;
@@ -59,6 +60,25 @@ export function ProjectDetailView({ project }: { project: ProjectDetail }) {
   const [taskDueDate, setTaskDueDate] = useState("");
   const [taskMilestoneId, setTaskMilestoneId] = useState("");
   const [loadingTask, setLoadingTask] = useState(false);
+
+  // Edit Project State
+  const [isEditingProject, setIsEditingProject] = useState(false);
+  const [editProjTitle, setEditProjTitle] = useState(project.title);
+  const [editProjDesc, setEditProjDesc] = useState(project.description || "");
+  const [editProjPriority, setEditProjPriority] = useState(project.priority);
+  const [editProjStatus, setEditProjStatus] = useState(project.status);
+  const [editProjTargetDate, setEditProjTargetDate] = useState(() =>
+    project.targetDate ? new Date(project.targetDate).toISOString().slice(0, 10) : ""
+  );
+  const [loadingEditProject, setLoadingEditProject] = useState(false);
+
+  // Edit Task State
+  const [editingTask, setEditingTask] = useState<TaskItem | null>(null);
+  const [editTaskTitle, setEditTaskTitle] = useState("");
+  const [editTaskPriority, setEditTaskPriority] = useState<"LOW" | "MEDIUM" | "HIGH" | "URGENT">("MEDIUM");
+  const [editTaskDueDate, setEditTaskDueDate] = useState("");
+  const [editTaskMilestoneId, setEditTaskMilestoneId] = useState("");
+  const [loadingEditTask, setLoadingEditTask] = useState(false);
 
   async function handleAddMilestone(e: React.FormEvent) {
     e.preventDefault();
@@ -169,6 +189,83 @@ export function ProjectDetailView({ project }: { project: ProjectDetail }) {
     }
   }
 
+  async function handleUpdateProject(e: React.FormEvent) {
+    e.preventDefault();
+    if (!editProjTitle.trim()) return;
+    setLoadingEditProject(true);
+    try {
+      const res = await fetch(`/api/projects/${project.id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          title: editProjTitle.trim(),
+          description: editProjDesc.trim() || null,
+          priority: editProjPriority,
+          status: editProjStatus,
+          targetDate: editProjTargetDate ? new Date(editProjTargetDate).toISOString() : null,
+        }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error?.message || "Gagal memperbarui project");
+      toast("Project berhasil diperbarui!", "success");
+      setIsEditingProject(false);
+      router.refresh();
+    } catch (err: unknown) {
+      toast(err instanceof Error ? err.message : "Gagal memperbarui project", "error");
+    } finally {
+      setLoadingEditProject(false);
+    }
+  }
+
+  function openEditTask(t: TaskItem) {
+    setEditingTask(t);
+    setEditTaskTitle(t.title);
+    setEditTaskPriority((t.priority as typeof editTaskPriority) || "MEDIUM");
+    setEditTaskDueDate(t.dueDate ? new Date(t.dueDate).toISOString().slice(0, 10) : "");
+    setEditTaskMilestoneId(t.milestoneId || t.milestone?.id || "");
+  }
+
+  async function handleUpdateTask(e: React.FormEvent) {
+    e.preventDefault();
+    if (!editingTask || !editTaskTitle.trim()) return;
+    setLoadingEditTask(true);
+    try {
+      const res = await fetch(`/api/tasks/${editingTask.id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          title: editTaskTitle.trim(),
+          priority: editTaskPriority,
+          milestoneId: editTaskMilestoneId || null,
+          dueDate: editTaskDueDate ? new Date(editTaskDueDate).toISOString() : null,
+          scheduledDate: editTaskDueDate ? new Date(editTaskDueDate).toISOString() : null,
+        }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error?.message || "Gagal memperbarui task");
+      toast("Task berhasil diperbarui!", "success");
+      setEditingTask(null);
+      router.refresh();
+    } catch (err: unknown) {
+      toast(err instanceof Error ? err.message : "Gagal memperbarui task", "error");
+    } finally {
+      setLoadingEditTask(false);
+    }
+  }
+
+  async function handleDeleteTask(t: TaskItem) {
+    if (!confirm(`Hapus task "${t.title}" dari project ini?`)) return;
+    try {
+      const res = await fetch(`/api/tasks/${t.id}`, { method: "DELETE" });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error?.message || "Gagal menghapus task");
+      toast("Task berhasil dihapus", "info");
+      router.refresh();
+    } catch (err: unknown) {
+      toast(err instanceof Error ? err.message : "Gagal menghapus task", "error");
+    }
+  }
+
   const tasks = project.tasks || [];
   const completedTasksCount = tasks.filter((t) => t.status === "COMPLETED").length;
 
@@ -214,10 +311,27 @@ export function ProjectDetailView({ project }: { project: ProjectDetail }) {
           </div>
         </div>
 
-        <div className="flex items-center gap-4 pt-3 border-t border-surface-100 text-xs text-surface-500">
-          <span>{project.milestones.length} Milestones</span>
-          <span>•</span>
-          <span>{completedTasksCount}/{tasks.length} Tasks Selesai</span>
+        <div className="flex flex-wrap items-center justify-between gap-3 pt-3 border-t border-surface-100 text-xs text-surface-500">
+          <div className="flex items-center gap-4">
+            <span>{project.milestones.length} Milestones</span>
+            <span>•</span>
+            <span>{completedTasksCount}/{tasks.length} Tasks Selesai</span>
+            {project.targetDate && (
+              <>
+                <span>•</span>
+                <span>Target: {new Date(project.targetDate).toLocaleDateString("id-ID", { day: "numeric", month: "short", year: "numeric" })}</span>
+              </>
+            )}
+          </div>
+
+          <button
+            type="button"
+            onClick={() => setIsEditingProject(true)}
+            className="inline-flex items-center gap-1.5 rounded-xl border border-surface-200 bg-surface-50 px-3 py-1.5 text-xs font-semibold text-surface-700 hover:bg-surface-100 hover:text-primary-600 transition shadow-xs"
+          >
+            <Icon name="edit" size={13} />
+            Edit Project
+          </button>
         </div>
       </div>
 
@@ -349,7 +463,7 @@ export function ProjectDetailView({ project }: { project: ProjectDetail }) {
                   </div>
                 </div>
 
-                <div className="flex items-center gap-2 shrink-0">
+                <div className="flex items-center gap-1.5 shrink-0">
                   {t.dueDate && (
                     <span className="rounded-md bg-amber-50 border border-amber-200/80 px-2 py-0.5 text-[10px] font-medium text-amber-800">
                       📅 {new Date(t.dueDate).toLocaleDateString("id-ID", { day: "numeric", month: "short" })}
@@ -363,6 +477,23 @@ export function ProjectDetailView({ project }: { project: ProjectDetail }) {
                   <span className={`text-[10px] font-semibold ${t.priority === "URGENT" || t.priority === "HIGH" ? "text-rose-600" : "text-surface-400"}`}>
                     {t.priority}
                   </span>
+
+                  <button
+                    type="button"
+                    onClick={() => openEditTask(t)}
+                    className="p-1 rounded text-surface-400 hover:text-primary-600 hover:bg-surface-100 transition"
+                    title="Edit task"
+                  >
+                    <Icon name="edit" size={13} />
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => handleDeleteTask(t)}
+                    className="p-1 rounded text-surface-400 hover:text-rose-600 hover:bg-rose-50 transition"
+                    title="Hapus task"
+                  >
+                    <Icon name="trash" size={13} />
+                  </button>
                 </div>
               </div>
             );
@@ -505,6 +636,178 @@ export function ProjectDetailView({ project }: { project: ProjectDetail }) {
           )}
         </div>
       </div>
+
+      {/* Edit Project Dialog */}
+      <Dialog
+        open={isEditingProject}
+        onClose={() => setIsEditingProject(false)}
+        title="Edit Detail Project"
+        description="Perbarui judul, deskripsi, prioritas, atau target selesai project ini."
+      >
+        <form onSubmit={handleUpdateProject} className="space-y-3.5">
+          <div>
+            <label className="block text-xs font-semibold text-surface-700 mb-1">Judul Project</label>
+            <input
+              type="text"
+              required
+              value={editProjTitle}
+              onChange={(e) => setEditProjTitle(e.target.value)}
+              className="w-full rounded-xl border border-surface-200 bg-surface-50 px-3 py-2 text-sm text-surface-900 focus:bg-white focus:border-primary-500"
+            />
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+            <div>
+              <label className="block text-xs font-semibold text-surface-700 mb-1">Status</label>
+              <select
+                value={editProjStatus}
+                onChange={(e) => setEditProjStatus(e.target.value)}
+                className="w-full rounded-xl border border-surface-200 bg-white px-2.5 py-2 text-xs text-surface-800"
+              >
+                <option value="PLANNING">Perencanaan (Planning)</option>
+                <option value="ACTIVE">Aktif (Active)</option>
+                <option value="ON_HOLD">Ditunda (On Hold)</option>
+                <option value="COMPLETED">Selesai (Completed)</option>
+                <option value="CANCELLED">Dibatalkan (Cancelled)</option>
+              </select>
+            </div>
+
+            <div>
+              <label className="block text-xs font-semibold text-surface-700 mb-1">Prioritas</label>
+              <select
+                value={editProjPriority}
+                onChange={(e) => setEditProjPriority(e.target.value)}
+                className="w-full rounded-xl border border-surface-200 bg-white px-2.5 py-2 text-xs text-surface-800"
+              >
+                <option value="LOW">Rendah (Low)</option>
+                <option value="MEDIUM">Sedang (Medium)</option>
+                <option value="HIGH">Tinggi (High)</option>
+                <option value="URGENT">Mendesak (Urgent)</option>
+              </select>
+            </div>
+
+            <div>
+              <label className="block text-xs font-semibold text-surface-700 mb-1">Target Selesai</label>
+              <input
+                type="date"
+                value={editProjTargetDate}
+                onChange={(e) => setEditProjTargetDate(e.target.value)}
+                className="w-full rounded-xl border border-surface-200 bg-white px-2.5 py-1.5 text-xs text-surface-800"
+              />
+            </div>
+          </div>
+
+          <div>
+            <label className="block text-xs font-semibold text-surface-700 mb-1">Deskripsi Project</label>
+            <textarea
+              rows={3}
+              value={editProjDesc}
+              onChange={(e) => setEditProjDesc(e.target.value)}
+              placeholder="Rincian atau lingkup kerja project..."
+              className="w-full rounded-xl border border-surface-200 bg-surface-50 px-3 py-2 text-xs text-surface-900 focus:bg-white focus:border-primary-500"
+            />
+          </div>
+
+          <div className="flex justify-end gap-2 pt-2 border-t border-surface-150">
+            <button
+              type="button"
+              onClick={() => setIsEditingProject(false)}
+              className="rounded-xl border border-surface-200 px-3.5 py-2 text-xs font-semibold text-surface-700 hover:bg-surface-100 transition"
+            >
+              Batal
+            </button>
+            <button
+              type="submit"
+              disabled={loadingEditProject || !editProjTitle.trim()}
+              className="rounded-xl bg-primary-600 px-4 py-2 text-xs font-semibold text-white hover:bg-primary-700 transition disabled:opacity-50"
+            >
+              {loadingEditProject ? "Menyimpan..." : "Simpan Perubahan"}
+            </button>
+          </div>
+        </form>
+      </Dialog>
+
+      {/* Edit Task Dialog */}
+      <Dialog
+        open={editingTask !== null}
+        onClose={() => setEditingTask(null)}
+        title="Edit Task Project"
+        description="Perbarui informasi judul, deadline, atau prioritas task ini."
+      >
+        <form onSubmit={handleUpdateTask} className="space-y-3.5">
+          <div>
+            <label className="block text-xs font-semibold text-surface-700 mb-1">Judul Task</label>
+            <input
+              type="text"
+              required
+              value={editTaskTitle}
+              onChange={(e) => setEditTaskTitle(e.target.value)}
+              className="w-full rounded-xl border border-surface-200 bg-surface-50 px-3 py-2 text-sm text-surface-900 focus:bg-white focus:border-primary-500"
+            />
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div>
+              <label className="block text-xs font-semibold text-surface-700 mb-1">Prioritas</label>
+              <select
+                value={editTaskPriority}
+                onChange={(e) => setEditTaskPriority(e.target.value as typeof editTaskPriority)}
+                className="w-full rounded-xl border border-surface-200 bg-white px-2.5 py-2 text-xs text-surface-800"
+              >
+                <option value="LOW">Rendah (Low)</option>
+                <option value="MEDIUM">Sedang (Medium)</option>
+                <option value="HIGH">Tinggi (High)</option>
+                <option value="URGENT">Mendesak (Urgent)</option>
+              </select>
+            </div>
+
+            <div>
+              <label className="block text-xs font-semibold text-surface-700 mb-1">Tenggat Waktu / Deadline</label>
+              <input
+                type="date"
+                value={editTaskDueDate}
+                onChange={(e) => setEditTaskDueDate(e.target.value)}
+                className="w-full rounded-xl border border-surface-200 bg-white px-2.5 py-1.5 text-xs text-surface-800"
+              />
+            </div>
+          </div>
+
+          {project.milestones.length > 0 && (
+            <div>
+              <label className="block text-xs font-semibold text-surface-700 mb-1">Tautkan ke Milestone (Opsional)</label>
+              <select
+                value={editTaskMilestoneId}
+                onChange={(e) => setEditTaskMilestoneId(e.target.value)}
+                className="w-full rounded-xl border border-surface-200 bg-white px-2.5 py-2 text-xs text-surface-800"
+              >
+                <option value="">-- Tanpa Milestone Khusus --</option>
+                {project.milestones.map((m) => (
+                  <option key={m.id} value={m.id}>
+                    {m.title}
+                  </option>
+                ))}
+              </select>
+            </div>
+          )}
+
+          <div className="flex justify-end gap-2 pt-2 border-t border-surface-150">
+            <button
+              type="button"
+              onClick={() => setEditingTask(null)}
+              className="rounded-xl border border-surface-200 px-3.5 py-2 text-xs font-semibold text-surface-700 hover:bg-surface-100 transition"
+            >
+              Batal
+            </button>
+            <button
+              type="submit"
+              disabled={loadingEditTask || !editTaskTitle.trim()}
+              className="rounded-xl bg-primary-600 px-4 py-2 text-xs font-semibold text-white hover:bg-primary-700 transition disabled:opacity-50"
+            >
+              {loadingEditTask ? "Menyimpan..." : "Simpan Perubahan"}
+            </button>
+          </div>
+        </form>
+      </Dialog>
     </div>
   );
 }

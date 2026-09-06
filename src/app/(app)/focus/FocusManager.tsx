@@ -29,6 +29,7 @@ interface TaskItem {
   id: string;
   title: string;
   priority: string;
+  dueDate?: string | Date | null;
   stage?: { name: string; goal: { title: string } } | null;
   project?: { title: string } | null;
   area?: { name: string } | null;
@@ -56,8 +57,8 @@ export function FocusManager({
 }: Props) {
   const [activeTab, setActiveTab] = useState<"today" | "history">("today");
   const [focusList, setFocusList] = useState<FocusItem[]>(initialFocus);
-  const [selectedTaskId, setSelectedTaskId] = useState<string>("");
-  const [loading, setLoading] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [loadingTaskId, setLoadingTaskId] = useState<string | null>(null);
   const [activePomodoroTask, setActivePomodoroTask] = useState<FocusItem["task"] | null>(() => {
     if (activeSession) {
       const match = initialFocus.find((f) => f.task.id === activeSession.taskId);
@@ -78,29 +79,62 @@ export function FocusManager({
   const focusedTaskIds = new Set(focusList.map((f) => f.task.id));
   const unselectedTasks = availableTasks.filter((t) => !focusedTaskIds.has(t.id));
 
-  async function handleAddFocus(e: React.FormEvent) {
-    e.preventDefault();
-    if (!selectedTaskId) return;
+  function getParentLabelForTask(task: TaskItem) {
+    if (task.stage?.goal?.title) return `🎯 ${task.stage.goal.title}`;
+    if (task.project?.title) return `📁 ${task.project.title}`;
+    if (task.area?.name) return `📍 ${task.area.name}`;
+    return "Mandiri";
+  }
 
-    setLoading(true);
+  function formatDeadline(dueDate?: string | Date | null) {
+    if (!dueDate) return null;
+    const d = new Date(dueDate);
+    if (isNaN(d.getTime())) return null;
+    return new Intl.DateTimeFormat("id-ID", { day: "numeric", month: "short" }).format(d);
+  }
+
+  function getPriorityBadge(priority: string) {
+    switch (priority) {
+      case "HIGH":
+      case "URGENT":
+        return <span className="rounded bg-rose-100 px-1.5 py-0.5 text-[10px] font-bold text-rose-700">Tinggi</span>;
+      case "MEDIUM":
+        return <span className="rounded bg-amber-100 px-1.5 py-0.5 text-[10px] font-bold text-amber-700">Sedang</span>;
+      default:
+        return <span className="rounded bg-surface-100 px-1.5 py-0.5 text-[10px] font-semibold text-surface-600">Rendah</span>;
+    }
+  }
+
+  const filteredAvailableTasks = unselectedTasks.filter((t) => {
+    const q = searchQuery.toLowerCase().trim();
+    if (!q) return true;
+    const titleMatch = t.title.toLowerCase().includes(q);
+    const parentMatch = getParentLabelForTask(t).toLowerCase().includes(q);
+    return titleMatch || parentMatch;
+  });
+
+  async function handleAddDirect(taskId: string, taskTitle?: string) {
+    if (!taskId || loadingTaskId) return;
+
+    setLoadingTaskId(taskId);
     try {
       const res = await fetch("/api/daily-focus", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ taskId: selectedTaskId }),
+        body: JSON.stringify({ taskId }),
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error?.message || "Gagal menambahkan task.");
 
       setFocusList((prev) => [...prev, data.data]);
-      setSelectedTaskId("");
-      toast("Task ditambahkan ke fokus hari ini.", "success");
+      setSearchQuery("");
+      toast(`"${taskTitle || "Task"}" ditambahkan ke fokus hari ini.`, "success");
       router.refresh();
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : "Terjadi kesalahan.";
       toast(msg, "error");
     } finally {
-      setLoading(false);
+      setLoadingTaskId(null);
     }
   }
 
@@ -187,34 +221,76 @@ export function FocusManager({
 
       {activeTab === "today" && (
         <div className="space-y-6">
-          {/* Add Task to Focus */}
-          <form
-            onSubmit={handleAddFocus}
-            className="rounded-2xl border border-surface-200 bg-white p-4 shadow-soft flex flex-wrap items-center gap-3"
-          >
-            <div className="flex-1 min-w-[220px]">
-              <label className="block text-xs font-semibold text-surface-600 mb-1">
-                Pilih Task untuk Ditambahkan ke Fokus
-              </label>
-              <select
-                value={selectedTaskId}
-                onChange={(e) => setSelectedTaskId(e.target.value)}
-                className="w-full rounded-xl border border-surface-200 bg-white p-2.5 text-sm"
-              >
-                <option value="">-- Pilih dari Task Aktif --</option>
-                {unselectedTasks.map((t) => (
-                  <option key={t.id} value={t.id}>
-                    [{t.priority}] {t.title}
-                  </option>
+          {/* Add Task to Focus (Searchable Picker) */}
+          <div className="rounded-2xl border border-surface-200 bg-white p-4 shadow-soft space-y-3">
+            <div className="flex items-center justify-between">
+              <div>
+                <h3 className="text-sm font-bold text-surface-900 flex items-center gap-1.5">
+                  <Icon name="target" className="h-4 w-4 text-primary-600" />
+                  Tambah Task ke Fokus Harian
+                </h3>
+                <p className="text-xs text-surface-500">
+                  Cari task dari Proyek, Goal, atau Area ({unselectedTasks.length} task tersedia)
+                </p>
+              </div>
+            </div>
+
+            <div className="relative">
+              <Icon name="search" className="absolute left-3 top-2.5 h-4 w-4 text-surface-400" />
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder="Cari judul task, nama proyek, atau goal..."
+                className="w-full rounded-xl border border-surface-200 bg-surface-50/50 pl-9 pr-8 py-2 text-sm text-surface-900 placeholder:text-surface-400 focus:bg-white focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500"
+              />
+              {searchQuery && (
+                <button
+                  type="button"
+                  onClick={() => setSearchQuery("")}
+                  className="absolute right-2.5 top-2.5 text-xs text-surface-400 hover:text-surface-600"
+                >
+                  ✕
+                </button>
+              )}
+            </div>
+
+            {unselectedTasks.length === 0 ? (
+              <p className="py-2 text-center text-xs text-surface-400">Semua task aktif sudah masuk ke fokus hari ini.</p>
+            ) : filteredAvailableTasks.length === 0 ? (
+              <p className="py-2 text-center text-xs text-surface-400">Tidak ada task yang cocok dengan &quot;{searchQuery}&quot;.</p>
+            ) : (
+              <div className="max-h-60 overflow-y-auto divide-y divide-surface-100 rounded-xl border border-surface-100 bg-surface-50/30">
+                {filteredAvailableTasks.slice(0, 15).map((t) => (
+                  <div key={t.id} className="flex items-center justify-between p-2.5 hover:bg-white transition-colors">
+                    <div className="min-w-0 pr-3">
+                      <div className="flex items-center gap-2">
+                        <span className="truncate text-xs font-semibold text-surface-800">{t.title}</span>
+                        {getPriorityBadge(t.priority)}
+                      </div>
+                      <div className="mt-0.5 flex flex-wrap items-center gap-1.5 text-[11px] text-surface-500">
+                        <span className="font-medium text-surface-600">{getParentLabelForTask(t)}</span>
+                        {formatDeadline(t.dueDate) && (
+                          <span className="rounded bg-primary-50 px-1 text-primary-700 font-medium">
+                            📅 {formatDeadline(t.dueDate)}
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                    <Button
+                      size="sm"
+                      variant="secondary"
+                      disabled={loadingTaskId === t.id}
+                      onClick={() => handleAddDirect(t.id, t.title)}
+                      className="shrink-0 text-xs py-1 px-2.5 h-auto font-medium"
+                    >
+                      {loadingTaskId === t.id ? "Menambahkan…" : "+ Fokus"}
+                    </Button>
+                  </div>
                 ))}
-              </select>
-            </div>
-            <div className="self-end">
-              <Button type="submit" variant="primary" disabled={loading || !selectedTaskId}>
-                {loading ? "Menambahkan…" : "Tambah ke Fokus"}
-              </Button>
-            </div>
-          </form>
+              </div>
+            )}
+          </div>
 
           {/* Active Pomodoro Timer Section */}
           {activePomodoroTask && (

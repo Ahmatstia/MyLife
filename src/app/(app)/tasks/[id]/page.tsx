@@ -76,6 +76,7 @@ export default async function TaskPage({ params }: { params: Promise<{ id: strin
           description={task.description}
           priority={task.priority}
           estimatedHours={task.estimatedHours}
+          dueDate={task.dueDate}
           notes={task.notes}
         />
       </nav>

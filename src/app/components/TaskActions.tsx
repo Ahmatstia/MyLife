@@ -13,10 +13,11 @@ type Props = {
   description: string | null;
   priority: string;
   estimatedHours: number;
+  dueDate?: string | Date | null;
   notes: string | null;
 };
 
-export default function TaskActions({ id, name, description, priority, estimatedHours, notes }: Props) {
+export default function TaskActions({ id, name, description, priority, estimatedHours, dueDate, notes }: Props) {
   const router = useRouter();
   const { toast } = useToast();
   const { askConfirm, confirmDialog } = useConfirm();
@@ -26,6 +27,7 @@ export default function TaskActions({ id, name, description, priority, estimated
     description: description ?? "",
     priority,
     estimatedHours: String(estimatedHours),
+    dueDate: dueDate ? new Date(dueDate).toISOString().slice(0, 10) : "",
     notes: notes ?? "",
   });
   const [error, setError] = useState("");
@@ -79,6 +81,7 @@ export default function TaskActions({ id, name, description, priority, estimated
       description: description ?? "",
       priority,
       estimatedHours: String(estimatedHours ?? 0),
+      dueDate: dueDate ? new Date(dueDate).toISOString().slice(0, 10) : "",
       notes: notes ?? "",
     });
     setError("");
@@ -174,17 +177,30 @@ export default function TaskActions({ id, name, description, priority, estimated
             />
           </div>
 
-          <div>
-            <label className="block text-[12px] font-semibold text-surface-600 mb-1">
-              Catatan / Sticky Notes
-            </label>
-            <textarea
-              value={values.notes}
-              onChange={(e) => setValues({ ...values, notes: e.target.value })}
-              placeholder="Catatan tambahan, tips, link, atau referensi..."
-              rows={2}
-              className="w-full resize-none rounded-xl border border-surface-200 bg-surface-50 px-3.5 py-2.5 text-sm text-surface-900 outline-none transition focus:border-primary-400 focus:bg-white"
-            />
+          <div className="grid gap-3 sm:grid-cols-2">
+            <div>
+              <label className="block text-[12px] font-semibold text-surface-600 mb-1">
+                Tenggat Waktu / Deadline
+              </label>
+              <input
+                type="date"
+                value={values.dueDate}
+                onChange={(e) => setValues({ ...values, dueDate: e.target.value })}
+                className="w-full rounded-xl border border-surface-200 bg-surface-50 px-3.5 py-2.5 text-sm text-surface-900 outline-none transition focus:border-primary-400 focus:bg-white"
+              />
+            </div>
+            <div>
+              <label className="block text-[12px] font-semibold text-surface-600 mb-1">
+                Catatan / Sticky Notes
+              </label>
+              <input
+                type="text"
+                value={values.notes}
+                onChange={(e) => setValues({ ...values, notes: e.target.value })}
+                placeholder="Tips, link, atau referensi..."
+                className="w-full rounded-xl border border-surface-200 bg-surface-50 px-3.5 py-2.5 text-sm text-surface-900 outline-none transition focus:border-primary-400 focus:bg-white"
+              />
+            </div>
           </div>
 
           {error && <p className="text-sm text-danger-600">{error}</p>}
@@ -196,7 +212,17 @@ export default function TaskActions({ id, name, description, priority, estimated
             <Button
               loading={loading}
               disabled={!values.name.trim()}
-              onClick={() => patch({ ...values, estimatedHours: Number(values.estimatedHours) })}
+              onClick={() =>
+                patch({
+                  title: values.name.trim(),
+                  description: values.description.trim() || null,
+                  priority: values.priority,
+                  estimatedHours: Number(values.estimatedHours),
+                  dueDate: values.dueDate ? new Date(values.dueDate).toISOString() : null,
+                  scheduledDate: values.dueDate ? new Date(values.dueDate).toISOString() : null,
+                  notes: values.notes.trim() || null,
+                })
+              }
             >
               Simpan perubahan
             </Button>

@@ -6,13 +6,32 @@ import { useState } from "react";
 import { Icon } from "../ui/Icon";
 import { useToast } from "../ui/Toast";
 
-type Task = { id: string; title: string; name?: string; priority: string; status: string; stage?: { name: string; goal: { title: string; name?: string } } | null; [key: string]: unknown };
+type Task = {
+  id: string;
+  title: string;
+  name?: string;
+  priority: string;
+  status: string;
+  dueDate?: string | Date | null;
+  stage?: { name: string; goal: { title: string; name?: string } } | null;
+  project?: { title: string } | null;
+  area?: { name: string } | null;
+  [key: string]: unknown;
+};
 type Focus = { id: string; taskId: string; task: Task; [key: string]: unknown };
 
 export function FocusPanel({ focus, available }: { focus: Focus[]; available: Task[] }) {
   const router = useRouter();
   const { toast } = useToast();
-  const [selected, setSelected] = useState("");
+  const [searchQuery, setSearchQuery] = useState("");
+  const [loadingTaskId, setLoadingTaskId] = useState<string | null>(null);
+
+  function getParentLabel(task: Task) {
+    if (task.stage?.goal?.title) return `🎯 ${task.stage.goal.title}`;
+    if (task.project?.title) return `📁 ${task.project.title}`;
+    if (task.area?.name) return `📍 ${task.area.name}`;
+    return "Mandiri";
+  }
 
   async function request(url: string, method: string, body?: object) {
     const response = await fetch(url, {
@@ -25,14 +44,17 @@ export function FocusPanel({ focus, available }: { focus: Focus[]; available: Ta
     router.refresh();
   }
 
-  async function add() {
-    if (!selected) return;
+  async function add(taskId: string, taskTitle?: string) {
+    if (!taskId || loadingTaskId) return;
+    setLoadingTaskId(taskId);
     try {
-      await request("/api/today/focus", "POST", { taskId: selected });
-      setSelected("");
-      toast("Ditambahkan ke fokus hari ini.", "success");
+      await request("/api/today/focus", "POST", { taskId });
+      toast(`"${taskTitle || "Task"}" ditambahkan ke fokus hari ini.`, "success");
+      setSearchQuery("");
     } catch {
-      toast("Gagal menambahkan task itu.", "error");
+      toast("Gagal menambahkan task itu ke fokus.", "error");
+    } finally {
+      setLoadingTaskId(null);
     }
   }
 
@@ -150,29 +172,88 @@ export function FocusPanel({ focus, available }: { focus: Focus[]; available: Ta
         )}
       </div>
 
-      <div className="mt-5 flex flex-col gap-2">
-        <select
-          value={selected}
-          onChange={(e) => setSelected(e.target.value)}
-          aria-label="Tambahkan task ke fokus hari ini"
-          className="w-full rounded-xl border border-surface-200 bg-surface-0 px-3 py-2.5 text-sm text-surface-800 focus:border-primary-400 focus:ring-2 focus:ring-primary-100"
-        >
-          <option value="">Tambahkan task ke fokus…</option>
+      {/* Searchable Task Picker for Focus */}
+      <div className="mt-5 rounded-2xl border border-surface-200 bg-surface-50/60 p-4">
+        <div className="flex items-center justify-between gap-2 mb-3">
+          <span className="text-xs font-bold text-surface-800 flex items-center gap-1.5">
+            <Icon name="search" size={14} className="text-primary-600" />
+            Cari & Tambah Task ke Fokus
+          </span>
+          <span className="text-[11px] text-surface-400">
+            {available.filter((t) => !focus.some((f) => f.taskId === t.id)).length} task tersedia
+          </span>
+        </div>
+
+        <div className="relative mb-3">
+          <input
+            type="text"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            placeholder="Ketik untuk mencari task (mis. Tugas kuliah, Desain, Proposal)..."
+            className="w-full rounded-xl border border-surface-200 bg-white px-3.5 py-2 text-xs text-surface-900 placeholder:text-surface-400 focus:border-primary-400 focus:outline-none focus:ring-2 focus:ring-primary-100"
+          />
+          {searchQuery && (
+            <button
+              type="button"
+              onClick={() => setSearchQuery("")}
+              className="absolute right-3 top-2 text-xs text-surface-400 hover:text-surface-700"
+            >
+              ✕
+            </button>
+          )}
+        </div>
+
+        <div className="max-h-56 overflow-y-auto space-y-1.5 pr-1">
           {available
             .filter((task) => !focus.some((item) => item.taskId === task.id))
+            .filter((task) => {
+              if (!searchQuery.trim()) return true;
+              const q = searchQuery.toLowerCase();
+              const matchTitle = (task.title || task.name || "").toLowerCase().includes(q);
+              const matchSource = getParentLabel(task).toLowerCase().includes(q);
+              return matchTitle || matchSource;
+            })
+            .slice(0, 20)
             .map((task) => (
-              <option key={task.id} value={task.id}>
-                {task.title} · {task.stage?.goal.title}
-              </option>
+              <div
+                key={task.id}
+                className="flex items-center justify-between gap-2 rounded-xl border border-surface-150 bg-white px-3 py-2 text-xs shadow-xs hover:border-primary-300 transition"
+              >
+                <div className="min-w-0 flex-1">
+                  <p className="font-semibold text-surface-900 truncate">{task.title}</p>
+                  <div className="flex items-center gap-2 mt-0.5 text-[10px] text-surface-500">
+                    <span className="truncate max-w-[140px] text-surface-600 font-medium">
+                      {getParentLabel(task)}
+                    </span>
+                    {task.dueDate && (
+                      <span className="text-amber-700 bg-amber-50 px-1.5 py-0.2 rounded border border-amber-200/60">
+                        📅 {new Date(task.dueDate).toLocaleDateString("id-ID", { day: "numeric", month: "short" })}
+                      </span>
+                    )}
+                    <span className={`font-semibold ${task.priority === "URGENT" || task.priority === "HIGH" ? "text-rose-600" : "text-surface-400"}`}>
+                      {task.priority}
+                    </span>
+                  </div>
+                </div>
+
+                <button
+                  type="button"
+                  disabled={loadingTaskId === task.id}
+                  onClick={() => add(task.id, task.title)}
+                  className="inline-flex shrink-0 items-center gap-1 rounded-lg bg-primary-50 px-2.5 py-1.5 text-xs font-semibold text-primary-700 hover:bg-primary-600 hover:text-white transition disabled:opacity-50"
+                >
+                  <Icon name="plus" size={12} />
+                  {loadingTaskId === task.id ? "..." : "+ Fokus"}
+                </button>
+              </div>
             ))}
-        </select>
-        <button
-          onClick={add}
-          disabled={!selected}
-          className="inline-flex h-11 w-full items-center justify-center gap-1.5 rounded-xl bg-primary-600 px-4 text-sm font-semibold text-white transition hover:bg-primary-700 disabled:opacity-40"
-        >
-          <Icon name="plus" size={16} /> Tambah ke fokus
-        </button>
+
+          {available.filter((task) => !focus.some((item) => item.taskId === task.id)).length === 0 && (
+            <p className="text-center py-4 text-xs text-surface-400">
+              Semua task aktif sudah dimasukkan ke fokus hari ini.
+            </p>
+          )}
+        </div>
       </div>
     </section>
   );
