@@ -5,9 +5,7 @@ import { getAreas } from "@/services/area.service";
 import { requirePageUser } from "@/lib/auth";
 import StageForm from "@/app/components/StageForm";
 import GoalActionsMenu from "@/app/components/GoalActionsMenu";
-import NewTaskButton from "@/app/components/NewTaskButton";
-import TaskList from "@/app/components/TaskList";
-import StageActions from "@/app/components/StageActions";
+import { GoalStagesAccordion } from "@/app/components/goals/GoalStagesAccordion";
 import {
   calculateGoalProgress,
   calculateStageProgress,
@@ -106,9 +104,9 @@ export default async function GoalPage({ params }: GoalPageProps) {
 
       {/* Completion Banner if all stages are done */}
       {allStagesDone && (
-        <div className="relative overflow-hidden rounded-2xl border border-emerald-500/30 bg-gradient-to-r from-emerald-950/40 via-[#131825] to-[#131825] p-5 shadow-[0_0_30px_rgba(78,222,163,0.15)]">
+        <div className="relative overflow-hidden rounded-2xl border border-emerald-500/30 bg-gradient-to-r from-emerald-950/40 via-[#131825] to-[#131825] p-5 shadow-lg transform-gpu">
           <div className="relative flex flex-wrap items-center gap-4">
-            <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-emerald-500/20 text-emerald-400 border border-emerald-500/40 text-2xl shadow-[0_0_15px_rgba(78,222,163,0.4)]">
+            <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-emerald-500/20 text-emerald-400 border border-emerald-500/40 text-2xl shadow-sm">
               🏆
             </span>
             <div>
@@ -127,9 +125,9 @@ export default async function GoalPage({ params }: GoalPageProps) {
       {/* 2. Expedition Hero Header (Split Grid) */}
       <section className="grid grid-cols-1 lg:grid-cols-12 gap-6">
         {/* Left Col: Strategic Brief & Telemetry */}
-        <div className="lg:col-span-8 flex flex-col justify-between p-6 md:p-8 rounded-2xl bg-[#131825] border border-white/[0.08] shadow-[0_12px_40px_-15px_rgba(0,0,0,0.7)] relative overflow-hidden">
-          {/* Subtle ambient glow */}
-          <div className="absolute -right-20 -top-20 w-80 h-80 rounded-full bg-purple-600/10 blur-3xl pointer-events-none" />
+        <div className="lg:col-span-8 flex flex-col justify-between p-6 md:p-8 rounded-2xl bg-[#131825] border border-white/[0.08] shadow-xl relative overflow-hidden transform-gpu">
+          {/* Subtle ambient glow via fast GPU radial gradient */}
+          <div className="absolute -right-10 -top-10 w-96 h-96 bg-[radial-gradient(circle,rgba(168,85,247,0.12)_0%,transparent_70%)] pointer-events-none transform-gpu" />
           
           <div className="flex flex-col gap-4 relative z-10">
             {/* Badges Cluster */}
@@ -418,129 +416,12 @@ export default async function GoalPage({ params }: GoalPageProps) {
         <ObjectivesSection goalId={goal.id} initialObjectives={goal.objectives} />
       </section>
 
-      {/* 5. Vertical Timeline: Hexagon Nodes & Detailed Stages */}
+      {/* 5. Vertical Timeline: Hexagon Nodes & Detailed Stages Accordion */}
       {goal.stages.length > 0 && (
-        <section className="flex flex-col gap-5">
-          <div className="flex flex-wrap items-center justify-between gap-3">
-            <div className="flex items-center gap-2">
-              <span className="material-symbols-outlined text-purple-400 text-[20px]">account_tree</span>
-              <h2 className="text-lg font-bold text-white">Rincian Tahapan &amp; Tugas Eksekusi</h2>
-            </div>
-            <span className="font-mono text-xs text-gray-400">
-              TOTAL {goal.stages.length} TAHAPAN STRATEGIS
-            </span>
-          </div>
-
-          <div className="flex flex-col gap-6 relative">
-            {/* Background connecting track line */}
-            <div className="absolute left-6 top-8 bottom-8 w-0.5 bg-white/[0.08] -z-0" />
-
-            {goal.stages.map((stage, index) => {
-              const stageProgress = calculateStageProgress(stage.tasks);
-              const completed = stage.tasks.filter((t) => t.status === "COMPLETED").length;
-              const total = stage.tasks.length;
-              const isCompleted = total > 0 && completed === total;
-              const isCurrent = index === currentStageIndex;
-
-              return (
-                <div key={stage.id} className="relative z-10 flex flex-col md:flex-row items-start gap-4">
-                  {/* Hexagon Node Marker */}
-                  <div
-                    className={`shrink-0 w-12 h-12 rounded-xl flex items-center justify-center font-mono font-bold transition-all ${
-                      isCompleted
-                        ? "bg-emerald-500/20 text-emerald-400 border border-emerald-500/40 shadow-[0_0_15px_rgba(78,222,163,0.3)]"
-                        : isCurrent
-                          ? "bg-purple-600 text-white shadow-[0_0_25px_rgba(168,85,247,0.5)] border border-purple-400/50"
-                          : "bg-[#131825] text-gray-400 border border-white/[0.08]"
-                    }`}
-                  >
-                    {isCompleted ? (
-                      <span className="material-symbols-outlined text-[20px]">check</span>
-                    ) : (
-                      <span>0{index + 1}</span>
-                    )}
-                  </div>
-
-                  {/* Main Card Wrapper */}
-                  <div
-                    className={`flex-1 w-full p-6 md:p-7 rounded-2xl bg-[#131825] border transition-all flex flex-col gap-5 ${
-                      isCurrent
-                        ? "border-purple-500/40 shadow-[0_0_30px_-5px_rgba(208,188,255,0.12)]"
-                        : isCompleted
-                          ? "border-emerald-500/20"
-                          : "border-white/[0.08]"
-                    }`}
-                  >
-                    {/* Stage Header */}
-                    <div className="flex flex-wrap items-start justify-between gap-4">
-                      <div className="flex flex-col gap-1.5 min-w-0">
-                        <div className="flex flex-wrap items-center gap-2">
-                          <span
-                            className={`font-mono text-xs px-2.5 py-0.5 rounded font-bold ${
-                              isCompleted
-                                ? "text-emerald-400 bg-emerald-500/10 border border-emerald-500/20"
-                                : isCurrent
-                                  ? "text-purple-300 bg-purple-500/15 border border-purple-500/30"
-                                  : "text-gray-400 bg-white/[0.05]"
-                            }`}
-                          >
-                            {isCompleted ? "✓ SELESAI" : isCurrent ? "TAHAPAN SAAT INI" : "MENDATANG"}
-                          </span>
-                        </div>
-                        <h3 className="text-lg md:text-xl font-bold text-white tracking-tight mt-1">
-                          TAHAP 0{index + 1} {"//"} {stage.name.toUpperCase()}
-                        </h3>
-                        {stage.description && (
-                          <p className="text-sm text-gray-400 max-w-2xl leading-relaxed">
-                            {stage.description}
-                          </p>
-                        )}
-                      </div>
-
-                      {/* Micro Metric */}
-                      <div className="p-3 rounded-xl bg-[#0B0D13]/80 border border-white/[0.06] flex items-center gap-3 shrink-0">
-                        <div
-                          className={`w-10 h-10 rounded-full flex items-center justify-center font-mono text-xs font-bold ${
-                            isCompleted
-                              ? "bg-emerald-500/20 text-emerald-400"
-                              : isCurrent
-                                ? "bg-purple-500/20 text-purple-300"
-                                : "bg-white/[0.05] text-gray-400"
-                          }`}
-                        >
-                          {stageProgress}%
-                        </div>
-                        <div className="flex flex-col">
-                          <span className="font-mono text-[10px] text-gray-400 uppercase">PROGRES TAHAP</span>
-                          <span className="font-mono text-xs font-bold text-white">
-                            {completed} / {total} Tugas
-                          </span>
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Task Action Checklist */}
-                    <div>
-                      <TaskList tasks={stage.tasks} />
-                    </div>
-
-                    {/* Stage Card Footer Controls */}
-                    <div className="flex flex-wrap items-center justify-between gap-3 pt-2 border-t border-white/[0.06]">
-                      <NewTaskButton stageId={stage.id} />
-                      <StageActions
-                        id={stage.id}
-                        name={stage.name}
-                        description={stage.description}
-                        canMoveUp={index > 0}
-                        canMoveDown={index < goal.stages.length - 1}
-                      />
-                    </div>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        </section>
+        <GoalStagesAccordion
+          stages={goal.stages}
+          currentStageIndex={currentStageIndex}
+        />
       )}
     </div>
   );
