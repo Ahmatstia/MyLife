@@ -3,8 +3,9 @@ import { logger } from "@/lib/logger";
 export interface TelegramNotificationPayload {
   title: string;
   message: string;
-  severity?: "INFO" | "WARNING" | "CRITICAL";
+  severity?: "INFO" | "WARNING" | "CRITICAL" | "URGENT";
   linkUrl?: string;
+  linkLabel?: string;
   chatId?: string;
 }
 
@@ -18,12 +19,41 @@ const SEVERITY_EMOJIS: Record<string, string> = {
   INFO: "ℹ️",
   WARNING: "⚠️",
   CRITICAL: "🚨",
+  URGENT: "🔴",
 };
+
+const SEVERITY_LABELS: Record<string, string> = {
+  INFO: "Info",
+  WARNING: "Perhatian",
+  CRITICAL: "Kritis",
+  URGENT: "Segera",
+};
+
+/**
+ * Resolve a relative path to an absolute URL using APP_URL env variable.
+ */
+function toAbsoluteUrl(path: string | null | undefined): string | undefined {
+  if (!path) return undefined;
+  if (path.startsWith("http://") || path.startsWith("https://")) return path;
+  const base = (process.env.APP_URL || "http://localhost:3000").replace(/\/$/, "");
+  const normalizedPath = path.startsWith("/") ? path : `/${path}`;
+  return `${base}${normalizedPath}`;
+}
 
 /**
  * Kirim pesan notifikasi melalui Telegram Bot API.
  * Menggunakan standard fetch bawaan Node 18+ tanpa dependensi luar.
  * Tidak pernah melempar error (fail-safe) agar tidak memblokir workflow aplikasi.
+ *
+ * Format pesan (HTML Telegram):
+ *   ⚠️ <b>Judul Notifikasi</b>
+ *   <i>[ Perhatian ]</i>
+ *
+ *   Isi pesan yang menjelaskan konteks.
+ *
+ *   🔗 <a href="https://app.com/tasks/abc123">Buka Task →</a>
+ *
+ *   <i>— MyLife Personal OS</i>
  */
 export async function sendTelegramNotification(
   payload: TelegramNotificationPayload
@@ -39,16 +69,34 @@ export async function sendTelegramNotification(
     };
   }
 
-  const emoji = SEVERITY_EMOJIS[payload.severity || "INFO"] || "🔔";
-  
+  const severity = payload.severity || "INFO";
+  const emoji = SEVERITY_EMOJIS[severity] || "🔔";
+  const severityLabel = SEVERITY_LABELS[severity] || "Info";
+
   // Format HTML aman untuk Telegram
   const escapeHtml = (str: string) =>
     str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
 
-  let text = `<b>${emoji} ${escapeHtml(payload.title)}</b>\n\n${escapeHtml(payload.message)}`;
-  if (payload.linkUrl) {
-    text += `\n\n🔗 <i>${escapeHtml(payload.linkUrl)}</i>`;
+  // Build absolute URL jika ada link
+  const absoluteUrl = toAbsoluteUrl(payload.linkUrl);
+  const linkLabel = payload.linkLabel || "Buka Sekarang →";
+
+  // Baris header: emoji + judul bold
+  let text = `${emoji} <b>${escapeHtml(payload.title)}</b>`;
+
+  // Badge severity
+  text += `\n<i>[ ${severityLabel} ]</i>`;
+
+  // Body pesan
+  text += `\n\n${escapeHtml(payload.message)}`;
+
+  // Link klikable jika tersedia
+  if (absoluteUrl) {
+    text += `\n\n<a href="${absoluteUrl}">🔗 ${escapeHtml(linkLabel)}</a>`;
   }
+
+  // Footer
+  text += `\n\n<i>— MyLife Personal OS</i>`;
 
   try {
     const url = `https://api.telegram.org/bot${token}/sendMessage`;
@@ -61,7 +109,7 @@ export async function sendTelegramNotification(
         chat_id: targetChatId,
         text,
         parse_mode: "HTML",
-        disable_web_page_preview: false,
+        disable_web_page_preview: true,
       }),
     });
 
@@ -92,9 +140,11 @@ export async function sendTelegramNotification(
  */
 export async function testTelegramConnection(chatId?: string): Promise<TelegramSendResult> {
   return sendTelegramNotification({
-    title: "Personal Progress OS — Test Notification",
-    message: "Halo! Bot Telegram berhasil terhubung dengan sistem Personal Progress OS Anda. Notifikasi pengingat & update penting akan dikirim melalui chat ini.",
+    title: "MyLife — Notifikasi Aktif ✓",
+    message: "Halo! Bot Telegram berhasil terhubung dengan sistem MyLife Anda. Pengingat deadline, acara kalender, dan update penting akan dikirim melalui chat ini.",
     severity: "INFO",
+    linkUrl: "/today",
+    linkLabel: "Buka MyLife Dashboard →",
     chatId,
   });
 }

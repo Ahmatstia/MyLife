@@ -177,6 +177,7 @@ export async function runReminderCycle(
     severity: NotificationSeverity;
     type: string;
     linkUrl?: string | null;
+    linkLabel?: string;
   }> = [];
 
   // ==========================================
@@ -210,15 +211,16 @@ export async function runReminderCycle(
     let severity: NotificationSeverity = "INFO";
     let title = "";
     let message = "";
+    const dueDateStr = task.dueDate.toLocaleDateString("id-ID", { weekday: "long", day: "numeric", month: "long", year: "numeric" });
 
     if (isOverdue) {
       severity = task.priority === "URGENT" ? "URGENT" : "WARNING";
       title = `Tenggat Terlewat: ${task.title}`;
-      message = `Task "${task.title}" telah melewati batas waktu (${task.dueDate.toISOString().slice(0, 10)}). Segera selesaikan atau jadwalkan ulang.`;
+      message = `Task ini sudah melewati batas waktu pada ${dueDateStr}. Segera selesaikan atau jadwalkan ulang agar tidak tertinggal lebih jauh.`;
     } else {
       severity = task.priority === "HIGH" || task.priority === "URGENT" ? "WARNING" : "INFO";
       title = `Jatuh Tempo Hari Ini: ${task.title}`;
-      message = `Task "${task.title}" jatuh tempo hari ini. Prioritaskan eksekusinya sekarang.`;
+      message = `Task ini harus diselesaikan hari ini (${dueDateStr}). Buka task untuk mulai mengerjakan atau catat progres terkini.`;
     }
 
     // Suppress INFO notifications during quiet hours
@@ -260,6 +262,7 @@ export async function runReminderCycle(
         severity: notif.severity,
         type: notif.type,
         linkUrl: notif.linkUrl,
+        linkLabel: `Buka Task: ${task.title} →`,
       });
     }
   }
@@ -318,6 +321,7 @@ export async function runReminderCycle(
         severity: notif.severity,
         type: notif.type,
         linkUrl: notif.linkUrl,
+        linkLabel: `Lihat Jadwal: ${event.title} →`,
       });
     }
   }
@@ -374,6 +378,7 @@ export async function runReminderCycle(
           severity: notif.severity,
           type: notif.type,
           linkUrl: notif.linkUrl,
+          linkLabel: "Buka Fokus Harian →",
         });
       }
     }
@@ -430,6 +435,7 @@ export async function runReminderCycle(
           severity: notif.severity,
           type: notif.type,
           linkUrl: notif.linkUrl,
+          linkLabel: "Mulai Refleksi Mingguan →",
         });
       }
     }
@@ -443,6 +449,7 @@ export async function runReminderCycle(
       severity: item.severity as "INFO" | "WARNING" | "CRITICAL",
       type: item.type,
       linkUrl: item.linkUrl || undefined,
+      linkLabel: item.linkLabel,
     });
   }
 

@@ -61,6 +61,36 @@ describe("External Notification Services", () => {
       expect(mockFetch).toHaveBeenCalledTimes(1);
     });
 
+    it("formats HTML with clickable link using APP_URL and linkLabel", async () => {
+      process.env.TELEGRAM_BOT_TOKEN = "test-token";
+      process.env.TELEGRAM_CHAT_ID = "12345678";
+      process.env.APP_URL = "https://myprogres.vercel.app";
+
+      let sentBody = "";
+      const mockFetch = vi.fn().mockImplementation(async (_url, options) => {
+        sentBody = options.body;
+        return {
+          ok: true,
+          json: async () => ({ ok: true, result: { message_id: 1001 } }),
+        };
+      });
+      global.fetch = mockFetch as unknown as typeof fetch;
+
+      const result = await sendTelegramNotification({
+        title: "Tenggat Terlewat: Bikin Laporan",
+        message: "Task sudah jatuh tempo",
+        severity: "WARNING",
+        linkUrl: "/tasks/abc-123",
+        linkLabel: "Buka Task: Bikin Laporan →",
+      });
+
+      expect(result.success).toBe(true);
+      const parsed = JSON.parse(sentBody);
+      expect(parsed.parse_mode).toBe("HTML");
+      expect(parsed.text).toContain('<a href="https://myprogres.vercel.app/tasks/abc-123">🔗 Buka Task: Bikin Laporan →</a>');
+      expect(parsed.text).toContain("⚠️ <b>Tenggat Terlewat: Bikin Laporan</b>");
+    });
+
     it("handles Telegram API errors gracefully without throwing", async () => {
       process.env.TELEGRAM_BOT_TOKEN = "test-token";
       process.env.TELEGRAM_CHAT_ID = "12345678";

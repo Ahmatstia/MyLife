@@ -8,6 +8,7 @@ export interface DispatchExternalNotificationInput {
   severity: "INFO" | "WARNING" | "CRITICAL";
   type?: string;
   linkUrl?: string;
+  linkLabel?: string;
 }
 
 export interface DispatchResult {
@@ -36,6 +37,7 @@ export async function dispatchExternalNotification(
       message: input.message,
       severity: input.severity,
       linkUrl: input.linkUrl,
+      linkLabel: input.linkLabel,
     });
     result.telegram.success = tgRes.success;
     result.telegram.reason = tgRes.reason;
