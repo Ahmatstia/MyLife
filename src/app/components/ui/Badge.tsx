@@ -4,13 +4,13 @@ import { Icon } from "./Icon";
 export type Tone = "neutral" | "primary" | "success" | "warning" | "danger" | "info" | "ai";
 
 const tones: Record<Tone, string> = {
-  neutral: "bg-surface-100 text-surface-600 border-surface-200",
-  primary: "bg-primary-50 text-primary-700 border-primary-200",
-  success: "bg-success-50 text-success-700 border-success-200",
-  warning: "bg-warning-50 text-warning-600 border-warning-200",
-  danger: "bg-danger-50 text-danger-600 border-danger-200",
-  info: "bg-info-50 text-info-600 border-info-200",
-  ai: "bg-ai-50 text-ai-700 border-ai-200",
+  neutral: "bg-white/[0.06] text-[#94a3b8] border-white/[0.1]",
+  primary: "bg-[#8B5CF6]/15 text-[#d0bcff] border-[#8B5CF6]/30",
+  success: "bg-[#4edea3]/15 text-[#4edea3] border-[#4edea3]/30",
+  warning: "bg-[#F59E0B]/15 text-[#F59E0B] border-[#F59E0B]/30",
+  danger: "bg-rose-500/15 text-rose-400 border-rose-500/30",
+  info: "bg-sky-500/15 text-sky-400 border-sky-500/30",
+  ai: "bg-indigo-500/15 text-indigo-300 border-indigo-500/30",
 };
 
 export function Badge({

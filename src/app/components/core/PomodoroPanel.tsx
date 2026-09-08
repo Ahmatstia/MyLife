@@ -221,17 +221,17 @@ export function PomodoroPanel({
       <div className="space-y-4">
         {/* Mode header */}
         <div className="flex items-center gap-2">
-          <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-gradient-to-br from-primary-500 to-ai-500 text-white">
+          <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-gradient-to-br from-amber-500 to-rose-500 text-white shadow-md shadow-amber-500/20">
             <Icon name="pomodoro" size={14} />
           </span>
           <div>
-            <p className="text-[13px] font-bold text-surface-900">Pilih mode fokus</p>
-            <p className="text-[11px] text-surface-500">Tentukan durasi atau biarkan berjalan bebas</p>
+            <p className="text-[13px] font-bold text-white">Pilih Mode Fokus</p>
+            <p className="text-[11px] text-surface-400">Tentukan durasi atau biarkan berjalan bebas</p>
           </div>
         </div>
 
         {/* Preset selector */}
-        <div className="grid grid-cols-4 gap-1.5 rounded-2xl border border-surface-150 bg-surface-50 p-1.5">
+        <div className="grid grid-cols-4 gap-1.5 rounded-2xl border border-white/10 bg-[#0E131F]/90 p-1.5">
           {PRESETS.map((p, idx) => (
             <button
               key={p.label}
@@ -239,14 +239,8 @@ export function PomodoroPanel({
               onClick={() => setSelectedPreset(idx)}
               className={`flex flex-col items-center gap-1 rounded-xl py-2.5 text-[11px] font-semibold transition-all duration-200 ${
                 selectedPreset === idx
-                  ? idx === 3
-                    ? "bg-white text-success-700 border border-success-200 shadow-soft"
-                    : idx === 2
-                    ? "bg-white text-warning-700 border border-warning-200 shadow-soft"
-                    : idx === 1
-                    ? "bg-white text-ai-700 border border-ai-200 shadow-soft"
-                    : "bg-white text-primary-700 border border-primary-200 shadow-soft"
-                  : "text-surface-500 hover:bg-white/70 hover:text-surface-800"
+                  ? "bg-violet-600 text-white border border-violet-400/40 shadow-lg shadow-violet-500/30"
+                  : "text-surface-400 hover:bg-[#1A2133] hover:text-white"
               }`}
             >
               <span className="text-[18px] leading-none">{p.icon}</span>
@@ -257,8 +251,8 @@ export function PomodoroPanel({
 
         {/* Custom minutes input (Free mode) */}
         {isFreeModeCustom && (
-          <div className="animate-in-soft flex items-center gap-2 rounded-xl border border-surface-200 bg-white p-3">
-            <Icon name="clock" size={16} className="text-surface-400" />
+          <div className="animate-in-soft flex items-center gap-2 rounded-xl border border-white/10 bg-[#0E131F] p-3">
+            <Icon name="clock" size={16} className="text-violet-400" />
             <input
               type="number"
               min="1"
@@ -266,7 +260,7 @@ export function PomodoroPanel({
               value={customMinutes}
               onChange={(e) => setCustomMinutes(e.target.value)}
               placeholder="Menit kustom (opsional)"
-              className="min-w-0 flex-1 bg-transparent text-[13px] text-surface-900 placeholder:text-surface-400 outline-none"
+              className="min-w-0 flex-1 bg-transparent text-[13px] text-white placeholder:text-surface-500 outline-none"
             />
             {customMinutes && (
               <span className="text-[11px] text-surface-400">menit</span>
@@ -275,22 +269,22 @@ export function PomodoroPanel({
         )}
 
         {/* Task preview */}
-        <div className="rounded-xl border border-surface-150 bg-white p-3">
-          <p className="text-[10px] font-bold uppercase tracking-wider text-surface-400">Task</p>
-          <p className="mt-0.5 truncate text-[13px] font-semibold text-surface-800">{taskName}</p>
+        <div className="rounded-xl border border-white/10 bg-[#0E131F]/80 p-3">
+          <p className="text-[10px] font-bold uppercase tracking-wider text-violet-400">Target Tugas</p>
+          <p className="mt-0.5 truncate text-[13px] font-semibold text-white">{taskName}</p>
           {goalName && (
-            <p className="truncate text-[11px] text-surface-500">{goalName} · {stageName}</p>
+            <p className="truncate text-[11px] text-surface-400">{goalName} · {stageName}</p>
           )}
         </div>
 
-        {error && <p className="text-[12px] text-danger-600">{error}</p>}
+        {error && <p className="text-[12px] text-rose-400">{error}</p>}
 
         {/* Start button */}
         <button
           type="button"
           onClick={startSession}
           disabled={loading || !canStart}
-          className="relative w-full overflow-hidden rounded-2xl bg-gradient-to-r from-primary-600 to-ai-600 px-4 py-3.5 text-[14px] font-bold text-white shadow-sm transition-all hover:from-primary-700 hover:to-ai-700 hover:shadow-[var(--shadow-interactive)] disabled:opacity-50 shine-parent active:scale-[0.98]"
+          className="relative w-full overflow-hidden rounded-2xl bg-gradient-to-r from-violet-600 via-indigo-600 to-violet-700 px-4 py-3.5 text-[14px] font-bold text-white shadow-lg shadow-violet-500/25 transition-all hover:brightness-110 disabled:opacity-50 active:scale-[0.98]"
         >
           {loading ? (
             <span className="flex items-center justify-center gap-2">
@@ -330,16 +324,16 @@ export function PomodoroPanel({
         <div className="flex items-center gap-2">
           <span
             className={`h-2 w-2 rounded-full ${
-              paused ? "bg-warning-400" : "bg-ai-500 animate-pulse"
+              paused ? "bg-amber-400" : "bg-violet-400 animate-pulse"
             }`}
           />
           <span className={`text-[11px] font-bold uppercase tracking-wider ${
-            paused ? "text-warning-600" : "text-ai-600"
+            paused ? "text-amber-400" : "text-violet-400"
           }`}>
             {paused ? "Dijeda" : completed ? "Selesai! 🎉" : "Sesi Aktif"}
           </span>
           {pomodoroCount > 0 && (
-            <span className="flex items-center gap-0.5 rounded-full bg-warning-100 px-2 py-0.5 text-[10px] font-bold text-warning-700">
+            <span className="flex items-center gap-0.5 rounded-full border border-amber-500/30 bg-amber-500/15 px-2 py-0.5 text-[10px] font-bold text-amber-300">
               🍅 ×{pomodoroCount}
             </span>
           )}
@@ -348,7 +342,7 @@ export function PomodoroPanel({
           type="button"
           onClick={cancelSession}
           disabled={loading}
-          className="text-[11px] font-medium text-surface-400 hover:text-danger-600 transition-colors disabled:opacity-50"
+          className="text-[11px] font-medium text-surface-400 hover:text-rose-400 transition-colors disabled:opacity-50"
         >
           Batalkan sesi
         </button>
@@ -368,13 +362,13 @@ export function PomodoroPanel({
           {completed ? (
             <div className="flex flex-col items-center gap-1">
               <span className="text-3xl">🎉</span>
-              <span className="text-[11px] font-bold text-success-600">Selesai!</span>
+              <span className="text-[11px] font-bold text-emerald-400">Selesai!</span>
             </div>
           ) : (
             <div className="flex flex-col items-center gap-1">
               <span
                 className={`font-mono text-2xl font-bold tabular-nums tracking-tight ${
-                  isLow ? "text-warning-600 countdown-pulse" : "text-ai-700"
+                  isLow ? "text-amber-400 countdown-pulse" : "text-white"
                 }`}
               >
                 {targetSeconds > 0 ? formatCountdown(remaining) : formatElapsed(elapsed)}
@@ -392,20 +386,20 @@ export function PomodoroPanel({
         </FocusOrb>
 
         {/* Task name */}
-        <p className="mt-4 text-[10px] font-bold uppercase tracking-wider text-surface-400">
-          Sedang dikerjakan
+        <p className="mt-4 text-[10px] font-bold uppercase tracking-wider text-violet-400">
+          Sedang Dikerjakan
         </p>
-        <p className="mt-1 max-w-[200px] text-center text-[14px] font-semibold leading-snug text-surface-900">
+        <p className="mt-1 max-w-[240px] text-center text-[14px] font-semibold leading-snug text-white">
           {taskName}
         </p>
         {preset.minutes > 0 && (
-          <p className="mt-0.5 text-[11px] text-surface-500">
+          <p className="mt-0.5 text-[11px] text-surface-400">
             {preset.icon} Pomodoro {preset.label}
           </p>
         )}
       </div>
 
-      {error && <p className="text-center text-[12px] text-danger-600">{error}</p>}
+      {error && <p className="text-center text-[12px] text-rose-400">{error}</p>}
 
       {/* Controls */}
       <div className="flex gap-2">
@@ -414,7 +408,7 @@ export function PomodoroPanel({
           <button
             type="button"
             onClick={() => setPaused(!paused)}
-            className="flex flex-1 items-center justify-center gap-2 rounded-xl border border-surface-200 bg-white px-4 py-2.5 text-[13px] font-semibold text-surface-700 transition-all hover:border-surface-300 hover:bg-surface-50 shine-parent overflow-hidden"
+            className="flex flex-1 items-center justify-center gap-2 rounded-xl border border-white/10 bg-[#0E131F] px-4 py-2.5 text-[13px] font-semibold text-white transition-all hover:bg-[#1A2133] hover:border-violet-500/30"
           >
             <Icon name={paused ? "play" : "pause"} size={14} />
             {paused ? "Lanjutkan" : "Jeda"}
@@ -426,7 +420,7 @@ export function PomodoroPanel({
           type="button"
           onClick={() => setPhase("notes")}
           disabled={loading}
-          className="relative flex flex-1 items-center justify-center gap-2 overflow-hidden rounded-xl bg-gradient-to-r from-ai-600 to-primary-600 px-4 py-2.5 text-[13px] font-semibold text-white transition-all hover:from-ai-700 hover:to-primary-700 hover:shadow-[var(--shadow-interactive)] disabled:opacity-50 shine-parent active:scale-[0.98]"
+          className="relative flex flex-1 items-center justify-center gap-2 overflow-hidden rounded-xl bg-gradient-to-r from-violet-600 to-indigo-600 px-4 py-2.5 text-[13px] font-semibold text-white shadow-md shadow-violet-500/25 transition-all hover:brightness-110 disabled:opacity-50 active:scale-[0.98]"
         >
           <Icon name="bookOpen" size={14} />
           {completed ? "Catat & Selesai" : "Selesaikan sesi"}
@@ -435,11 +429,11 @@ export function PomodoroPanel({
 
       {/* Break suggestion after Pomodoro */}
       {completed && targetSeconds > 0 && (
-        <div className="animate-in-soft break-glow rounded-2xl border border-success-200 bg-gradient-to-br from-success-50 to-success-100/50 p-4 text-center">
-          <p className="text-[13px] font-bold text-success-800">
+        <div className="animate-in-soft rounded-2xl border border-emerald-500/30 bg-emerald-500/10 p-4 text-center">
+          <p className="text-[13px] font-bold text-emerald-300">
             ☕ Waktunya istirahat!
           </p>
-          <p className="mt-0.5 text-[12px] text-success-700">
+          <p className="mt-0.5 text-[12px] text-emerald-200/80">
             Istirahatlah 5–10 menit sebelum sesi berikutnya.
           </p>
         </div>

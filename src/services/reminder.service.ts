@@ -372,7 +372,7 @@ export async function runReminderCycle(
           severity: "INFO",
           entityType: "REVIEW",
           entityId: currentWeekYear,
-          linkUrl: `/reviews`,
+          linkUrl: `/review`,
         });
 
         createdCount++;

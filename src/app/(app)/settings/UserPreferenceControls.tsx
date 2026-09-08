@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useToast } from "@/app/components/ui/Toast";
+import { Icon } from "@/app/components/ui/Icon";
 
 type PreferenceData = {
   theme: "LIGHT" | "DARK" | "SYSTEM";
@@ -19,9 +20,9 @@ export function UserPreferenceControls({ initialPref }: { initialPref: Preferenc
   const [dailyFocusLimit, setDailyFocusLimit] = useState(initialPref.dailyFocusLimit);
   const [enableNotifications, setEnableNotifications] = useState(initialPref.enableNotifications);
   const [saving, setSaving] = useState(false);
-  const [testingChannel, setTestingChannel] = useState<"telegram" | "email" | null>(null);
+  const [testingChannel, setTestingChannel] = useState<"telegram" | null>(null);
 
-  async function testChannel(channel: "telegram" | "email") {
+  async function testChannel(channel: "telegram") {
     setTestingChannel(channel);
     try {
       const res = await fetch("/api/notifications/test-channel", {
@@ -31,13 +32,11 @@ export function UserPreferenceControls({ initialPref }: { initialPref: Preferenc
       });
       const data = await res.json();
       if (res.ok && data.success) {
-        toast(`Notifikasi uji coba ${channel === "telegram" ? "Telegram" : "Email"} berhasil dikirim!`, "success");
+        toast(`Notifikasi uji coba Telegram berhasil dikirim!`, "success");
       } else {
         const reason = data.details?.reason || data.error || "Gagal mengirimkan notifikasi uji coba";
         if (reason === "TELEGRAM_NOT_CONFIGURED") {
           toast("TELEGRAM_BOT_TOKEN atau TELEGRAM_CHAT_ID belum diatur di .env", "error");
-        } else if (reason === "EMAIL_NOT_CONFIGURED" || reason === "RECIPIENT_NOT_CONFIGURED") {
-          toast("EMAIL_USER, EMAIL_PASS, atau NOTIFICATION_EMAIL_TO belum diatur di .env", "error");
         } else {
           toast(`Gagal: ${reason}`, "error");
         }
@@ -59,7 +58,7 @@ export function UserPreferenceControls({ initialPref }: { initialPref: Preferenc
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error?.message || "Gagal memperbarui preferensi");
-      toast("Preferensi disimpan", "success");
+      toast("Preferensi berhasil disimpan", "success");
     } catch (err: unknown) {
       toast(err instanceof Error ? err.message : "Gagal memperbarui preferensi", "error");
     } finally {
@@ -67,148 +66,200 @@ export function UserPreferenceControls({ initialPref }: { initialPref: Preferenc
     }
   }
 
+  function handleLimitChange(delta: number) {
+    const nextVal = Math.max(1, Math.min(20, dailyFocusLimit + delta));
+    setDailyFocusLimit(nextVal);
+    updatePref({ dailyFocusLimit: nextVal });
+  }
+
   return (
-    <div className="space-y-4">
-      <div className="flex items-center justify-between py-2 border-b border-surface-150">
-        <div>
-          <span className="block text-sm font-medium text-surface-800">Tema Tampilan</span>
-          <span className="block text-xs text-surface-400">Pilih skema tema warna aplikasi</span>
+    <div className="space-y-8">
+      {/* 1. Preferensi Tampilan & Ritme Produktivitas */}
+      <section className="space-y-3">
+        <div className="flex flex-col">
+          <h2 className="text-base font-bold text-white tracking-tight">Preferensi Tampilan & Ritme Kerja</h2>
+          <p className="text-xs text-[#94A3B8]">Konfigurasi cara MyLife OS beroperasi dan menyesuaikan diri dengan pola fokus Anda.</p>
         </div>
-        <select
-          value={theme}
-          disabled={saving}
-          onChange={(e) => {
-            const val = e.target.value as "LIGHT" | "DARK" | "SYSTEM";
-            setTheme(val);
-            updatePref({ theme: val });
-          }}
-          className="rounded-lg border border-surface-200 bg-white px-3 py-1.5 text-xs font-semibold text-surface-700 focus:outline-none focus:border-primary-500"
-        >
-          <option value="LIGHT">Terang (LIGHT)</option>
-          <option value="DARK">Gelap (DARK)</option>
-          <option value="SYSTEM">Sistem (SYSTEM)</option>
-        </select>
-      </div>
 
-      <div className="flex items-center justify-between py-2 border-b border-surface-150">
-        <div>
-          <span className="block text-sm font-medium text-surface-800">Mulai Hari Mingguan</span>
-          <span className="block text-xs text-surface-400">Hari pertama dalam perhitungan mingguan</span>
+        <div className="rounded-2xl border border-white/[0.08] bg-[#131825] divide-y divide-white/[0.06] overflow-hidden shadow-xl">
+          {/* Baris 1: Tema Tampilan */}
+          <div className="p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4 hover:bg-[#1A2133]/40 transition-colors">
+            <div className="flex items-start gap-3">
+              <div className="p-2 rounded-xl bg-[#8B5CF6]/15 text-[#d0bcff] mt-0.5 border border-[#8B5CF6]/30">
+                <Icon name="sparkles" size={18} />
+              </div>
+              <div>
+                <span className="block text-sm font-semibold text-white">Tema Tampilan</span>
+                <span className="block text-xs text-[#94A3B8]">Pilih skema visual antarmuka sistem MyLife OS.</span>
+              </div>
+            </div>
+            <div className="flex items-center self-end sm:self-center">
+              <select
+                value={theme}
+                disabled={saving}
+                onChange={(e) => {
+                  const val = e.target.value as "LIGHT" | "DARK" | "SYSTEM";
+                  setTheme(val);
+                  updatePref({ theme: val });
+                }}
+                className="rounded-xl border border-white/[0.1] bg-[#0B0D13] px-3.5 py-2 font-mono text-xs font-semibold text-[#d0bcff] focus:border-[#8B5CF6] focus:outline-none transition-colors cursor-pointer"
+              >
+                <option value="DARK">Gelap (Obsidian Dark)</option>
+                <option value="LIGHT">Terang (Clean Light)</option>
+                <option value="SYSTEM">Otomatis (Sistem OS)</option>
+              </select>
+            </div>
+          </div>
+
+          {/* Baris 2: Mulai Hari Mingguan */}
+          <div className="p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4 hover:bg-[#1A2133]/40 transition-colors">
+            <div className="flex items-start gap-3">
+              <div className="p-2 rounded-xl bg-[#c0c1ff]/15 text-[#c0c1ff] mt-0.5 border border-[#c0c1ff]/30">
+                <Icon name="calendar" size={18} />
+              </div>
+              <div>
+                <span className="block text-sm font-semibold text-white">Mulai Hari Mingguan</span>
+                <span className="block text-xs text-[#94A3B8]">Hari awal dalam kalkulasi kalender, sprint, dan review mingguan.</span>
+              </div>
+            </div>
+            <div className="flex items-center self-end sm:self-center">
+              <select
+                value={weekStartDay}
+                disabled={saving}
+                onChange={(e) => {
+                  const val = Number(e.target.value);
+                  setWeekStartDay(val);
+                  updatePref({ weekStartDay: val });
+                }}
+                className="rounded-xl border border-white/[0.1] bg-[#0B0D13] px-3.5 py-2 font-mono text-xs font-semibold text-white focus:border-[#8B5CF6] focus:outline-none transition-colors cursor-pointer"
+              >
+                <option value={1}>Senin (ISO Standard)</option>
+                <option value={0}>Minggu (US Standard)</option>
+                <option value={6}>Sabtu</option>
+              </select>
+            </div>
+          </div>
+
+          {/* Baris 3: Batas Tugas Fokus Harian */}
+          <div className="p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4 hover:bg-[#1A2133]/40 transition-colors">
+            <div className="flex items-start gap-3">
+              <div className="p-2 rounded-xl bg-[#4edea3]/15 text-[#4edea3] mt-0.5 border border-[#4edea3]/30">
+                <Icon name="target" size={18} />
+              </div>
+              <div>
+                <span className="block text-sm font-semibold text-white">Batas Tugas Fokus Harian</span>
+                <span className="block text-xs text-[#94A3B8]">Maksimal tugas prioritas harian untuk mencegah kelelahan (burnout).</span>
+              </div>
+            </div>
+            <div className="flex items-center self-end sm:self-center gap-2 rounded-xl border border-white/[0.08] bg-[#0B0D13] p-1">
+              <button
+                type="button"
+                disabled={saving || dailyFocusLimit <= 1}
+                onClick={() => handleLimitChange(-1)}
+                className="h-7 w-7 rounded-lg bg-[#131825] hover:bg-[#1A2133] text-white flex items-center justify-center font-mono font-bold text-sm transition-colors disabled:opacity-40"
+              >
+                -
+              </button>
+              <span className="font-mono text-sm font-bold text-white px-2 min-w-[28px] text-center">
+                {dailyFocusLimit}
+              </span>
+              <button
+                type="button"
+                disabled={saving || dailyFocusLimit >= 20}
+                onClick={() => handleLimitChange(1)}
+                className="h-7 w-7 rounded-lg bg-[#131825] hover:bg-[#1A2133] text-white flex items-center justify-center font-mono font-bold text-sm transition-colors disabled:opacity-40"
+              >
+                +
+              </button>
+              <span className="font-mono text-[10px] uppercase text-[#64748B] pr-2">TASK/HARI</span>
+            </div>
+          </div>
+
+          {/* Baris 4: Notifikasi Proaktif Sistem */}
+          <div className="p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4 hover:bg-[#1A2133]/40 transition-colors">
+            <div className="flex items-start gap-3">
+              <div className="p-2 rounded-xl bg-[#F59E0B]/15 text-[#F59E0B] mt-0.5 border border-[#F59E0B]/30">
+                <Icon name="bell" size={18} />
+              </div>
+              <div>
+                <span className="block text-sm font-semibold text-white">Notifikasi Proaktif Sistem</span>
+                <span className="block text-xs text-[#94A3B8]">Aktifkan pengingat cerdas otomatis untuk deadline, event kalender, dan evaluasi berkala.</span>
+              </div>
+            </div>
+            <div className="flex items-center self-end sm:self-center">
+              <label className="relative inline-flex items-center cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={enableNotifications}
+                  disabled={saving}
+                  onChange={(e) => {
+                    const val = e.target.checked;
+                    setEnableNotifications(val);
+                    updatePref({ enableNotifications: val });
+                  }}
+                  className="sr-only peer"
+                />
+                <div className="w-11 h-6 bg-white/[0.1] peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#4edea3]"></div>
+              </label>
+            </div>
+          </div>
         </div>
-        <select
-          value={weekStartDay}
-          disabled={saving}
-          onChange={(e) => {
-            const val = Number(e.target.value);
-            setWeekStartDay(val);
-            updatePref({ weekStartDay: val });
-          }}
-          className="rounded-lg border border-surface-200 bg-white px-3 py-1.5 text-xs font-semibold text-surface-700 focus:outline-none focus:border-primary-500"
-        >
-          <option value={1}>Senin</option>
-          <option value={0}>Minggu</option>
-          <option value={6}>Sabtu</option>
-        </select>
-      </div>
+      </section>
 
-      <div className="flex items-center justify-between py-2 border-b border-surface-150">
-        <div>
-          <span className="block text-sm font-medium text-surface-800">Batas Task Fokus Harian</span>
-          <span className="block text-xs text-surface-400">Jumlah maksimal task fokus per hari</span>
+      {/* 2. Saluran Notifikasi Eksternal (Telegram) */}
+      <section className="space-y-3">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+          <div className="flex items-center gap-2">
+            <h2 className="text-base font-bold text-white tracking-tight">Saluran Notifikasi Eksternal</h2>
+            <span className="font-mono text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-[#4edea3]/15 text-[#4edea3] border border-[#4edea3]/30">
+              100% Gratis & Open Protocol
+            </span>
+          </div>
+          <p className="text-xs text-[#94A3B8]">Kirim pengingat real-time langsung ke smartphone Anda via Telegram Bot API.</p>
         </div>
-        <div className="flex items-center gap-2">
-          <input
-            type="number"
-            min={1}
-            max={20}
-            value={dailyFocusLimit}
-            disabled={saving}
-            onChange={(e) => setDailyFocusLimit(Number(e.target.value))}
-            onBlur={() => updatePref({ dailyFocusLimit })}
-            className="w-16 rounded-lg border border-surface-200 bg-white px-2 py-1 text-xs text-center font-semibold text-surface-700 focus:outline-none focus:border-primary-500"
-          />
-          <span className="text-xs text-surface-400">task</span>
-        </div>
-      </div>
 
-      <div className="flex items-center justify-between py-2 border-b border-surface-150">
-        <div>
-          <span className="block text-sm font-medium text-surface-800">Notifikasi Proaktif</span>
-          <span className="block text-xs text-surface-400">Aktifkan pengingat otomatis untuk tenggat waktu dan jadwal</span>
-        </div>
-        <input
-          type="checkbox"
-          checked={enableNotifications}
-          disabled={saving}
-          onChange={(e) => {
-            const val = e.target.checked;
-            setEnableNotifications(val);
-            updatePref({ enableNotifications: val });
-          }}
-          className="h-4 w-4 rounded border-surface-300 text-primary-600 focus:ring-primary-500"
-        />
-      </div>
-
-      {/* Saluran Notifikasi Eksternal (Telegram & Email) */}
-      <div className="mt-6 pt-4 border-t border-surface-150">
-        <h4 className="text-sm font-semibold text-surface-900 mb-1 flex items-center gap-2">
-          <span>🔔 Saluran Notifikasi Eksternal</span>
-          <span className="text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-600 border border-emerald-200">
-            Gratis
-          </span>
-        </h4>
-        <p className="text-xs text-surface-500 mb-4">
-          Hubungkan pengingat tenggat waktu, fokus harian, dan ringkasan mingguan ke akun Telegram dan Email Anda melalui konfigurasi environment.
-        </p>
-
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+        <div className="grid grid-cols-1 gap-4">
           {/* Telegram Card */}
-          <div className="p-3 rounded-xl border border-surface-200 bg-surface-50/50 flex flex-col justify-between">
-            <div>
-              <div className="flex items-center justify-between mb-1">
-                <span className="text-xs font-bold text-surface-800 flex items-center gap-1.5">
-                  <span>✈️</span> Telegram Bot
-                </span>
-                <span className="text-[10px] text-surface-400 font-mono">100% Free API</span>
+          <div className="rounded-2xl border border-white/[0.08] bg-[#131825] p-5 shadow-xl flex flex-col md:flex-row md:items-center justify-between gap-5">
+            <div className="space-y-3 max-w-2xl">
+              <div className="flex items-center justify-between sm:justify-start gap-4">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-xl bg-[#0088cc]/20 text-[#38bdf8] flex items-center justify-center border border-[#0088cc]/30">
+                    <span className="text-lg">✈️</span>
+                  </div>
+                  <div>
+                    <span className="block text-base font-bold text-white leading-tight">Telegram Bot API</span>
+                    <span className="font-mono text-[10px] text-[#94A3B8] uppercase">Bot Protocol Push</span>
+                  </div>
+                </div>
+                <div className="flex items-center gap-1.5 rounded-full bg-[#4edea3]/10 px-2.5 py-0.5 text-[#4edea3] border border-[#4edea3]/30 font-mono text-[10px] font-semibold">
+                  <span className="h-1.5 w-1.5 rounded-full bg-[#4edea3] animate-pulse"></span>
+                  <span>AKTIF</span>
+                </div>
               </div>
-              <p className="text-[11px] text-surface-500 mb-3 leading-relaxed">
-                Kirim pengingat real-time ke akun Telegram Anda via Bot API.
+              <p className="text-xs text-[#94A3B8] leading-relaxed">
+                Terima peringatan instan, notifikasi tugas jatuh tempo hari ini, dan pengingat waktu fokus di aplikasi Telegram Anda via Bot API tanpa biaya langganan.
               </p>
+              <div className="rounded-xl border border-white/[0.06] bg-[#0B0D13] p-2.5 font-mono text-[11px] text-[#64748B] flex items-center justify-between">
+                <span className="truncate">Bot: @MyLifeOS_Bot • Chat Protocol</span>
+                <span className="text-[#4edea3]">✓</span>
+              </div>
             </div>
-            <button
-              type="button"
-              disabled={testingChannel !== null}
-              onClick={() => testChannel("telegram")}
-              className="w-full py-2 px-3 text-xs font-semibold rounded-lg bg-sky-600 hover:bg-sky-700 text-white transition-all shadow-sm active:scale-95 disabled:opacity-50 disabled:pointer-events-none"
-            >
-              {testingChannel === "telegram" ? "Mengirim Tes..." : "Tes Notifikasi Telegram"}
-            </button>
-          </div>
 
-          {/* Email Card */}
-          <div className="p-3 rounded-xl border border-surface-200 bg-surface-50/50 flex flex-col justify-between">
-            <div>
-              <div className="flex items-center justify-between mb-1">
-                <span className="text-xs font-bold text-surface-800 flex items-center gap-1.5">
-                  <span>✉️</span> Email (SMTP)
-                </span>
-                <span className="text-[10px] text-surface-400 font-mono">Gmail / Free Tier</span>
-              </div>
-              <p className="text-[11px] text-surface-500 mb-3 leading-relaxed">
-                Kirim email ringkasan dan peringatan berbobot penting ke kotak masuk Anda.
-              </p>
+            <div className="shrink-0">
+              <button
+                type="button"
+                disabled={testingChannel !== null}
+                onClick={() => testChannel("telegram")}
+                className="w-full md:w-auto py-2.5 px-5 text-xs font-bold rounded-xl bg-[#0088cc] hover:bg-[#0077b5] text-white transition-all shadow-md active:scale-98 disabled:opacity-50 flex items-center justify-center gap-2 cursor-pointer"
+              >
+                <span>⚡</span>
+                <span>{testingChannel === "telegram" ? "Mengirim Tes..." : "Tes Notifikasi Telegram"}</span>
+              </button>
             </div>
-            <button
-              type="button"
-              disabled={testingChannel !== null}
-              onClick={() => testChannel("email")}
-              className="w-full py-2 px-3 text-xs font-semibold rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white transition-all shadow-sm active:scale-95 disabled:opacity-50 disabled:pointer-events-none"
-            >
-              {testingChannel === "email" ? "Mengirim Tes..." : "Tes Notifikasi Email"}
-            </button>
           </div>
         </div>
-      </div>
+      </section>
     </div>
   );
 }

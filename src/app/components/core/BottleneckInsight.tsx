@@ -1,19 +1,11 @@
 import Link from "next/link";
 import { Icon } from "../ui/Icon";
-import { Badge } from "../ui/Badge";
-import { Button } from "../ui/Button";
 
 type Bottleneck = {
   taskId: string;
   taskName: string;
   reason: string;
   severity: "LOW" | "MEDIUM" | "HIGH";
-};
-
-const severityTone: Record<Bottleneck["severity"], "warning" | "danger" | "neutral"> = {
-  HIGH: "danger",
-  MEDIUM: "warning",
-  LOW: "neutral",
 };
 
 const severityLabel: Record<Bottleneck["severity"], string> = {
@@ -31,17 +23,18 @@ export function BottleneckInsight({
 }) {
   if (!bottlenecks || bottlenecks.length === 0) {
     return (
-      <section className={`rounded-2xl border border-success-200 bg-success-50 p-5 ${className}`}>
-        <div className="flex items-start gap-3">
-          <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-success-100 text-success-700">
+      <section className={`rounded-2xl border border-[#4edea3]/30 bg-[#131825] p-5 shadow-lg relative overflow-hidden ${className}`}>
+        <div className="flex items-start gap-3.5">
+          <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#4edea3]/15 text-[#4edea3] border border-[#4edea3]/30">
             <Icon name="gauge" size={18} />
           </span>
           <div>
-            <h3 className="text-sm font-semibold text-success-800">
-              Tidak ada hambatan terdeteksi
+            <h3 className="text-sm font-bold text-white font-mono flex items-center gap-2">
+              <span>SISTEM BERJALAN OPTIMAL</span>
+              <span className="w-2 h-2 rounded-full bg-[#4edea3] animate-pulse" />
             </h3>
-            <p className="mt-1 text-sm text-success-700">
-              Pekerjaan aktif Anda berjalan normal. Teruskan.
+            <p className="mt-1 text-xs text-gray-400 font-mono leading-relaxed">
+              Tidak ada hambatan kritis terdeteksi. Seluruh pekerjaan aktif Anda berjalan normal sesuai target.
             </p>
           </div>
         </div>
@@ -52,25 +45,35 @@ export function BottleneckInsight({
   const item = bottlenecks[0];
 
   return (
-    <section className={`rounded-2xl border border-warning-200 bg-warning-50 p-5 ${className}`}>
-      <div className="flex items-start gap-3">
-        <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-warning-100 text-warning-600">
+    <section className={`rounded-2xl border border-[#F59E0B]/30 bg-[#131825] p-5 shadow-lg relative overflow-hidden ${className}`}>
+      <div className="flex items-start gap-3.5">
+        <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#F59E0B]/15 text-[#F59E0B] border border-[#F59E0B]/30">
           <Icon name="alert" size={18} />
         </span>
-        <div className="min-w-0 flex-1">
+        <div className="min-w-0 flex-1 space-y-1">
           <div className="flex flex-wrap items-center gap-2">
-            <h3 className="text-sm font-semibold text-surface-900">
-              Apa yang memperlambat Anda
+            <h3 className="text-sm font-bold text-white font-mono">
+              POTENSI HAMBATAN TERDETEKSI
             </h3>
-            <Badge tone={severityTone[item.severity]}>{severityLabel[item.severity]}</Badge>
+            <span
+              className={`font-mono text-[10px] font-bold uppercase px-2 py-0.5 rounded-full border ${
+                item.severity === "HIGH"
+                  ? "bg-rose-500/20 text-[#F43F5E] border-rose-500/30"
+                  : "bg-amber-500/20 text-[#F59E0B] border-amber-500/30"
+              }`}
+            >
+              Prioritas {severityLabel[item.severity]}
+            </span>
           </div>
-          <p className="mt-1 text-sm font-medium text-surface-800">{item.taskName}</p>
-          <p className="mt-0.5 text-sm text-surface-600">{item.reason}</p>
-          <div className="mt-3">
-            <Link href={`/tasks/${item.taskId}`}>
-              <Button size="sm" variant="secondary" iconRight="arrowRight">
-                Lihat task
-              </Button>
+          <p className="text-sm font-semibold text-white pt-0.5">{item.taskName}</p>
+          <p className="text-xs text-gray-400 font-mono leading-relaxed">{item.reason}</p>
+          <div className="pt-2">
+            <Link
+              href={`/tasks/${item.taskId}`}
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#282a30] hover:bg-[#1A2133] text-xs font-mono text-[#c0c1ff] hover:text-white border border-white/[0.08] transition-all cursor-pointer"
+            >
+              <span>Periksa Task</span>
+              <Icon name="arrowRight" size={13} />
             </Link>
           </div>
         </div>

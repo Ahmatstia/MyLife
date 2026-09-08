@@ -25,6 +25,7 @@ type NewGoalButtonProps = {
   buttonLabel?: string;
   buttonVariant?: "primary" | "secondary" | "ghost";
   buttonSize?: "sm" | "md" | "lg";
+  customTrigger?: (openModal: () => void) => React.ReactNode;
 };
 
 export default function NewGoalButton({
@@ -33,6 +34,7 @@ export default function NewGoalButton({
   buttonLabel = "Goal baru",
   buttonVariant = "primary",
   buttonSize = "md",
+  customTrigger,
 }: NewGoalButtonProps = {}) {
   const router = useRouter();
   const { toast } = useToast();
@@ -46,6 +48,21 @@ export default function NewGoalButton({
   const [fetchedAreas, setFetchedAreas] = useState<AreaOption[]>([]);
 
   const activeAreas = initialAreas && initialAreas.length > 0 ? initialAreas : fetchedAreas;
+
+  // Global shortcut 'n' to open modal
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "n" || e.key === "N") {
+        const tag = (document.activeElement?.tagName || "").toLowerCase();
+        if (tag === "input" || tag === "textarea" || tag === "select") return;
+        e.preventDefault();
+        setAreaId(defaultAreaId);
+        setOpen(true);
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [defaultAreaId]);
 
   useEffect(() => {
     if (open && (!initialAreas || initialAreas.length === 0) && fetchedAreas.length === 0) {
@@ -96,17 +113,24 @@ export default function NewGoalButton({
 
   return (
     <>
-      <Button
-        icon="plus"
-        variant={buttonVariant}
-        size={buttonSize}
-        onClick={() => {
+      {customTrigger ? (
+        customTrigger(() => {
           setAreaId(defaultAreaId);
           setOpen(true);
-        }}
-      >
-        {buttonLabel}
-      </Button>
+        })
+      ) : (
+        <Button
+          icon="plus"
+          variant={buttonVariant}
+          size={buttonSize}
+          onClick={() => {
+            setAreaId(defaultAreaId);
+            setOpen(true);
+          }}
+        >
+          {buttonLabel}
+        </Button>
+      )}
 
       <Dialog
         open={open}

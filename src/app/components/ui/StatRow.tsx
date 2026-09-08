@@ -16,11 +16,11 @@ const iconConfig: Record<
   string,
   { bg: string; text: string }
 > = {
-  neutral: { bg: "bg-surface-100", text: "text-surface-600" },
-  primary: { bg: "stat-bg-primary", text: "text-primary-600" },
-  success: { bg: "stat-bg-success", text: "text-success-600" },
-  warning: { bg: "stat-bg-warning", text: "text-warning-600" },
-  ai: { bg: "stat-bg-ai", text: "text-ai-600" },
+  neutral: { bg: "bg-white/[0.05]", text: "text-gray-400" },
+  primary: { bg: "bg-[#c0c1ff]/15", text: "text-[#c0c1ff]" },
+  success: { bg: "bg-[#4edea3]/15", text: "text-[#4edea3]" },
+  warning: { bg: "bg-[#F59E0B]/15", text: "text-[#F59E0B]" },
+  ai: { bg: "bg-[#a078ff]/15", text: "text-[#d0bcff]" },
 };
 
 export function StatRow({
@@ -41,19 +41,19 @@ export function StatRow({
   const cfg = iconConfig[tone] ?? iconConfig.neutral;
   return (
     <div
-      className={`flex items-center gap-3 py-2.5 first:pt-0 last:pb-0 border-b border-surface-100 last:border-0 ${className}`}
+      className={`flex items-center gap-3 py-2.5 first:pt-0 last:pb-0 border-b border-white/[0.06] last:border-0 ${className}`}
     >
       <span
-        className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-lg ${cfg.bg} ${cfg.text}`}
+        className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-lg border border-white/[0.06] ${cfg.bg} ${cfg.text}`}
       >
         <Icon name={icon} size={14} />
       </span>
       <div className="flex min-w-0 flex-1 items-center justify-between gap-3">
-        <dt className="min-w-0 truncate text-[13px] text-surface-500">{label}</dt>
+        <dt className="min-w-0 truncate text-xs font-mono text-gray-400">{label}</dt>
         <dd className="text-right shrink-0">
-          <span className="block text-[13px] font-semibold text-surface-900">{value}</span>
+          <span className="block text-xs font-bold text-white font-mono">{value}</span>
           {hint && (
-            <span className="block text-[11px] text-surface-400 leading-tight">{hint}</span>
+            <span className="block text-[10px] text-gray-500 font-mono leading-tight">{hint}</span>
           )}
         </dd>
       </div>

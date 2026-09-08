@@ -33,7 +33,7 @@ export function ProgressBar({
       aria-label={label}
     >
       <div
-        className={`w-full overflow-hidden rounded-full bg-surface-150 ${height}`}
+        className={`w-full overflow-hidden rounded-full bg-[#1e1f26] border border-white/[0.06] ${height}`}
       >
         <div
           className={`h-full rounded-full ${fill} ${animated ? "transition-all duration-700 ease-out" : ""}`}

@@ -106,7 +106,7 @@ export default function TaskActions({ id, name, description, priority, estimated
         size="sm"
         onClick={handleDelete}
         disabled={loading}
-        className="text-surface-400 hover:text-danger-600 hover:bg-danger-50"
+        className="text-zinc-400 hover:text-red-400 hover:bg-red-500/10"
       >
         Hapus
       </Button>
@@ -121,26 +121,26 @@ export default function TaskActions({ id, name, description, priority, estimated
       >
         <div className="space-y-4">
           <div>
-            <label className="block text-[12px] font-semibold text-surface-600 mb-1">
+            <label className="block text-[12px] font-mono font-semibold text-[#94A3B8] mb-1">
               Nama Task
             </label>
             <input
               value={values.name}
               onChange={(e) => setValues({ ...values, name: e.target.value })}
               placeholder="Nama task"
-              className="w-full rounded-xl border border-surface-200 bg-surface-50 px-3.5 py-2.5 text-sm text-surface-900 outline-none transition focus:border-primary-400 focus:bg-white"
+              className="w-full rounded-xl border border-white/[0.08] bg-[#0B0D13] px-3.5 py-2.5 text-sm text-white placeholder:text-[#64748B] outline-none transition focus:border-[#8B5CF6] focus:ring-1 focus:ring-[#8B5CF6]"
             />
           </div>
 
           <div className="grid gap-3 sm:grid-cols-2">
             <div>
-              <label className="block text-[12px] font-semibold text-surface-600 mb-1">
+              <label className="block text-[12px] font-mono font-semibold text-[#94A3B8] mb-1">
                 Prioritas
               </label>
               <select
                 value={values.priority}
                 onChange={(e) => setValues({ ...values, priority: e.target.value })}
-                className="w-full rounded-xl border border-surface-200 bg-surface-50 px-3.5 py-2.5 text-sm text-surface-900 outline-none transition focus:border-primary-400 focus:bg-white"
+                className="w-full rounded-xl border border-white/[0.08] bg-[#0B0D13] px-3.5 py-2.5 text-sm text-white outline-none transition focus:border-[#8B5CF6] focus:ring-1 focus:ring-[#8B5CF6]"
               >
                 <option value="LOW">Rendah</option>
                 <option value="MEDIUM">Sedang</option>
@@ -149,7 +149,7 @@ export default function TaskActions({ id, name, description, priority, estimated
             </div>
 
             <div>
-              <label className="block text-[12px] font-semibold text-surface-600 mb-1">
+              <label className="block text-[12px] font-mono font-semibold text-[#94A3B8] mb-1">
                 Estimasi (Jam)
               </label>
               <input
@@ -159,13 +159,13 @@ export default function TaskActions({ id, name, description, priority, estimated
                 value={values.estimatedHours}
                 onChange={(e) => setValues({ ...values, estimatedHours: e.target.value })}
                 placeholder="0.5, 1, 2..."
-                className="w-full rounded-xl border border-surface-200 bg-surface-50 px-3.5 py-2.5 text-sm text-surface-900 outline-none transition focus:border-primary-400 focus:bg-white"
+                className="w-full rounded-xl border border-white/[0.08] bg-[#0B0D13] px-3.5 py-2.5 text-sm text-white placeholder:text-[#64748B] outline-none transition focus:border-[#8B5CF6] focus:ring-1 focus:ring-[#8B5CF6]"
               />
             </div>
           </div>
 
           <div>
-            <label className="block text-[12px] font-semibold text-surface-600 mb-1">
+            <label className="block text-[12px] font-mono font-semibold text-[#94A3B8] mb-1">
               Deskripsi
             </label>
             <textarea
@@ -173,24 +173,24 @@ export default function TaskActions({ id, name, description, priority, estimated
               onChange={(e) => setValues({ ...values, description: e.target.value })}
               placeholder="Rincian yang perlu dikerjakan..."
               rows={3}
-              className="w-full resize-none rounded-xl border border-surface-200 bg-surface-50 px-3.5 py-2.5 text-sm text-surface-900 outline-none transition focus:border-primary-400 focus:bg-white"
+              className="w-full resize-none rounded-xl border border-white/[0.08] bg-[#0B0D13] px-3.5 py-2.5 text-sm text-white placeholder:text-[#64748B] outline-none transition focus:border-[#8B5CF6] focus:ring-1 focus:ring-[#8B5CF6]"
             />
           </div>
 
           <div className="grid gap-3 sm:grid-cols-2">
             <div>
-              <label className="block text-[12px] font-semibold text-surface-600 mb-1">
+              <label className="block text-[12px] font-mono font-semibold text-[#94A3B8] mb-1">
                 Tenggat Waktu / Deadline
               </label>
               <input
                 type="date"
                 value={values.dueDate}
                 onChange={(e) => setValues({ ...values, dueDate: e.target.value })}
-                className="w-full rounded-xl border border-surface-200 bg-surface-50 px-3.5 py-2.5 text-sm text-surface-900 outline-none transition focus:border-primary-400 focus:bg-white"
+                className="w-full rounded-xl border border-white/[0.08] bg-[#0B0D13] px-3.5 py-2.5 text-sm text-white outline-none transition focus:border-[#8B5CF6] focus:ring-1 focus:ring-[#8B5CF6]"
               />
             </div>
             <div>
-              <label className="block text-[12px] font-semibold text-surface-600 mb-1">
+              <label className="block text-[12px] font-mono font-semibold text-[#94A3B8] mb-1">
                 Catatan / Sticky Notes
               </label>
               <input
@@ -198,14 +198,14 @@ export default function TaskActions({ id, name, description, priority, estimated
                 value={values.notes}
                 onChange={(e) => setValues({ ...values, notes: e.target.value })}
                 placeholder="Tips, link, atau referensi..."
-                className="w-full rounded-xl border border-surface-200 bg-surface-50 px-3.5 py-2.5 text-sm text-surface-900 outline-none transition focus:border-primary-400 focus:bg-white"
+                className="w-full rounded-xl border border-white/[0.08] bg-[#0B0D13] px-3.5 py-2.5 text-sm text-white placeholder:text-[#64748B] outline-none transition focus:border-[#8B5CF6] focus:ring-1 focus:ring-[#8B5CF6]"
               />
             </div>
           </div>
 
-          {error && <p className="text-sm text-danger-600">{error}</p>}
+          {error && <p className="text-sm text-rose-400">{error}</p>}
 
-          <div className="flex justify-end gap-2 pt-2">
+          <div className="flex justify-end gap-2 pt-2 border-t border-white/[0.08]">
             <Button variant="secondary" onClick={() => setEditing(false)} type="button">
               Batal
             </Button>

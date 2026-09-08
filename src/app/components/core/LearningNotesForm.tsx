@@ -14,11 +14,11 @@ export type LearningNotesData = {
 
 const UNDERSTANDING_LABELS = ["😕 Bingung", "🤔 Sedikit paham", "😐 Cukup", "😊 Paham", "🤩 Sangat paham!"];
 const UNDERSTANDING_COLORS = [
-  "border-danger-300 bg-danger-50 text-danger-700",
-  "border-warning-300 bg-warning-50 text-warning-700",
-  "border-surface-300 bg-surface-50 text-surface-700",
-  "border-primary-300 bg-primary-50 text-primary-700",
-  "border-success-300 bg-success-50 text-success-700",
+  "border-rose-500/30 bg-rose-500/15 text-rose-300",
+  "border-amber-500/30 bg-amber-500/15 text-amber-300",
+  "border-white/[0.15] bg-white/[0.08] text-white",
+  "border-[#8B5CF6]/30 bg-[#8B5CF6]/15 text-[#d0bcff]",
+  "border-emerald-500/30 bg-emerald-500/15 text-emerald-300",
 ];
 
 export function LearningNotesForm({
@@ -66,32 +66,32 @@ export function LearningNotesForm({
   }
 
   const inputBase =
-    "w-full resize-none rounded-xl border border-surface-200 bg-white px-3.5 py-2.5 text-[13px] text-surface-900 placeholder:text-surface-400 outline-none transition-all focus:border-primary-300 focus:ring-2 focus:ring-primary-100";
+    "w-full resize-none rounded-xl border border-white/[0.08] bg-[#0B0D13] px-3.5 py-2.5 text-[13px] text-white placeholder:text-zinc-500 outline-none transition-all focus:border-[#8B5CF6] focus:ring-1 focus:ring-[#8B5CF6]";
 
   return (
     <div className="note-card-in space-y-5">
       {/* Header */}
       <div className="flex items-start gap-3">
-        <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-primary-500 to-ai-500 text-white">
+        <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-[#8B5CF6] to-indigo-500 text-white shadow-lg">
           <Icon name="brain" size={18} />
         </span>
         <div>
-          <h3 className="text-[15px] font-bold text-surface-900">
+          <h3 className="text-[15px] font-bold text-white">
             Apa yang Anda pelajari?
           </h3>
-          <p className="mt-0.5 text-[12px] text-surface-500">
-            Dari sesi: <span className="font-medium text-surface-700">{taskName}</span>
+          <p className="mt-0.5 text-[12px] text-[#94a3b8]">
+            Dari sesi: <span className="font-medium text-[#d0bcff]">{taskName}</span>
           </p>
         </div>
       </div>
 
       {/* ── Section 1: Aktivitas ─────────────────────── */}
-      <div className="rounded-2xl border border-surface-150 bg-white p-4">
+      <div className="rounded-2xl border border-white/[0.08] bg-[#131825] p-4 shadow-lg">
         <label className="mb-2 flex items-center gap-2">
-          <span className="flex h-6 w-6 items-center justify-center rounded-lg bg-primary-50 text-primary-600">
+          <span className="flex h-6 w-6 items-center justify-center rounded-lg bg-[#8B5CF6]/15 text-[#d0bcff]">
             <Icon name="pen" size={12} />
           </span>
-          <span className="text-[12px] font-bold uppercase tracking-wider text-surface-500">
+          <span className="text-[11px] font-mono font-bold uppercase tracking-wider text-[#94a3b8]">
             Aktivitas sesi
           </span>
         </label>
@@ -105,12 +105,12 @@ export function LearningNotesForm({
       </div>
 
       {/* ── Section 2: Key Learnings ─────────────────── */}
-      <div className="rounded-2xl border border-primary-100 bg-gradient-to-br from-primary-50/50 to-ai-50/30 p-4">
+      <div className="rounded-2xl border border-[#8B5CF6]/30 bg-gradient-to-br from-[#131825] to-[#8B5CF6]/[0.05] p-4 shadow-lg">
         <label className="mb-2 flex items-center gap-2">
-          <span className="flex h-6 w-6 items-center justify-center rounded-lg bg-primary-100 text-primary-700">
+          <span className="flex h-6 w-6 items-center justify-center rounded-lg bg-[#8B5CF6]/20 text-[#d0bcff]">
             <Icon name="lightbulb" size={12} />
           </span>
-          <span className="text-[12px] font-bold uppercase tracking-wider text-primary-600">
+          <span className="text-[11px] font-mono font-bold uppercase tracking-wider text-[#d0bcff]">
             Pelajaran utama ✨
           </span>
         </label>
@@ -124,21 +124,21 @@ export function LearningNotesForm({
 
         {/* Concept chips / keyword tags */}
         <div className="mt-3">
-          <p className="mb-1.5 text-[11px] font-semibold text-surface-500">
-            Kata kunci / konsep penting <span className="text-surface-400">(maks 6)</span>
+          <p className="mb-1.5 text-[11px] font-mono font-semibold text-[#94a3b8]">
+            Kata kunci / konsep penting <span className="text-zinc-500">(maks 6)</span>
           </p>
-          <div className="flex flex-wrap gap-1.5 rounded-xl border border-surface-200 bg-white px-3 py-2.5 focus-within:border-primary-300 focus-within:ring-2 focus-within:ring-primary-100 transition-all min-h-[42px]">
+          <div className="flex flex-wrap gap-1.5 rounded-xl border border-white/[0.08] bg-[#0B0D13] px-3 py-2.5 focus-within:border-[#8B5CF6] focus-within:ring-1 focus-within:ring-[#8B5CF6] transition-all min-h-[42px]">
             {concepts.map((concept) => (
               <span
                 key={concept}
-                className="tag-pop inline-flex items-center gap-1 rounded-full bg-primary-100 px-2.5 py-0.5 text-[11px] font-semibold text-primary-700"
+                className="tag-pop inline-flex items-center gap-1 rounded-full bg-[#8B5CF6]/20 border border-[#8B5CF6]/30 px-2.5 py-0.5 text-[11px] font-mono font-semibold text-[#d0bcff]"
               >
                 {concept}
                 <button
                   type="button"
                   onClick={() => removeConcept(concept)}
                   aria-label={`Hapus ${concept}`}
-                  className="ml-0.5 text-primary-500 hover:text-primary-800 transition-colors"
+                  className="ml-0.5 text-[#d0bcff]/70 hover:text-white transition-colors"
                 >
                   <Icon name="x" size={10} />
                 </button>
@@ -152,7 +152,7 @@ export function LearningNotesForm({
                 onKeyDown={onConceptKeyDown}
                 onBlur={addConcept}
                 placeholder={concepts.length === 0 ? "Ketik konsep, tekan Enter…" : "+ Tambah"}
-                className="min-w-0 flex-1 bg-transparent text-[12px] text-surface-800 placeholder:text-surface-400 outline-none"
+                className="min-w-0 flex-1 bg-transparent text-[12px] text-white placeholder:text-zinc-500 outline-none"
               />
             )}
           </div>
@@ -160,12 +160,12 @@ export function LearningNotesForm({
       </div>
 
       {/* ── Section 3: Masih bingung? ─────────────────── */}
-      <div className="rounded-2xl border border-warning-100 bg-gradient-to-br from-warning-50/40 to-surface-50 p-4">
+      <div className="rounded-2xl border border-amber-500/30 bg-gradient-to-br from-[#131825] to-amber-500/[0.05] p-4 shadow-lg">
         <label className="mb-2 flex items-center gap-2">
-          <span className="flex h-6 w-6 items-center justify-center rounded-lg bg-warning-100 text-warning-600">
+          <span className="flex h-6 w-6 items-center justify-center rounded-lg bg-amber-500/20 text-amber-300">
             <Icon name="alert" size={12} />
           </span>
-          <span className="text-[12px] font-bold uppercase tracking-wider text-warning-600">
+          <span className="text-[11px] font-mono font-bold uppercase tracking-wider text-amber-300">
             Masih bingung?
           </span>
         </label>
@@ -179,12 +179,12 @@ export function LearningNotesForm({
       </div>
 
       {/* ── Section 4: Next Action ───────────────────── */}
-      <div className="rounded-2xl border border-success-100 bg-gradient-to-br from-success-50/40 to-surface-50 p-4">
+      <div className="rounded-2xl border border-emerald-500/30 bg-gradient-to-br from-[#131825] to-emerald-500/[0.05] p-4 shadow-lg">
         <label className="mb-2 flex items-center gap-2">
-          <span className="flex h-6 w-6 items-center justify-center rounded-lg bg-success-100 text-success-600">
+          <span className="flex h-6 w-6 items-center justify-center rounded-lg bg-emerald-500/20 text-emerald-300">
             <Icon name="arrowRight" size={12} />
           </span>
-          <span className="text-[12px] font-bold uppercase tracking-wider text-success-600">
+          <span className="text-[11px] font-mono font-bold uppercase tracking-wider text-emerald-300">
             Langkah berikutnya
           </span>
         </label>
@@ -198,8 +198,8 @@ export function LearningNotesForm({
       </div>
 
       {/* ── Section 5: Understanding meter ──────────── */}
-      <div className="rounded-2xl border border-surface-150 bg-white p-4">
-        <p className="mb-3 text-[12px] font-bold uppercase tracking-wider text-surface-500">
+      <div className="rounded-2xl border border-white/[0.08] bg-[#131825] p-4 shadow-lg">
+        <p className="mb-3 text-[11px] font-mono font-bold uppercase tracking-wider text-[#94a3b8]">
           Seberapa paham Anda setelah sesi ini?
         </p>
         <div className="grid grid-cols-5 gap-1.5">
@@ -213,10 +213,10 @@ export function LearningNotesForm({
                 onClick={() => setUnderstanding(val)}
                 aria-pressed={isSelected}
                 aria-label={label}
-                className={`group flex flex-col items-center gap-1 rounded-xl border py-2.5 text-[10px] font-semibold transition-all duration-200 ${
+                className={`group flex flex-col items-center gap-1 rounded-xl border py-2.5 text-[10px] font-semibold transition-all duration-200 cursor-pointer ${
                   isSelected
-                    ? `${UNDERSTANDING_COLORS[idx]} scale-105 shadow-soft`
-                    : "border-surface-150 text-surface-400 hover:border-surface-300 hover:bg-surface-50 hover:text-surface-700"
+                    ? `${UNDERSTANDING_COLORS[idx]} scale-105 shadow-lg`
+                    : "border-white/[0.06] bg-[#0B0D13] text-[#94a3b8] hover:border-white/[0.15] hover:text-white"
                 }`}
               >
                 <span className="text-lg leading-none">
@@ -237,7 +237,7 @@ export function LearningNotesForm({
           type="button"
           onClick={onCancel}
           disabled={loading}
-          className="inline-flex h-9 items-center gap-2 rounded-xl border border-surface-200 bg-white px-4 text-[13px] font-semibold text-surface-700 transition-all hover:border-surface-300 hover:bg-surface-50 disabled:opacity-50"
+          className="inline-flex h-9 items-center gap-2 rounded-xl border border-white/[0.08] bg-[#1e1f26] px-4 text-[13px] font-medium text-white transition-all hover:bg-[#282a36] disabled:opacity-50"
         >
           Kembali
         </button>
@@ -245,7 +245,7 @@ export function LearningNotesForm({
           type="button"
           onClick={handleSubmit}
           disabled={loading}
-          className="relative inline-flex h-9 items-center gap-2 overflow-hidden rounded-xl bg-gradient-to-r from-ai-600 to-primary-600 px-5 text-[13px] font-semibold text-white shadow-sm transition-all hover:from-ai-700 hover:to-primary-700 hover:shadow-[var(--shadow-interactive)] disabled:opacity-50 shine-parent active:scale-[0.97]"
+          className="relative inline-flex h-9 items-center gap-2 overflow-hidden rounded-xl bg-gradient-to-r from-[#8B5CF6] to-indigo-600 px-5 text-[13px] font-semibold text-white shadow-lg transition-all hover:opacity-95 disabled:opacity-50 active:scale-[0.97]"
         >
           {loading ? (
             <span className="h-4 w-4 animate-spin rounded-full border-2 border-white/30 border-t-white" />
@@ -300,41 +300,41 @@ export function LearningNoteCard({
     <div
       className={`rounded-2xl border transition-all duration-300 overflow-hidden ${
         hasNotes
-          ? "border-primary-100 bg-gradient-to-br from-white to-primary-50/20"
-          : "border-surface-150 bg-white"
+          ? "border-white/[0.1] bg-[#131825] shadow-lg"
+          : "border-white/[0.08] bg-[#131825]"
       }`}
     >
       {/* Header row — always visible */}
       <button
         type="button"
         onClick={() => setExpanded(!expanded)}
-        className="flex w-full items-center gap-3 px-4 py-3 text-left"
+        className="flex w-full items-center gap-3 px-4 py-3 text-left hover:bg-white/[0.03] transition-colors cursor-pointer"
       >
         <span
-          className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-xl ${
+          className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-xl border ${
             durationMinutes
-              ? "bg-ai-50 text-ai-600"
-              : "bg-surface-100 text-surface-500"
+              ? "bg-[#8B5CF6]/15 text-[#d0bcff] border-[#8B5CF6]/30"
+              : "bg-white/[0.06] text-[#94a3b8] border-white/[0.08]"
           }`}
         >
           <Icon name="clock" size={14} />
         </span>
         <div className="min-w-0 flex-1">
-          <p className="truncate text-[13px] font-semibold text-surface-800">
+          <p className="truncate text-[13px] font-semibold text-white">
             {activity || "Sesi fokus"}
           </p>
-          <p className="text-[11px] text-surface-400">
+          <p className="text-[11px] font-mono text-[#94a3b8]">
             {formatTime(startedAt)} · {formatDuration(durationMinutes)}
           </p>
         </div>
         <div className="flex shrink-0 items-center gap-2">
           {label && (
-            <span className={`chip ${UNDERSTANDING_COLORS[(understanding ?? 3) - 1]} border`}>
+            <span className="rounded-md border border-white/[0.1] bg-white/[0.05] px-2 py-0.5 text-[11px] font-mono font-semibold text-white">
               {label.split(" ")[0]}
             </span>
           )}
           {hasNotes && (
-            <span className="chip bg-primary-50 text-primary-600 border border-primary-100">
+            <span className="rounded-md border border-[#8B5CF6]/30 bg-[#8B5CF6]/15 px-2 py-0.5 text-[11px] font-mono font-semibold text-[#d0bcff] flex items-center gap-1">
               <Icon name="bookOpen" size={10} />
               Catatan
             </span>
@@ -342,36 +342,36 @@ export function LearningNoteCard({
           <Icon
             name={expanded ? "chevronUp" : "chevronDown"}
             size={14}
-            className="text-surface-400"
+            className="text-[#94a3b8]"
           />
         </div>
       </button>
 
       {/* Expanded notes */}
       {expanded && hasNotes && (
-        <div className="animate-in-soft border-t border-surface-100 px-4 pb-4 pt-3 space-y-3">
+        <div className="animate-in-soft border-t border-white/[0.08] bg-[#0B0D13]/60 px-4 pb-4 pt-3 space-y-3">
           {keyLearnings && (
             <div>
-              <p className="mb-1 flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-wider text-primary-600">
+              <p className="mb-1 flex items-center gap-1.5 text-[10px] font-mono font-bold uppercase tracking-wider text-[#d0bcff]">
                 <Icon name="lightbulb" size={11} /> Pelajaran utama
               </p>
-              <p className="text-[13px] leading-relaxed text-surface-700">{keyLearnings}</p>
+              <p className="text-[13px] leading-relaxed text-[#e2e2eb]">{keyLearnings}</p>
             </div>
           )}
           {confusedPoints && (
             <div>
-              <p className="mb-1 flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-wider text-warning-600">
+              <p className="mb-1 flex items-center gap-1.5 text-[10px] font-mono font-bold uppercase tracking-wider text-amber-400">
                 <Icon name="alert" size={11} /> Masih bingung
               </p>
-              <p className="text-[13px] leading-relaxed text-surface-700">{confusedPoints}</p>
+              <p className="text-[13px] leading-relaxed text-amber-200/90">{confusedPoints}</p>
             </div>
           )}
           {nextAction && (
             <div>
-              <p className="mb-1 flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-wider text-success-600">
+              <p className="mb-1 flex items-center gap-1.5 text-[10px] font-mono font-bold uppercase tracking-wider text-[#4edea3]">
                 <Icon name="arrowRight" size={11} /> Langkah berikutnya
               </p>
-              <p className="text-[13px] leading-relaxed text-surface-700">{nextAction}</p>
+              <p className="text-[13px] leading-relaxed text-[#4edea3]">{nextAction}</p>
             </div>
           )}
         </div>

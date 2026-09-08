@@ -15,6 +15,7 @@ export type IconName =
   | "chevronDown"
   | "chevronUp"
   | "chevronRight"
+  | "chevronLeft"
   | "play"
   | "stop"
   | "pause"
@@ -95,6 +96,7 @@ const paths: Record<IconName, React.ReactNode> = {
   chevronDown: <path d="M6 9l6 6 6-6" />,
   chevronUp: <path d="M18 15l-6-6-6 6" />,
   chevronRight: <path d="M9 6l6 6-6 6" />,
+  chevronLeft: <path d="M15 18l-6-6 6-6" />,
   play: <path d="M7 5l12 7-12 7V5z" />,
   stop: <rect x="6" y="6" width="12" height="12" rx="1.5" />,
   clock: (

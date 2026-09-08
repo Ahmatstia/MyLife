@@ -50,7 +50,7 @@ export function HistoryDeleteButton({
         type="button"
         onClick={remove}
         aria-label={ariaLabel}
-        className="rounded-lg p-1.5 text-surface-400 transition hover:bg-danger-50 hover:text-danger-600 disabled:opacity-50"
+        className="rounded-lg p-1.5 text-gray-400 hover:text-[#F43F5E] hover:bg-rose-500/10 transition-colors disabled:opacity-50 cursor-pointer"
       >
         <Icon name="trash" size={14} />
       </button>

@@ -38,6 +38,15 @@ const nextConfig: NextConfig = {
       },
     ];
   },
+  async redirects() {
+    return [
+      {
+        source: "/reviews",
+        destination: "/review",
+        permanent: true,
+      },
+    ];
+  },
 };
 
 export default nextConfig;

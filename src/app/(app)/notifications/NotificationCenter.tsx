@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { Icon } from "@/app/components/ui/Icon";
 import { useToast } from "@/app/components/ui/Toast";
 
 export type NotificationItem = {
@@ -31,6 +30,9 @@ export function NotificationCenter({
   const [loading, setLoading] = useState(false);
   const [cycling, setCycling] = useState(false);
 
+  const urgentCount = notifications.filter((n) => n.severity === "URGENT").length;
+  const warningCount = notifications.filter((n) => n.severity === "WARNING").length;
+
   async function fetchNotifications() {
     setLoading(true);
     try {
@@ -56,7 +58,7 @@ export function NotificationCenter({
           prev.map((n) => (n.id === id ? { ...n, isRead: true, readAt: new Date().toISOString() } : n))
         );
         setUnreadCount((prev) => Math.max(0, prev - 1));
-        toast("Ditandai sebagai telah dibaca", "success");
+        toast("Ditandai telah dibaca", "success");
       }
     } catch {
       toast("Gagal memperbarui notifikasi", "error");
@@ -120,179 +122,259 @@ export function NotificationCenter({
     return true;
   });
 
-  function getSeverityBadge(severity: string) {
-    switch (severity) {
-      case "URGENT":
-        return <span className="rounded-md bg-danger-100 px-2 py-0.5 text-[10px] font-bold text-danger-700">PENTING / URGENT</span>;
-      case "WARNING":
-        return <span className="rounded-md bg-warning-100 px-2 py-0.5 text-[10px] font-semibold text-warning-700">PERINGATAN</span>;
-      default:
-        return <span className="rounded-md bg-primary-100 px-2 py-0.5 text-[10px] font-medium text-primary-700">INFO</span>;
-    }
-  }
-
-  function getTypeIcon(type: string) {
-    switch (type) {
-      case "TASK_DUE":
-        return "layers";
-      case "CALENDAR_EVENT":
-        return "calendar";
-      case "DAILY_FOCUS_REMINDER":
-        return "target";
-      case "WEEKLY_REVIEW_REMINDER":
-        return "capture";
-      default:
-        return "bell";
-    }
-  }
-
   return (
-    <div className="space-y-6">
-      {/* Action bar */}
-      <div className="flex flex-wrap items-center justify-between gap-3 border-b border-surface-200/60 pb-4">
-        <div className="flex items-center gap-2">
+    <div className="flex flex-col w-full pb-16 gap-6 text-gray-200">
+      {/* 1. Header & Telemetry Strip */}
+      <header className="relative flex flex-col xl:flex-row xl:items-end justify-between gap-4 pb-4 border-b border-white/[0.06]">
+        <div className="flex flex-col max-w-2xl gap-1">
+          <div className="flex items-center gap-2 font-mono text-xs text-purple-400 tracking-widest uppercase">
+            <span className="w-2 h-2 rounded-full bg-purple-400 animate-ping" />
+            <span>PUSAT INFORMASI &amp; PENGINGAT // PROACTIVE TELEMETRY HUB</span>
+            <span className="text-gray-600">•</span>
+            <span className="text-emerald-400">STATUS: REAL-TIME</span>
+          </div>
+          <h1 className="text-2xl md:text-3xl font-bold text-white tracking-tight leading-tight">
+            Notifikasi &amp; Pengingat Proaktif
+          </h1>
+          <p className="text-sm text-gray-400 leading-relaxed">
+            Pantau tugas jatuh tempo, jadwal kalender yang mendekat, dan pengingat proaktif dari sistem MyLife Anda.
+          </p>
+        </div>
+
+        {/* Telemetry Pills */}
+        <div className="flex flex-wrap items-center gap-2 shrink-0 font-mono text-xs">
+          {urgentCount > 0 && (
+            <div className="flex items-center gap-1.5 px-3 py-1.5 bg-rose-500/10 text-rose-400 rounded-lg border border-rose-500/20 shadow-[0_0_12px_rgba(244,63,94,0.15)]">
+              <span className="w-1.5 h-1.5 rounded-full bg-rose-400 animate-pulse" />
+              <span>{urgentCount} Mendesak</span>
+            </div>
+          )}
+          {warningCount > 0 && (
+            <div className="flex items-center gap-1.5 px-3 py-1.5 bg-amber-500/10 text-amber-400 rounded-lg border border-amber-500/20">
+              <span className="w-1.5 h-1.5 rounded-full bg-amber-400" />
+              <span>{warningCount} Peringatan</span>
+            </div>
+          )}
+          <div className="flex items-center gap-1.5 px-3 py-1.5 bg-purple-500/15 text-purple-300 rounded-lg border border-purple-500/30 shadow-[0_0_16px_rgba(208,188,255,0.15)]">
+            <span className="w-1.5 h-1.5 rounded-full bg-purple-400" />
+            <span className="font-semibold">{unreadCount} Belum Dibaca</span>
+          </div>
+          <div className="flex items-center gap-1.5 px-3 py-1.5 bg-[#131825] text-emerald-400 rounded-lg border border-emerald-500/20">
+            <span className="material-symbols-outlined text-[14px]">sync</span>
+            <span>Sistem Sinkron</span>
+          </div>
+        </div>
+      </header>
+
+      {/* 2. Control & Filter Bar */}
+      <nav className="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4">
+        {/* Filter Segmented Chips */}
+        <div className="flex items-center gap-1 p-1 bg-[#131825] rounded-xl border border-white/[0.08] overflow-x-auto">
           <button
+            type="button"
             onClick={() => setFilter("ALL")}
-            className={`rounded-lg px-3 py-1.5 text-xs font-semibold transition-colors ${
+            className={`px-3 py-1.5 rounded-lg font-mono text-xs transition-all whitespace-nowrap ${
               filter === "ALL"
-                ? "bg-primary-600 text-white"
-                : "bg-surface-100 text-surface-600 hover:bg-surface-200"
+                ? "bg-purple-600 text-white font-semibold shadow-xs"
+                : "text-gray-400 hover:text-white"
             }`}
           >
             Semua ({notifications.length})
           </button>
           <button
+            type="button"
             onClick={() => setFilter("UNREAD")}
-            className={`rounded-lg px-3 py-1.5 text-xs font-semibold transition-colors ${
+            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg font-mono text-xs transition-all whitespace-nowrap ${
               filter === "UNREAD"
-                ? "bg-primary-600 text-white"
-                : "bg-surface-100 text-surface-600 hover:bg-surface-200"
+                ? "bg-purple-600 text-white font-semibold shadow-xs"
+                : "text-gray-400 hover:text-white"
             }`}
           >
-            Belum Dibaca ({unreadCount})
+            <span>Belum Dibaca</span>
+            <span className="px-1.5 py-0.2 bg-purple-400/20 text-purple-300 rounded-full text-[10px]">
+              {unreadCount}
+            </span>
           </button>
           <button
+            type="button"
             onClick={() => setFilter("URGENT")}
-            className={`rounded-lg px-3 py-1.5 text-xs font-semibold transition-colors ${
+            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg font-mono text-xs transition-all whitespace-nowrap ${
               filter === "URGENT"
-                ? "bg-primary-600 text-white"
-                : "bg-surface-100 text-surface-600 hover:bg-surface-200"
+                ? "bg-purple-600 text-white font-semibold shadow-xs"
+                : "text-gray-400 hover:text-white"
             }`}
           >
-            Penting / Peringatan
+            <span className="w-1.5 h-1.5 rounded-full bg-rose-400" />
+            <span>Penting / Peringatan</span>
           </button>
         </div>
 
-        <div className="flex items-center gap-2">
+        {/* Global Controls */}
+        <div className="flex items-center gap-2 shrink-0 self-end md:self-auto">
           <button
+            type="button"
             onClick={handleTriggerReminders}
             disabled={cycling}
-            className="flex items-center gap-1.5 rounded-lg border border-surface-200 bg-white px-3 py-1.5 text-xs font-semibold text-surface-700 transition hover:bg-surface-50 disabled:opacity-50"
-            title="Periksa task jatuh tempo dan jadwal kalender sekarang"
+            className="flex items-center gap-1.5 px-3.5 py-1.5 bg-[#131825] hover:bg-[#1A2133] text-purple-300 rounded-lg border border-purple-500/30 transition-all font-mono text-xs disabled:opacity-50"
           >
-            <Icon name="bolt" size={14} className={cycling ? "animate-spin text-primary-600" : "text-surface-500"} />
-            {cycling ? "Memeriksa..." : "Periksa Pengingat"}
+            <span className={`material-symbols-outlined text-[16px] text-purple-400 ${cycling ? "animate-spin" : ""}`}>
+              bolt
+            </span>
+            <span>{cycling ? "Memeriksa..." : "Periksa Pengingat"}</span>
           </button>
 
           {unreadCount > 0 && (
             <button
+              type="button"
               onClick={handleMarkAllAsRead}
-              className="flex items-center gap-1.5 rounded-lg bg-surface-100 px-3 py-1.5 text-xs font-semibold text-surface-700 transition hover:bg-surface-200"
+              className="flex items-center gap-1.5 px-3.5 py-1.5 bg-[#131825] hover:bg-[#1A2133] text-gray-300 hover:text-white rounded-lg border border-white/[0.08] transition-colors font-mono text-xs"
             >
-              <Icon name="check" size={14} />
-              Tandai Semua Dibaca
+              <span className="material-symbols-outlined text-[16px]">done_all</span>
+              <span>Tandai Semua Dibaca</span>
             </button>
           )}
         </div>
-      </div>
+      </nav>
 
-      {/* Notifications list */}
-      {loading ? (
-        <div className="py-12 text-center text-xs text-surface-400">Memuat notifikasi...</div>
-      ) : filtered.length === 0 ? (
-        <div className="rounded-2xl border border-dashed border-surface-200 bg-surface-50/50 py-16 text-center">
-          <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-2xl bg-surface-100 text-surface-400">
-            <Icon name="bell" size={24} />
+      {/* 3. Notifications List Feed */}
+      <section className="flex flex-col gap-3.5">
+        {loading ? (
+          <div className="py-12 text-center text-xs font-mono text-gray-500">Memuat notifikasi...</div>
+        ) : filtered.length === 0 ? (
+          <div className="rounded-2xl border border-dashed border-white/[0.1] bg-[#131825]/40 py-16 text-center">
+            <span className="material-symbols-outlined text-4xl text-gray-500 mb-2">notifications_off</span>
+            <p className="text-sm font-semibold text-white">Tidak ada notifikasi</p>
+            <p className="mt-1 text-xs font-mono text-gray-400">
+              {filter === "UNREAD"
+                ? "Semua notifikasi telah dibaca. Anda sudah tertata rapi!"
+                : "Belum ada pengingat atau peringatan aktif saat ini."}
+            </p>
           </div>
-          <p className="text-sm font-semibold text-surface-700">Tidak ada notifikasi</p>
-          <p className="mt-1 text-xs text-surface-400">
-            {filter === "UNREAD"
-              ? "Semua notifikasi telah dibaca. Anda sudah tertata rapi!"
-              : "Belum ada pengingat atau peringatan aktif saat ini."}
-          </p>
-        </div>
-      ) : (
-        <div className="space-y-3">
-          {filtered.map((item) => (
-            <div
-              key={item.id}
-              className={`group flex items-start justify-between gap-4 rounded-xl border p-4 transition-all ${
-                item.isRead
-                  ? "border-surface-200/60 bg-white opacity-85 hover:opacity-100"
-                  : "border-primary-200/80 bg-gradient-to-r from-primary-50/40 to-white shadow-xs"
-              }`}
-            >
-              <div className="flex items-start gap-3.5 min-w-0">
-                <span
-                  className={`mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-xl ${
-                    item.severity === "URGENT"
-                      ? "bg-danger-100 text-danger-600"
-                      : item.severity === "WARNING"
-                      ? "bg-warning-100 text-warning-600"
-                      : "bg-primary-100 text-primary-600"
-                  }`}
-                >
-                  <Icon name={getTypeIcon(item.type)} size={18} />
-                </span>
+        ) : (
+          filtered.map((item) => {
+            const isUrgent = item.severity === "URGENT";
+            const isWarning = item.severity === "WARNING";
 
-                <div className="min-w-0">
-                  <div className="flex flex-wrap items-center gap-2">
-                    <h3 className={`text-sm font-semibold ${item.isRead ? "text-surface-700" : "text-surface-900"}`}>
-                      {item.title}
-                    </h3>
-                    {getSeverityBadge(item.severity)}
-                    {!item.isRead && (
-                      <span className="h-2 w-2 rounded-full bg-primary-600 animate-pulse" />
-                    )}
+            return (
+              <div
+                key={item.id}
+                className={`relative group p-5 rounded-2xl border transition-all ${
+                  isUrgent
+                    ? "bg-gradient-to-r from-[#1f1017] via-[#131825] to-[#131825] border-rose-500/30 shadow-[0_0_24px_-4px_rgba(244,63,94,0.15)]"
+                    : isWarning
+                    ? "bg-gradient-to-r from-[#211a10] via-[#131825] to-[#131825] border-amber-500/30 shadow-[0_0_20px_-4px_rgba(245,158,11,0.12)]"
+                    : "bg-[#131825] border-white/[0.08] hover:border-purple-500/30"
+                } ${item.isRead ? "opacity-75 hover:opacity-100" : ""}`}
+              >
+                {/* Accent line on left */}
+                <div
+                  className={`absolute left-0 top-3 bottom-3 w-1 rounded-r ${
+                    isUrgent
+                      ? "bg-rose-500 shadow-[0_0_8px_#F43F5E]"
+                      : isWarning
+                      ? "bg-amber-400 shadow-[0_0_8px_#F59E0B]"
+                      : "bg-purple-500 shadow-[0_0_8px_#a078ff]"
+                  }`}
+                />
+
+                <div className="flex flex-col sm:flex-row items-start gap-4">
+                  {/* Icon Capsule */}
+                  <div
+                    className={`w-11 h-11 rounded-xl flex items-center justify-center shrink-0 border ${
+                      isUrgent
+                        ? "bg-rose-500/15 border-rose-500/30 text-rose-400"
+                        : isWarning
+                        ? "bg-amber-500/15 border-amber-500/30 text-amber-400"
+                        : "bg-purple-500/15 border-purple-500/30 text-purple-300"
+                    }`}
+                  >
+                    <span className="material-symbols-outlined text-[22px]">
+                      {isUrgent
+                        ? "assignment_late"
+                        : isWarning
+                        ? "event_upcoming"
+                        : "explore"}
+                    </span>
                   </div>
-                  <p className="mt-1 text-xs leading-relaxed text-surface-600">{item.message}</p>
-                  <div className="mt-2 flex items-center gap-3 text-[11px] text-surface-400">
-                    <span>{new Date(item.createdAt).toLocaleString("id-ID", { dateStyle: "medium", timeStyle: "short" })}</span>
-                    {item.linkUrl && (
-                      <Link
-                        href={item.linkUrl}
-                        className="font-semibold text-primary-600 hover:text-primary-700 hover:underline flex items-center gap-1"
-                      >
-                        Buka Sumber <Icon name="arrowRight" size={12} />
-                      </Link>
-                    )}
+
+                  {/* Main Narrative */}
+                  <div className="flex-1 min-w-0">
+                    <div className="flex flex-wrap items-center justify-between gap-2">
+                      <div className="flex items-center gap-2">
+                        <span
+                          className={`px-2 py-0.5 rounded font-mono text-[10px] font-semibold flex items-center gap-1.5 border ${
+                            isUrgent
+                              ? "bg-rose-500/20 text-rose-400 border-rose-500/30"
+                              : isWarning
+                              ? "bg-amber-500/20 text-amber-400 border-amber-500/30"
+                              : "bg-purple-500/20 text-purple-300 border-purple-500/30"
+                          }`}
+                        >
+                          {isUrgent && <span className="w-1.5 h-1.5 rounded-full bg-rose-400 animate-pulse" />}
+                          {isWarning && <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse" />}
+                          <span>{item.severity}</span>
+                        </span>
+
+                        {!item.isRead && (
+                          <span className="px-2 py-0.5 bg-purple-500/15 text-purple-300 border border-purple-500/30 rounded font-mono text-[10px]">
+                            BELUM DIBACA
+                          </span>
+                        )}
+                      </div>
+
+                      {/* Row Actions */}
+                      <div className="flex items-center gap-1 opacity-70 group-hover:opacity-100 transition-opacity">
+                        {!item.isRead && (
+                          <button
+                            type="button"
+                            onClick={() => handleMarkAsRead(item.id)}
+                            className="p-1 rounded hover:bg-white/[0.08] text-gray-400 hover:text-emerald-400 transition-colors"
+                            title="Tandai Sudah Dibaca"
+                          >
+                            <span className="material-symbols-outlined text-[17px]">check_circle</span>
+                          </button>
+                        )}
+                        <button
+                          type="button"
+                          onClick={() => handleDelete(item.id)}
+                          className="p-1 rounded hover:bg-rose-500/10 text-gray-400 hover:text-rose-400 transition-colors"
+                          title="Hapus Notifikasi"
+                        >
+                          <span className="material-symbols-outlined text-[17px]">delete_sweep</span>
+                        </button>
+                      </div>
+                    </div>
+
+                    <h2 className="mt-1 text-sm md:text-base font-semibold text-white">
+                      {item.title}
+                    </h2>
+                    <p className="mt-1 text-xs md:text-sm text-gray-300 leading-relaxed">
+                      {item.message}
+                    </p>
+
+                    <div className="mt-3.5 flex flex-wrap items-center justify-between gap-3 pt-2.5 border-t border-white/[0.05]">
+                      <div className="flex items-center gap-2 font-mono text-[11px] text-gray-400">
+                        <span className="material-symbols-outlined text-[14px]">schedule</span>
+                        <span>{new Date(item.createdAt).toLocaleString("id-ID", { dateStyle: "medium", timeStyle: "short" })}</span>
+                      </div>
+
+                      {item.linkUrl && (
+                        <Link
+                          href={item.linkUrl}
+                          className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-[#0B0D13] hover:bg-[#1A2133] text-purple-300 border border-purple-500/30 transition-all font-mono text-xs hover:translate-x-0.5"
+                        >
+                          <span>Buka Entitas</span>
+                          <span className="material-symbols-outlined text-[14px]">arrow_forward</span>
+                        </Link>
+                      )}
+                    </div>
                   </div>
                 </div>
               </div>
-
-              {/* Actions */}
-              <div className="flex shrink-0 items-center gap-1 opacity-80 group-hover:opacity-100 transition-opacity">
-                {!item.isRead && (
-                  <button
-                    onClick={() => handleMarkAsRead(item.id)}
-                    title="Tandai telah dibaca"
-                    className="flex h-8 w-8 items-center justify-center rounded-lg text-surface-400 hover:bg-surface-100 hover:text-surface-700 transition"
-                  >
-                    <Icon name="check" size={15} />
-                  </button>
-                )}
-                <button
-                  onClick={() => handleDelete(item.id)}
-                  title="Hapus notifikasi"
-                  className="flex h-8 w-8 items-center justify-center rounded-lg text-surface-400 hover:bg-danger-50 hover:text-danger-600 transition"
-                >
-                  <Icon name="trash" size={15} />
-                </button>
-              </div>
-            </div>
-          ))}
-        </div>
-      )}
+            );
+          })
+        )}
+      </section>
     </div>
   );
 }

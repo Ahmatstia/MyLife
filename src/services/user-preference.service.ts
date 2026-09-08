@@ -24,7 +24,25 @@ export async function getUserPreference(userId?: string) {
   let pref = await findUserPreferenceRecord(owner);
   if (!pref) {
     // Lazy initialize default user preference
-    pref = await upsertUserPreferenceRecord(owner, {});
+    try {
+      pref = await upsertUserPreferenceRecord(owner, {});
+    } catch {
+      pref = await findUserPreferenceRecord(owner);
+    }
+  }
+  if (!pref) {
+    return {
+      id: "default",
+      userId: owner,
+      theme: "SYSTEM" as Theme,
+      weekStartDay: 1,
+      dailyFocusLimit: 5,
+      enableNotifications: true,
+      enableAiAssistance: true,
+      timezone: "Asia/Jakarta",
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    };
   }
   return pref;
 }

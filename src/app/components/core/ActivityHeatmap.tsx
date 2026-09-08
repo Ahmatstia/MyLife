@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useMemo } from "react";
 import type { AnalyticsTrend } from "@/services/analytics.service";
@@ -18,11 +18,11 @@ function getIntensity(minutes: number): 0 | 1 | 2 | 3 | 4 {
 }
 
 const intensityClass: Record<0 | 1 | 2 | 3 | 4, string> = {
-  0: "bg-surface-100 hover:bg-surface-200",
-  1: "bg-primary-200 hover:bg-primary-300",
-  2: "bg-primary-400 hover:bg-primary-500",
-  3: "bg-primary-600 hover:bg-primary-700",
-  4: "bg-ai-600 hover:bg-ai-700",
+  0: "bg-[#191d2b] hover:bg-[#22283a] border border-white/[0.04]",
+  1: "bg-[#312e81] hover:bg-[#3730a3]",
+  2: "bg-[#4f46e5] hover:bg-[#4338ca]",
+  3: "bg-[#7c3aed] hover:bg-[#6d28d9]",
+  4: "bg-[#a855f7] hover:bg-[#9333ea] shadow-xs shadow-purple-500/30",
 };
 
 const MONTHS_ID = [
@@ -100,7 +100,7 @@ export function ActivityHeatmap({ trends, days = 90 }: Props) {
           {/* Month labels */}
           <div className="flex gap-[3px] mb-1 pl-8">
             {weeks.map((_, wi) => (
-              <div key={wi} className="w-[11px] shrink-0 text-[9px] text-surface-400 font-medium truncate">
+              <div key={wi} className="w-[11px] shrink-0 text-[9px] text-gray-400 font-mono font-medium truncate">
                 {monthLabels[wi] ?? ""}
               </div>
             ))}
@@ -111,7 +111,7 @@ export function ActivityHeatmap({ trends, days = 90 }: Props) {
             {/* Day-of-week labels */}
             <div className="flex flex-col gap-[3px] mr-1">
               {DAYS_ID.map((d, i) => (
-                <div key={d} className={`h-[11px] text-[9px] text-surface-400 font-medium leading-[11px] ${i % 2 === 0 ? "invisible" : ""}`}>
+                <div key={d} className={`h-[11px] text-[9px] text-gray-500 font-mono leading-[11px] ${i % 2 === 0 ? "invisible" : ""}`}>
                   {d}
                 </div>
               ))}
@@ -131,7 +131,7 @@ export function ActivityHeatmap({ trends, days = 90 }: Props) {
                     <div
                       key={ci}
                       title={label}
-                      className={`h-[11px] w-[11px] rounded-sm transition-colors ${
+                      className={`h-[11px] w-[11px] rounded-xs transition-colors ${
                         cell.inRange ? intensityClass[intensity] : "bg-transparent"
                       }`}
                     />
@@ -144,19 +144,19 @@ export function ActivityHeatmap({ trends, days = 90 }: Props) {
       </div>
 
       {/* Legend + summary */}
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        <p className="text-[11px] text-surface-400">
-          <span className="font-semibold text-surface-700">{activeDays}</span> hari aktif dalam {days} hari terakhir
+      <div className="flex flex-wrap items-center justify-between gap-3 pt-2 border-t border-white/[0.04]">
+        <p className="text-xs font-mono text-gray-400">
+          <span className="font-bold text-[#4edea3]">{activeDays}</span> hari aktif dalam {days} hari terakhir
         </p>
-        <div className="flex items-center gap-1.5">
-          <span className="text-[10px] text-surface-400">Kurang</span>
+        <div className="flex items-center gap-1.5 font-mono text-[10px] text-gray-400">
+          <span>Sedikit</span>
           {([0, 1, 2, 3, 4] as const).map((level) => (
             <span
               key={level}
-              className={`h-[10px] w-[10px] rounded-sm ${intensityClass[level].split(" ")[0]}`}
+              className={`h-[10px] w-[10px] rounded-xs ${intensityClass[level].split(" ")[0]}`}
             />
           ))}
-          <span className="text-[10px] text-surface-400">Lebih</span>
+          <span>Intensif</span>
         </div>
       </div>
     </div>

@@ -80,6 +80,34 @@
   --font-sans:
     var(--font-inter), ui-sans-serif, system-ui, -apple-system, "Segoe UI",
     Roboto, "Helvetica Neue", Arial, sans-serif;
+  --font-display: var(--font-hanken), var(--font-inter), sans-serif;
+  --font-mono: var(--font-mono), ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+
+  /* Obsidian Command Theme (Stitch Mission Control) */
+  --color-surface-base: #0b0d13;
+  --color-surface-card: #131825;
+  --color-surface-hover: #1a2133;
+  --color-surface-container-lowest: #0c0e14;
+  --color-surface-container-low: #191b22;
+  --color-surface-container: #1e1f26;
+  --color-surface-container-high: #282a30;
+  --color-surface-container-highest: #33343b;
+  --color-glass-border: rgba(255, 255, 255, 0.07);
+  --color-luminous-amber: #f59e0b;
+  --color-coral-rose: #f43f5e;
+  --color-tertiary: #4edea3;
+  --color-tertiary-container: #00a572;
+  --color-on-tertiary: #003824;
+  --color-on-surface: #e2e2eb;
+  --color-on-surface-variant: #cbc3d7;
+  --color-primary: #d0bcff;
+  --color-primary-container: #a078ff;
+  --color-on-primary: #3c0091;
+  --color-on-primary-container: #340080;
+  --color-secondary: #c0c1ff;
+  --color-secondary-container: #3131c0;
+  --color-cyber-violet: #8b5cf6;
+  --color-electric-indigo: #6366f1;
 
   /* Elevation — warm, nuanced */
   --shadow-soft:
@@ -107,14 +135,46 @@
     font-feature-settings: "cv02", "cv03", "cv04", "cv11";
     -webkit-text-size-adjust: 100%;
     scroll-behavior: smooth;
+    overflow-x: hidden;
+    max-width: 100vw;
+    background-color: #0B0D13;
+    color: #e2e2eb;
   }
 
   body {
-    background-color: var(--color-surface-50);
-    color: var(--color-surface-900);
+    background-color: #0B0D13;
+    color: #e2e2eb;
     font-family: var(--font-sans);
     -webkit-font-smoothing: antialiased;
     text-rendering: optimizeLegibility;
+    overflow-x: hidden;
+    max-width: 100vw;
+    min-height: 100vh;
+  }
+
+  /* Custom Sleek Dark Obsidian Scrollbar */
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255, 255, 255, 0.15) transparent;
+    box-sizing: border-box;
+  }
+
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.14);
+    border-radius: 9999px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.28);
   }
 
   :focus-visible {
@@ -127,11 +187,18 @@
     background: var(--color-primary-100);
     color: var(--color-primary-900);
   }
-
-  * { box-sizing: border-box; }
 }
 
 @layer utilities {
+  /* Hide scrollbars cleanly */
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
   /* Label orientasi */
   .eyebrow {
     font-size: 10.5px;

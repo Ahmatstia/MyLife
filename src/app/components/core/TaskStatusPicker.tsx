@@ -23,8 +23,8 @@ const stages: {
     shortLabel: "Belum",
     icon: <Icon name="circle" size={14} />,
     activeClass:
-      "bg-surface-100 border-surface-300 text-surface-800 shadow-soft",
-    dotClass: "bg-surface-400",
+      "bg-white/[0.08] border-white/[0.2] text-white shadow-sm",
+    dotClass: "bg-gray-400",
     description: "Task belum dikerjakan",
   },
   {
@@ -33,8 +33,8 @@ const stages: {
     shortLabel: "Sedang",
     icon: <Icon name="play" size={14} />,
     activeClass:
-      "bg-gradient-to-r from-primary-50 to-primary-100 border-primary-300 text-primary-800 shadow-[var(--shadow-glow-primary)]",
-    dotClass: "bg-primary-500 animate-pulse",
+      "bg-gradient-to-r from-purple-500/20 to-indigo-500/20 border-purple-400/50 text-purple-200 shadow-[0_0_14px_rgba(168,85,247,0.3)]",
+    dotClass: "bg-purple-400 animate-pulse",
     description: "Task sedang berjalan",
   },
   {
@@ -43,8 +43,8 @@ const stages: {
     shortLabel: "Selesai",
     icon: <Icon name="check" size={14} strokeWidth={2.5} />,
     activeClass:
-      "bg-gradient-to-r from-success-50 to-success-100 border-success-300 text-success-800 shadow-[0_0_0_3px_rgba(47,162,99,0.12)]",
-    dotClass: "bg-success-500",
+      "bg-gradient-to-r from-emerald-500/20 to-teal-500/20 border-emerald-400/50 text-emerald-200 shadow-[0_0_14px_rgba(52,211,153,0.3)]",
+    dotClass: "bg-emerald-400",
     description: "Task selesai dikerjakan",
   },
 ];
@@ -103,84 +103,84 @@ export function TaskStatusPicker({
   return (
     <>
       <CelebrationEffect trigger={celebrate} originEl={originRef} />
-      <div className="space-y-2">
-      {/* Active status indicator */}
-      <div className="flex items-center gap-2">
-        <span className={`h-2 w-2 rounded-full ${currentStage.dotClass}`} />
-        <span className="text-[12px] font-semibold text-surface-500">
-          Status saat ini:{" "}
-          <span className="text-surface-800">{currentStage.label}</span>
-        </span>
-      </div>
-
-      {/* Segmented picker */}
-      <div
-        role="group"
-        aria-label="Pilih status task"
-        className="flex gap-1.5 rounded-2xl border border-surface-150 bg-surface-50 p-1.5"
-      >
-        {stages.map((stage, idx) => {
-          const isActive = stage.key === current;
-          const isLoading = loading === stage.key;
-          // Connector line
-          const showConnector = idx < stages.length - 1;
-          const leftDone =
-            stages.findIndex((s) => s.key === current) > idx;
-
-          return (
-            <div key={stage.key} className="flex flex-1 items-center">
-              <button
-                type="button"
-                onClick={() => select(stage.key)}
-                disabled={!!loading}
-                aria-pressed={isActive}
-                aria-label={stage.label}
-                title={stage.description}
-                className={`relative flex flex-1 items-center justify-center gap-1.5 rounded-xl border py-2.5 text-[12px] font-semibold transition-all duration-200 disabled:cursor-not-allowed ${
-                  isActive
-                    ? `${stage.activeClass} status-ripple`
-                    : "border-transparent text-surface-400 hover:bg-surface-100 hover:text-surface-700"
-                }`}
-                {...(stage.key === "COMPLETED" ? { ref: completeBtnRef } : {})}
-              >
-                {isLoading ? (
-                  <span className="h-3 w-3 animate-spin rounded-full border-2 border-current border-t-transparent" />
-                ) : (
-                  stage.icon
-                )}
-                <span className="hidden sm:inline">{stage.shortLabel}</span>
-                <span className="sm:hidden">{stage.icon}</span>
-              </button>
-
-              {showConnector && (
-                <div
-                  aria-hidden="true"
-                  className={`mx-1 h-px flex-shrink-0 w-4 transition-colors duration-300 ${
-                    leftDone ? "bg-success-300" : "bg-surface-200"
-                  }`}
-                />
-              )}
-            </div>
-          );
-        })}
-      </div>
-
-      {/* Progress steps label row */}
-      <div className="flex items-center justify-between px-2">
-        {stages.map((stage) => (
-          <span
-            key={stage.key}
-            className={`text-[10px] font-medium transition-colors ${
-              stage.key === current
-                ? "text-surface-700"
-                : "text-surface-400"
-            }`}
-          >
-            {stage.label}
+      <div className="space-y-2.5">
+        {/* Active status indicator */}
+        <div className="flex items-center gap-2">
+          <span className={`h-2 w-2 rounded-full ${currentStage.dotClass}`} />
+          <span className="text-[12px] font-mono text-[#94a3b8]">
+            Status saat ini:{" "}
+            <span className="text-white font-bold">{currentStage.label}</span>
           </span>
-        ))}
+        </div>
+
+        {/* Segmented picker */}
+        <div
+          role="group"
+          aria-label="Pilih status task"
+          className="flex gap-1.5 rounded-2xl border border-white/[0.08] bg-[#0B0D13] p-1.5 shadow-inner"
+        >
+          {stages.map((stage, idx) => {
+            const isActive = stage.key === current;
+            const isLoading = loading === stage.key;
+            // Connector line
+            const showConnector = idx < stages.length - 1;
+            const leftDone =
+              stages.findIndex((s) => s.key === current) > idx;
+
+            return (
+              <div key={stage.key} className="flex flex-1 items-center">
+                <button
+                  type="button"
+                  onClick={() => select(stage.key)}
+                  disabled={!!loading}
+                  aria-pressed={isActive}
+                  aria-label={stage.label}
+                  title={stage.description}
+                  className={`relative flex flex-1 items-center justify-center gap-1.5 rounded-xl border py-2.5 text-[12px] font-semibold transition-all duration-200 disabled:cursor-not-allowed cursor-pointer ${
+                    isActive
+                      ? `${stage.activeClass} status-ripple`
+                      : "border-transparent text-[#94a3b8] hover:bg-white/[0.06] hover:text-white"
+                  }`}
+                  {...(stage.key === "COMPLETED" ? { ref: completeBtnRef } : {})}
+                >
+                  {isLoading ? (
+                    <span className="h-3 w-3 animate-spin rounded-full border-2 border-current border-t-transparent" />
+                  ) : (
+                    stage.icon
+                  )}
+                  <span className="hidden sm:inline">{stage.shortLabel}</span>
+                  <span className="sm:hidden">{stage.icon}</span>
+                </button>
+
+                {showConnector && (
+                  <div
+                    aria-hidden="true"
+                    className={`mx-1 h-px flex-shrink-0 w-4 transition-colors duration-300 ${
+                      leftDone ? "bg-emerald-500/50" : "bg-white/[0.08]"
+                    }`}
+                  />
+                )}
+              </div>
+            );
+          })}
+        </div>
+
+        {/* Progress steps label row */}
+        <div className="flex items-center justify-between px-2">
+          {stages.map((stage) => (
+            <span
+              key={stage.key}
+              className={`text-[10px] font-mono transition-colors ${
+                stage.key === current
+                  ? "text-[#d0bcff] font-semibold"
+                  : "text-[#64748b]"
+              }`}
+            >
+              {stage.label}
+            </span>
+          ))}
+        </div>
       </div>
-    </div>
     </>
   );
 }

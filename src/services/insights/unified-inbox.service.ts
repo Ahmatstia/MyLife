@@ -84,7 +84,7 @@ export async function getUnifiedInbox(
       description: "Lakukan refleksi kemajuan dan hambatan belajar Anda minggu ini.",
       priority: "MEDIUM",
       timestamp: now,
-      actionUrl: "/reviews",
+      actionUrl: "/review",
       actionLabel: "Mulai Review",
       metadata: { weekStart: startOfWeek },
     });

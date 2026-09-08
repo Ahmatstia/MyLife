@@ -12,14 +12,7 @@ import {
   calculateGoalProgress,
   calculateStageProgress,
 } from "@/services/progress.service";
-import { StatusBadge } from "@/app/components/ui/Badge";
-import { ProgressBar } from "@/app/components/ui/Progress";
-import { EmptyState } from "@/app/components/ui/EmptyState";
 import { formatHours } from "@/lib/format";
-import { Icon } from "@/app/components/ui/Icon";
-import { CurrentWaypointTag } from "@/app/components/core/JourneyRoute";
-import { JourneyPath } from "@/app/components/core/JourneyPath";
-import { FocusOrb } from "@/app/components/core/FocusOrb";
 import { ObjectivesSection } from "@/app/components/goals/ObjectivesSection";
 
 export const dynamic = "force-dynamic";
@@ -32,7 +25,7 @@ function formatDate(value: Date | null) {
   if (!value) return null;
   return new Intl.DateTimeFormat("id-ID", {
     day: "numeric",
-    month: "long",
+    month: "short",
     year: "numeric",
   }).format(value);
 }
@@ -66,383 +59,473 @@ export default async function GoalPage({ params }: GoalPageProps) {
   const currentStageIndex = goal.stages.findIndex((stage) =>
     stage.tasks.some((task) => task.status !== "COMPLETED"),
   );
-  const waypoints = goal.stages.map((stage, index) => {
-    const stageDone = stage.tasks.filter(
-      (task) => task.status === "COMPLETED",
-    ).length;
-    return {
-      id: stage.id,
-      label: stage.name,
-      taskLabel:
-        stage.tasks.length === 0
-          ? "belum ada task"
-          : `${stageDone}/${stage.tasks.length} task`,
-      status:
-        currentStageIndex === -1 || index < currentStageIndex
-          ? ("COMPLETED" as const)
-          : index === currentStageIndex
-            ? ("CURRENT" as const)
-            : ("UPCOMING" as const),
-    };
-  });
 
   const now = new Date();
-  const daysElapsed = Math.floor((now.getTime() - new Date(goal.createdAt).getTime()) / 86400000);
+  const daysElapsed = Math.max(1, Math.floor((now.getTime() - new Date(goal.createdAt).getTime()) / 86400000));
   const goalStartDate = new Intl.DateTimeFormat("id-ID", { day: "numeric", month: "short", year: "numeric" }).format(goal.createdAt);
+  const circumference = 2 * Math.PI * 68;
+  const strokeDashoffset = circumference - (circumference * progress) / 100;
 
   return (
-    <div className="space-y-14">
-      {/* Goal Completion Banner — shown only when all stages done */}
-      {allStagesDone && (
-        <div className="relative overflow-hidden rounded-2xl border border-success-200 bg-gradient-to-br from-success-50 via-success-100/40 to-white p-5 shadow-soft">
-          <div
-            aria-hidden="true"
-            className="pointer-events-none absolute -right-10 -top-10 h-40 w-40 rounded-full bg-success-200/50 blur-2xl"
+    <div className="flex flex-col w-full pb-16 gap-8 text-gray-200">
+      {/* 1. Top Navigation & Action Controls */}
+      <header className="flex flex-wrap items-center justify-between gap-4 py-2 border-b border-white/[0.06]">
+        <div className="flex items-center gap-3 min-w-0">
+          <Link
+            href="/goals"
+            className="group flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#131825] hover:bg-[#1A2133] text-gray-300 hover:text-purple-300 border border-white/[0.08] transition-all text-xs font-mono"
+          >
+            <span className="material-symbols-outlined text-[16px] transition-transform group-hover:-translate-x-0.5">arrow_back</span>
+            <span>Kembali ke Target Utama</span>
+          </Link>
+          <div className="hidden md:flex items-center gap-2 font-mono text-xs text-gray-500">
+            <span>/</span>
+            <span className="uppercase text-gray-400">RUTE #{goal.id.slice(0, 6).toUpperCase()}</span>
+            <span>/</span>
+            <span className="text-purple-300 font-bold truncate max-w-xs">{goal.title}</span>
+          </div>
+        </div>
+
+        <div className="flex items-center gap-2 shrink-0">
+          <GoalActionsMenu
+            goalId={goal.id}
+            goalName={goal.title}
+            areas={areas}
+            initialData={{
+              name: goal.title,
+              description: goal.description,
+              type: goal.type,
+              status: goal.status,
+              targetDate: goal.targetDate,
+              areaId: (goal as unknown as { areaId?: string | null }).areaId ?? goal.area?.id ?? null,
+            }}
           />
+          <StageForm goalId={goal.id} nextOrder={goal.stages.length} />
+        </div>
+      </header>
+
+      {/* Completion Banner if all stages are done */}
+      {allStagesDone && (
+        <div className="relative overflow-hidden rounded-2xl border border-emerald-500/30 bg-gradient-to-r from-emerald-950/40 via-[#131825] to-[#131825] p-5 shadow-[0_0_30px_rgba(78,222,163,0.15)]">
           <div className="relative flex flex-wrap items-center gap-4">
-            <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-success-500 text-2xl text-white shadow-[0_0_0_4px_rgba(47,162,99,0.2)]">
+            <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-emerald-500/20 text-emerald-400 border border-emerald-500/40 text-2xl shadow-[0_0_15px_rgba(78,222,163,0.4)]">
               🏆
             </span>
             <div>
-              <p className="text-[11px] font-bold uppercase tracking-widest text-success-600">Goal Selesai</p>
-              <p className="mt-0.5 text-xl font-bold text-surface-900">
-                Perjalanan {goal.title} telah sampai!
+              <p className="text-[11px] font-mono font-bold uppercase tracking-widest text-emerald-400">TARGET UTAMA TERCAPAI</p>
+              <p className="mt-0.5 text-lg font-bold text-white">
+                Perjalanan {goal.title} telah selesai dengan gemilang!
               </p>
-              <p className="mt-0.5 text-[13px] text-success-700">
-                {completedTasks} task · {goal.stages.length} stage · semua tuntas.
+              <p className="mt-0.5 text-xs font-mono text-gray-400">
+                {completedTasks} tugas · {goal.stages.length} tahapan · 100% tuntas terverifikasi.
               </p>
             </div>
           </div>
         </div>
       )}
 
-      {/* Header abstrak — blob ganda + dot-grid, bukan satu blur polos */}
-      <header className="relative overflow-hidden pb-10 pt-2 md:pb-14">
-        <div
-          aria-hidden="true"
-          className="pointer-events-none absolute -right-32 -top-40 h-96 w-96 rounded-full bg-primary-200/40 blur-3xl"
-        />
-        <div
-          aria-hidden="true"
-          className="pointer-events-none absolute -left-24 top-24 h-64 w-64 rounded-full bg-ai-200/30 blur-3xl"
-        />
-        <div
-          aria-hidden="true"
-          className="dot-grid pointer-events-none absolute inset-x-0 top-0 h-40 opacity-40 [mask-image:linear-gradient(to_bottom,black,transparent)]"
-        />
+      {/* 2. Expedition Hero Header (Split Grid) */}
+      <section className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        {/* Left Col: Strategic Brief & Telemetry */}
+        <div className="lg:col-span-8 flex flex-col justify-between p-6 md:p-8 rounded-2xl bg-[#131825] border border-white/[0.08] shadow-[0_12px_40px_-15px_rgba(0,0,0,0.7)] relative overflow-hidden">
+          {/* Subtle ambient glow */}
+          <div className="absolute -right-20 -top-20 w-80 h-80 rounded-full bg-purple-600/10 blur-3xl pointer-events-none" />
+          
+          <div className="flex flex-col gap-4 relative z-10">
+            {/* Badges Cluster */}
+            <div className="flex flex-wrap items-center gap-2">
+              <span className="px-2.5 py-1 rounded bg-white/[0.06] text-purple-300 font-mono text-xs uppercase tracking-wider border border-white/[0.08]">
+                {goal.type || "TARGET UTAMA"}
+              </span>
+              {goal.area && (
+                <span
+                  className="px-2.5 py-1 rounded font-mono text-xs flex items-center gap-1.5"
+                  style={{
+                    backgroundColor: `${goal.area.color}15`,
+                    color: goal.area.color,
+                    border: `1px solid ${goal.area.color}35`,
+                  }}
+                >
+                  <span
+                    className="w-1.5 h-1.5 rounded-full"
+                    style={{ backgroundColor: goal.area.color }}
+                  />
+                  {goal.area.name}
+                </span>
+              )}
+              <span className="px-2.5 py-1 rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-mono text-xs flex items-center gap-1.5">
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping" />
+                {allStagesDone ? "SELESAI" : "SEDANG BERJALAN"}
+              </span>
+              <span className="font-mono text-[11px] text-gray-500 ml-auto">
+                UID: GOAL-{goal.id.slice(0, 8).toUpperCase()}
+              </span>
+            </div>
 
-        <div className="relative">
-          <Link
-            href="/goals"
-            className="inline-flex items-center gap-1.5 text-sm font-medium text-surface-500 transition hover:text-primary-700"
-          >
-            <Icon name="arrowLeft" size={15} /> Goals
-          </Link>
-
-          <div className="mt-8 grid gap-10 lg:grid-cols-[minmax(0,1fr)_280px] lg:items-center">
-            <div className="min-w-0">
-              <div className="flex flex-wrap items-center gap-2">
-                <p className="text-xs font-semibold uppercase tracking-[0.16em] text-surface-400">
-                  {goal.type}
-                </p>
-                {goal.area && (
-                  <>
-                    <span className="h-1 w-1 rounded-full bg-surface-300" />
-                    <span
-                      className="inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-xs font-semibold"
-                      style={{
-                        backgroundColor: `${goal.area.color}15`,
-                        color: goal.area.color,
-                        border: `1px solid ${goal.area.color}35`,
-                      }}
-                    >
-                      <span
-                        className="h-1.5 w-1.5 rounded-full"
-                        style={{ backgroundColor: goal.area.color }}
-                      />
-                      {goal.area.name}
-                    </span>
-                  </>
-                )}
-                <span className="h-1 w-1 rounded-full bg-surface-300" />
-                <StatusBadge status={goal.status} />
-              </div>
-              <h1 className="mt-3 text-3xl font-bold tracking-tight text-surface-900 md:text-5xl">
+            {/* Headline & Description */}
+            <div className="flex flex-col gap-2 mt-1">
+              <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold text-white tracking-tight leading-tight">
                 {goal.title}
               </h1>
               {goal.description && (
-                <p className="mt-4 max-w-2xl text-base leading-7 text-surface-600">
+                <p className="text-sm md:text-base text-gray-400 leading-relaxed max-w-3xl">
                   {goal.description}
                 </p>
               )}
+            </div>
+          </div>
 
-              <div className="mt-7 max-w-xl">
-                <div className="flex items-baseline justify-between gap-4">
-                  <p className="text-sm font-medium text-surface-700">
-                    Progres keseluruhan
-                  </p>
-                  <span className="text-lg font-bold text-primary-700">
-                    {progress}%
-                  </span>
-                </div>
-                <div className="mt-2">
-                  <ProgressBar value={progress} />
-                </div>
+          {/* Quantitative KPI Badges & Bar */}
+          <div className="flex flex-col gap-4 mt-8 relative z-10">
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+              <div className="p-3 rounded-xl bg-[#0B0D13]/80 border border-white/[0.05] flex flex-col">
+                <span className="font-mono text-[10px] uppercase text-gray-400">KEMAJUAN TUGAS</span>
+                <span className="font-mono text-sm font-bold text-emerald-400 mt-1">
+                  ✓ {completedTasks}/{allTasks.length} Tugas
+                </span>
               </div>
-
-              <div className="mt-5 flex flex-wrap gap-2">
-                <span className="inline-flex items-center gap-1.5 rounded-full border border-surface-200 bg-surface-0 px-3 py-1 text-xs font-medium text-surface-600">
-                  <Icon name="check" size={12} /> {completedTasks}/
-                  {allTasks.length} task
+              <div className="p-3 rounded-xl bg-[#0B0D13]/80 border border-white/[0.05] flex flex-col">
+                <span className="font-mono text-[10px] uppercase text-gray-400">TAHAPAN EKSPEDISI</span>
+                <span className="font-mono text-sm font-bold text-purple-300 mt-1">
+                  📂 {completedStages}/{goal.stages.length} Tahapan
                 </span>
-                <span className="inline-flex items-center gap-1.5 rounded-full border border-surface-200 bg-surface-0 px-3 py-1 text-xs font-medium text-surface-600">
-                  <Icon name="layers" size={12} /> {completedStages}/
-                  {goal.stages.length} stage
+              </div>
+              <div className="p-3 rounded-xl bg-[#0B0D13]/80 border border-white/[0.05] flex flex-col">
+                <span className="font-mono text-[10px] uppercase text-gray-400">TOTAL INVESTASI</span>
+                <span className="font-mono text-sm font-bold text-indigo-300 mt-1">
+                  ⏱ ± {formatHours(totalEstimatedHours)}
                 </span>
-                <span className="inline-flex items-center gap-1.5 rounded-full border border-surface-200 bg-surface-0 px-3 py-1 text-xs font-medium text-surface-600">
-                  <Icon name="clock" size={12} /> ±{" "}
-                  {formatHours(totalEstimatedHours)}
+              </div>
+              <div className="p-3 rounded-xl bg-[#0B0D13]/80 border border-white/[0.05] flex flex-col">
+                <span className="font-mono text-[10px] uppercase text-gray-400">BATAS AKHIR</span>
+                <span className="font-mono text-sm font-bold text-amber-400 mt-1 truncate">
+                  🗓 {goal.targetDate ? formatDate(goal.targetDate) : "Fleksibel"}
                 </span>
-                {goal.targetDate && (
-                  <span className="inline-flex items-center gap-1.5 rounded-full border border-surface-200 bg-surface-0 px-3 py-1 text-xs font-medium text-surface-600">
-                    <Icon name="calendar" size={12} />{" "}
-                    {formatDate(goal.targetDate)}
-                  </span>
-                )}
               </div>
             </div>
 
-            {/* Focus Orb — pilar navigasi visual yang konsisten */}
-            <div className="flex justify-center lg:justify-end">
-              <FocusOrb
-                value={progress}
-                size={180}
-                stroke={12}
-                tone={allStagesDone ? "success" : "primary"}
-                label={`Progres keseluruhan ${goal.title}`}
-              >
-                <span className="text-3xl font-bold text-surface-900">
-                  {progress}%
+            {/* Sleek High Contrast Progress Track */}
+            <div className="flex flex-col gap-1.5 pt-2">
+              <div className="flex justify-between items-center font-mono text-xs">
+                <span className="flex items-center gap-1.5 text-gray-400">
+                  <span className="material-symbols-outlined text-[15px] text-emerald-400">trending_up</span>
+                  AGREGASI INTEGRASI SISTEM
                 </span>
-                <span className="mt-1 text-[10px] uppercase tracking-wider text-surface-400">
-                  selesai
-                </span>
-              </FocusOrb>
-            </div>
-          </div>
-        </div>
-      </header>
-
-      {/* Peta jalan — jalur melengkung, bukan garis lurus */}
-      <section>
-        <div className="flex flex-wrap items-end justify-between gap-4">
-          <div>
-            <p className="eyebrow text-surface-400">Peta jalan</p>
-            <h2 className="mt-1 text-2xl font-bold text-surface-900">
-              Perjalanan Anda
-            </h2>
-            <p className="mt-1.5 text-sm text-surface-500">
-              Satu perjalanan dibagi menjadi stage — dan setiap stage menjadi
-              task.
-            </p>
-          </div>
-          <div className="flex flex-wrap items-center gap-2">
-            <StageForm goalId={goal.id} nextOrder={goal.stages.length} />
-            <GoalActionsMenu
-              goalId={goal.id}
-              goalName={goal.title}
-              areas={areas}
-              initialData={{
-                name: goal.title,
-                description: goal.description,
-                type: goal.type,
-                status: goal.status,
-                targetDate: goal.targetDate,
-                areaId: (goal as unknown as { areaId?: string | null }).areaId ?? goal.area?.id ?? null,
-              }}
-            />
-          </div>
-        </div>
-
-        {goal.stages.length > 0 ? (
-          <>
-            <div className="mt-6">
-              <JourneyPath
-                waypoints={waypoints}
-                label={`Peta perjalanan ${goal.title}`}
-              />
-            </div>
-            <p className="mt-3 text-xs text-surface-500">
-              {currentStageIndex === -1
-                ? "Semua stage selesai — perjalanan telah sampai di tujuan."
-                : `Anda berada di stage ${currentStageIndex + 1} dari ${goal.stages.length}. Stage selesai tampak tenang, stage saat ini bersinar, sisanya menunggu.`}
-            </p>
-
-            {/* Journey Stats Mini-Bar */}
-            <div className="mt-5 grid grid-cols-2 gap-2 sm:grid-cols-4">
-              {[
-                {
-                  label: "Dimulai",
-                  value: goalStartDate,
-                  icon: "🗓",
-                },
-                {
-                  label: "Hari berjalan",
-                  value: `${daysElapsed} hari`,
-                  icon: "⏱",
-                },
-                {
-                  label: "Stage selesai",
-                  value: `${completedStages}/${goal.stages.length}`,
-                  icon: "🎯",
-                },
-                {
-                  label: "Task selesai",
-                  value: `${completedTasks}/${allTasks.length}`,
-                  icon: "✅",
-                },
-              ].map((stat) => (
+                <span className="text-emerald-400 font-bold">{progress}% TUNTAS</span>
+              </div>
+              <div className="w-full h-2 rounded-full bg-[#0B0D13] overflow-hidden p-[1px] border border-white/[0.06]">
                 <div
-                  key={stat.label}
-                  className="flex flex-col gap-0.5 rounded-xl border border-surface-100 bg-white px-3 py-2.5 shadow-soft"
-                >
-                  <span className="text-base leading-none">{stat.icon}</span>
-                  <span className="mt-1.5 text-[15px] font-bold text-surface-900 leading-tight">{stat.value}</span>
-                  <span className="text-[11px] text-surface-400">{stat.label}</span>
-                </div>
-              ))}
+                  className="h-full rounded-full bg-gradient-to-r from-purple-700 via-purple-500 to-[#4edea3] transition-all duration-700 shadow-[0_0_12px_rgba(78,222,163,0.5)]"
+                  style={{ width: `${progress}%` }}
+                />
+              </div>
             </div>
-          </>
-        ) : (
-          <div className="mt-8 border-t border-dashed border-surface-200 pt-10">
-            <EmptyState
-              icon="layers"
-              title="Belum ada stage"
-              description="Tambahkan stage pertama untuk mulai membentuk goal ini menjadi jalur yang jelas."
-              action={<StageForm goalId={goal.id} nextOrder={0} />}
-            />
           </div>
-        )}
+        </div>
+
+        {/* Right Col: Visual Orb & Telemetry Gauge */}
+        <div className="lg:col-span-4 flex flex-col items-center justify-center p-6 md:p-8 rounded-2xl bg-[#131825] border border-white/[0.08] shadow-[0_12px_40px_-15px_rgba(0,0,0,0.7)] relative overflow-hidden text-center">
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-purple-500/10 via-transparent to-transparent pointer-events-none" />
+
+          {/* Radial Progress Ring */}
+          <div className="relative w-44 h-44 flex items-center justify-center my-2">
+            <svg className="w-full h-full transform -rotate-90" viewBox="0 0 160 160">
+              <circle
+                className="text-white/[0.06]"
+                cx="80"
+                cy="80"
+                fill="transparent"
+                r="68"
+                stroke="currentColor"
+                strokeWidth="10"
+              />
+              <circle
+                className="text-emerald-400 transition-all duration-1000"
+                cx="80"
+                cy="80"
+                fill="transparent"
+                r="68"
+                stroke="currentColor"
+                strokeWidth="10"
+                strokeDasharray={circumference}
+                strokeDashoffset={strokeDashoffset}
+                strokeLinecap="round"
+              />
+            </svg>
+            <div className="absolute flex flex-col items-center justify-center">
+              <span className="text-4xl font-bold text-white leading-none tracking-tighter">
+                {progress}%
+              </span>
+              <span className="font-mono text-[10px] text-emerald-400 font-bold tracking-widest mt-1 uppercase">
+                {allStagesDone ? "SELESAI" : "KEMAJUAN"}
+              </span>
+            </div>
+          </div>
+
+          {/* Operative Velocity Badge */}
+          <div className="relative z-10 mt-2 flex flex-col items-center gap-1">
+            <div className="flex items-center gap-1.5 bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 px-3 py-1 rounded-full text-xs font-mono font-bold">
+              <span className="material-symbols-outlined text-[15px]">speed</span>
+              <span>LAJU OPERASIONAL: OPTIMAL</span>
+            </div>
+            <p className="text-xs text-gray-400 max-w-xs mt-1">
+              {progress >= 75
+                ? "Target mendekati garis finish. Pertahankan sprint untuk finalisasi rute."
+                : progress >= 40
+                  ? "Irama eksekusi konsisten dan berada di jalur capaian waktu yang sehat."
+                  : "Mulai tahapan awal secara bertahap untuk membangun momentum konsisten."}
+            </p>
+          </div>
+        </div>
       </section>
 
-      {/* Objectives / Key Results */}
+      {/* 3. Waypoint Horizontal Route Track */}
+      <section className="flex flex-col gap-4 p-6 md:p-8 rounded-2xl bg-[#131825] border border-white/[0.08] shadow-sm relative">
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <div className="flex items-center gap-2">
+            <span className="material-symbols-outlined text-purple-400 text-[20px]">timeline</span>
+            <h2 className="text-lg font-bold text-white">Peta Jalan Ekspedisi</h2>
+            <span className="font-mono text-xs text-gray-500">{"//"} LINTASAN WAYPOINT AKTIF</span>
+          </div>
+          <div className="flex items-center gap-2 text-purple-300 font-mono text-xs">
+            <span className="w-2 h-2 rounded-full bg-purple-400 animate-pulse" />
+            {currentStageIndex === -1
+              ? "SEMUA TAHAP RAMPUNG"
+              : `WAYPOINT 0${currentStageIndex + 1} DARI 0${goal.stages.length} AKTIF`}
+          </div>
+        </div>
+
+        {/* 4 Stats Compact Row */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-2.5 py-1">
+          <div className="px-3.5 py-2.5 rounded-xl bg-[#0B0D13]/60 border border-white/[0.05] flex items-center gap-3">
+            <span className="material-symbols-outlined text-gray-400 text-[18px]">event</span>
+            <div className="flex flex-col">
+              <span className="font-mono text-[10px] text-gray-400 uppercase">Dimulai</span>
+              <span className="font-mono text-xs font-semibold text-white">{goalStartDate}</span>
+            </div>
+          </div>
+          <div className="px-3.5 py-2.5 rounded-xl bg-[#0B0D13]/60 border border-white/[0.05] flex items-center gap-3">
+            <span className="material-symbols-outlined text-gray-400 text-[18px]">timer</span>
+            <div className="flex flex-col">
+              <span className="font-mono text-[10px] text-gray-400 uppercase">Durasi Aktif</span>
+              <span className="font-mono text-xs font-semibold text-white">{daysElapsed} Hari Berjalan</span>
+            </div>
+          </div>
+          <div className="px-3.5 py-2.5 rounded-xl bg-[#0B0D13]/60 border border-white/[0.05] flex items-center gap-3">
+            <span className="material-symbols-outlined text-gray-400 text-[18px]">flag</span>
+            <div className="flex flex-col">
+              <span className="font-mono text-[10px] text-gray-400 uppercase">Status Milestone</span>
+              <span className="font-mono text-xs font-semibold text-emerald-400">{completedStages}/{goal.stages.length} Tahap Selesai</span>
+            </div>
+          </div>
+          <div className="px-3.5 py-2.5 rounded-xl bg-[#0B0D13]/60 border border-white/[0.05] flex items-center gap-3">
+            <span className="material-symbols-outlined text-gray-400 text-[18px]">task_alt</span>
+            <div className="flex flex-col">
+              <span className="font-mono text-[10px] text-gray-400 uppercase">Penyelesaian Tugas</span>
+              <span className="font-mono text-xs font-semibold text-purple-300">{completedTasks}/{allTasks.length} Tuntas</span>
+            </div>
+          </div>
+        </div>
+
+        {/* Waypoint Horizontal Visual Track */}
+        {goal.stages.length > 0 ? (
+          <div className="py-6 overflow-x-auto">
+            <div className="min-w-[640px] flex items-center justify-between relative px-6">
+              {/* Connecting line */}
+              <div className="absolute top-5 left-12 right-12 h-1 bg-white/[0.08] -z-0">
+                <div
+                  className="h-full bg-gradient-to-r from-emerald-400 via-purple-500 to-purple-400 transition-all duration-700"
+                  style={{
+                    width: `${
+                      goal.stages.length > 1
+                        ? Math.min(100, Math.max(0, (completedStages / (goal.stages.length - 1)) * 100))
+                        : 100
+                    }%`,
+                  }}
+                />
+              </div>
+
+              {goal.stages.map((stage, idx) => {
+                const stageTasks = stage.tasks;
+                const stageProgress = calculateStageProgress(stageTasks);
+                const isCompleted = stageTasks.length > 0 && stageProgress === 100;
+                const isCurrent = idx === currentStageIndex;
+
+                return (
+                  <div key={stage.id} className="flex flex-col items-center text-center relative z-10 px-2 group">
+                    <div
+                      className={`w-10 h-10 rounded-full flex items-center justify-center transition-all ${
+                        isCompleted
+                          ? "bg-emerald-400 text-[#0B0D13] font-bold shadow-[0_0_15px_rgba(78,222,163,0.5)]"
+                          : isCurrent
+                            ? "bg-purple-600 text-white font-bold ring-4 ring-purple-500/30 shadow-[0_0_20px_rgba(168,85,247,0.6)]"
+                            : "bg-[#0B0D13] border border-white/20 text-gray-400"
+                      }`}
+                    >
+                      {isCompleted ? (
+                        <span className="material-symbols-outlined text-[20px] font-bold">check</span>
+                      ) : (
+                        <span className="font-mono text-xs font-bold">{idx + 1}</span>
+                      )}
+                    </div>
+                    <span className="font-mono text-xs font-bold text-white mt-2.5">
+                      Tahap 0{idx + 1}
+                    </span>
+                    <span className="text-xs text-gray-400 font-medium line-clamp-1 max-w-[120px]">
+                      {stage.name}
+                    </span>
+                    <span
+                      className={`font-mono text-[10px] mt-1 px-1.5 py-0.5 rounded ${
+                        isCompleted
+                          ? "text-emerald-400 bg-emerald-500/10"
+                          : isCurrent
+                            ? "text-purple-300 bg-purple-500/10 font-bold"
+                            : "text-gray-500 bg-white/[0.04]"
+                      }`}
+                    >
+                      {isCompleted ? "✓ SELESAI" : isCurrent ? "TAHAP INI" : "MENDATANG"}
+                    </span>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        ) : (
+          <div className="py-8 text-center border border-dashed border-white/[0.1] rounded-xl bg-[#0B0D13]/40">
+            <p className="text-xs font-mono text-gray-400">Belum ada tahapan dalam rute ini. Tambahkan tahapan pertama di tombol kanan atas.</p>
+          </div>
+        )}
+
+        {/* Dynamic Callout Bar */}
+        <div className="flex items-center gap-3 p-3.5 rounded-xl bg-[#0B0D13]/70 border border-white/[0.06] text-gray-300 text-xs">
+          <span className="material-symbols-outlined text-purple-400 text-[18px] shrink-0">auto_awesome</span>
+          <p className="leading-relaxed">
+            <strong className="text-white font-semibold">Status Rute:</strong>{" "}
+            {currentStageIndex === -1 ? (
+              <span>Seluruh tahapan ekspedisi berhasil dituntaskan dengan sempurna. Selamat atas pencapaian Anda!</span>
+            ) : (
+              <span>
+                Anda sedang berada di <span className="text-purple-300 font-bold font-mono">Tahap {currentStageIndex + 1} dari {goal.stages.length}</span>.{" "}
+                Fokus aktif teralokasi pada penyelesaian tugas-tugas kritis di tahapan ini.
+              </span>
+            )}
+          </p>
+        </div>
+      </section>
+
+      {/* 4. Key Results / Sasaran Terukur (OKR Grid) */}
       <section>
         <ObjectivesSection goalId={goal.id} initialObjectives={goal.objectives} />
       </section>
 
-      {/* Timeline stage — jalur vertikal + node heksagon, card radius asimetris */}
+      {/* 5. Vertical Timeline: Hexagon Nodes & Detailed Stages */}
       {goal.stages.length > 0 && (
-        <section>
-          <p className="eyebrow text-surface-400">Rincian</p>
-          <h2 className="mt-1 text-2xl font-bold text-surface-900">
-            Stage demi stage
-          </h2>
+        <section className="flex flex-col gap-5">
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <div className="flex items-center gap-2">
+              <span className="material-symbols-outlined text-purple-400 text-[20px]">account_tree</span>
+              <h2 className="text-lg font-bold text-white">Rincian Tahapan &amp; Tugas Eksekusi</h2>
+            </div>
+            <span className="font-mono text-xs text-gray-400">
+              TOTAL {goal.stages.length} TAHAPAN STRATEGIS
+            </span>
+          </div>
 
-          <ol className="relative mt-8 space-y-6 pl-12 sm:pl-14">
-            <span
-              aria-hidden="true"
-              className="absolute bottom-6 left-[19px] top-2 w-0.5 rounded-full bg-gradient-to-b from-primary-300 via-surface-200 to-surface-200 sm:left-[23px]"
-            />
+          <div className="flex flex-col gap-6 relative">
+            {/* Background connecting track line */}
+            <div className="absolute left-6 top-8 bottom-8 w-0.5 bg-white/[0.08] -z-0" />
 
             {goal.stages.map((stage, index) => {
               const stageProgress = calculateStageProgress(stage.tasks);
-              const completed = stage.tasks.filter(
-                (task) => task.status === "COMPLETED",
-              ).length;
+              const completed = stage.tasks.filter((t) => t.status === "COMPLETED").length;
               const total = stage.tasks.length;
               const isCompleted = total > 0 && completed === total;
               const isCurrent = index === currentStageIndex;
 
               return (
-                <li key={stage.id} className="relative">
-                  <span
-                    aria-hidden="true"
-                    className="absolute -left-12 top-1 flex h-10 w-10 items-center justify-center text-sm font-bold text-white sm:-left-14"
-                  >
-                    {isCurrent && <span className="halo" />}
-                    <span
-                      className={`relative flex h-10 w-10 items-center justify-center ${
-                        isCompleted
-                          ? "bg-success-500"
-                          : isCurrent
-                            ? "bg-primary-600"
-                            : "bg-surface-300"
-                      }`}
-                      style={{
-                        clipPath:
-                          "polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%)",
-                      }}
-                    >
-                      {isCompleted ? (
-                        <Icon name="check" size={15} strokeWidth={3} />
-                      ) : (
-                        <span className="font-mono text-xs">{index + 1}</span>
-                      )}
-                    </span>
-                  </span>
-
+                <div key={stage.id} className="relative z-10 flex flex-col md:flex-row items-start gap-4">
+                  {/* Hexagon Node Marker */}
                   <div
-                    className={`rounded-tl-md rounded-br-3xl rounded-tr-3xl rounded-bl-3xl border p-6 sm:p-7 ${
+                    className={`shrink-0 w-12 h-12 rounded-xl flex items-center justify-center font-mono font-bold transition-all ${
                       isCompleted
-                        ? "border-success-200 bg-gradient-to-br from-success-50/60 to-white shadow-soft"
+                        ? "bg-emerald-500/20 text-emerald-400 border border-emerald-500/40 shadow-[0_0_15px_rgba(78,222,163,0.3)]"
                         : isCurrent
-                          ? "border-primary-200 bg-primary-50/50 shadow-raised"
-                          : "border-surface-200 bg-surface-0 shadow-soft"
+                          ? "bg-purple-600 text-white shadow-[0_0_25px_rgba(168,85,247,0.5)] border border-purple-400/50"
+                          : "bg-[#131825] text-gray-400 border border-white/[0.08]"
                     }`}
                   >
+                    {isCompleted ? (
+                      <span className="material-symbols-outlined text-[20px]">check</span>
+                    ) : (
+                      <span>0{index + 1}</span>
+                    )}
+                  </div>
+
+                  {/* Main Card Wrapper */}
+                  <div
+                    className={`flex-1 w-full p-6 md:p-7 rounded-2xl bg-[#131825] border transition-all flex flex-col gap-5 ${
+                      isCurrent
+                        ? "border-purple-500/40 shadow-[0_0_30px_-5px_rgba(208,188,255,0.12)]"
+                        : isCompleted
+                          ? "border-emerald-500/20"
+                          : "border-white/[0.08]"
+                    }`}
+                  >
+                    {/* Stage Header */}
                     <div className="flex flex-wrap items-start justify-between gap-4">
-                      <div className="min-w-0">
+                      <div className="flex flex-col gap-1.5 min-w-0">
                         <div className="flex flex-wrap items-center gap-2">
-                          <p className="text-[11px] font-semibold uppercase tracking-wider text-primary-500">
-                            Stage {index + 1}
-                          </p>
-                          {isCurrent && <CurrentWaypointTag />}
-                          {isCompleted && (
-                            <span className="inline-flex items-center gap-1 rounded-full bg-success-100 px-2 py-0.5 text-[10px] font-bold text-success-700">
-                              ✓ Selesai
-                            </span>
-                          )}
+                          <span
+                            className={`font-mono text-xs px-2.5 py-0.5 rounded font-bold ${
+                              isCompleted
+                                ? "text-emerald-400 bg-emerald-500/10 border border-emerald-500/20"
+                                : isCurrent
+                                  ? "text-purple-300 bg-purple-500/15 border border-purple-500/30"
+                                  : "text-gray-400 bg-white/[0.05]"
+                            }`}
+                          >
+                            {isCompleted ? "✓ SELESAI" : isCurrent ? "TAHAPAN SAAT INI" : "MENDATANG"}
+                          </span>
                         </div>
-                        <h3
-                          className={`mt-1 text-lg font-semibold sm:text-xl ${
-                            isCompleted
-                              ? "text-surface-500"
-                              : isCurrent
-                                ? "text-surface-900"
-                                : "text-surface-700"
-                          }`}
-                        >
-                          {stage.name}
+                        <h3 className="text-lg md:text-xl font-bold text-white tracking-tight mt-1">
+                          TAHAP 0{index + 1} {"//"} {stage.name.toUpperCase()}
                         </h3>
                         {stage.description && (
-                          <p className="mt-2 max-w-2xl text-sm leading-6 text-surface-500">
+                          <p className="text-sm text-gray-400 max-w-2xl leading-relaxed">
                             {stage.description}
                           </p>
                         )}
                       </div>
 
-                      <div className="flex shrink-0 items-center gap-3">
-                        <div className="text-right">
-                          <span className="block text-xl font-bold text-surface-900">
-                            {stageProgress}%
-                          </span>
-                          <span className="block text-xs text-surface-500">
-                            {completed}/{total} task
+                      {/* Micro Metric */}
+                      <div className="p-3 rounded-xl bg-[#0B0D13]/80 border border-white/[0.06] flex items-center gap-3 shrink-0">
+                        <div
+                          className={`w-10 h-10 rounded-full flex items-center justify-center font-mono text-xs font-bold ${
+                            isCompleted
+                              ? "bg-emerald-500/20 text-emerald-400"
+                              : isCurrent
+                                ? "bg-purple-500/20 text-purple-300"
+                                : "bg-white/[0.05] text-gray-400"
+                          }`}
+                        >
+                          {stageProgress}%
+                        </div>
+                        <div className="flex flex-col">
+                          <span className="font-mono text-[10px] text-gray-400 uppercase">PROGRES TAHAP</span>
+                          <span className="font-mono text-xs font-bold text-white">
+                            {completed} / {total} Tugas
                           </span>
                         </div>
-                        <FocusOrb
-                          value={stageProgress}
-                          size={44}
-                          stroke={4}
-                          tone={isCompleted ? "success" : "primary"}
-                        />
                       </div>
                     </div>
 
-                    <div className="mt-6">
+                    {/* Task Action Checklist */}
+                    <div>
                       <TaskList tasks={stage.tasks} />
                     </div>
-                    <div className="mt-4 flex flex-wrap items-center justify-between gap-3">
+
+                    {/* Stage Card Footer Controls */}
+                    <div className="flex flex-wrap items-center justify-between gap-3 pt-2 border-t border-white/[0.06]">
                       <NewTaskButton stageId={stage.id} />
                       <StageActions
                         id={stage.id}
@@ -453,10 +536,10 @@ export default async function GoalPage({ params }: GoalPageProps) {
                       />
                     </div>
                   </div>
-                </li>
+                </div>
               );
             })}
-          </ol>
+          </div>
         </section>
       )}
     </div>

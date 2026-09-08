@@ -6,7 +6,6 @@ import { usePathname } from "next/navigation";
 import { Icon, type IconName } from "../ui/Icon";
 import { AICommandPanel } from "../AICommandPanel";
 import { Sidebar, isActive } from "./Sidebar";
-import { useFocusMode } from "../focus-mode-store";
 
 type GlobalAIDrawerProps = {
   open: boolean;
@@ -81,7 +80,6 @@ export function AppShell({
   const pathname = usePathname();
   const [aiOpen, setAiOpen] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const focusMode = useFocusMode();
 
   useEffect(() => {
     const onKey = (event: KeyboardEvent) => {
@@ -94,38 +92,23 @@ export function AppShell({
     return () => window.removeEventListener("keydown", onKey);
   }, []);
 
-  const showSearchCta =
-    !isActive("/", pathname) &&
-    !isActive("/today", pathname) &&
-    !isActive("/goals", pathname) &&
-    !isActive("/dashboard", pathname);
-
-  const chromeClass = focusMode
-    ? "bg-white/70 border-surface-150/60 backdrop-blur-md"
-    : "bg-white/85 border-surface-150 backdrop-blur-md";
 
   return (
-    <div className="min-h-screen canvas-bg text-surface-900">
+    <div className="min-h-screen bg-[#0B0D13] text-[#e2e2eb] w-full max-w-full overflow-x-hidden">
       {/* Desktop sidebar */}
-      <aside
-        className={`fixed inset-y-0 left-0 z-40 hidden w-60 border-r px-3 py-5 transition-colors duration-300 lg:block ${
-          focusMode
-            ? "border-surface-150/50 bg-white/60 backdrop-blur"
-            : "border-surface-150 bg-white/90 backdrop-blur-sm"
-        }`}
-      >
+      <aside className="fixed inset-y-0 left-0 z-40 hidden w-60 border-r border-white/[0.08] bg-[#0c0e14]/95 px-3 py-4 backdrop-blur-xl lg:block">
         <Sidebar user={user} />
       </aside>
 
       {/* Mobile drawer */}
       {sidebarOpen && (
         <div
-          className="fixed inset-0 z-50 bg-surface-950/30 backdrop-blur-sm lg:hidden"
+          className="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm lg:hidden"
           onMouseDown={(e) => {
             if (e.target === e.currentTarget) setSidebarOpen(false);
           }}
         >
-          <div className="h-full w-64 bg-white p-4 shadow-pop">
+          <div className="h-full w-64 bg-[#0c0e14] p-4 shadow-2xl border-r border-white/[0.08]">
             <Sidebar user={user} onNavigate={() => setSidebarOpen(false)} />
           </div>
         </div>
@@ -134,13 +117,11 @@ export function AppShell({
       {/* Main column */}
       <div className="lg:pl-60">
         {/* Topbar */}
-        <header
-          className={`sticky top-0 z-30 border-b transition-all duration-300 ${chromeClass}`}
-        >
-          <div className="mx-auto flex h-13 max-w-6xl items-center gap-3 px-4 sm:px-6">
+        <header className="sticky top-0 z-30 border-b border-white/[0.08] bg-[#0B0D13]/85 backdrop-blur-xl text-[#e2e2eb] transition-all duration-300">
+          <div className="mx-auto flex h-14 max-w-[1400px] items-center gap-3 px-4 sm:px-6">
             <button
               onClick={() => setSidebarOpen(true)}
-              className="flex h-8 w-8 items-center justify-center rounded-lg text-surface-500 hover:bg-surface-100 lg:hidden transition-all"
+              className="flex h-8 w-8 items-center justify-center rounded-lg text-[#94a3b8] hover:bg-white/10 hover:text-white lg:hidden transition-all"
               aria-label="Buka menu"
             >
               <Icon name="menu" size={18} />
@@ -148,11 +129,11 @@ export function AppShell({
 
             {/* Logo mobile */}
             <Link href="/" className="flex items-center gap-2 lg:hidden">
-              <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-gradient-to-br from-primary-600 to-ai-600 text-white">
+              <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-gradient-to-br from-[#8B5CF6] to-[#6366F1] text-white">
                 <Icon name="sparkles" size={14} />
               </span>
-              <span className="text-sm font-bold tracking-tight text-surface-900">
-                My<span className="gradient-text">Life</span>
+              <span className="text-sm font-bold tracking-tight text-white">
+                My<span className="text-[#a078ff]">Life</span>
               </span>
             </Link>
 
@@ -163,27 +144,23 @@ export function AppShell({
               onClick={() => setAiOpen(true)}
               aria-label="Buka asisten AI"
               title="Tanya apa saja (⌘K)"
-              className={`group inline-flex h-8 items-center gap-2 rounded-xl border border-surface-200 bg-white/90 px-3 text-[13px] font-medium text-surface-500 transition-all hover:border-primary-200 hover:bg-primary-50 hover:text-primary-700 hover:shadow-[var(--shadow-glow-primary)] ${
-                showSearchCta ? "" : "lg:min-w-[240px]"
-              }`}
+              className="group inline-flex h-8 items-center gap-2 rounded-xl border border-white/[0.08] bg-[#131825] px-3 text-[13px] font-medium text-[#94a3b8] transition-all hover:border-[#8B5CF6]/50 hover:bg-[#1A2133] hover:text-white hover:shadow-[0_0_15px_-3px_rgba(139,92,246,0.3)] lg:min-w-[240px]"
             >
-              <span className="flex h-4.5 w-4.5 items-center justify-center rounded-md bg-gradient-to-br from-ai-600 to-primary-600 text-white">
+              <span className="flex h-4.5 w-4.5 items-center justify-center rounded-md bg-gradient-to-br from-[#8B5CF6] to-[#6366F1] text-white">
                 <Icon name="sparkles" size={10} />
               </span>
-              <span className={showSearchCta ? "" : "hidden lg:inline"}>
+              <span className="hidden lg:inline text-[#94a3b8] group-hover:text-white">
                 Tanya apa saja…
               </span>
-              {!showSearchCta && (
-                <span className="ml-auto hidden rounded-md border border-surface-200 bg-surface-50 px-1.5 py-0.5 text-[10px] text-surface-400 lg:inline">
-                  ⌘K
-                </span>
-              )}
+              <span className="ml-auto hidden rounded-md border border-white/[0.08] bg-white/[0.04] px-1.5 py-0.5 text-[10px] text-[#94a3b8] lg:inline font-mono">
+                ⌘K
+              </span>
             </button>
 
             {/* Quick capture */}
             <Link
               href="/today"
-              className="hidden h-8 w-8 items-center justify-center rounded-lg text-surface-400 hover:bg-surface-100 hover:text-surface-700 lg:flex transition-all"
+              className="hidden h-8 w-8 items-center justify-center rounded-lg text-[#94a3b8] hover:bg-white/10 hover:text-white lg:flex transition-all"
               aria-label="Catat cepat"
               title="Catat cepat"
             >
@@ -193,8 +170,8 @@ export function AppShell({
               href="/settings"
               className={`hidden h-8 w-8 items-center justify-center rounded-lg lg:flex transition-all ${
                 isActive("/settings", pathname)
-                  ? "bg-surface-100 text-surface-800"
-                  : "text-surface-400 hover:bg-surface-100 hover:text-surface-700"
+                  ? "bg-white/10 text-white"
+                  : "text-[#94a3b8] hover:bg-white/10 hover:text-white"
               }`}
               aria-label="Pengaturan"
             >
@@ -203,18 +180,14 @@ export function AppShell({
           </div>
         </header>
 
-        <main className="mx-auto max-w-6xl px-4 pb-24 pt-5 sm:px-6 lg:pb-10">
+        <main className="mx-auto max-w-[1400px] px-4 pb-24 pt-5 sm:px-6 lg:pb-10">
           {children}
         </main>
       </div>
 
       {/* Mobile bottom nav — floating pill */}
       <nav
-        className={`fixed inset-x-4 bottom-4 z-40 rounded-2xl border shadow-pop pb-[max(0px,env(safe-area-inset-bottom))] transition-all duration-300 lg:hidden ${
-          focusMode
-            ? "border-surface-150/60 bg-white/75 backdrop-blur-md"
-            : "border-surface-150 bg-white/95 backdrop-blur-md"
-        }`}
+        className="fixed inset-x-4 bottom-4 z-40 rounded-2xl border border-white/10 bg-[#131825]/95 shadow-2xl pb-[max(0px,env(safe-area-inset-bottom))] backdrop-blur-xl transition-all duration-300 lg:hidden"
         aria-label="Navigasi utama"
       >
         <div className="flex items-stretch justify-around px-1 py-1">
@@ -227,8 +200,8 @@ export function AppShell({
                 aria-current={active ? "page" : undefined}
                 className={`relative flex min-h-[44px] min-w-0 flex-1 flex-col items-center justify-center gap-0.5 rounded-xl px-1 text-[10px] font-semibold transition-all ${
                   active
-                    ? "bg-primary-50 text-primary-700"
-                    : "text-surface-400 hover:text-surface-700"
+                    ? "bg-[#8B5CF6]/20 text-[#d0bcff]"
+                    : "text-[#94a3b8] hover:text-white"
                 }`}
               >
                 <Icon name={item.icon} size={19} />
@@ -236,7 +209,7 @@ export function AppShell({
                 {active && (
                   <span
                     aria-hidden="true"
-                    className="absolute bottom-1.5 h-1 w-1 rounded-full bg-primary-500"
+                    className="absolute bottom-1.5 h-1 w-1 rounded-full bg-[#8B5CF6]"
                   />
                 )}
               </Link>
@@ -244,7 +217,7 @@ export function AppShell({
           })}
           <button
             onClick={() => setAiOpen(true)}
-            className="flex min-h-[44px] min-w-0 flex-1 flex-col items-center justify-center gap-0.5 rounded-xl px-1 text-[10px] font-semibold text-ai-600 hover:bg-ai-50 transition-all"
+            className="flex min-h-[44px] min-w-0 flex-1 flex-col items-center justify-center gap-0.5 rounded-xl px-1 text-[10px] font-semibold text-[#a078ff] hover:bg-white/5 transition-all"
           >
             <Icon name="sparkles" size={19} />
             Asisten

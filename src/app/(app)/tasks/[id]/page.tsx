@@ -27,42 +27,46 @@ export default async function TaskPage({ params }: { params: Promise<{ id: strin
   );
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 pb-16">
       {/* ── Breadcrumb & Top Bar ───────────────────────────────── */}
       <nav aria-label="Breadcrumb" className="flex flex-wrap items-center justify-between gap-3">
-        <div className="flex items-center gap-2 text-[13px]">
+        <div className="flex flex-wrap items-center gap-2 text-[13px]">
           {task.stage ? (
             <>
               <Link
                 href={`/goals/${task.stage.goalId}`}
-                className="inline-flex items-center gap-1.5 font-medium text-surface-500 transition hover:text-primary-700"
+                className="inline-flex items-center gap-1.5 font-medium text-[#94a3b8] transition hover:text-white"
               >
                 <Icon name="arrowLeft" size={14} />
                 <span className="truncate max-w-[160px] sm:max-w-none">{task.stage.goal.title}</span>
               </Link>
-              <span className="text-surface-300">/</span>
-              <span className="chip bg-surface-100 text-surface-600 font-semibold">{task.stage.name}</span>
+              <span className="text-white/20">/</span>
+              <span className="rounded-lg border border-white/[0.08] bg-white/[0.04] px-2.5 py-0.5 text-xs font-mono font-medium text-[#d0bcff]">
+                {task.stage.name}
+              </span>
             </>
           ) : task.project ? (
             <>
               <Link
                 href={`/projects/${task.project.id}`}
-                className="inline-flex items-center gap-1.5 font-medium text-surface-500 transition hover:text-primary-700"
+                className="inline-flex items-center gap-1.5 font-medium text-[#94a3b8] transition hover:text-white"
               >
                 <Icon name="arrowLeft" size={14} />
                 <span className="truncate max-w-[160px] sm:max-w-none">{task.project.title}</span>
               </Link>
               {task.milestone && (
                 <>
-                  <span className="text-surface-300">/</span>
-                  <span className="chip bg-surface-100 text-surface-600 font-semibold">{task.milestone.title}</span>
+                  <span className="text-white/20">/</span>
+                  <span className="rounded-lg border border-white/[0.08] bg-white/[0.04] px-2.5 py-0.5 text-xs font-mono font-medium text-[#d0bcff]">
+                    {task.milestone.title}
+                  </span>
                 </>
               )}
             </>
           ) : (
             <Link
               href="/today"
-              className="inline-flex items-center gap-1.5 font-medium text-surface-500 transition hover:text-primary-700"
+              className="inline-flex items-center gap-1.5 font-medium text-[#94a3b8] transition hover:text-white"
             >
               <Icon name="arrowLeft" size={14} />
               <span>Hari Ini</span>
@@ -82,121 +86,123 @@ export default async function TaskPage({ params }: { params: Promise<{ id: strin
       </nav>
 
       {/* ── Main Layout: 2-Column Bento Grid ────────────────────── */}
-      <div className="lg:grid lg:grid-cols-[1fr_320px] lg:items-start lg:gap-6 space-y-6 lg:space-y-0">
+      <div className="lg:grid lg:grid-cols-[1fr_340px] lg:items-start lg:gap-6 space-y-6 lg:space-y-0">
         
         {/* Left Column: Task Overview, Status, Stats, Notes & History */}
-        <div className="space-y-5 min-w-0">
+        <div className="space-y-6 min-w-0">
           
           {/* Main Card: Title, Status Picker & Description */}
-          <section className="bento-tile p-5 sm:p-6 space-y-5 bg-white">
-            <div className="flex flex-wrap items-center gap-2">
-              <span className="chip bg-primary-50 text-primary-700 border border-primary-100 font-bold uppercase tracking-wider text-[10px]">
-                Task
-              </span>
-              <PriorityBadge priority={task.priority} />
-              {task.type && (
-                <span className="chip bg-surface-100 text-surface-600">
-                  {task.type}
+          <section className="relative overflow-hidden rounded-3xl border border-white/[0.08] bg-[#131825] p-6 sm:p-7 shadow-xl">
+            <div className="pointer-events-none absolute -right-20 -top-20 h-64 w-64 rounded-full bg-[#8B5CF6]/10 blur-3xl" />
+            
+            <div className="relative z-10 space-y-5">
+              <div className="flex flex-wrap items-center gap-2">
+                <span className="rounded-md border border-[#8B5CF6]/30 bg-[#8B5CF6]/15 px-2.5 py-0.5 font-mono text-[10.5px] font-bold uppercase tracking-wider text-[#d0bcff]">
+                  Task
                 </span>
-              )}
-            </div>
+                <PriorityBadge priority={task.priority} />
+                {task.type && (
+                  <span className="rounded-md border border-white/[0.08] bg-white/[0.04] px-2.5 py-0.5 font-mono text-[10.5px] font-medium text-[#94a3b8]">
+                    {task.type}
+                  </span>
+                )}
+              </div>
 
-            <div>
-              <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-surface-900 leading-tight">
-                {task.title}
-              </h1>
-              {task.description && (
-                <p className="mt-2.5 text-[14px] leading-relaxed text-surface-600 bg-surface-50/60 rounded-xl p-3.5 border border-surface-100">
-                  {task.description}
-                </p>
-              )}
-            </div>
+              <div>
+                <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-white leading-tight">
+                  {task.title}
+                </h1>
+                {task.description && (
+                  <div className="mt-3 rounded-2xl border border-white/[0.06] bg-[#0B0D13]/70 p-4 text-[13.5px] leading-relaxed text-[#CBC3D7]">
+                    {task.description}
+                  </div>
+                )}
+              </div>
 
-            {/* Visual Interactive Status Picker */}
-            <div className="pt-2 border-t border-surface-100">
-              <TaskStatusPicker taskId={task.id} status={task.status as "NOT_STARTED" | "IN_PROGRESS" | "COMPLETED"} />
+              {/* Visual Interactive Status Picker */}
+              <div className="pt-4 border-t border-white/[0.08]">
+                <TaskStatusPicker taskId={task.id} status={task.status as "NOT_STARTED" | "IN_PROGRESS" | "COMPLETED"} />
+              </div>
             </div>
           </section>
 
           {/* Bento Stats Row */}
           <section className="grid grid-cols-2 sm:grid-cols-4 gap-3">
             {/* Estimasi */}
-            <div className="bento-tile p-3.5 stat-bg-primary">
+            <div className="rounded-2xl border border-white/[0.08] bg-[#131825] p-4 shadow-lg relative overflow-hidden">
               <div className="flex items-center justify-between gap-1">
-                <span className="text-[10.5px] font-bold uppercase tracking-wider text-primary-600">
+                <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-[#94a3b8]">
                   Estimasi
                 </span>
-                <span className="flex h-6 w-6 items-center justify-center rounded-lg bg-primary-100 text-primary-700">
-                  <Icon name="target" size={13} />
+                <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-[#8B5CF6]/15 text-[#d0bcff]">
+                  <Icon name="target" size={14} />
                 </span>
               </div>
-              <p className="mt-2 text-xl font-bold text-surface-900">
+              <p className="mt-2 text-2xl font-bold font-mono text-white">
                 {formatHours(task.estimatedHours)}
               </p>
             </div>
 
             {/* Waktu Aktual */}
-            <div className="bento-tile p-3.5 stat-bg-success">
+            <div className="rounded-2xl border border-white/[0.08] bg-[#131825] p-4 shadow-lg relative overflow-hidden">
               <div className="flex items-center justify-between gap-1">
-                <span className="text-[10.5px] font-bold uppercase tracking-wider text-success-600">
+                <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-[#94a3b8]">
                   Aktual
                 </span>
-                <span className="flex h-6 w-6 items-center justify-center rounded-lg bg-success-100 text-success-700">
-                  <Icon name="clock" size={13} />
+                <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-[#4edea3]/15 text-[#4edea3]">
+                  <Icon name="clock" size={14} />
                 </span>
               </div>
-              <p className="mt-2 text-xl font-bold text-surface-900">
+              <p className="mt-2 text-2xl font-bold font-mono text-white">
                 {formatHours(task.actualHours)}
               </p>
               {task.actualHours > task.estimatedHours && task.estimatedHours > 0 && (
-                <span className="text-[10px] text-danger-600 font-semibold">
+                <span className="text-[10.5px] font-mono text-rose-400 font-semibold block mt-1">
                   +{(task.actualHours - task.estimatedHours).toFixed(1)}j lebih
                 </span>
               )}
             </div>
 
             {/* Jumlah Sesi */}
-            <div className="bento-tile p-3.5 stat-bg-ai">
+            <div className="rounded-2xl border border-white/[0.08] bg-[#131825] p-4 shadow-lg relative overflow-hidden">
               <div className="flex items-center justify-between gap-1">
-                <span className="text-[10.5px] font-bold uppercase tracking-wider text-ai-600">
+                <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-[#94a3b8]">
                   Sesi Fokus
                 </span>
-                <span className="flex h-6 w-6 items-center justify-center rounded-lg bg-ai-100 text-ai-700">
-                  <Icon name="layers" size={13} />
+                <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-indigo-500/15 text-indigo-300">
+                  <Icon name="layers" size={14} />
                 </span>
               </div>
-              <p className="mt-2 text-xl font-bold text-surface-900">
+              <p className="mt-2 text-2xl font-bold font-mono text-white">
                 {task.sessions.length}
               </p>
-              <span className="text-[10px] text-surface-400">kali fokus</span>
+              <span className="text-[11px] font-mono text-[#64748b]">kali fokus</span>
             </div>
 
             {/* Total Menit */}
-            <div className="bento-tile p-3.5 stat-bg-warning">
+            <div className="rounded-2xl border border-white/[0.08] bg-[#131825] p-4 shadow-lg relative overflow-hidden">
               <div className="flex items-center justify-between gap-1">
-                <span className="text-[10.5px] font-bold uppercase tracking-wider text-warning-600">
+                <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-[#94a3b8]">
                   Total Waktu
                 </span>
-                <span className="flex h-6 w-6 items-center justify-center rounded-lg bg-warning-100 text-warning-700">
-                  <Icon name="flame" size={13} />
+                <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-amber-500/15 text-amber-300">
+                  <Icon name="flame" size={14} />
                 </span>
               </div>
-              <p className="mt-2 text-xl font-bold text-surface-900">
-                {totalFocusMinutes} <span className="text-xs font-normal text-surface-500">mnt</span>
+              <p className="mt-2 text-2xl font-bold font-mono text-white">
+                {totalFocusMinutes} <span className="text-xs font-normal text-[#94a3b8]">mnt</span>
               </p>
             </div>
           </section>
 
           {/* Sticky Notes Card (If task has notes) */}
           {task.notes && (
-            <section className="sticky-note rounded-2xl p-5 shadow-soft">
-              <div className="flex items-center gap-2 mb-2 text-warning-800">
+            <section className="rounded-2xl border border-amber-500/30 bg-gradient-to-br from-[#131825] to-amber-500/[0.06] p-5 shadow-lg relative overflow-hidden">
+              <div className="flex items-center gap-2 mb-2 text-amber-400 font-mono text-[11px] font-bold uppercase tracking-wider">
                 <Icon name="pen" size={14} />
-                <span className="text-[11px] font-bold uppercase tracking-wider">
-                  Catatan Task & Referensi
-                </span>
+                <span>Catatan Task & Referensi</span>
               </div>
-              <p className="text-[13.5px] leading-relaxed text-surface-800 whitespace-pre-wrap font-medium">
+              <p className="text-[13.5px] leading-relaxed text-[#f1f5f9] whitespace-pre-wrap font-medium">
                 {task.notes}
               </p>
             </section>
@@ -206,27 +212,27 @@ export default async function TaskPage({ params }: { params: Promise<{ id: strin
           <section className="space-y-3">
             <div className="flex items-center justify-between gap-3">
               <div className="flex items-center gap-2">
-                <span className="flex h-6 w-6 items-center justify-center rounded-lg bg-gradient-to-br from-primary-500 to-ai-500 text-white">
+                <span className="flex h-6 w-6 items-center justify-center rounded-lg bg-gradient-to-br from-[#8B5CF6] to-indigo-500 text-white">
                   <Icon name="bookOpen" size={12} />
                 </span>
-                <h2 className="text-[15px] font-bold text-surface-900">
+                <h2 className="text-base font-bold text-white tracking-tight">
                   Riwayat & Catatan Sesi
                 </h2>
               </div>
-              <span className="chip bg-surface-100 text-surface-500 font-semibold">
+              <span className="rounded-lg border border-white/[0.08] bg-white/[0.04] px-2.5 py-1 text-xs font-mono text-[#94a3b8]">
                 {task.sessions.length} Sesi
               </span>
             </div>
 
             {task.sessions.length === 0 ? (
-              <div className="bento-tile p-8 text-center bg-white/70">
-                <div className="flex h-12 w-12 mx-auto items-center justify-center rounded-2xl bg-gradient-to-br from-primary-50 to-primary-100 text-primary-600 float-gentle">
+              <div className="rounded-2xl border border-dashed border-white/[0.08] bg-[#131825]/40 p-8 text-center">
+                <div className="flex h-12 w-12 mx-auto items-center justify-center rounded-2xl bg-[#8B5CF6]/15 text-[#d0bcff]">
                   <Icon name="pomodoro" size={22} />
                 </div>
-                <h3 className="mt-3 text-[14px] font-semibold text-surface-800">
+                <h3 className="mt-3 text-sm font-semibold text-white">
                   Belum ada sesi fokus
                 </h3>
-                <p className="mt-1 text-[12.5px] text-surface-400 max-w-sm mx-auto">
+                <p className="mt-1 text-xs text-[#94a3b8] max-w-sm mx-auto leading-relaxed">
                   Mulai Pomodoro atau sesi bebas di panel kanan untuk mencatat waktu dan refleksi belajar Anda.
                 </p>
               </div>
@@ -258,7 +264,7 @@ export default async function TaskPage({ params }: { params: Promise<{ id: strin
 
         {/* Right Column: Pomodoro & Focus Station */}
         <aside className="lg:sticky lg:top-20 space-y-4">
-          <div className="bento-tile p-5 bg-white shadow-soft">
+          <div className="rounded-3xl border border-white/[0.08] bg-[#131825] p-5 sm:p-6 shadow-xl relative overflow-hidden">
             <PomodoroPanel
               key={activeSession?.id ?? "idle-timer"}
               taskId={task.id}

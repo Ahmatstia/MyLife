@@ -92,7 +92,7 @@ export function Dialog({
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-end justify-center bg-surface-950/50 p-0 backdrop-blur-sm sm:items-center sm:p-6"
+      className="fixed inset-0 z-50 flex items-end justify-center bg-black/70 p-0 backdrop-blur-sm sm:items-center sm:p-6 animate-fade-in"
       onMouseDown={(e) => {
         if (e.target === e.currentTarget && closeable) onClose();
       }}
@@ -103,15 +103,15 @@ export function Dialog({
     >
       <div
         ref={panelRef}
-        className="animate-in-soft max-h-[90vh] w-full overflow-y-auto rounded-t-3xl bg-surface-0 p-6 shadow-pop sm:max-w-lg sm:rounded-3xl"
+        className="max-h-[90vh] w-full overflow-y-auto rounded-t-3xl bg-[#131825] border border-white/[0.1] p-6 shadow-2xl sm:max-w-lg sm:rounded-2xl text-[#e2e2eb]"
       >
-        <div className="flex items-start justify-between gap-4">
+        <div className="flex items-start justify-between gap-4 border-b border-white/[0.08] pb-4">
           <div>
-            <h2 id={titleId} className="text-lg font-semibold text-surface-900">
+            <h2 id={titleId} className="text-lg font-bold text-white tracking-tight">
               {title}
             </h2>
             {description && (
-              <p id={`${titleId}-desc`} className="mt-1 text-sm text-surface-500">
+              <p id={`${titleId}-desc`} className="mt-1 text-xs text-[#94a3b8]">
                 {description}
               </p>
             )}
@@ -120,15 +120,15 @@ export function Dialog({
             <button
               onClick={onClose}
               aria-label="Tutup dialog"
-              className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg text-surface-500 hover:bg-surface-100 hover:text-surface-800"
+              className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-[#94a3b8] hover:bg-white/[0.08] hover:text-white transition-colors"
             >
-              <Icon name="x" size={18} />
+              <Icon name="x" size={16} />
             </button>
           )}
         </div>
         <div className="mt-5">{children}</div>
         {footer && (
-          <div className="mt-6 flex justify-end gap-2 border-t border-surface-150 pt-5">
+          <div className="mt-6 flex justify-end gap-2 border-t border-white/[0.08] pt-4">
             {footer}
           </div>
         )}

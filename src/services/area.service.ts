@@ -96,3 +96,76 @@ export async function deleteArea(id: string, userId?: string) {
   await deleteAreaRecord(owner, id);
   return { success: true, id };
 }
+
+export async function getAreaDetailPageData(id: string, userId?: string) {
+  const owner = requireUserId(userId);
+  const [area, goals, projects, tasks, allAreas] = await Promise.all([
+    prisma.area.findFirst({
+      where: { id, userId: owner },
+      include: {
+        _count: {
+          select: {
+            goals: true,
+            projects: true,
+            tasks: true,
+          },
+        },
+      },
+    }),
+    prisma.goal.findMany({
+      where: { areaId: id, userId: owner },
+      include: {
+        stages: {
+          include: {
+            tasks: true,
+          },
+        },
+      },
+      orderBy: { createdAt: "desc" },
+    }),
+    prisma.project.findMany({
+      where: { areaId: id, userId: owner },
+      include: {
+        tasks: true,
+      },
+      orderBy: { createdAt: "desc" },
+    }),
+    prisma.task.findMany({
+      where: { areaId: id, userId: owner },
+      take: 15,
+      orderBy: [{ status: "asc" }, { priority: "desc" }, { createdAt: "desc" }],
+    }),
+    prisma.area.findMany({
+      where: { userId: owner, isActive: true },
+      select: { id: true, name: true, color: true },
+    }),
+  ]);
+
+  if (!area) return null;
+
+  const taskIds = [
+    ...tasks.map((t) => t.id),
+    ...goals.flatMap((g) => g.stages.flatMap((s) => s.tasks.map((t) => t.id))),
+    ...projects.flatMap((p) => p.tasks.map((t) => t.id)),
+  ];
+
+  const sessions = taskIds.length > 0
+    ? await prisma.session.findMany({
+        where: {
+          taskId: { in: taskIds },
+          userId: owner,
+        },
+        select: { durationMinutes: true },
+      })
+    : [];
+
+  return {
+    area,
+    goals,
+    projects,
+    tasks,
+    allAreas,
+    sessions,
+  };
+}
+

@@ -3,7 +3,6 @@ import { getCaptures } from "@/services/capture.service";
 import { getAreas } from "@/services/area.service";
 import { getProjects } from "@/services/project.service";
 import { getGoals } from "@/services/goal.service";
-import { PageHeader } from "@/app/components/ui/PageHeader";
 import { CaptureInboxManager } from "./CaptureInboxManager";
 
 export const dynamic = "force-dynamic";
@@ -19,11 +18,7 @@ export default async function CapturePage() {
   ]);
 
   return (
-    <div className="space-y-6">
-      <PageHeader
-        title="Inbox Catatan Cepat"
-        description="Tangkap ide, pemikiran, dan calon task seketika — tinjau dan konversikan menjadi Task atau Goal yang terstruktur."
-      />
+    <div className="w-full">
       <CaptureInboxManager
         initialCaptures={initialCaptures}
         areas={areas}

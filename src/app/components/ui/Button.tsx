@@ -13,8 +13,8 @@ const variants: Record<Variant, string> = {
   primary:
     "bg-gradient-to-r from-primary-600 to-primary-700 text-white shadow-sm hover:from-primary-700 hover:to-ai-600 hover:shadow-[var(--shadow-interactive)] shine-parent",
   secondary:
-    "bg-white text-surface-700 border border-surface-200 hover:border-primary-200 hover:bg-primary-50 hover:text-primary-700 shadow-soft shine-parent",
-  ghost: "text-surface-600 hover:bg-surface-100 hover:text-surface-900",
+    "bg-[#1e1f26] text-white border border-white/[0.1] hover:bg-white/[0.08] hover:border-white/[0.2] shadow-sm shine-parent",
+  ghost: "text-[#94a3b8] hover:bg-white/[0.08] hover:text-white transition-colors",
   danger:
     "bg-danger-500 text-white hover:bg-danger-600 shadow-sm shine-parent",
   success:

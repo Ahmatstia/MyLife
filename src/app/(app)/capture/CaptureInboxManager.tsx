@@ -3,10 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Icon } from "@/app/components/ui/Icon";
-import { Badge } from "@/app/components/ui/Badge";
-import { Button } from "@/app/components/ui/Button";
 import { Dialog } from "@/app/components/ui/Dialog";
-import { EmptyState } from "@/app/components/ui/EmptyState";
 import { useToast } from "@/app/components/ui/Toast";
 
 interface CaptureItem {
@@ -51,8 +48,9 @@ export function CaptureInboxManager({
   goals,
 }: Props) {
   const [captures, setCaptures] = useState<CaptureItem[]>(initialCaptures);
-  const [statusFilter, setStatusFilter] = useState<string>("ALL");
+  const [statusFilter, setStatusFilter] = useState<string>("PENDING");
   const [categoryFilter, setCategoryFilter] = useState<string>("ALL");
+  const [searchQuery, setSearchQuery] = useState("");
 
   // Quick Create State
   const [newContent, setNewContent] = useState("");
@@ -91,35 +89,49 @@ export function CaptureInboxManager({
   const { toast } = useToast();
   const router = useRouter();
 
+  const pendingCount = captures.filter((c) => c.status === "PENDING").length;
+  const processedCount = captures.filter((c) => c.status === "PROCESSED").length;
+  const archivedCount = captures.filter((c) => c.status === "ARCHIVED").length;
+
   const filtered = captures.filter((item) => {
     if (statusFilter !== "ALL" && item.status !== statusFilter) return false;
     if (categoryFilter !== "ALL" && item.category !== categoryFilter) return false;
+    if (searchQuery.trim() && !item.content.toLowerCase().includes(searchQuery.toLowerCase())) {
+      return false;
+    }
     return true;
   });
 
-  async function handleCreate(e: React.FormEvent) {
-    e.preventDefault();
+  async function handleCreate(e?: React.FormEvent) {
+    if (e) e.preventDefault();
     if (!newContent.trim()) return;
-
     setCreating(true);
     try {
       const res = await fetch("/api/captures", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ content: newContent.trim(), category: newCategory }),
+        body: JSON.stringify({
+          content: newContent.trim(),
+          category: newCategory,
+        }),
       });
       const data = await res.json();
-      if (!res.ok) throw new Error(data.error?.message || "Gagal menyimpan catatan.");
-
-      setCaptures((prev) => [data.data, ...prev]);
+      if (!res.ok) throw new Error(data.error?.message || "Gagal menyimpan ide");
+      setCaptures([data.data, ...captures]);
       setNewContent("");
-      toast("Catatan tersimpan ke Inbox.", "success");
+      toast("Berhasil disimpan ke Inbox!", "success");
       router.refresh();
     } catch (err: unknown) {
-      const message = err instanceof Error ? err.message : "Terjadi kesalahan.";
-      toast(message, "error");
+      toast(err instanceof Error ? err.message : "Gagal menyimpan", "error");
     } finally {
       setCreating(false);
+    }
+  }
+
+  function handleKeyDown(e: React.KeyboardEvent<HTMLTextAreaElement>) {
+    if ((e.metaKey || e.ctrlKey) && e.key === "Enter") {
+      e.preventDefault();
+      handleCreate();
     }
   }
 
@@ -130,133 +142,104 @@ export function CaptureInboxManager({
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ status: "ARCHIVED" }),
       });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error?.message || "Gagal mengarsipkan.");
-
-      setCaptures((prev) => prev.map((c) => (c.id === id ? data.data : c)));
-      toast("Catatan diarsipkan.", "success");
+      if (!res.ok) throw new Error("Gagal mengarsipkan");
+      setCaptures(captures.map((c) => (c.id === id ? { ...c, status: "ARCHIVED" } : c)));
+      toast("Catatan diarsipkan", "info");
+      router.refresh();
     } catch (err: unknown) {
-      const message = err instanceof Error ? err.message : "Gagal mengarsipkan.";
-      toast(message, "error");
+      toast(err instanceof Error ? err.message : "Gagal mengarsipkan", "error");
     }
   }
 
   async function handleDelete(id: string) {
-    if (!confirm("Hapus catatan ini?")) return;
+    if (!confirm("Hapus item catatan ini?")) return;
     try {
       const res = await fetch(`/api/captures/${id}`, { method: "DELETE" });
-      if (!res.ok) throw new Error("Gagal menghapus.");
-      setCaptures((prev) => prev.filter((c) => c.id !== id));
-      toast("Catatan dihapus.", "success");
-    } catch {
-      toast("Gagal menghapus catatan.", "error");
+      if (!res.ok) throw new Error("Gagal menghapus");
+      setCaptures(captures.filter((c) => c.id !== id));
+      toast("Catatan dihapus", "info");
+      router.refresh();
+    } catch (err: unknown) {
+      toast(err instanceof Error ? err.message : "Gagal menghapus", "error");
     }
   }
 
   function openConvertToTask(item: CaptureItem) {
     setActiveCapture(item);
-    setTaskTitle(item.content.slice(0, 100));
     setConvertType("TASK");
+    setTaskTitle(item.content.slice(0, 100));
   }
 
   function openConvertToGoal(item: CaptureItem) {
     setActiveCapture(item);
-    setGoalTitle(item.content.slice(0, 100));
     setConvertType("GOAL");
+    setGoalTitle(item.content.slice(0, 100));
   }
 
   function openConvertToProject(item: CaptureItem) {
     setActiveCapture(item);
-    setProjectTitle(item.content.slice(0, 100));
-    setProjectAreaId(areas[0]?.id || "");
-    setProjectGoalId(goals[0]?.id || "");
-    setProjectPriority("MEDIUM");
-    setProjectTargetDate("");
     setConvertType("PROJECT");
+    setProjectTitle(item.content.slice(0, 100));
   }
 
   async function handleConvertSubmit(e: React.FormEvent) {
     e.preventDefault();
-    if (!activeCapture) return;
-
+    if (!activeCapture || !convertType) return;
     setConverting(true);
     try {
-      let payload: Record<string, unknown>;
-
+      let body: Record<string, unknown> = { convertType };
       if (convertType === "TASK") {
-        let parentData: Record<string, string | undefined> = {};
-        if (taskParentType === "project" && selectedProjectId) {
-          parentData = { projectId: selectedProjectId };
-        } else if (taskParentType === "stage" && selectedStageId) {
-          parentData = { stageId: selectedStageId, goalId: selectedGoalId };
-        } else if (taskParentType === "area" && selectedAreaId) {
-          parentData = { areaId: selectedAreaId };
-        } else {
-          // Fallback to first available parent
-          if (projects[0]?.id) parentData = { projectId: projects[0].id };
-          else if (areas[0]?.id) parentData = { areaId: areas[0].id };
-        }
-
-        payload = {
-          target: "TASK",
-          data: {
-            title: taskTitle.trim(),
-            ...parentData,
-            priority: taskPriority,
-            estimatedHours: taskEstimatedHours,
-            dueDate: taskDueDate ? new Date(taskDueDate).toISOString() : undefined,
-            scheduledDate: taskDueDate ? new Date(taskDueDate).toISOString() : undefined,
-          },
+        body = {
+          ...body,
+          taskTitle: taskTitle.trim(),
+          taskPriority,
+          taskEstimatedHours: Number(taskEstimatedHours) || 1,
+          taskDueDate: taskDueDate ? new Date(taskDueDate).toISOString() : null,
+          ...(taskParentType === "project" && selectedProjectId ? { projectId: selectedProjectId } : {}),
+          ...(taskParentType === "stage" && selectedStageId ? { stageId: selectedStageId } : {}),
+          ...(taskParentType === "area" && selectedAreaId ? { areaId: selectedAreaId } : {}),
         };
       } else if (convertType === "GOAL") {
-        payload = {
-          target: "GOAL",
-          data: {
-            title: goalTitle.trim(),
-            areaId: goalAreaId || undefined,
-            type: goalType,
-            priority: goalPriority,
-          },
+        body = {
+          ...body,
+          goalTitle: goalTitle.trim(),
+          goalAreaId: goalAreaId || null,
+          goalType,
+          goalPriority,
         };
-      } else {
-        payload = {
-          target: "PROJECT",
-          data: {
-            title: projectTitle.trim(),
-            areaId: projectAreaId || undefined,
-            goalId: projectGoalId || undefined,
-            priority: projectPriority,
-            targetDate: projectTargetDate ? new Date(projectTargetDate).toISOString() : undefined,
-          },
+      } else if (convertType === "PROJECT") {
+        body = {
+          ...body,
+          projectTitle: projectTitle.trim(),
+          projectAreaId: projectAreaId || null,
+          projectGoalId: projectGoalId || null,
+          projectPriority,
+          projectTargetDate: projectTargetDate ? new Date(projectTargetDate).toISOString() : null,
         };
       }
 
       const res = await fetch(`/api/captures/${activeCapture.id}/convert`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
+        body: JSON.stringify(body),
       });
       const data = await res.json();
-      if (!res.ok) throw new Error(data.error?.message || "Gagal mengonversi catatan.");
+      if (!res.ok) throw new Error(data.error?.message || "Gagal mengonversi");
 
-      setCaptures((prev) =>
-        prev.map((c) => (c.id === activeCapture.id ? data.data.capture : c))
-      );
+      setCaptures(captures.map((c) => (c.id === activeCapture.id ? { ...c, status: "PROCESSED" } : c)));
       toast(
         convertType === "TASK"
-          ? "Berhasil dikonversi menjadi Task!"
+          ? "Berhasil dikonversi menjadi Tugas!"
           : convertType === "GOAL"
-          ? "Berhasil dikonversi menjadi Goal!"
+          ? "Berhasil dikonversi menjadi Target Utama!"
           : "Berhasil dikonversi menjadi Proyek!",
         "success"
       );
       setActiveCapture(null);
       setConvertType(null);
-      setTaskDueDate("");
       router.refresh();
     } catch (err: unknown) {
-      const message = err instanceof Error ? err.message : "Gagal mengonversi.";
-      toast(message, "error");
+      toast(err instanceof Error ? err.message : "Gagal mengonversi", "error");
     } finally {
       setConverting(false);
     }
@@ -264,252 +247,347 @@ export function CaptureInboxManager({
 
   const selectedGoal = goals.find((g) => g.id === selectedGoalId);
 
+  const getCategoryColor = (cat: string) => {
+    switch (cat) {
+      case "TASK_CANDIDATE":
+        return "text-[#F59E0B] bg-[#F59E0B]/10 border-[#F59E0B]/30";
+      case "IDEA":
+        return "text-purple-300 bg-purple-500/10 border-purple-500/30";
+      case "NOTE":
+        return "text-indigo-300 bg-indigo-500/10 border-indigo-500/30";
+      case "REMINDER":
+        return "text-emerald-400 bg-emerald-500/10 border-emerald-500/30";
+      default:
+        return "text-gray-400 bg-white/[0.05] border-white/[0.08]";
+    }
+  };
+
+  const getCategoryLabel = (cat: string) => {
+    switch (cat) {
+      case "TASK_CANDIDATE":
+        return "Calon Tugas";
+      case "IDEA":
+        return "Ide & Inovasi";
+      case "NOTE":
+        return "Catatan Bebas";
+      case "REMINDER":
+        return "Pengingat";
+      default:
+        return cat;
+    }
+  };
+
   return (
-    <div className="space-y-6">
-      {/* Quick Input Bar */}
-      <form
-        onSubmit={handleCreate}
-        className="rounded-2xl border border-surface-200 bg-white p-4 shadow-soft"
-      >
-        <p className="eyebrow text-primary-600 mb-2">Tambah Catatan Instan</p>
-        <div className="space-y-3">
-          <textarea
-            rows={2}
-            value={newContent}
-            onChange={(e) => setNewContent(e.target.value)}
-            placeholder="Ketik apa saja yang terlintas di pikiran… ide, draft task, catatan pertemuan, atau pengingat…"
-            className="w-full resize-none rounded-xl border border-surface-200 bg-surface-50 p-3 text-sm text-surface-900 placeholder:text-surface-400 focus:border-primary-400 focus:ring-2 focus:ring-primary-100"
-          />
-          <div className="flex flex-wrap items-center justify-between gap-3">
-            <div className="flex items-center gap-2">
-              <span className="text-xs text-surface-500">Kategori:</span>
-              <select
-                value={newCategory}
-                onChange={(e) => setNewCategory(e.target.value as CaptureItem["category"])}
-                className="rounded-lg border border-surface-200 bg-white px-2.5 py-1 text-xs text-surface-700 focus:border-primary-400 focus:ring-1 focus:ring-primary-400"
-              >
-                <option value="TASK_CANDIDATE">Calon Task</option>
-                <option value="IDEA">Ide & Inovasi</option>
-                <option value="NOTE">Catatan Bebas</option>
-                <option value="REMINDER">Pengingat</option>
-              </select>
-            </div>
-            <Button
-              type="submit"
-              disabled={creating || !newContent.trim()}
-              variant="primary"
-              size="sm"
-            >
-              {creating ? "Menyimpan…" : "Simpan ke Inbox"}
-            </Button>
+    <div className="flex flex-col w-full pb-16 gap-6 text-gray-200">
+      {/* 1. Header Layar */}
+      <section className="flex flex-col md:flex-row md:items-end justify-between gap-4 pb-2 border-b border-white/[0.06]">
+        <div className="flex flex-col gap-1 min-w-0">
+          <div className="flex items-center gap-2 text-purple-400 font-mono text-xs tracking-wider uppercase">
+            <span className="material-symbols-outlined text-[15px]">bolt</span>
+            <span>PUSAT PENANGKAPAN IDE &amp; GTD INBOX {"//"} PEMROSESAN CEPAT</span>
+          </div>
+          <h1 className="text-2xl md:text-3xl font-bold text-white tracking-tight leading-tight">
+            Inbox Catatan Cepat
+          </h1>
+          <p className="text-sm text-gray-400 max-w-3xl leading-relaxed">
+            Tangkap ide, pemikiran, dan calon tugas seketika tanpa distraksi — proses dan konversikan menjadi Tugas, Target, atau Proyek terstruktur.
+          </p>
+        </div>
+        <div className="flex items-center gap-3 shrink-0">
+          <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-[#131825] border border-white/[0.08] text-xs font-mono">
+            <span className="w-2 h-2 rounded-full bg-amber-400 shadow-[0_0_8px_rgba(245,158,11,0.6)]" />
+            <span className="text-gray-200 font-medium">Status Inbox: {pendingCount} Menunggu</span>
           </div>
         </div>
-      </form>
+      </section>
 
-      {/* Filter Toolbar */}
-      <div className="flex flex-wrap items-center justify-between gap-3 border-b border-surface-200 pb-3">
-        <div className="flex flex-wrap items-center gap-1.5">
-          {(["ALL", "PENDING", "PROCESSED", "ARCHIVED"] as const).map((s) => (
+      {/* 2. Quick Capture Station */}
+      <section className="relative rounded-2xl bg-[#131825] border border-white/[0.08] p-5 shadow-xl overflow-hidden focus-within:border-purple-500/50 transition-all">
+        <div className="absolute -right-20 -top-20 w-64 h-64 rounded-full bg-purple-600/10 blur-3xl pointer-events-none" />
+
+        <div className="flex items-center justify-between pb-3 mb-3 border-b border-white/[0.06]">
+          <div className="flex items-center gap-2 text-purple-300 font-mono text-xs font-semibold tracking-wider">
+            <span className="material-symbols-outlined text-[16px] text-purple-400 animate-pulse">flash_on</span>
+            <span>TANGKAP CEPAT SEKARANG</span>
+          </div>
+          <div className="flex items-center gap-1.5 text-gray-400 font-mono text-[11px]">
+            <span>Tekan</span>
+            <kbd className="px-1.5 py-0.5 rounded bg-[#0B0D13] border border-white/[0.1] text-gray-200">Ctrl</kbd>
+            <span>+</span>
+            <kbd className="px-1.5 py-0.5 rounded bg-[#0B0D13] border border-white/[0.1] text-gray-200">Enter</kbd>
+            <span>untuk simpan</span>
+          </div>
+        </div>
+
+        <div className="relative w-full">
+          <textarea
+            rows={3}
+            value={newContent}
+            onChange={(e) => setNewContent(e.target.value)}
+            onKeyDown={handleKeyDown}
+            placeholder="Ketik apa saja yang terlintas di pikiran… ide inovasi, draft tugas mendadak, catatan rapat, atau pengingat penting…"
+            className="w-full bg-[#0B0D13]/80 rounded-xl p-3.5 font-sans text-sm text-white placeholder:text-gray-500 border border-white/[0.08] focus:outline-none focus:border-purple-500/50 transition-all resize-none"
+          />
+        </div>
+
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 pt-3">
+          {/* Selector Kategori Cepat */}
+          <div className="flex items-center gap-1.5 flex-wrap">
+            {[
+              { id: "TASK_CANDIDATE", label: "Calon Tugas", dot: "bg-amber-400" },
+              { id: "IDEA", label: "Ide & Inovasi", dot: "bg-purple-400" },
+              { id: "NOTE", label: "Catatan Bebas", dot: "bg-indigo-400" },
+              { id: "REMINDER", label: "Pengingat", dot: "bg-emerald-400" },
+            ].map((cat) => {
+              const active = newCategory === cat.id;
+              return (
+                <button
+                  key={cat.id}
+                  type="button"
+                  onClick={() => setNewCategory(cat.id as CaptureItem["category"])}
+                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg font-mono text-xs transition-all ${
+                    active
+                      ? "bg-purple-600/20 text-purple-300 border border-purple-500/40 font-semibold shadow-xs"
+                      : "bg-[#0B0D13] text-gray-400 border border-white/[0.06] hover:text-white"
+                  }`}
+                >
+                  <span className={`w-1.5 h-1.5 rounded-full ${cat.dot}`} />
+                  <span>{cat.label}</span>
+                </button>
+              );
+            })}
+          </div>
+
+          {/* Action Button */}
+          <button
+            type="button"
+            onClick={() => handleCreate()}
+            disabled={creating || !newContent.trim()}
+            className="flex items-center justify-center gap-2 px-5 py-2 rounded-xl bg-gradient-to-r from-purple-600 to-indigo-600 text-white font-mono text-xs font-semibold shadow-[0_0_20px_rgba(168,85,247,0.35)] hover:brightness-110 disabled:opacity-50 transition-all"
+          >
+            <span className="material-symbols-outlined text-[16px]">add_task</span>
+            <span>{creating ? "Menyimpan…" : "Simpan ke Inbox"}</span>
+            <kbd className="ml-1 px-1.5 py-0.5 rounded bg-black/30 text-[10px]">Ctrl+↵</kbd>
+          </button>
+        </div>
+      </section>
+
+      {/* 3. Toolbar Filter & Pemrosesan */}
+      <section className="flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-3">
+        {/* Status Segmented Tabs */}
+        <div className="flex items-center p-1 rounded-xl bg-[#131825] border border-white/[0.08] self-start">
+          {[
+            { id: "PENDING", label: `Menunggu (${pendingCount})`, dot: "bg-amber-400" },
+            { id: "PROCESSED", label: `Terproses (${processedCount})`, dot: "bg-emerald-400" },
+            { id: "ARCHIVED", label: `Arsip (${archivedCount})`, dot: "bg-gray-500" },
+            { id: "ALL", label: `Semua (${captures.length})`, dot: "" },
+          ].map((tab) => (
             <button
-              key={s}
-              onClick={() => setStatusFilter(s)}
-              className={`rounded-lg px-3 py-1 text-xs font-semibold transition ${
-                statusFilter === s
-                  ? "bg-primary-600 text-white shadow-xs"
-                  : "bg-surface-100 text-surface-600 hover:bg-surface-200"
+              key={tab.id}
+              type="button"
+              onClick={() => setStatusFilter(tab.id)}
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg font-mono text-xs transition-all ${
+                statusFilter === tab.id
+                  ? "bg-purple-600 text-white font-semibold shadow-xs"
+                  : "text-gray-400 hover:text-white hover:bg-white/[0.04]"
               }`}
             >
-              {s === "ALL" && "Semua"}
-              {s === "PENDING" && "Menunggu"}
-              {s === "PROCESSED" && "Terproses"}
-              {s === "ARCHIVED" && "Arsip"}
+              {tab.dot && <span className={`w-1.5 h-1.5 rounded-full ${tab.dot}`} />}
+              <span>{tab.label}</span>
             </button>
           ))}
         </div>
 
-        <div className="flex items-center gap-2">
-          <span className="text-xs text-surface-500">Kategori:</span>
+        {/* Search & Category Filter */}
+        <div className="flex flex-wrap sm:flex-nowrap items-center gap-2">
+          <div className="relative flex-1 sm:w-64">
+            <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 text-[16px]">
+              search
+            </span>
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder="Cari isi catatan..."
+              className="w-full pl-9 pr-3 py-1.5 rounded-lg bg-[#131825] border border-white/[0.08] text-xs text-white placeholder:text-gray-500 focus:outline-none focus:border-purple-400"
+            />
+          </div>
+
           <select
             value={categoryFilter}
             onChange={(e) => setCategoryFilter(e.target.value)}
-            className="rounded-lg border border-surface-200 bg-white px-2 py-1 text-xs text-surface-700"
+            className="px-3 py-1.5 rounded-lg bg-[#131825] border border-white/[0.08] text-xs font-mono text-gray-200 focus:outline-none focus:border-purple-400"
           >
             <option value="ALL">Semua Kategori</option>
-            <option value="TASK_CANDIDATE">Calon Task</option>
-            <option value="IDEA">Ide</option>
-            <option value="NOTE">Catatan</option>
+            <option value="TASK_CANDIDATE">Calon Tugas</option>
+            <option value="IDEA">Ide &amp; Inovasi</option>
+            <option value="NOTE">Catatan Bebas</option>
             <option value="REMINDER">Pengingat</option>
           </select>
         </div>
-      </div>
+      </section>
 
-      {/* List */}
+      {/* 4. Grid Bento Kartu Catatan */}
       {filtered.length === 0 ? (
-        <EmptyState
-          title="Inbox Kosong"
-          description="Tidak ada catatan pada filter ini. Gunakan kotak di atas untuk mencatat cepat."
-        />
+        <div className="rounded-2xl border border-dashed border-white/[0.1] p-10 text-center bg-[#131825]/40">
+          <span className="material-symbols-outlined text-4xl text-gray-500 mb-2">inbox</span>
+          <p className="text-sm font-semibold text-white">Inbox Kosong</p>
+          <p className="mt-1 text-xs font-mono text-gray-400">
+            Tidak ada catatan yang cocok dengan filter saat ini.
+          </p>
+        </div>
       ) : (
-        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
-          {filtered.map((item) => (
-            <div
-              key={item.id}
-              className={`flex flex-col justify-between rounded-2xl border p-4 shadow-soft transition ${
-                item.status === "PROCESSED"
-                  ? "border-success-150 bg-success-50/20"
-                  : item.status === "ARCHIVED"
-                  ? "border-surface-200 bg-surface-100/50 opacity-70"
-                  : "border-surface-200 bg-white"
-              }`}
-            >
-              <div>
-                <div className="flex items-center justify-between gap-2 mb-2">
-                  <span className="text-[11px] font-semibold text-surface-400 uppercase tracking-wider">
-                    {item.category === "TASK_CANDIDATE" && "Calon Task"}
-                    {item.category === "IDEA" && "Ide"}
-                    {item.category === "NOTE" && "Catatan"}
-                    {item.category === "REMINDER" && "Pengingat"}
-                  </span>
-                  <Badge
-                    tone={
-                      item.status === "PROCESSED"
-                        ? "success"
-                        : item.status === "ARCHIVED"
-                        ? "neutral"
-                        : "primary"
-                    }
-                  >
-                    {item.status === "PROCESSED" && "Terproses"}
-                    {item.status === "ARCHIVED" && "Arsip"}
-                    {item.status === "PENDING" && "Inbox"}
-                  </Badge>
-                </div>
-                <p className="text-sm leading-relaxed text-surface-900 whitespace-pre-wrap">
-                  {item.content}
-                </p>
-              </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+          {filtered.map((item) => {
+            const isProcessed = item.status === "PROCESSED";
+            const isArchived = item.status === "ARCHIVED";
 
-              <div className="mt-4 pt-3 border-t border-surface-150/70">
-                {item.status === "PENDING" && (
-                  <div className="flex flex-wrap items-center gap-1.5">
-                    <button
-                      onClick={() => openConvertToTask(item)}
-                      className="inline-flex items-center gap-1 rounded-lg border border-primary-200 bg-primary-50 px-2 py-1 text-[11.5px] font-semibold text-primary-700 hover:bg-primary-100 transition"
-                    >
-                      <Icon name="check" size={12} /> Ke Task
-                    </button>
-                    <button
-                      onClick={() => openConvertToGoal(item)}
-                      className="inline-flex items-center gap-1 rounded-lg border border-violet-200 bg-violet-50 px-2 py-1 text-[11.5px] font-semibold text-violet-700 hover:bg-violet-100 transition"
-                    >
-                      <Icon name="target" size={12} /> Ke Goal
-                    </button>
-                    <button
-                      onClick={() => openConvertToProject(item)}
-                      className="inline-flex items-center gap-1 rounded-lg border border-amber-200 bg-amber-50 px-2 py-1 text-[11.5px] font-semibold text-amber-700 hover:bg-amber-100 transition"
-                    >
-                      <Icon name="layers" size={12} /> Ke Proyek
-                    </button>
-                    <button
-                      onClick={() => handleArchive(item.id)}
-                      className="ml-auto rounded-lg p-1 text-surface-400 hover:bg-surface-100 hover:text-surface-600 transition"
-                      title="Arsipkan"
-                    >
-                      <Icon name="inbox" size={14} />
-                    </button>
-                    <button
-                      onClick={() => handleDelete(item.id)}
-                      className="rounded-lg p-1 text-danger-400 hover:bg-danger-50 hover:text-danger-600 transition"
-                      title="Hapus"
-                    >
-                      <Icon name="trash" size={14} />
-                    </button>
-                  </div>
-                )}
-
-                {item.status === "PROCESSED" && (
-                  <div className="flex items-center justify-between text-xs text-success-700">
-                    <span className="flex items-center gap-1">
-                      <Icon name="check" size={13} /> Selesai dikonversi
+            return (
+              <article
+                key={item.id}
+                className={`flex flex-col justify-between rounded-2xl border p-5 transition-all shadow-sm group ${
+                  isProcessed
+                    ? "bg-[#131825]/40 border-emerald-500/20"
+                    : isArchived
+                    ? "bg-[#131825]/30 border-white/[0.04] opacity-70"
+                    : "bg-[#131825] border-white/[0.08] hover:border-purple-500/40 hover:bg-[#1A2133]/60"
+                }`}
+              >
+                <div className="flex flex-col gap-2.5">
+                  <div className="flex items-center justify-between">
+                    <span className={`px-2 py-0.5 rounded font-mono text-[10px] font-semibold uppercase border ${getCategoryColor(item.category)}`}>
+                      {getCategoryLabel(item.category)}
                     </span>
-                    <button
-                      onClick={() => handleDelete(item.id)}
-                      className="rounded-lg p-1 text-surface-400 hover:text-danger-600 transition"
-                      title="Hapus"
-                    >
-                      <Icon name="trash" size={13} />
-                    </button>
+                    <span className={`font-mono text-[10px] px-2 py-0.5 rounded-full flex items-center gap-1.5 border ${
+                      isProcessed
+                        ? "text-emerald-400 bg-emerald-500/10 border-emerald-500/20"
+                        : isArchived
+                        ? "text-gray-400 bg-white/[0.04] border-white/[0.08]"
+                        : "text-purple-300 bg-purple-500/10 border-purple-500/20"
+                    }`}>
+                      {!isProcessed && !isArchived && (
+                        <span className="w-1.5 h-1.5 rounded-full bg-purple-400 animate-ping" />
+                      )}
+                      <span>{isProcessed ? "TERPROSES" : isArchived ? "ARSIP" : "INBOX"}</span>
+                    </span>
                   </div>
-                )}
 
-                {item.status === "ARCHIVED" && (
-                  <div className="flex items-center justify-between text-xs text-surface-400">
-                    <span>Diarsipkan</span>
-                    <button
-                      onClick={() => handleDelete(item.id)}
-                      className="rounded-lg p-1 text-surface-400 hover:text-danger-600 transition"
-                      title="Hapus"
-                    >
-                      <Icon name="trash" size={13} />
-                    </button>
+                  <p className="text-sm font-sans text-gray-100 leading-relaxed whitespace-pre-wrap">
+                    {item.content}
+                  </p>
+                </div>
+
+                <div className="flex flex-col gap-3 pt-3 mt-4 border-t border-white/[0.06]">
+                  <div className="flex items-center justify-between text-gray-400 font-mono text-[10px]">
+                    <div className="flex items-center gap-1">
+                      <span className="material-symbols-outlined text-[13px]">schedule</span>
+                      <span>{new Date(item.createdAt).toLocaleDateString("id-ID", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" })}</span>
+                    </div>
+
+                    <div className="flex items-center gap-1">
+                      {!isArchived && !isProcessed && (
+                        <button
+                          type="button"
+                          onClick={() => handleArchive(item.id)}
+                          className="p-1 rounded hover:bg-white/[0.08] text-gray-400 hover:text-white transition-colors"
+                          title="Arsipkan"
+                        >
+                          <span className="material-symbols-outlined text-[15px]">archive</span>
+                        </button>
+                      )}
+                      <button
+                        type="button"
+                        onClick={() => handleDelete(item.id)}
+                        className="p-1 rounded hover:bg-rose-500/10 text-gray-400 hover:text-rose-400 transition-colors"
+                        title="Hapus"
+                      >
+                        <span className="material-symbols-outlined text-[15px]">delete</span>
+                      </button>
+                    </div>
                   </div>
-                )}
-              </div>
-            </div>
-          ))}
+
+                  {item.status === "PENDING" && (
+                    <div className="grid grid-cols-3 gap-1.5 pt-1">
+                      <button
+                        type="button"
+                        onClick={() => openConvertToTask(item)}
+                        className="flex items-center justify-center gap-1 py-1 px-1 rounded-lg bg-white/[0.04] border border-white/[0.08] hover:bg-purple-500/15 hover:border-purple-500/40 text-purple-300 font-mono text-[10.5px] transition-all"
+                      >
+                        <span className="material-symbols-outlined text-[13px]">check_box</span>
+                        <span>+ Tugas</span>
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => openConvertToGoal(item)}
+                        className="flex items-center justify-center gap-1 py-1 px-1 rounded-lg bg-white/[0.04] border border-white/[0.08] hover:bg-indigo-500/15 hover:border-indigo-500/40 text-indigo-300 font-mono text-[10.5px] transition-all"
+                      >
+                        <span className="material-symbols-outlined text-[13px]">target</span>
+                        <span>+ Target</span>
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => openConvertToProject(item)}
+                        className="flex items-center justify-center gap-1 py-1 px-1 rounded-lg bg-white/[0.04] border border-white/[0.08] hover:bg-amber-500/15 hover:border-amber-500/40 text-amber-300 font-mono text-[10.5px] transition-all"
+                      >
+                        <span className="material-symbols-outlined text-[13px]">folder</span>
+                        <span>+ Proyek</span>
+                      </button>
+                    </div>
+                  )}
+
+                  {item.status === "PROCESSED" && (
+                    <div className="flex items-center gap-1.5 text-xs font-mono text-emerald-400">
+                      <span className="material-symbols-outlined text-[15px]">task_alt</span>
+                      <span>Selesai dikonversi ke sistem</span>
+                    </div>
+                  )}
+                </div>
+              </article>
+            );
+          })}
         </div>
       )}
 
-      {/* Convert Dialog */}
+      {/* 5. Convert Modals */}
       <Dialog
-        open={Boolean(convertType && activeCapture)}
+        open={Boolean(convertType)}
         onClose={() => {
-          setConvertType(null);
           setActiveCapture(null);
+          setConvertType(null);
         }}
         title={
           convertType === "TASK"
-            ? "Konversi Catatan ke Task"
+            ? "Konversi ke Tugas"
             : convertType === "GOAL"
-            ? "Konversi Catatan ke Goal"
-            : "Konversi Catatan ke Proyek"
+            ? "Konversi ke Target Utama"
+            : "Konversi ke Proyek"
         }
-        description={
-          convertType === "TASK"
-            ? "Tentukan nama task dan induk strukturalnya (Proyek, Tahapan Goal, atau Area)."
-            : convertType === "GOAL"
-            ? "Buat Goal baru berdasarkan pemikiran ini dan kaitkan ke Area yang relevan."
-            : "Buat Proyek baru lengkap dengan pilar Area dan target tanggal selesai."
-        }
+        description={`Konversikan catatan inbox "${activeCapture?.content.slice(0, 50)}..." menjadi entitas terstruktur.`}
       >
-        <form onSubmit={handleConvertSubmit} className="space-y-4">
+        <form onSubmit={handleConvertSubmit} className="space-y-4 pt-2">
           {convertType === "TASK" && (
             <>
               <div>
-                <label className="block text-xs font-semibold text-surface-700 mb-1">
-                  Judul Task
-                </label>
+                <label className="block text-xs font-mono text-gray-400 mb-1">Judul Tugas</label>
                 <input
                   type="text"
-                  required
                   value={taskTitle}
                   onChange={(e) => setTaskTitle(e.target.value)}
-                  className="w-full rounded-xl border border-surface-200 bg-white p-2.5 text-sm text-surface-900 focus:border-primary-400 focus:ring-1 focus:ring-primary-400"
+                  required
+                  className="w-full rounded-lg border border-white/[0.1] bg-[#0B0D13] px-3 py-2 text-xs text-white focus:outline-none focus:border-purple-400"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-surface-700 mb-1">
-                  Kaitkan Induk Melalui
-                </label>
-                <div className="flex gap-2">
+                <label className="block text-xs font-mono text-gray-400 mb-1">Kaitkan ke:</label>
+                <div className="grid grid-cols-3 gap-2">
                   <button
                     type="button"
                     onClick={() => setTaskParentType("project")}
-                    className={`flex-1 rounded-lg border py-1.5 text-xs font-medium ${
+                    className={`py-1 text-xs font-mono rounded-lg border ${
                       taskParentType === "project"
-                        ? "border-primary-500 bg-primary-50 text-primary-700"
-                        : "border-surface-200 bg-white text-surface-600"
+                        ? "bg-purple-600 text-white border-purple-500"
+                        : "bg-[#0B0D13] text-gray-400 border-white/[0.1]"
                     }`}
                   >
                     Proyek
@@ -517,97 +595,83 @@ export function CaptureInboxManager({
                   <button
                     type="button"
                     onClick={() => setTaskParentType("stage")}
-                    className={`flex-1 rounded-lg border py-1.5 text-xs font-medium ${
+                    className={`py-1 text-xs font-mono rounded-lg border ${
                       taskParentType === "stage"
-                        ? "border-primary-500 bg-primary-50 text-primary-700"
-                        : "border-surface-200 bg-white text-surface-600"
+                        ? "bg-purple-600 text-white border-purple-500"
+                        : "bg-[#0B0D13] text-gray-400 border-white/[0.1]"
                     }`}
                   >
-                    Goal & Tahapan
+                    Goal / Stage
                   </button>
                   <button
                     type="button"
                     onClick={() => setTaskParentType("area")}
-                    className={`flex-1 rounded-lg border py-1.5 text-xs font-medium ${
+                    className={`py-1 text-xs font-mono rounded-lg border ${
                       taskParentType === "area"
-                        ? "border-primary-500 bg-primary-50 text-primary-700"
-                        : "border-surface-200 bg-white text-surface-600"
+                        ? "bg-purple-600 text-white border-purple-500"
+                        : "bg-[#0B0D13] text-gray-400 border-white/[0.1]"
                     }`}
                   >
-                    Area Langsung
+                    Bidang Hidup
                   </button>
                 </div>
               </div>
 
-              {taskParentType === "project" && (
+              {taskParentType === "project" && projects.length > 0 && (
                 <div>
-                  <label className="block text-xs font-semibold text-surface-700 mb-1">
-                    Pilih Proyek
-                  </label>
-                  {projects.length === 0 ? (
-                    <p className="text-xs text-warning-600">Belum ada proyek. Buat proyek terlebih dahulu atau pilih induk Area.</p>
-                  ) : (
-                    <select
-                      value={selectedProjectId}
-                      onChange={(e) => setSelectedProjectId(e.target.value)}
-                      className="w-full rounded-xl border border-surface-200 bg-white p-2.5 text-sm"
-                    >
-                      {projects.map((p) => (
-                        <option key={p.id} value={p.id}>{p.title}</option>
-                      ))}
-                    </select>
-                  )}
+                  <label className="block text-xs font-mono text-gray-400 mb-1">Pilih Proyek</label>
+                  <select
+                    value={selectedProjectId}
+                    onChange={(e) => setSelectedProjectId(e.target.value)}
+                    className="w-full rounded-lg border border-white/[0.1] bg-[#0B0D13] px-3 py-2 text-xs text-white focus:outline-none focus:border-purple-400"
+                  >
+                    {projects.map((p) => (
+                      <option key={p.id} value={p.id}>{p.title}</option>
+                    ))}
+                  </select>
                 </div>
               )}
 
-              {taskParentType === "stage" && (
-                <div className="space-y-3">
+              {taskParentType === "stage" && goals.length > 0 && (
+                <div className="grid grid-cols-2 gap-2">
                   <div>
-                    <label className="block text-xs font-semibold text-surface-700 mb-1">
-                      Pilih Goal
-                    </label>
+                    <label className="block text-xs font-mono text-gray-400 mb-1">Pilih Goal</label>
                     <select
                       value={selectedGoalId}
                       onChange={(e) => {
                         setSelectedGoalId(e.target.value);
-                        const g = goals.find((item) => item.id === e.target.value);
-                        setSelectedStageId(g?.stages?.[0]?.id || "");
+                        setSelectedStageId("");
                       }}
-                      className="w-full rounded-xl border border-surface-200 bg-white p-2.5 text-sm"
+                      className="w-full rounded-lg border border-white/[0.1] bg-[#0B0D13] px-3 py-2 text-xs text-white focus:outline-none focus:border-purple-400"
                     >
                       {goals.map((g) => (
                         <option key={g.id} value={g.id}>{g.title}</option>
                       ))}
                     </select>
                   </div>
-                  {selectedGoal && selectedGoal.stages && selectedGoal.stages.length > 0 && (
-                    <div>
-                      <label className="block text-xs font-semibold text-surface-700 mb-1">
-                        Pilih Tahapan
-                      </label>
-                      <select
-                        value={selectedStageId}
-                        onChange={(e) => setSelectedStageId(e.target.value)}
-                        className="w-full rounded-xl border border-surface-200 bg-white p-2.5 text-sm"
-                      >
-                        {selectedGoal.stages.map((st) => (
-                          <option key={st.id} value={st.id}>{st.name}</option>
-                        ))}
-                      </select>
-                    </div>
-                  )}
+                  <div>
+                    <label className="block text-xs font-mono text-gray-400 mb-1">Pilih Stage</label>
+                    <select
+                      value={selectedStageId}
+                      onChange={(e) => setSelectedStageId(e.target.value)}
+                      className="w-full rounded-lg border border-white/[0.1] bg-[#0B0D13] px-3 py-2 text-xs text-white focus:outline-none focus:border-purple-400"
+                    >
+                      <option value="">-- Tanpa Stage --</option>
+                      {selectedGoal?.stages?.map((s) => (
+                        <option key={s.id} value={s.id}>{s.name}</option>
+                      ))}
+                    </select>
+                  </div>
                 </div>
               )}
 
-              {taskParentType === "area" && (
+              {taskParentType === "area" && areas.length > 0 && (
                 <div>
-                  <label className="block text-xs font-semibold text-surface-700 mb-1">
-                    Pilih Area Kehidupan
-                  </label>
+                  <label className="block text-xs font-mono text-gray-400 mb-1">Pilih Bidang Hidup</label>
                   <select
                     value={selectedAreaId}
                     onChange={(e) => setSelectedAreaId(e.target.value)}
-                    className="w-full rounded-xl border border-surface-200 bg-white p-2.5 text-sm"
+                    className="w-full rounded-lg border border-white/[0.1] bg-[#0B0D13] px-3 py-2 text-xs text-white focus:outline-none focus:border-purple-400"
                   >
                     {areas.map((a) => (
                       <option key={a.id} value={a.id}>{a.name}</option>
@@ -618,45 +682,27 @@ export function CaptureInboxManager({
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-xs font-semibold text-surface-700 mb-1">
-                    Prioritas
-                  </label>
+                  <label className="block text-xs font-mono text-gray-400 mb-1">Prioritas</label>
                   <select
                     value={taskPriority}
-                    onChange={(e) => setTaskPriority(e.target.value as typeof taskPriority)}
-                    className="w-full rounded-xl border border-surface-200 bg-white p-2 text-xs"
+                    onChange={(e) => setTaskPriority(e.target.value as "LOW" | "MEDIUM" | "HIGH" | "URGENT")}
+                    className="w-full rounded-lg border border-white/[0.1] bg-[#0B0D13] px-3 py-2 text-xs font-mono text-white focus:outline-none focus:border-purple-400"
                   >
-                    <option value="LOW">Rendah (Low)</option>
-                    <option value="MEDIUM">Sedang (Medium)</option>
-                    <option value="HIGH">Tinggi (High)</option>
-                    <option value="URGENT">Mendesak (Urgent)</option>
+                    <option value="LOW">Rendah</option>
+                    <option value="MEDIUM">Sedang</option>
+                    <option value="HIGH">Tinggi</option>
+                    <option value="URGENT">Mendesak</option>
                   </select>
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold text-surface-700 mb-1">
-                    Estimasi Jam
-                  </label>
+                  <label className="block text-xs font-mono text-gray-400 mb-1">Tenggat Waktu</label>
                   <input
-                    type="number"
-                    step="0.5"
-                    min="0.5"
-                    value={taskEstimatedHours}
-                    onChange={(e) => setTaskEstimatedHours(Number(e.target.value))}
-                    className="w-full rounded-xl border border-surface-200 bg-white p-2 text-xs"
+                    type="date"
+                    value={taskDueDate}
+                    onChange={(e) => setTaskDueDate(e.target.value)}
+                    className="w-full rounded-lg border border-white/[0.1] bg-[#0B0D13] px-3 py-2 text-xs font-mono text-white focus:outline-none focus:border-purple-400"
                   />
                 </div>
-              </div>
-
-              <div>
-                <label className="block text-xs font-semibold text-surface-700 mb-1">
-                  Tenggat Waktu / Deadline (Opsional)
-                </label>
-                <input
-                  type="date"
-                  value={taskDueDate}
-                  onChange={(e) => setTaskDueDate(e.target.value)}
-                  className="w-full rounded-xl border border-surface-200 bg-white p-2 text-xs"
-                />
               </div>
             </>
           )}
@@ -664,63 +710,39 @@ export function CaptureInboxManager({
           {convertType === "GOAL" && (
             <>
               <div>
-                <label className="block text-xs font-semibold text-surface-700 mb-1">
-                  Judul Goal
-                </label>
+                <label className="block text-xs font-mono text-gray-400 mb-1">Judul Target Utama</label>
                 <input
                   type="text"
-                  required
                   value={goalTitle}
                   onChange={(e) => setGoalTitle(e.target.value)}
-                  className="w-full rounded-xl border border-surface-200 bg-white p-2.5 text-sm text-surface-900 focus:border-primary-400 focus:ring-1 focus:ring-primary-400"
+                  required
+                  className="w-full rounded-lg border border-white/[0.1] bg-[#0B0D13] px-3 py-2 text-xs text-white focus:outline-none focus:border-purple-400"
                 />
               </div>
-
-              <div>
-                <label className="block text-xs font-semibold text-surface-700 mb-1">
-                  Area Pilar Kehidupan (Opsional)
-                </label>
-                <select
-                  value={goalAreaId}
-                  onChange={(e) => setGoalAreaId(e.target.value)}
-                  className="w-full rounded-xl border border-surface-200 bg-white p-2.5 text-sm"
-                >
-                  <option value="">-- Tanpa Area --</option>
-                  {areas.map((a) => (
-                    <option key={a.id} value={a.id}>{a.name}</option>
-                  ))}
-                </select>
-              </div>
-
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-xs font-semibold text-surface-700 mb-1">
-                    Tipe Goal
-                  </label>
+                  <label className="block text-xs font-mono text-gray-400 mb-1">Bidang Hidup</label>
                   <select
-                    value={goalType}
-                    onChange={(e) => setGoalType(e.target.value as typeof goalType)}
-                    className="w-full rounded-xl border border-surface-200 bg-white p-2 text-xs"
+                    value={goalAreaId}
+                    onChange={(e) => setGoalAreaId(e.target.value)}
+                    className="w-full rounded-lg border border-white/[0.1] bg-[#0B0D13] px-3 py-2 text-xs text-white focus:outline-none focus:border-purple-400"
                   >
-                    <option value="LEARNING">Pembelajaran</option>
-                    <option value="ACHIEVEMENT">Pencapaian</option>
-                    <option value="HABIT">Kebiasaan</option>
-                    <option value="MAINTENANCE">Pemeliharaan</option>
+                    {areas.map((a) => (
+                      <option key={a.id} value={a.id}>{a.name}</option>
+                    ))}
                   </select>
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold text-surface-700 mb-1">
-                    Prioritas
-                  </label>
+                  <label className="block text-xs font-mono text-gray-400 mb-1">Tipe Target</label>
                   <select
-                    value={goalPriority}
-                    onChange={(e) => setGoalPriority(e.target.value as typeof goalPriority)}
-                    className="w-full rounded-xl border border-surface-200 bg-white p-2 text-xs"
+                    value={goalType}
+                    onChange={(e) => setGoalType(e.target.value as "LEARNING" | "ACHIEVEMENT" | "HABIT" | "MAINTENANCE")}
+                    className="w-full rounded-lg border border-white/[0.1] bg-[#0B0D13] px-3 py-2 text-xs font-mono text-white focus:outline-none focus:border-purple-400"
                   >
-                    <option value="LOW">Rendah (Low)</option>
-                    <option value="MEDIUM">Sedang (Medium)</option>
-                    <option value="HIGH">Tinggi (High)</option>
-                    <option value="URGENT">Mendesak (Urgent)</option>
+                    <option value="ACHIEVEMENT">Pencapaian (ACHIEVEMENT)</option>
+                    <option value="LEARNING">Pembelajaran (LEARNING)</option>
+                    <option value="HABIT">Kebiasaan (HABIT)</option>
+                    <option value="MAINTENANCE">Pemeliharaan (MAINTENANCE)</option>
                   </select>
                 </div>
               </div>
@@ -730,97 +752,59 @@ export function CaptureInboxManager({
           {convertType === "PROJECT" && (
             <>
               <div>
-                <label className="block text-xs font-semibold text-surface-700 mb-1">
-                  Judul Proyek
-                </label>
+                <label className="block text-xs font-mono text-gray-400 mb-1">Judul Proyek</label>
                 <input
                   type="text"
-                  required
                   value={projectTitle}
                   onChange={(e) => setProjectTitle(e.target.value)}
-                  className="w-full rounded-xl border border-surface-200 bg-white p-2.5 text-sm text-surface-900 focus:border-primary-400 focus:ring-1 focus:ring-primary-400"
+                  required
+                  className="w-full rounded-lg border border-white/[0.1] bg-[#0B0D13] px-3 py-2 text-xs text-white focus:outline-none focus:border-purple-400"
                 />
               </div>
-
-              <div>
-                <label className="block text-xs font-semibold text-surface-700 mb-1">
-                  Pilar Area Kehidupan
-                </label>
-                <select
-                  value={projectAreaId}
-                  onChange={(e) => setProjectAreaId(e.target.value)}
-                  className="w-full rounded-xl border border-surface-200 bg-white p-2.5 text-sm"
-                >
-                  <option value="">-- Pilih Area --</option>
-                  {areas.map((a) => (
-                    <option key={a.id} value={a.id}>{a.name}</option>
-                  ))}
-                </select>
-              </div>
-
-              {goals.length > 0 && (
+              <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-xs font-semibold text-surface-700 mb-1">
-                    Kaitkan ke Goal (Opsional)
-                  </label>
+                  <label className="block text-xs font-mono text-gray-400 mb-1">Bidang Hidup</label>
                   <select
-                    value={projectGoalId}
-                    onChange={(e) => setProjectGoalId(e.target.value)}
-                    className="w-full rounded-xl border border-surface-200 bg-white p-2.5 text-sm"
+                    value={projectAreaId}
+                    onChange={(e) => setProjectAreaId(e.target.value)}
+                    className="w-full rounded-lg border border-white/[0.1] bg-[#0B0D13] px-3 py-2 text-xs text-white focus:outline-none focus:border-purple-400"
                   >
-                    <option value="">-- Tanpa Goal --</option>
-                    {goals.map((g) => (
-                      <option key={g.id} value={g.id}>{g.title}</option>
+                    {areas.map((a) => (
+                      <option key={a.id} value={a.id}>{a.name}</option>
                     ))}
                   </select>
                 </div>
-              )}
-
-              <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-xs font-semibold text-surface-700 mb-1">
-                    Prioritas
-                  </label>
-                  <select
-                    value={projectPriority}
-                    onChange={(e) => setProjectPriority(e.target.value as typeof projectPriority)}
-                    className="w-full rounded-xl border border-surface-200 bg-white p-2 text-xs"
-                  >
-                    <option value="LOW">Rendah (Low)</option>
-                    <option value="MEDIUM">Sedang (Medium)</option>
-                    <option value="HIGH">Tinggi (High)</option>
-                    <option value="URGENT">Mendesak (Urgent)</option>
-                  </select>
-                </div>
-                <div>
-                  <label className="block text-xs font-semibold text-surface-700 mb-1">
-                    Target Tanggal Selesai
-                  </label>
+                  <label className="block text-xs font-mono text-gray-400 mb-1">Tenggat Waktu</label>
                   <input
                     type="date"
                     value={projectTargetDate}
                     onChange={(e) => setProjectTargetDate(e.target.value)}
-                    className="w-full rounded-xl border border-surface-200 bg-white p-2 text-xs"
+                    className="w-full rounded-lg border border-white/[0.1] bg-[#0B0D13] px-3 py-2 text-xs font-mono text-white focus:outline-none focus:border-purple-400"
                   />
                 </div>
               </div>
             </>
           )}
 
-          <div className="mt-5 flex items-center justify-end gap-2 pt-3 border-t border-surface-150">
-            <Button
+          <div className="flex justify-end gap-2 pt-2 border-t border-white/[0.06]">
+            <button
               type="button"
-              variant="secondary"
               onClick={() => {
-                setConvertType(null);
                 setActiveCapture(null);
+                setConvertType(null);
               }}
+              className="rounded-lg px-4 py-2 text-xs font-mono text-gray-400 hover:bg-white/[0.05]"
             >
               Batal
-            </Button>
-            <Button type="submit" variant="primary" disabled={converting}>
-              {converting ? "Mengonversi…" : "Konversi Sekarang"}
-            </Button>
+            </button>
+            <button
+              type="submit"
+              disabled={converting}
+              className="rounded-lg bg-purple-600 px-4 py-2 text-xs font-mono font-semibold text-white hover:bg-purple-500 disabled:opacity-50 transition-colors shadow-sm"
+            >
+              {converting ? "Memproses..." : "Konversi Sekarang"}
+            </button>
           </div>
         </form>
       </Dialog>

@@ -67,6 +67,9 @@ export interface AnalyticsSummary {
     goalCount: number;
     taskCount: number;
     completedTaskCount: number;
+    focusMinutes?: number;
+    focusHours?: number;
+    percentage?: number;
   }[];
 }
 

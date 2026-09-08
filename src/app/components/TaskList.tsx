@@ -37,7 +37,7 @@ export default function TaskList({ tasks }: { tasks: Task[] }) {
   return (
     <div className="mt-5">
       <div className="mb-3 flex flex-wrap items-center gap-2">
-        <div className="flex rounded-xl border border-surface-200 bg-surface-0 p-1 shadow-soft">
+        <div className="flex rounded-xl border border-white/[0.08] bg-[#0B0D13] p-1 shadow-sm">
           {statusTabs.map(([value, label]) => (
             <button
               key={value}
@@ -45,15 +45,15 @@ export default function TaskList({ tasks }: { tasks: Task[] }) {
               onClick={() => setStatus(value)}
               aria-pressed={status === value}
               className={`rounded-lg px-3 py-1.5 text-xs font-medium transition ${
-                status === value ? "bg-primary-600 text-white shadow-sm" : "text-surface-600 hover:bg-surface-100"
+                status === value ? "bg-purple-600 text-white shadow-sm" : "text-gray-400 hover:text-white hover:bg-white/[0.05]"
               }`}
             >
               {label}
             </button>
           ))}
         </div>
-        <span className="mx-1 hidden h-4 w-px bg-surface-200 sm:block" />
-        <div className="flex rounded-xl border border-surface-200 bg-surface-0 p-1 shadow-soft">
+        <span className="mx-1 hidden h-4 w-px bg-white/[0.1] sm:block" />
+        <div className="flex rounded-xl border border-white/[0.08] bg-[#0B0D13] p-1 shadow-sm">
           {priorityTabs.map(([value, label]) => (
             <button
               key={value}
@@ -61,7 +61,7 @@ export default function TaskList({ tasks }: { tasks: Task[] }) {
               onClick={() => setPriority(value)}
               aria-pressed={priority === value}
               className={`rounded-lg px-3 py-1.5 text-xs font-medium transition ${
-                priority === value ? "bg-ai-600 text-white shadow-sm" : "text-surface-600 hover:bg-surface-100"
+                priority === value ? "bg-purple-600 text-white shadow-sm" : "text-gray-400 hover:text-white hover:bg-white/[0.05]"
               }`}
             >
               {label}
@@ -70,7 +70,7 @@ export default function TaskList({ tasks }: { tasks: Task[] }) {
         </div>
       </div>
       {filtered.length === 0 ? (
-        <p className="rounded-xl border border-dashed border-surface-300 p-5 text-center text-xs text-surface-500">
+        <p className="rounded-xl border border-dashed border-white/[0.1] bg-[#0B0D13]/40 p-5 text-center text-xs font-mono text-gray-500">
           Tidak ada task yang cocok dengan filter ini.
         </p>
       ) : (

@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useState, useEffect } from "react";
 
@@ -76,19 +76,12 @@ export function CuteProgressLoader() {
 
       {/* ── Playful Rotating Phrase ── */}
       <div className="text-center max-w-sm">
-        <p className="text-[13.5px] font-bold text-surface-800 tracking-tight transition-all duration-300 min-h-[22px]">
+        <p className="text-[13.5px] font-bold text-white/90 tracking-tight transition-all duration-300 min-h-[22px]">
           {playfulPhrases[phraseIndex]}
         </p>
-        <p className="mt-1 text-[11.5px] text-surface-400">
+        <p className="mt-1 text-[11.5px] text-[#94A3B8]">
           Menyiapkan data terbaik untuk perjalananmu...
         </p>
-      </div>
-
-      {/* ── Modern Shimmer Skeleton Bento Preview ── */}
-      <div className="w-full max-w-3xl mt-8 grid grid-cols-1 sm:grid-cols-3 gap-3 opacity-60">
-        <div className="h-24 rounded-2xl border border-surface-150 bg-gradient-to-r from-surface-100 via-surface-50 to-surface-100 animate-pulse" />
-        <div className="h-24 rounded-2xl border border-surface-150 bg-gradient-to-r from-surface-100 via-surface-50 to-surface-100 animate-pulse delay-75" />
-        <div className="h-24 rounded-2xl border border-surface-150 bg-gradient-to-r from-surface-100 via-surface-50 to-surface-100 animate-pulse delay-150" />
       </div>
 
       {/* Embedded keyframe styles for smooth blob motion */}

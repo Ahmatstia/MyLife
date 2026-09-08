@@ -88,71 +88,81 @@ export function AreasManager({ initialAreas }: { initialAreas: AreaItem[] }) {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <p className="text-sm text-surface-500">
-          Area mewakili domain kehidupan Anda (contoh: Karier, Kesehatan, Finansial, Belajar).
-        </p>
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div>
+          <div className="flex items-center gap-2 text-violet-400 font-mono text-xs uppercase tracking-widest font-bold">
+            <span>DOMAIN KEHIDUPAN // PILAR UTAMA</span>
+            <span className="text-white/20">•</span>
+            <span className="text-emerald-400">AKTIF</span>
+          </div>
+          <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-white mt-1">
+            Bidang Hidup <span className="text-surface-400 font-normal text-lg">(Life Areas)</span>
+          </h1>
+          <p className="text-sm text-surface-400 mt-0.5">
+            Kelola pilar utama kehidupan Anda untuk menyelaraskan Goals, Projects, dan Tasks.
+          </p>
+        </div>
         <button
           onClick={() => setIsCreating(!isCreating)}
-          className="inline-flex items-center gap-2 rounded-xl bg-primary-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-primary-700 transition-all"
+          className="inline-flex items-center gap-2 rounded-xl bg-violet-600 px-4 py-2 text-sm font-semibold text-white shadow-lg shadow-violet-500/25 hover:bg-violet-500 transition-all self-start sm:self-auto"
         >
           <Icon name={isCreating ? "x" : "plus"} size={16} />
-          {isCreating ? "Batal" : "Tambah Area"}
+          {isCreating ? "Batal" : "+ Tambah Bidang"}
         </button>
       </div>
 
       {isCreating && (
-        <form onSubmit={handleCreate} className="rounded-2xl border border-surface-200 bg-white p-5 shadow-subtle space-y-4">
-          <h3 className="text-base font-bold text-surface-900">Area Baru</h3>
+        <form onSubmit={handleCreate} className="rounded-2xl border border-white/10 bg-[#131825]/95 p-5 shadow-2xl backdrop-blur-md space-y-4">
+          <h3 className="text-base font-bold text-white">Bidang Hidup Baru</h3>
           <div className="grid gap-4 sm:grid-cols-2">
             <div>
-              <label className="block text-xs font-semibold text-surface-600 mb-1">Nama Area</label>
+              <label className="block text-xs font-semibold text-surface-300 mb-1">Nama Bidang</label>
               <input
                 type="text"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 placeholder="Contoh: Karier & Profesional"
                 required
-                className="w-full rounded-lg border border-surface-200 px-3 py-2 text-sm focus:outline-none focus:border-primary-500"
+                className="w-full rounded-xl border border-white/10 bg-[#0E131F] px-3.5 py-2 text-sm text-white placeholder:text-surface-500 focus:outline-none focus:border-violet-500/50"
               />
             </div>
             <div>
-              <label className="block text-xs font-semibold text-surface-600 mb-1">Warna Badge</label>
+              <label className="block text-xs font-semibold text-surface-300 mb-1">Warna Badge</label>
               <div className="flex items-center gap-2">
                 <input
                   type="color"
                   value={color}
                   onChange={(e) => setColor(e.target.value)}
-                  className="h-9 w-12 cursor-pointer rounded border border-surface-200 p-1"
+                  className="h-9 w-12 cursor-pointer rounded-lg border border-white/10 bg-[#0E131F] p-1"
                 />
-                <span className="text-xs text-surface-500 font-mono">{color}</span>
+                <span className="text-xs text-surface-400 font-mono">{color}</span>
               </div>
             </div>
           </div>
           <div>
-            <label className="block text-xs font-semibold text-surface-600 mb-1">Deskripsi (Opsional)</label>
+            <label className="block text-xs font-semibold text-surface-300 mb-1">Deskripsi (Opsional)</label>
             <textarea
               value={description}
               onChange={(e) => setDescription(e.target.value)}
-              placeholder="Deskripsi fokus domain ini..."
+              placeholder="Deskripsi fokus dan misi domain ini..."
               rows={2}
-              className="w-full rounded-lg border border-surface-200 px-3 py-2 text-sm focus:outline-none focus:border-primary-500"
+              className="w-full rounded-xl border border-white/10 bg-[#0E131F] px-3.5 py-2 text-sm text-white placeholder:text-surface-500 focus:outline-none focus:border-violet-500/50"
             />
           </div>
           <div className="flex justify-end gap-2">
             <button
               type="button"
               onClick={() => setIsCreating(false)}
-              className="rounded-lg px-3 py-1.5 text-xs font-semibold text-surface-600 hover:bg-surface-100"
+              className="rounded-lg px-3.5 py-1.5 text-xs font-semibold text-surface-400 hover:bg-white/5 hover:text-white"
             >
               Batal
             </button>
             <button
               type="submit"
               disabled={loading || !name.trim()}
-              className="rounded-lg bg-primary-600 px-4 py-1.5 text-xs font-semibold text-white hover:bg-primary-700 disabled:opacity-50"
+              className="rounded-lg bg-violet-600 px-4 py-1.5 text-xs font-semibold text-white shadow-md hover:bg-violet-500 disabled:opacity-50"
             >
-              {loading ? "Menyimpan..." : "Simpan Area"}
+              {loading ? "Menyimpan..." : "Simpan Bidang"}
             </button>
           </div>
         </form>
@@ -162,50 +172,63 @@ export function AreasManager({ initialAreas }: { initialAreas: AreaItem[] }) {
         {initialAreas.map((area) => (
           <div
             key={area.id}
-            className={`rounded-2xl border p-5 shadow-subtle transition-all ${
-              area.isActive ? "border-surface-200 bg-white" : "border-surface-150 bg-surface-50/60 opacity-70"
+            className={`rounded-2xl border p-5 shadow-xl transition-all ${
+              area.isActive
+                ? "border-white/[0.08] bg-[#131825]/90 hover:border-violet-500/30"
+                : "border-white/5 bg-[#0E131F]/60 opacity-60"
             }`}
           >
             <div className="flex items-start justify-between">
-              <div className="flex items-center gap-2.5">
+              <div className="flex items-center gap-2.5 min-w-0 flex-1">
                 <span
-                  className="h-3.5 w-3.5 rounded-full ring-2 ring-white shadow-sm"
+                  className="h-3.5 w-3.5 shrink-0 rounded-full ring-2 ring-white/20 shadow-sm"
                   style={{ backgroundColor: area.color }}
                 />
-                <h4 className="font-bold text-surface-900">{area.name}</h4>
+                <Link
+                  href={`/areas/${area.id}`}
+                  className="font-bold text-white hover:text-violet-300 truncate text-base transition"
+                >
+                  {area.name}
+                </Link>
               </div>
-              <div className="flex items-center gap-1">
+              <div className="flex items-center gap-1 shrink-0 ml-2">
                 <button
                   onClick={() => handleToggleActive(area)}
                   title={area.isActive ? "Arsipkan" : "Aktifkan"}
-                  className="rounded p-1 text-surface-400 hover:bg-surface-100 hover:text-surface-700 transition-all"
+                  className="rounded-lg p-1.5 text-surface-400 hover:bg-white/5 hover:text-white transition-all"
                 >
                   <Icon name={area.isActive ? "stop" : "play"} size={14} />
                 </button>
                 <button
                   onClick={() => handleDelete(area)}
                   title="Hapus"
-                  className="rounded p-1 text-surface-400 hover:bg-rose-50 hover:text-rose-600 transition-all"
+                  className="rounded-lg p-1.5 text-surface-400 hover:bg-rose-500/10 hover:text-rose-400 transition-all"
                 >
                   <Icon name="trash" size={14} />
                 </button>
               </div>
             </div>
 
-            {area.description && <p className="mt-2 text-xs text-surface-600 line-clamp-2">{area.description}</p>}
+            {area.description && (
+              <p className="mt-2 text-xs text-surface-400 line-clamp-2 leading-relaxed">
+                {area.description}
+              </p>
+            )}
 
             {/* Linked Goals & Projects */}
             {((area.goals && area.goals.length > 0) || (area.projects && area.projects.length > 0)) && (
-              <div className="mt-3 space-y-2 pt-2.5 border-t border-surface-100">
+              <div className="mt-3.5 space-y-2 pt-3 border-t border-white/[0.06]">
                 {area.goals && area.goals.length > 0 && (
                   <div>
-                    <span className="text-[10px] font-semibold uppercase tracking-wider text-surface-400">Goals Terhubung:</span>
+                    <span className="text-[10px] font-mono font-semibold uppercase tracking-wider text-surface-400">
+                      Target Terhubung:
+                    </span>
                     <div className="mt-1 flex flex-wrap gap-1">
                       {area.goals.map((g) => (
                         <Link
                           key={g.id}
                           href={`/goals/${g.id}`}
-                          className="inline-flex items-center gap-1 rounded-md bg-surface-100 hover:bg-primary-50 hover:text-primary-700 px-2 py-0.5 text-[11px] font-medium text-surface-700 transition"
+                          className="inline-flex items-center gap-1 rounded-md border border-white/5 bg-[#0E131F] hover:border-violet-500/30 hover:text-violet-300 px-2 py-0.5 text-[11px] font-medium text-surface-300 transition"
                         >
                           <span className="text-[10px]">🎯</span>
                           <span className="truncate max-w-[130px]">{g.title}</span>
@@ -216,13 +239,15 @@ export function AreasManager({ initialAreas }: { initialAreas: AreaItem[] }) {
                 )}
                 {area.projects && area.projects.length > 0 && (
                   <div>
-                    <span className="text-[10px] font-semibold uppercase tracking-wider text-surface-400">Proyek Terhubung:</span>
+                    <span className="text-[10px] font-mono font-semibold uppercase tracking-wider text-surface-400">
+                      Proyek Terhubung:
+                    </span>
                     <div className="mt-1 flex flex-wrap gap-1">
                       {area.projects.map((p) => (
                         <Link
                           key={p.id}
                           href={`/projects/${p.id}`}
-                          className="inline-flex items-center gap-1 rounded-md bg-surface-100 hover:bg-primary-50 hover:text-primary-700 px-2 py-0.5 text-[11px] font-medium text-surface-700 transition"
+                          className="inline-flex items-center gap-1 rounded-md border border-white/5 bg-[#0E131F] hover:border-violet-500/30 hover:text-violet-300 px-2 py-0.5 text-[11px] font-medium text-surface-300 transition"
                         >
                           <span className="text-[10px]">📁</span>
                           <span className="truncate max-w-[130px]">{p.title}</span>
@@ -234,29 +259,38 @@ export function AreasManager({ initialAreas }: { initialAreas: AreaItem[] }) {
               </div>
             )}
 
-            <div className="mt-4 flex items-center justify-between text-xs text-surface-400 border-t border-surface-100 pt-3">
-              <span className="font-semibold text-surface-600">{area._count?.goals ?? 0} Goals</span>
+            <div className="mt-4 flex items-center justify-between text-xs text-surface-400 border-t border-white/[0.06] pt-3 font-mono">
+              <span className="text-violet-300 font-semibold">{area._count?.goals ?? 0} Goals</span>
               <span>•</span>
-              <span className="font-semibold text-surface-600">{area._count?.projects ?? 0} Proyek</span>
+              <span className="text-surface-300 font-semibold">{area._count?.projects ?? 0} Proyek</span>
               <span>•</span>
-              <span className="font-semibold text-surface-600">{area._count?.tasks ?? 0} Tasks</span>
+              <span className="text-surface-300 font-semibold">{area._count?.tasks ?? 0} Tasks</span>
             </div>
 
             {/* Quick Actions */}
-            <div className="mt-3 flex items-center gap-2 pt-2.5 border-t border-surface-100">
-              <NewGoalButton
-                areas={initialAreas.map((a) => ({ id: a.id, name: a.name, color: a.color }))}
-                defaultAreaId={area.id}
-                buttonLabel="+ Goal"
-                buttonVariant="secondary"
-                buttonSize="sm"
-              />
+            <div className="mt-3 flex items-center justify-between gap-2 pt-2.5 border-t border-white/[0.06]">
+              <div className="flex items-center gap-2">
+                <NewGoalButton
+                  areas={initialAreas.map((a) => ({ id: a.id, name: a.name, color: a.color }))}
+                  defaultAreaId={area.id}
+                  buttonLabel="+ Goal"
+                  buttonVariant="secondary"
+                  buttonSize="sm"
+                />
+                <Link
+                  href={`/projects?new=true&areaId=${area.id}`}
+                  className="inline-flex h-8 items-center gap-1 rounded-xl border border-white/10 bg-[#0E131F] px-3 text-xs font-semibold text-surface-300 hover:border-violet-500/30 hover:text-white transition"
+                >
+                  <Icon name="plus" size={12} />
+                  + Proyek
+                </Link>
+              </div>
+
               <Link
-                href={`/projects?new=true&areaId=${area.id}`}
-                className="inline-flex h-8 items-center gap-1 rounded-xl border border-surface-200 bg-white px-3 text-xs font-semibold text-surface-700 shadow-soft hover:border-primary-200 hover:bg-primary-50 hover:text-primary-700 transition"
+                href={`/areas/${area.id}`}
+                className="text-xs font-semibold text-violet-400 hover:text-violet-300 flex items-center gap-1"
               >
-                <Icon name="plus" size={13} />
-                + Proyek
+                Detail →
               </Link>
             </div>
           </div>
@@ -264,15 +298,17 @@ export function AreasManager({ initialAreas }: { initialAreas: AreaItem[] }) {
       </div>
 
       {initialAreas.length === 0 && !isCreating && (
-        <div className="rounded-2xl border border-dashed border-surface-300 p-8 text-center bg-surface-50/50">
-          <p className="text-sm font-semibold text-surface-700">Belum ada Area terdaftar.</p>
-          <p className="mt-1 text-xs text-surface-500">Mulai kelompokkan aktivitas dan tujuan Anda ke dalam domain kehidupan.</p>
+        <div className="rounded-2xl border border-dashed border-white/10 bg-[#131825]/90 p-12 text-center">
+          <p className="text-base font-bold text-white">Belum ada Bidang Hidup terdaftar.</p>
+          <p className="mt-1 text-xs text-surface-400">
+            Mulai kelompokkan aktivitas dan tujuan Anda ke dalam domain kehidupan (mis. Karier, Belajar, Finansial).
+          </p>
           <button
             onClick={() => setIsCreating(true)}
-            className="mt-4 inline-flex items-center gap-1.5 rounded-xl bg-primary-600 px-3.5 py-1.5 text-xs font-semibold text-white shadow-sm hover:bg-primary-700"
+            className="mt-4 inline-flex items-center gap-1.5 rounded-xl bg-violet-600 px-4 py-2 text-xs font-semibold text-white shadow-lg shadow-violet-500/25 hover:bg-violet-500"
           >
             <Icon name="plus" size={14} />
-            Buat Area Pertama
+            Buat Bidang Pertama
           </button>
         </div>
       )}

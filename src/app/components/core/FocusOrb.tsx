@@ -8,24 +8,24 @@ import { useId, type ReactNode } from "react";
 
 const tones = {
   primary: {
-    from: "var(--color-primary-400)",
-    to: "var(--color-primary-600)",
-    track: "stroke-surface-150",
+    from: "#c0c1ff",
+    to: "#7c3aed",
+    track: "stroke-white/[0.08]",
   },
   success: {
-    from: "var(--color-success-400)",
-    to: "var(--color-success-600)",
-    track: "stroke-surface-150",
+    from: "#4edea3",
+    to: "#059669",
+    track: "stroke-white/[0.08]",
   },
   ai: {
-    from: "var(--color-ai-400)",
-    to: "var(--color-ai-600)",
-    track: "stroke-surface-150",
+    from: "#d0bcff",
+    to: "#a078ff",
+    track: "stroke-white/[0.08]",
   },
   warning: {
-    from: "var(--color-warning-400)",
-    to: "var(--color-warning-600)",
-    track: "stroke-surface-150",
+    from: "#F59E0B",
+    to: "#d97706",
+    track: "stroke-white/[0.08]",
   },
 } as const;
 

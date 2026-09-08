@@ -1,7 +1,6 @@
 import { requirePageUser } from "@/lib/auth";
 import { listNotifications, getUnreadNotificationCount } from "@/services/notification.service";
 import { runReminderCycle } from "@/services/reminder.service";
-import { PageHeader } from "@/app/components/ui/PageHeader";
 import { NotificationCenter, type NotificationItem } from "./NotificationCenter";
 
 export const dynamic = "force-dynamic";
@@ -34,13 +33,7 @@ export default async function NotificationsPage() {
   }));
 
   return (
-    <div className="space-y-6">
-      <PageHeader
-        eyebrow="Pusat Informasi"
-        title="Notifikasi & Pengingat"
-        description="Pantau tugas jatuh tempo, jadwal kalender, dan pengingat proaktif dari sistem MyLife Anda."
-      />
-
+    <div className="w-full">
       <NotificationCenter
         initialNotifications={serializedNotifications}
         initialUnreadCount={unreadCount}
