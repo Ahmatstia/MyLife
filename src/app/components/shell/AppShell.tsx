@@ -187,7 +187,7 @@ export function AppShell({
                 <Icon name="sparkles" size={14} />
               </span>
               <span className="text-sm font-bold tracking-tight text-white">
-                My<span className="text-[#a078ff]">Life</span>
+                My<span className="gradient-text">Life</span>
               </span>
             </Link>
 

@@ -231,6 +231,9 @@ describe("Phase 7: Proactive Life OS — Notifications, Reminders, Automation & 
 
       const totalNotifs = await prisma.notification.count({ where: { userId: userA } });
       expect(totalNotifs).toBe(result.createdCount);
+
+      // Cleanup tasks created in 3.1
+      await prisma.task.deleteMany({ where: { userId: userA } });
     });
 
     it("3.2 Generates reminder for CalendarEvent starting within 15 minutes", async () => {

@@ -43,10 +43,10 @@ export default async function Home() {
 
             <div className="mt-6">
               <h1 className="text-2xl font-bold tracking-tight text-surface-900">
-                Selamat datang
+                Selamat Datang di MyLife
               </h1>
               <p className="mt-1 text-[13px] text-surface-500">
-                Masuk agar goals, progres, dan refleksi Anda tetap pribadi.
+                Masuk agar goals, progres, dan refleksi Anda tetap pribadi. Buat Goal Pertama Anda untuk mulai menyelaraskan arah hidup dan pekerjaan.
               </p>
             </div>
 

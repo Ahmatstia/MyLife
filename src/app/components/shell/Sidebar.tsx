@@ -40,6 +40,7 @@ const navigationGroups: NavGroup[] = [
     items: [
       { href: "/capture", label: "Kotak Masuk (Inbox)", verb: "Catat", icon: "inbox", color: "text-[#F59E0B]" },
       { href: "/review", label: "Refleksi & Evaluasi", verb: "Jurnal", icon: "capture", color: "text-[#38bdf8]" },
+      { href: "/insights", label: "Wawasan & AI", verb: "Insights", icon: "sparkles", color: "text-[#d0bcff]" },
       { href: "/dashboard", label: "Grafik & Analitik", verb: "Statistik", icon: "chart", color: "text-[#4edea3]" },
       { href: "/notifications", label: "Notifikasi", verb: "Info", icon: "bell", color: "text-[#F43F5E]" },
     ],
@@ -131,7 +132,7 @@ export function Sidebar({
             }`}
           >
             <span className="text-[15px] font-bold tracking-tight text-white">
-              My<span className="text-[#a078ff]">Life</span>
+              My<span className="gradient-text">Life</span>
             </span>
             <span className="text-[9.5px] font-semibold uppercase tracking-[0.18em] text-[#94a3b8]">
               Personal Life OS

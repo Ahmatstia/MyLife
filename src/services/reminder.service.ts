@@ -98,6 +98,49 @@ export function getLocalTimeParts(date: Date, timezone: string): { dayOfWeek: nu
 }
 
 /**
+ * Pure function: Get UTC start-of-day and end-of-day for the user's local date.
+ */
+export function getLocalDayBoundsUtc(date: Date, timezone: string): { startOfDay: Date; endOfDay: Date } {
+  try {
+    const formatter = new Intl.DateTimeFormat("en-US", {
+      timeZone: timezone,
+      year: "numeric",
+      month: "numeric",
+      day: "numeric",
+      hour: "numeric",
+      minute: "numeric",
+      second: "numeric",
+      hour12: false,
+    });
+    const parts = formatter.formatToParts(date);
+    const getPart = (type: string) => Number(parts.find((p) => p.type === type)?.value ?? "0");
+    const year = getPart("year");
+    const month = getPart("month") - 1;
+    const day = getPart("day");
+    let hour = getPart("hour");
+    if (hour === 24) hour = 0;
+    const minute = getPart("minute");
+    const second = getPart("second");
+
+    // Local time represented as UTC timestamp
+    const localAsUtc = Date.UTC(year, month, day, hour, minute, second);
+    const offsetMs = localAsUtc - date.getTime();
+
+    // Start of day (00:00:00.000 local time) converted to UTC
+    const localMidnightAsUtc = Date.UTC(year, month, day, 0, 0, 0);
+    const startOfDay = new Date(localMidnightAsUtc - offsetMs);
+    const endOfDay = new Date(startOfDay.getTime() + 24 * 60 * 60 * 1000 - 1);
+    return { startOfDay, endOfDay };
+  } catch {
+    const startOfDay = new Date(date);
+    startOfDay.setUTCHours(0, 0, 0, 0);
+    const endOfDay = new Date(date);
+    endOfDay.setUTCHours(23, 59, 59, 999);
+    return { startOfDay, endOfDay };
+  }
+}
+
+/**
  * Main proactive reminder cycle for a user.
  * 100% deterministic, idempotent, and testable.
  */
@@ -117,8 +160,7 @@ export async function runReminderCycle(
   const inQuiet = isQuietHours(now, timezone) && !options.forceIgnoreQuietHours;
 
   const todayStr = getLocalDateString(now, timezone);
-  const startOfDay = new Date(`${todayStr}T00:00:00.000Z`);
-  const endOfDay = new Date(`${todayStr}T23:59:59.999Z`);
+  const { startOfDay, endOfDay } = getLocalDayBoundsUtc(now, timezone);
 
   let evaluated = 0;
   let createdCount = 0;
