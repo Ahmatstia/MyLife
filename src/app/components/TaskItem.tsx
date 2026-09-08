@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, startTransition } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Icon } from "./ui/Icon";
@@ -35,8 +35,8 @@ export default function TaskItem({
   const router = useRouter();
   const { toast } = useToast();
   const { askConfirm, confirmDialog } = useConfirm();
-  const [isLoading, setIsLoading] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const displayName = title ?? name ?? "";
   const [editName, setEditName] = useState(displayName);
@@ -45,24 +45,41 @@ export default function TaskItem({
   const [editHours, setEditHours] = useState(String(estimatedHours));
   const [editNotes, setEditNotes] = useState(notes ?? "");
 
-  const completed = status === "COMPLETED";
+  const [optimisticStatus, setOptimisticStatus] = useState<string | null>(null);
+  const [prevStatus, setPrevStatus] = useState(status);
+
+  if (prevStatus !== status) {
+    setPrevStatus(status);
+    setOptimisticStatus(null);
+  }
+
+  const effectiveStatus = optimisticStatus ?? status;
+  const completed = effectiveStatus === "COMPLETED";
 
   async function toggleTask() {
-    if (isLoading) return;
+    const nextStatus = completed ? "IN_PROGRESS" : "COMPLETED";
+    // 1. Optimistic Update (0ms instant response)
+    setOptimisticStatus(nextStatus);
+    toast(nextStatus === "COMPLETED" ? "Task selesai. Bagus! 🎉" : "Task dibuka kembali.", "success");
+
     setIsLoading(true);
     try {
       const response = await fetch(`/api/tasks/${id}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          status: completed ? "IN_PROGRESS" : status === "NOT_STARTED" ? "IN_PROGRESS" : "COMPLETED",
+          status: nextStatus,
         }),
       });
       const data = await response.json();
       if (!response.ok) throw new Error(data.error?.message || data.error || "Gagal memperbarui task.");
-      toast(completed ? "Task dibuka kembali." : "Task selesai. Bagus!", "success");
-      router.refresh();
+      // Background revalidation without blocking user interaction
+      startTransition(() => {
+        router.refresh();
+      });
     } catch (e) {
+      // Revert if error
+      setOptimisticStatus(null);
       toast(e instanceof Error ? e.message : "Gagal memperbarui task.", "error");
     } finally {
       setIsLoading(false);
@@ -226,9 +243,8 @@ export default function TaskItem({
           <button
             type="button"
             onClick={toggleTask}
-            disabled={isLoading}
             aria-label={completed ? `Buka kembali ${displayName}` : `Ubah status ${displayName}`}
-            className={`mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full border-2 transition-all ${
+            className={`mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full border-2 transition-all cursor-pointer active:scale-90 ${
               completed
                 ? "border-emerald-400 bg-emerald-400 text-[#0B0D13] shadow-xs"
                 : "border-white/20 bg-white/[0.05] hover:border-purple-400"

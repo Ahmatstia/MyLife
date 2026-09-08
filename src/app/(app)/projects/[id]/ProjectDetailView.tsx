@@ -1,11 +1,12 @@
 "use client";
 
-import { useState } from "react";
+import { useState, startTransition } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Icon } from "@/app/components/ui/Icon";
 import { useToast } from "@/app/components/ui/Toast";
 import { Dialog } from "@/app/components/ui/Dialog";
+import { BackButton } from "@/app/components/ui/BackButton";
 
 type TaskItem = {
   id: string;
@@ -87,6 +88,15 @@ export function ProjectDetailView({ project }: { project: ProjectDetail }) {
   const [editMilestoneDue, setEditMilestoneDue] = useState("");
   const [editMilestoneStatus, setEditMilestoneStatus] = useState("PENDING");
   const [loadingEditMilestone, setLoadingEditMilestone] = useState(false);
+
+  // Optimistic Tasks State for 0ms instant UI responses
+  const [optimisticTasks, setOptimisticTasks] = useState<TaskItem[] | null>(null);
+  const [prevProjectTasks, setPrevProjectTasks] = useState(project.tasks);
+
+  if (prevProjectTasks !== project.tasks) {
+    setPrevProjectTasks(project.tasks);
+    setOptimisticTasks(null);
+  }
 
   function openEditMilestone(m: MilestoneItem) {
     setEditingMilestone(m);
@@ -215,6 +225,14 @@ export function ProjectDetailView({ project }: { project: ProjectDetail }) {
 
   async function handleToggleTask(taskId: string, currentStatus: string) {
     const nextStatus = currentStatus === "COMPLETED" ? "IN_PROGRESS" : "COMPLETED";
+
+    // 1. Instant 0ms Optimistic Update
+    setOptimisticTasks((current) => {
+      const base = current ?? (project.tasks || []);
+      return base.map((t) => (t.id === taskId ? { ...t, status: nextStatus } : t));
+    });
+    toast(nextStatus === "COMPLETED" ? "Tugas selesai! ✓" : "Tugas dibuka kembali.", "success");
+
     try {
       const res = await fetch(`/api/tasks/${taskId}`, {
         method: "PATCH",
@@ -223,8 +241,11 @@ export function ProjectDetailView({ project }: { project: ProjectDetail }) {
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error?.message || "Gagal memperbarui task");
-      router.refresh();
+      startTransition(() => {
+        router.refresh();
+      });
     } catch (err: unknown) {
+      setOptimisticTasks(null);
       toast(err instanceof Error ? err.message : "Gagal memperbarui task", "error");
     }
   }
@@ -305,22 +326,9 @@ export function ProjectDetailView({ project }: { project: ProjectDetail }) {
     }
   }
 
-  const tasks = project.tasks || [];
+  const tasks = optimisticTasks ?? (project.tasks || []);
   const completedTasksCount = tasks.filter((t) => t.status === "COMPLETED").length;
   const progressPercent = tasks.length > 0 ? Math.round((completedTasksCount / tasks.length) * 100) : 0;
-
-  const priorityBadgeStyle = (p: string) => {
-    switch (p) {
-      case "URGENT":
-        return "text-[#F43F5E] bg-[#F43F5E]/15 border-[#F43F5E]/30";
-      case "HIGH":
-        return "text-[#F59E0B] bg-[#F59E0B]/15 border-[#F59E0B]/30";
-      case "LOW":
-        return "text-gray-400 bg-white/[0.05] border-white/[0.08]";
-      default:
-        return "text-[#c0c1ff] bg-[#c0c1ff]/15 border-[#c0c1ff]/30";
-    }
-  };
 
   return (
     <div className="flex flex-col w-full pb-16 gap-6 text-gray-200">
@@ -350,6 +358,12 @@ export function ProjectDetailView({ project }: { project: ProjectDetail }) {
         <div className="absolute -bottom-24 left-1/3 w-80 h-80 bg-indigo-600/10 rounded-full blur-3xl pointer-events-none" />
 
         <div className="relative flex flex-col gap-4">
+          {/* Top navigation row */}
+          <div className="flex items-center justify-between gap-3 pb-3 border-b border-white/[0.06]">
+            <BackButton fallbackUrl="/projects" label="Kembali" />
+            <span className="text-xs font-mono text-[#958ea0]">PROYEK #{project.id.slice(0, 6).toUpperCase()}</span>
+          </div>
+
           {/* Baris Status & Hubungan Entitas */}
           <div className="flex flex-wrap items-center justify-between gap-3">
             <div className="flex flex-wrap items-center gap-2">

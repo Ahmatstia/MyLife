@@ -4,6 +4,7 @@ import { useState, useRef, useEffect, useCallback, useMemo } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useToast } from "@/app/components/ui/Toast";
+import { BackButton } from "@/app/components/ui/BackButton";
 
 // ── Types ──────────────────────────────────────────────────────────
 export interface TaskItem {
@@ -140,8 +141,17 @@ export function FocusManager({
   const [currentInterval, setCurrentInterval] = useState(1);
   const targetIntervals = modePreset === "pomodoro" ? 4 : 2;
 
-  // Real-time Scratchpad Quick Capture
-  const [scratchpadNote, setScratchpadNote] = useState("");
+  // Real-time Scratchpad Quick Capture (initialized lazily from localStorage without effect)
+  const [scratchpadNote, setScratchpadNote] = useState(() => {
+    if (typeof window !== "undefined") {
+      try {
+        return localStorage.getItem("mylife_focus_scratchpad") || "";
+      } catch {
+        return "";
+      }
+    }
+    return "";
+  });
 
   // Today's completed sessions log
   const [todaySessions, setTodaySessions] = useState<TodaySessionItem[]>(initialTodaySessions);
@@ -152,24 +162,15 @@ export function FocusManager({
   const audioContextRef = useRef<AudioContext | null>(null);
   const noiseNodeRef = useRef<AudioNode | null>(null);
 
-  // Sync preset changes to timer if idle
-  useEffect(() => {
+  // Direct handler for mode preset switch (avoids cascading renders in useEffect)
+  const handleSelectModePreset = (preset: "pomodoro" | "flow") => {
+    setModePreset(preset);
     if (timerStatus === "idle") {
-      const newSec = (modePreset === "pomodoro" ? 25 : 90) * 60;
+      const newSec = (preset === "pomodoro" ? 25 : 90) * 60;
       setTargetDurationSeconds(newSec);
       setRemainingSeconds(newSec);
     }
-  }, [modePreset, timerStatus]);
-
-  // Load scratchpad from localStorage
-  useEffect(() => {
-    try {
-      const saved = localStorage.getItem("mylife_focus_scratchpad");
-      if (saved) setScratchpadNote(saved);
-    } catch {
-      // Ignore
-    }
-  }, []);
+  };
 
   const saveScratchpad = (val: string) => {
     setScratchpadNote(val);
@@ -534,7 +535,6 @@ export function FocusManager({
       }
       setSearchQuery("");
       toast(`"${title || "Tugas"}" ditambahkan ke fokus harian.`, "success");
-      router.refresh();
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : "Terjadi kesalahan.";
       toast(msg, "error");
@@ -543,7 +543,22 @@ export function FocusManager({
     }
   }
 
+  // Instant 0ms Optimistic UI Reorder
   async function handleReorder(id: string, direction: "up" | "down") {
+    const currentIndex = focusList.findIndex((f) => f.id === id);
+    if (currentIndex === -1) return;
+
+    const targetIndex = direction === "up" ? currentIndex - 1 : currentIndex + 1;
+    if (targetIndex < 0 || targetIndex >= focusList.length) return;
+
+    // 1. Optimistic UI update INSTANTLY (0ms)
+    const prevList = [...focusList];
+    const nextList = [...focusList];
+    const [movedItem] = nextList.splice(currentIndex, 1);
+    nextList.splice(targetIndex, 0, movedItem);
+
+    setFocusList(nextList);
+
     try {
       const res = await fetch(`/api/daily-focus/${id}`, {
         method: "PATCH",
@@ -551,16 +566,54 @@ export function FocusManager({
         body: JSON.stringify({ direction }),
       });
       if (!res.ok) throw new Error();
-
-      const updatedRes = await fetch("/api/daily-focus");
-      const updated = await updatedRes.json();
-      if (updated.success) {
-        setFocusList(updated.data);
-      }
-      toast("Urutan prioritas diperbarui.", "success");
-      router.refresh();
     } catch {
-      toast("Gagal mengubah urutan.", "error");
+      // Revert if server fails
+      setFocusList(prevList);
+      toast("Gagal mengubah urutan tugas.", "error");
+    }
+  }
+
+  // Instant 0ms Optimistic Task Status Toggle
+  async function handleToggleFocusTaskStatus(taskId: string, currentStatus: string) {
+    const nextStatus = currentStatus === "COMPLETED" ? "IN_PROGRESS" : "COMPLETED";
+
+    // 1. Optimistic UI update INSTANTLY (0ms)
+    const prevList = [...focusList];
+    setFocusList((prev) =>
+      prev.map((item) =>
+        item.task.id === taskId
+          ? { ...item, task: { ...item.task, status: nextStatus } }
+          : item
+      )
+    );
+
+    if (nextStatus === "COMPLETED") {
+      playBell();
+      toast("Tugas selesai! 🎉 +50 XP tercatat.", "success");
+      // If currently active task was completed, switch to next pending
+      if (activePomodoroTask?.id === taskId) {
+        const nextPending = focusList.find(
+          (f) => f.task.id !== taskId && f.task.status !== "COMPLETED"
+        );
+        if (nextPending) {
+          setActivePomodoroTask(nextPending.task);
+        }
+      }
+    } else {
+      toast("Tugas dikembalikan ke antrean aktif.", "info");
+    }
+
+    try {
+      const res = await fetch(`/api/tasks/${taskId}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ status: nextStatus }),
+      });
+      if (!res.ok) throw new Error();
+    } catch {
+      // Revert if failed
+      setFocusList(prevList);
+      toast("Gagal memperbarui status tugas.", "error");
     }
   }
 
@@ -571,16 +624,19 @@ export function FocusManager({
       return;
     }
 
+    const prevList = [...focusList];
+    // Optimistic clean
+    setFocusList((prev) => prev.filter((f) => f.task.status !== "COMPLETED"));
+    toast("Tugas selesai telah dibersihkan dari antrean fokus.", "success");
+
     try {
       await Promise.all(
         completedItems.map((item) =>
           fetch(`/api/daily-focus/${item.id}`, { method: "DELETE" })
         )
       );
-      setFocusList((prev) => prev.filter((f) => f.task.status !== "COMPLETED"));
-      toast("Tugas selesai telah dibersihkan dari antrean fokus.", "success");
-      router.refresh();
     } catch {
+      setFocusList(prevList);
       toast("Gagal membersihkan tugas selesai.", "error");
     }
   }
@@ -679,16 +735,19 @@ export function FocusManager({
       {/* ── Top Navigation & Header Region ────────────────────────── */}
       <div className="flex flex-col gap-4">
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
-          <div className="flex flex-col gap-1">
-            <div className="flex items-center gap-2 text-[#d0bcff]">
-              <span className="font-mono text-xs uppercase tracking-widest text-[#d0bcff] font-bold">
-                SISTEM EKSEKUSI // MESIN DEEP WORK
-              </span>
-              <span className="text-[#494454]">•</span>
-              <span className="font-mono text-xs text-[#4edea3] flex items-center gap-1.5">
-                <span className="w-1.5 h-1.5 rounded-full bg-[#4edea3] animate-pulse" />
-                AKTIF
-              </span>
+          <div className="flex flex-col gap-2">
+            <div className="flex items-center gap-3">
+              <BackButton fallbackUrl="/today" label="Kembali" />
+              <div className="flex items-center gap-2 text-[#d0bcff]">
+                <span className="font-mono text-xs uppercase tracking-widest text-[#d0bcff] font-bold">
+                  SISTEM EKSEKUSI // MESIN DEEP WORK
+                </span>
+                <span className="text-[#494454]">•</span>
+                <span className="font-mono text-xs text-[#4edea3] flex items-center gap-1.5">
+                  <span className="w-1.5 h-1.5 rounded-full bg-[#4edea3] animate-pulse" />
+                  AKTIF
+                </span>
+              </div>
             </div>
             <h1 className="text-2xl sm:text-3xl text-[#e2e2eb] font-semibold tracking-tight">
               Fokus Harian{" "}
@@ -704,7 +763,7 @@ export function FocusManager({
           {/* Quick Mode Presets Switcher */}
           <div className="flex items-center gap-1 bg-[#131825] p-1 rounded-lg border border-white/[0.07] shadow-sm">
             <button
-              onClick={() => setModePreset("pomodoro")}
+              onClick={() => handleSelectModePreset("pomodoro")}
               className={`px-3 py-1.5 rounded font-mono text-xs font-semibold transition-all flex items-center gap-1.5 ${
                 modePreset === "pomodoro"
                   ? "bg-[#340080] text-[#d0bcff] border border-[#d0bcff]/30 shadow-md"
@@ -717,7 +776,7 @@ export function FocusManager({
               Mode Pomodoro (25/5)
             </button>
             <button
-              onClick={() => setModePreset("flow")}
+              onClick={() => handleSelectModePreset("flow")}
               className={`px-3 py-1.5 rounded font-mono text-xs font-semibold transition-all flex items-center gap-1.5 ${
                 modePreset === "flow"
                   ? "bg-[#340080] text-[#d0bcff] border border-[#d0bcff]/30 shadow-md"
@@ -1118,6 +1177,21 @@ export function FocusManager({
                         }`}
                       >
                         <div className="flex items-center gap-3 min-w-0 flex-1">
+                          <button
+                            type="button"
+                            onClick={() => handleToggleFocusTaskStatus(item.task.id, item.task.status)}
+                            className={`w-5 h-5 rounded flex items-center justify-center transition-all cursor-pointer shrink-0 ${
+                              isDone
+                                ? "bg-[#4edea3] text-[#003824] shadow-xs"
+                                : "bg-[#1e1f26] border border-white/20 hover:border-[#4edea3] text-transparent hover:text-[#4edea3]"
+                            }`}
+                            title={isDone ? "Tandai belum selesai" : "Tandai selesai"}
+                          >
+                            <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3">
+                              <path d="M5 13l4 4L19 7" />
+                            </svg>
+                          </button>
+
                           <span
                             className={`font-mono text-xs font-bold px-2 py-1 rounded shrink-0 ${
                               isDone
@@ -1193,8 +1267,8 @@ export function FocusManager({
                             type="button"
                             disabled={idx === 0}
                             onClick={() => handleReorder(item.id, "up")}
-                            className="p-1 rounded text-[#958ea0] hover:text-[#e2e2eb] hover:bg-[#282a30] transition-colors disabled:opacity-20"
-                            title="Naikkan Urutan"
+                            className="p-1.5 rounded text-[#958ea0] hover:text-[#e2e2eb] hover:bg-[#282a30] transition-all disabled:opacity-20 active:scale-90"
+                            title="Naikkan Urutan (Respon Instan)"
                           >
                             <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                               <path d="M18 15l-6-6-6 6" />
@@ -1204,8 +1278,8 @@ export function FocusManager({
                             type="button"
                             disabled={idx === focusList.length - 1}
                             onClick={() => handleReorder(item.id, "down")}
-                            className="p-1 rounded text-[#958ea0] hover:text-[#e2e2eb] hover:bg-[#282a30] transition-colors disabled:opacity-20"
-                            title="Turunkan Urutan"
+                            className="p-1.5 rounded text-[#958ea0] hover:text-[#e2e2eb] hover:bg-[#282a30] transition-all disabled:opacity-20 active:scale-90"
+                            title="Turunkan Urutan (Respon Instan)"
                           >
                             <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                               <path d="M6 9l6 6 6-6" />
@@ -1219,11 +1293,16 @@ export function FocusManager({
                               </svg>
                             </span>
                           ) : isDone ? (
-                            <span className="p-1.5 rounded text-[#4edea3]" title="Tugas Selesai">
+                            <button
+                              type="button"
+                              onClick={() => handleToggleFocusTaskStatus(item.task.id, item.task.status)}
+                              className="p-1.5 rounded text-[#4edea3] hover:bg-[#4edea3]/10 transition-colors"
+                              title="Tugas Selesai (Klik untuk kembalikan ke antrean)"
+                            >
                               <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
                                 <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" />
                               </svg>
-                            </span>
+                            </button>
                           ) : (
                             <button
                               type="button"
@@ -1231,7 +1310,7 @@ export function FocusManager({
                                 setActivePomodoroTask(item.task);
                                 toast(`Target fokus dialihkan ke: ${item.task.title}`, "info");
                               }}
-                              className="px-2.5 py-1 rounded bg-[#282a30] hover:bg-[#d0bcff] hover:text-[#23005c] text-[#d0bcff] font-mono text-xs font-semibold transition-all flex items-center gap-1"
+                              className="px-2.5 py-1 rounded bg-[#282a30] hover:bg-[#d0bcff] hover:text-[#23005c] text-[#d0bcff] font-mono text-xs font-semibold transition-all flex items-center gap-1 active:scale-95"
                             >
                               <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="currentColor">
                                 <path d="M8 5v14l11-7z" />

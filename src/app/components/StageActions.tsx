@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, startTransition } from "react";
 import { useRouter } from "next/navigation";
 import { Icon } from "./ui/Icon";
 import { useToast } from "./ui/Toast";
@@ -26,6 +26,7 @@ export default function StageActions({
   const [stageName, setStageName] = useState(name);
   const [stageDescription, setStageDescription] = useState(description ?? "");
   const [error, setError] = useState("");
+  const [isBusy, setIsBusy] = useState(false);
 
   async function patchRequest(body: object) {
     setError("");
@@ -36,16 +37,22 @@ export default function StageActions({
     });
     const result = await response.json();
     if (!response.ok) throw new Error(result.error?.message ?? "Gagal memperbarui stage.");
-    router.refresh();
+    startTransition(() => {
+      router.refresh();
+    });
   }
 
   async function run(body: object, success = "Stage diperbarui.") {
+    if (isBusy) return;
+    setIsBusy(true);
     try {
       await patchRequest(body);
       setEditing(false);
       toast(success, "success");
     } catch (value) {
       setError(value instanceof Error ? value.message : "Gagal memperbarui stage.");
+    } finally {
+      setIsBusy(false);
     }
   }
 
@@ -104,18 +111,18 @@ export default function StageActions({
   return (
     <div className="flex flex-wrap gap-0.5">
       <button
-        disabled={!canMoveUp}
+        disabled={!canMoveUp || isBusy}
         onClick={() => run({ order: "up" })}
         aria-label="Naikkan stage"
-        className="flex h-8 w-8 items-center justify-center rounded-lg text-surface-500 hover:bg-surface-100 disabled:opacity-30"
+        className="flex h-8 w-8 items-center justify-center rounded-lg text-surface-500 hover:bg-surface-100 disabled:opacity-30 active:scale-90 transition-transform"
       >
         <Icon name="chevronUp" size={15} />
       </button>
       <button
-        disabled={!canMoveDown}
+        disabled={!canMoveDown || isBusy}
         onClick={() => run({ order: "down" })}
         aria-label="Turunkan stage"
-        className="flex h-8 w-8 items-center justify-center rounded-lg text-surface-500 hover:bg-surface-100 disabled:opacity-30"
+        className="flex h-8 w-8 items-center justify-center rounded-lg text-surface-500 hover:bg-surface-100 disabled:opacity-30 active:scale-90 transition-transform"
       >
         <Icon name="chevronDown" size={15} />
       </button>

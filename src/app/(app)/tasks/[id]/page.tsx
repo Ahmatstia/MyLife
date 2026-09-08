@@ -8,6 +8,7 @@ import { getTaskDetail } from "@/services/task.service";
 import { requirePageUser } from "@/lib/auth";
 import { PriorityBadge } from "@/app/components/ui/Badge";
 import { Icon } from "@/app/components/ui/Icon";
+import { BackButton } from "@/app/components/ui/BackButton";
 import { formatHours } from "@/lib/format";
 
 export const dynamic = "force-dynamic";
@@ -29,29 +30,33 @@ export default async function TaskPage({ params }: { params: Promise<{ id: strin
   return (
     <div className="space-y-6 pb-16">
       {/* ── Breadcrumb & Top Bar ───────────────────────────────── */}
-      <nav aria-label="Breadcrumb" className="flex flex-wrap items-center justify-between gap-3">
-        <div className="flex flex-wrap items-center gap-2 text-[13px]">
+      <nav aria-label="Breadcrumb" className="flex flex-wrap items-center justify-between gap-3 pb-2 border-b border-white/[0.06]">
+        <div className="flex flex-wrap items-center gap-3 text-[13px]">
+          <BackButton fallbackUrl="/today" label="Kembali" />
+
+          <div className="hidden sm:block text-white/20">|</div>
+
           {task.stage ? (
-            <>
+            <div className="flex items-center gap-2">
               <Link
                 href={`/goals/${task.stage.goalId}`}
                 className="inline-flex items-center gap-1.5 font-medium text-[#94a3b8] transition hover:text-white"
+                title="Buka sasaran (goal)"
               >
-                <Icon name="arrowLeft" size={14} />
                 <span className="truncate max-w-[160px] sm:max-w-none">{task.stage.goal.title}</span>
               </Link>
               <span className="text-white/20">/</span>
               <span className="rounded-lg border border-white/[0.08] bg-white/[0.04] px-2.5 py-0.5 text-xs font-mono font-medium text-[#d0bcff]">
                 {task.stage.name}
               </span>
-            </>
+            </div>
           ) : task.project ? (
-            <>
+            <div className="flex items-center gap-2">
               <Link
                 href={`/projects/${task.project.id}`}
                 className="inline-flex items-center gap-1.5 font-medium text-[#94a3b8] transition hover:text-white"
+                title="Buka proyek"
               >
-                <Icon name="arrowLeft" size={14} />
                 <span className="truncate max-w-[160px] sm:max-w-none">{task.project.title}</span>
               </Link>
               {task.milestone && (
@@ -62,15 +67,9 @@ export default async function TaskPage({ params }: { params: Promise<{ id: strin
                   </span>
                 </>
               )}
-            </>
+            </div>
           ) : (
-            <Link
-              href="/today"
-              className="inline-flex items-center gap-1.5 font-medium text-[#94a3b8] transition hover:text-white"
-            >
-              <Icon name="arrowLeft" size={14} />
-              <span>Hari Ini</span>
-            </Link>
+            <span className="text-xs font-mono text-[#94a3b8]">Tugas Mandiri</span>
           )}
         </div>
 

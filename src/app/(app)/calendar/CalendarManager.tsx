@@ -97,48 +97,6 @@ export function CalendarManager({
     return () => clearInterval(interval);
   }, []);
 
-  // Keyboard shortcut listeners (N to create, T for today, Esc to close)
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      const tag = (document.activeElement?.tagName || "").toLowerCase();
-      if (tag === "input" || tag === "textarea" || tag === "select") return;
-
-      if (e.key === "n" || e.key === "N") {
-        e.preventDefault();
-        openCreateModal();
-      } else if (e.key === "t" || e.key === "T") {
-        e.preventDefault();
-        setWeekOffset(0);
-        toast("Kembali ke pekan hari ini.", "info");
-      } else if (e.key === "Escape") {
-        setIsModalOpen(false);
-        setSelectedEvent(null);
-      }
-    };
-    window.addEventListener("keydown", handleKeyDown);
-    return () => window.removeEventListener("keydown", handleKeyDown);
-  });
-
-  // Calculate 7 Days of the currently selected week (Monday to Sunday)
-  const weekDays = useMemo(() => {
-    const now = new Date();
-    const currentDay = now.getDay();
-    const diffToMonday = currentDay === 0 ? -6 : 1 - currentDay;
-    const monday = new Date(now);
-    monday.setDate(now.getDate() + diffToMonday + weekOffset * 7);
-    monday.setHours(0, 0, 0, 0);
-
-    const days: Date[] = [];
-    for (let i = 0; i < 7; i++) {
-      const d = new Date(monday);
-      d.setDate(monday.getDate() + i);
-      days.push(d);
-    }
-    return days;
-  }, [weekOffset]);
-
-  const weekNumber = useMemo(() => getWeekNumber(weekDays[0]), [weekDays]);
-
   // Open create modal with optional default start time
   const openCreateModal = useCallback((prefillDate?: Date, hour = 9) => {
     const baseDate = prefillDate || new Date();
@@ -164,6 +122,48 @@ export function CalendarManager({
     setSelectedEvent(null);
     setIsModalOpen(true);
   }, []);
+
+  // Keyboard shortcut listeners (N to create, T for today, Esc to close)
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      const tag = (document.activeElement?.tagName || "").toLowerCase();
+      if (tag === "input" || tag === "textarea" || tag === "select") return;
+
+      if (e.key === "n" || e.key === "N") {
+        e.preventDefault();
+        openCreateModal();
+      } else if (e.key === "t" || e.key === "T") {
+        e.preventDefault();
+        setWeekOffset(0);
+        toast("Kembali ke pekan hari ini.", "info");
+      } else if (e.key === "Escape") {
+        setIsModalOpen(false);
+        setSelectedEvent(null);
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [openCreateModal, toast]);
+
+  // Calculate 7 Days of the currently selected week (Monday to Sunday)
+  const weekDays = useMemo(() => {
+    const now = new Date();
+    const currentDay = now.getDay();
+    const diffToMonday = currentDay === 0 ? -6 : 1 - currentDay;
+    const monday = new Date(now);
+    monday.setDate(now.getDate() + diffToMonday + weekOffset * 7);
+    monday.setHours(0, 0, 0, 0);
+
+    const days: Date[] = [];
+    for (let i = 0; i < 7; i++) {
+      const d = new Date(monday);
+      d.setDate(monday.getDate() + i);
+      days.push(d);
+    }
+    return days;
+  }, [weekOffset]);
+
+  const weekNumber = useMemo(() => getWeekNumber(weekDays[0]), [weekDays]);
 
   // Compute duration in hours/minutes from form inputs
   const formDurationLabel = useMemo(() => {
@@ -267,6 +267,7 @@ export function CalendarManager({
     const startOfWeek = weekDays[0];
     const endOfWeek = new Date(weekDays[6]);
     endOfWeek.setHours(23, 59, 59, 999);
+    const nowMs = currentTime.getTime();
 
     // From tasks with dueDate
     const taskDeadlines = tasks
@@ -274,7 +275,7 @@ export function CalendarManager({
       .map((t) => {
         const dDate = new Date(t.dueDate!);
         const isThisWeek = dDate >= startOfWeek && dDate <= endOfWeek;
-        const isUrgent = dDate.getTime() - Date.now() <= 86400000;
+        const isUrgent = dDate.getTime() - nowMs <= 86400000;
         return {
           id: `task-${t.id}`,
           taskId: t.id,
@@ -296,7 +297,7 @@ export function CalendarManager({
       .map((e) => {
         const dDate = new Date(e.startTime);
         const isThisWeek = dDate >= startOfWeek && dDate <= endOfWeek;
-        const isUrgent = dDate.getTime() - Date.now() <= 86400000;
+        const isUrgent = dDate.getTime() - nowMs <= 86400000;
         return {
           id: `event-${e.id}`,
           taskId: e.taskId || undefined,
@@ -313,7 +314,7 @@ export function CalendarManager({
       .filter((item) => item.isThisWeek);
 
     return [...taskDeadlines, ...eventDeadlines].sort((a, b) => a.date.getTime() - b.date.getTime());
-  }, [weekDays, tasks, events]);
+  }, [weekDays, tasks, events, currentTime]);
 
   // Allocation metrics this week
   const allocationMetrics = useMemo(() => {
@@ -886,77 +887,65 @@ export function CalendarManager({
                   Tidak ada tenggat waktu mendesak untuk pekan ini.
                 </div>
               ) : (
-                criticalDeadlines.slice(0, 5).map((dl) => {
-                  const cardContent = (
-                    <div className="flex items-start justify-between gap-2 w-full">
-                      <div className="flex flex-col gap-0.5 min-w-0 flex-1">
-                        <div className="flex items-center gap-2">
-                          <span className="text-xs font-semibold text-[#e2e2eb] group-hover:text-[#d0bcff] group-hover:underline truncate">
-                            {dl.title}
-                          </span>
-                          <span className="font-mono text-[9px] px-1.5 py-0.2 rounded bg-white/[0.06] text-[#d0bcff] shrink-0">
-                            {dl.source}
-                          </span>
-                        </div>
-                        <span className="font-mono text-[10px] text-[#958ea0]">
-                          {dl.date.toLocaleDateString("id-ID", {
-                            weekday: "short",
-                            day: "numeric",
-                            month: "short",
-                          })}{" "}
-                          • {dl.date.toLocaleTimeString("id-ID", { hour: "2-digit", minute: "2-digit" })} WIB
+                criticalDeadlines.slice(0, 5).map((dl) => (
+                  <div
+                    key={dl.id}
+                    onClick={() => {
+                      if (dl.href) {
+                        router.push(dl.href);
+                      } else if (dl.event) {
+                        setSelectedEvent(dl.event);
+                      }
+                    }}
+                    className="p-3 rounded-lg bg-[#191b22] hover:bg-[#1A2133] border border-white/[0.05] hover:border-[#d0bcff]/40 flex items-start justify-between gap-2 transition-all cursor-pointer group shadow-sm"
+                    title={dl.href ? "Buka rincian tugas" : "Lihat detail agenda kalender"}
+                  >
+                    <div className="flex flex-col gap-0.5 min-w-0 flex-1">
+                      <div className="flex items-center gap-2">
+                        <span className="text-xs font-semibold text-[#e2e2eb] group-hover:text-[#d0bcff] group-hover:underline truncate">
+                          {dl.title}
+                        </span>
+                        <span className="font-mono text-[9px] px-1.5 py-0.2 rounded bg-white/[0.06] text-[#d0bcff] shrink-0">
+                          {dl.source}
                         </span>
                       </div>
+                      <span className="font-mono text-[10px] text-[#958ea0]">
+                        {dl.date.toLocaleDateString("id-ID", {
+                          weekday: "short",
+                          day: "numeric",
+                          month: "short",
+                        })}{" "}
+                        • {dl.date.toLocaleTimeString("id-ID", { hour: "2-digit", minute: "2-digit" })} WIB
+                      </span>
+                    </div>
 
-                      <div className="flex items-center gap-1.5 shrink-0">
-                        {dl.focusHref && (
-                          <Link
-                            href={dl.focusHref}
-                            onClick={(e) => e.stopPropagation()}
-                            className="px-2 py-0.5 rounded bg-[#340080]/60 hover:bg-[#d0bcff] hover:text-[#23005c] text-[#d0bcff] font-mono text-[10px] font-semibold border border-[#d0bcff]/30 transition-all flex items-center gap-0.5"
-                            title="Fokuskan tugas ini di Mode Pomodoro"
-                          >
-                            <span>Fokus</span>
-                            <span>🍅</span>
-                          </Link>
-                        )}
-                        <span
-                          className={`font-mono text-[9px] px-2 py-0.5 rounded-full font-bold ${
-                            dl.isUrgent
-                              ? "bg-[#F43F5E] text-white animate-pulse"
-                              : "bg-[#282a30] text-[#958ea0]"
-                          }`}
+                    <div className="flex items-center gap-1.5 shrink-0">
+                      {dl.focusHref && (
+                        <button
+                          type="button"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            router.push(dl.focusHref!);
+                          }}
+                          className="px-2 py-0.5 rounded bg-[#340080]/60 hover:bg-[#d0bcff] hover:text-[#23005c] text-[#d0bcff] font-mono text-[10px] font-semibold border border-[#d0bcff]/30 transition-all flex items-center gap-0.5 cursor-pointer"
+                          title="Fokuskan tugas ini di Mode Pomodoro"
                         >
-                          {dl.isUrgent ? "MENDESAK" : "RUTIN"}
-                        </span>
-                      </div>
-                    </div>
-                  );
-
-                  if (dl.href) {
-                    return (
-                      <Link
-                        key={dl.id}
-                        href={dl.href}
-                        className="p-3 rounded-lg bg-[#191b22] hover:bg-[#1A2133] border border-white/[0.05] hover:border-[#d0bcff]/40 flex items-start justify-between gap-2 transition-all cursor-pointer group shadow-sm"
-                        title="Buka rincian tugas"
+                          <span>Fokus</span>
+                          <span>🍅</span>
+                        </button>
+                      )}
+                      <span
+                        className={`font-mono text-[9px] px-2 py-0.5 rounded-full font-bold ${
+                          dl.isUrgent
+                            ? "bg-[#F43F5E] text-white animate-pulse"
+                            : "bg-[#282a30] text-[#958ea0]"
+                        }`}
                       >
-                        {cardContent}
-                      </Link>
-                    );
-                  }
-
-                  return (
-                    <div
-                      key={dl.id}
-                      onClick={() => dl.event && setSelectedEvent(dl.event)}
-                      className="p-3 rounded-lg bg-[#191b22] hover:bg-[#1A2133] border border-white/[0.05] hover:border-[#d0bcff]/40 flex items-start justify-between gap-2 transition-all cursor-pointer group shadow-sm"
-                      title="Lihat detail agenda kalender"
-                    >
-                      {cardContent}
+                        {dl.isUrgent ? "MENDESAK" : "RUTIN"}
+                      </span>
                     </div>
-                  );
-                })
+                  </div>
+                ))
               )}
             </div>
           </div>

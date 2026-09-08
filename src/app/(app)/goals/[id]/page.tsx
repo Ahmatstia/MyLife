@@ -1,4 +1,3 @@
-import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getGoalDetail } from "@/services/goal.service";
 import { getAreas } from "@/services/area.service";
@@ -6,6 +5,7 @@ import { requirePageUser } from "@/lib/auth";
 import StageForm from "@/app/components/StageForm";
 import GoalActionsMenu from "@/app/components/GoalActionsMenu";
 import { GoalStagesAccordion } from "@/app/components/goals/GoalStagesAccordion";
+import { BackButton } from "@/app/components/ui/BackButton";
 import {
   calculateGoalProgress,
   calculateStageProgress,
@@ -69,13 +69,7 @@ export default async function GoalPage({ params }: GoalPageProps) {
       {/* 1. Top Navigation & Action Controls */}
       <header className="flex flex-wrap items-center justify-between gap-4 py-2 border-b border-white/[0.06]">
         <div className="flex items-center gap-3 min-w-0">
-          <Link
-            href="/goals"
-            className="group flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#131825] hover:bg-[#1A2133] text-gray-300 hover:text-purple-300 border border-white/[0.08] transition-all text-xs font-mono"
-          >
-            <span className="material-symbols-outlined text-[16px] transition-transform group-hover:-translate-x-0.5">arrow_back</span>
-            <span>Kembali ke Target Utama</span>
-          </Link>
+          <BackButton fallbackUrl="/goals" label="Kembali" />
           <div className="hidden md:flex items-center gap-2 font-mono text-xs text-gray-500">
             <span>/</span>
             <span className="uppercase text-gray-400">RUTE #{goal.id.slice(0, 6).toUpperCase()}</span>

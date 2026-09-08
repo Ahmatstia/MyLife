@@ -106,9 +106,17 @@ export async function reorderDailyFocus(
     if (targetIndex < 0 || targetIndex >= allItems.length) {
       return focus;
     }
-    const otherItem = allItems[targetIndex];
-    await updateDailyFocusOrder(owner, focus.id, otherItem.order);
-    await updateDailyFocusOrder(owner, otherItem.id, focus.order);
+    
+    // Normalize and swap indices cleanly
+    const reordered = [...allItems];
+    const [moved] = reordered.splice(currentIndex, 1);
+    reordered.splice(targetIndex, 0, moved);
+
+    // Save strictly sequential orders for all items to avoid any duplicate or stale orders
+    await Promise.all(
+      reordered.map((item, idx) => updateDailyFocusOrder(owner, item.id, idx))
+    );
+
     return findDailyFocusById(owner, id);
   }
 
