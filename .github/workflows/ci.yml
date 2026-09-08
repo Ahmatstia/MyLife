@@ -45,7 +45,9 @@ jobs:
         run: npx prisma generate
 
       - name: Setup test database schema
-        run: npx prisma db push
+        run: |
+          npx prisma db push
+          npx tsx scripts/setup-db-constraints.ts
 
       - name: Typecheck
         run: npm run typecheck
