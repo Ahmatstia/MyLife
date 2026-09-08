@@ -35,15 +35,18 @@ export default async function TodayPage() {
   const initialTasks = [
     ...today.availableTasks.map((t) => {
       const taskObj = t as Record<string, unknown>;
-      const project = taskObj.project as { title?: string } | undefined;
-      const area = taskObj.area as { name?: string } | undefined;
-      const stage = taskObj.stage as { goal?: { title?: string } } | undefined;
+      const project = taskObj.project as { id?: string; title?: string } | undefined;
+      const area = taskObj.area as { id?: string; name?: string } | undefined;
+      const stage = taskObj.stage as { id?: string; goalId?: string; goal?: { id?: string; title?: string } } | undefined;
 
       const categoryTitle =
         project?.title ||
         stage?.goal?.title ||
         area?.name ||
         "Tugas";
+
+      const projectId = (taskObj.projectId as string) || project?.id || null;
+      const goalId = (taskObj.goalId as string) || stage?.goalId || stage?.goal?.id || null;
 
       return {
         id: t.id,
@@ -54,19 +57,24 @@ export default async function TodayPage() {
         categoryName: categoryTitle,
         badge: t.priority === "URGENT" ? "⚠️ Mendesak" : t.priority === "HIGH" ? "Prioritas Tinggi" : undefined,
         badgeType: (t.priority === "URGENT" ? "warning" : "neutral") as "warning" | "neutral",
+        projectId,
+        goalId,
       };
     }),
     ...today.completedTasks.map((t) => {
       const taskObj = t as Record<string, unknown>;
-      const project = taskObj.project as { title?: string } | undefined;
-      const area = taskObj.area as { name?: string } | undefined;
-      const stage = taskObj.stage as { goal?: { title?: string } } | undefined;
+      const project = taskObj.project as { id?: string; title?: string } | undefined;
+      const area = taskObj.area as { id?: string; name?: string } | undefined;
+      const stage = taskObj.stage as { id?: string; goalId?: string; goal?: { id?: string; title?: string } } | undefined;
 
       const categoryTitle =
         project?.title ||
         stage?.goal?.title ||
         area?.name ||
         "Tugas";
+
+      const projectId = (taskObj.projectId as string) || project?.id || null;
+      const goalId = (taskObj.goalId as string) || stage?.goalId || stage?.goal?.id || null;
 
       return {
         id: t.id,
@@ -76,6 +84,8 @@ export default async function TodayPage() {
         priority: t.priority,
         categoryName: categoryTitle,
         xp: "+50 XP",
+        projectId,
+        goalId,
       };
     }),
   ];

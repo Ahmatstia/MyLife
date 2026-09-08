@@ -125,15 +125,15 @@ export function GoalsBoard({
       {/* ── Area Header Halaman ────────────────────────────────────── */}
       <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6 pb-2">
         <div className="flex flex-col gap-1.5 max-w-3xl">
-          <div className="flex items-center gap-2 text-[#d0bcff] font-mono text-xs uppercase tracking-widest font-bold">
-            <span className="w-1.5 h-1.5 rounded-full bg-[#d0bcff] animate-ping" />
-            <span>PETA PENCAPAIAN &amp; VISI HIDUP // JALUR STRATEGIS</span>
+          <div className="flex items-center gap-2 font-mono text-xs text-[#cbc3d7]">
+            <span className="inline-block w-2 h-2 rounded-full bg-[#d0bcff] animate-pulse" />
+            <span>TARGET STRATEGIS // ARAH &amp; PENCAPAIAN UTAMA</span>
           </div>
           <h1 className="text-3xl sm:text-4xl text-[#e2e2eb] font-semibold tracking-tight">
             Target Utama
           </h1>
           <p className="text-sm text-[#958ea0] max-w-2xl">
-            Setiap target adalah perjalanan terarah: dilalui tahapan demi tahapan, milestone demi milestone, hingga tuntas tercapai.
+            Kelola target besar Anda secara terarah: dibagi menjadi tahapan yang jelas hingga tuntas tercapai.
           </p>
         </div>
 
@@ -530,10 +530,10 @@ export function GoalsBoard({
 
                   {!denseView && (
                     <>
-                      {/* Peta Rute Tahapan (Visual Waypoint Jalur Eksekusi) */}
+                      {/* Peta Rute Tahapan */}
                       <div className="bg-[#0c0e14]/80 rounded-lg p-3.5 flex flex-col gap-2 border border-white/[0.04]">
                         <span className="font-mono text-[10px] text-[#958ea0] uppercase tracking-wider font-semibold">
-                          Waypoint Jalur Eksekusi
+                          Langkah Tahapan Target
                         </span>
 
                         {stageWaypoints.length === 0 ? (

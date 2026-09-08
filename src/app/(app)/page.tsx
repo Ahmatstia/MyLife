@@ -1,8 +1,7 @@
-import { getMissionControlData } from "@/services/dashboard.service";
+import { redirect } from "next/navigation";
 import { getCurrentUser } from "@/lib/auth";
 import LoginForm from "@/app/components/LoginForm";
 import { Icon } from "@/app/components/ui/Icon";
-import { MissionControlDashboard } from "@/app/components/dashboard/MissionControlDashboard";
 
 export const dynamic = "force-dynamic";
 
@@ -62,18 +61,6 @@ export default async function Home() {
     );
   }
 
-  const missionData = await getMissionControlData(user.id);
-
-  return (
-    <>
-      {/* First-Run Welcome Guidance on Home (ISSUE-05) */}
-      {missionData.activeProjects.length === 0 && (
-        <div className="sr-only" aria-hidden="true">
-          <h2>Selamat Datang di MyLife</h2>
-          <button type="button">Buat Goal Pertama</button>
-        </div>
-      )}
-      <MissionControlDashboard data={missionData} />
-    </>
-  );
+  // Best practice: When logged in, seamlessly direct to the Unified Daily Command Center (/today)
+  redirect("/today");
 }

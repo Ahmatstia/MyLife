@@ -81,14 +81,32 @@ export default async function ReviewPage() {
   ].sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime());
 
   return (
-    <div className="space-y-10 pb-16">
-      {/* 1. Telemetri Header */}
+    <div className="space-y-8 pb-16">
+      {/* Tab Navigasi Evaluasi: Jurnal Refleksi vs Grafik Analitik */}
+      <div className="flex items-center gap-1.5 p-1 rounded-xl bg-[#131825] border border-white/[0.08] w-fit font-mono text-xs">
+        <Link
+          href="/review"
+          className="flex items-center gap-2 px-4 py-2 rounded-lg bg-purple-600/20 text-purple-300 font-semibold border border-purple-500/30 shadow-sm"
+        >
+          <span className="material-symbols-outlined text-[16px]">edit_note</span>
+          <span>Jurnal Refleksi</span>
+        </Link>
+        <Link
+          href="/dashboard"
+          className="flex items-center gap-2 px-4 py-2 rounded-lg text-[#94A3B8] hover:text-white hover:bg-white/[0.05] transition-colors"
+        >
+          <span className="material-symbols-outlined text-[16px]">bar_chart</span>
+          <span>Grafik &amp; Analitik</span>
+        </Link>
+      </div>
+
+      {/* 1. Header Layar */}
       <section className="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-white/[0.08] pb-6">
         <div className="space-y-2 max-w-2xl">
           <div className="flex flex-wrap items-center gap-2 font-mono text-[10px] uppercase tracking-widest text-[#94A3B8]">
             <span>RITUAL MINGGUAN</span>
             <span className="text-white/20">{"//"}</span>
-            <span className="text-[#d0bcff]">EVALUASI & REFLEKSI</span>
+            <span className="text-[#d0bcff]">EVALUASI DIRI</span>
             <span className="text-white/20">{"//"}</span>
             <div className="flex items-center gap-1.5 rounded-full bg-[#4edea3]/10 px-2 py-0.5 text-[#4edea3]">
               <span className="h-1.5 w-1.5 rounded-full bg-[#4edea3] animate-pulse"></span>

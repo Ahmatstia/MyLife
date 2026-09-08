@@ -61,10 +61,10 @@ export function GlobalAIDrawer({ open, onClose, context }: GlobalAIDrawerProps) 
 }
 
 const mobileNav: { href: string; label: string; icon: IconName }[] = [
-  { href: "/", label: "Beranda", icon: "compass" },
   { href: "/today", label: "Hari Ini", icon: "sun" },
-  { href: "/goals", label: "Goals", icon: "flag" },
-  { href: "/dashboard", label: "Analitik", icon: "chart" },
+  { href: "/focus", label: "Fokus", icon: "target" },
+  { href: "/goals", label: "Target", icon: "flag" },
+  { href: "/capture", label: "Catat", icon: "inbox" },
   { href: "/review", label: "Refleksi", icon: "capture" },
 ];
 
@@ -128,7 +128,7 @@ export function AppShell({
             </button>
 
             {/* Logo mobile */}
-            <Link href="/" className="flex items-center gap-2 lg:hidden">
+            <Link href="/today" className="flex items-center gap-2 lg:hidden">
               <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-gradient-to-br from-[#8B5CF6] to-[#6366F1] text-white">
                 <Icon name="sparkles" size={14} />
               </span>

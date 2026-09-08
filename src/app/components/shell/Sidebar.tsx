@@ -22,40 +22,32 @@ const navigationGroups: NavGroup[] = [
   {
     title: "Eksekusi Harian",
     items: [
-      { href: "/", label: "Beranda", verb: "Orientasi", icon: "compass", color: "text-[#8B5CF6]" },
-      { href: "/today", label: "Hari Ini", verb: "Tugas", icon: "sun", color: "text-[#F59E0B]" },
-      { href: "/focus", label: "Fokus Harian", verb: "Pomodoro", icon: "target", color: "text-[#F59E0B]" },
+      { href: "/today", label: "Hari Ini", verb: "Harian", icon: "sun", color: "text-[#F59E0B]" },
+      { href: "/focus", label: "Mode Fokus", verb: "Pomodoro", icon: "target", color: "text-[#d0bcff]" },
+      { href: "/calendar", label: "Jadwal & Kalender", verb: "Waktu", icon: "calendar", color: "text-[#38bdf8]" },
     ],
   },
   {
-    title: "Arah & Fondasi",
+    title: "Strategi & Target",
     items: [
-      { href: "/areas", label: "Areas (Pilar)", verb: "Pilar", icon: "compass", color: "text-[#a078ff]" },
-      { href: "/goals", label: "Goals (Target)", verb: "Target", icon: "flag", color: "text-[#a078ff]" },
-      { href: "/projects", label: "Projects", verb: "Proyek", icon: "layers", color: "text-[#8B5CF6]" },
+      { href: "/goals", label: "Target (Goals)", verb: "Sasaran", icon: "flag", color: "text-[#a078ff]" },
+      { href: "/projects", label: "Proyek (Projects)", verb: "Eksekusi", icon: "layers", color: "text-[#8B5CF6]" },
+      { href: "/areas", label: "Pilar Hidup (Areas)", verb: "Fondasi", icon: "compass", color: "text-[#4edea3]" },
     ],
   },
   {
-    title: "Pencatatan & Waktu",
+    title: "Pencatatan & Refleksi",
     items: [
-      { href: "/capture", label: "Inbox Catatan", verb: "Inbox", icon: "inbox", color: "text-[#8B5CF6]" },
-      { href: "/calendar", label: "Kalender", verb: "Jadwal", icon: "calendar", color: "text-[#F59E0B]" },
-      { href: "/activity", label: "Aktivitas", verb: "Log Waktu", icon: "clock", color: "text-[#4edea3]" },
-    ],
-  },
-  {
-    title: "Evaluasi & Panduan",
-    items: [
-      { href: "/insights", label: "Insights", verb: "Kesehatan", icon: "sparkles", color: "text-[#8B5CF6]" },
-      { href: "/dashboard", label: "Analitik", verb: "Grafik", icon: "chart", color: "text-[#4edea3]" },
-      { href: "/review", label: "Refleksi", verb: "Evaluasi", icon: "capture", color: "text-[#38bdf8]" },
+      { href: "/capture", label: "Kotak Masuk (Inbox)", verb: "Catat", icon: "inbox", color: "text-[#F59E0B]" },
+      { href: "/review", label: "Refleksi & Evaluasi", verb: "Jurnal", icon: "capture", color: "text-[#38bdf8]" },
+      { href: "/dashboard", label: "Grafik & Analitik", verb: "Statistik", icon: "chart", color: "text-[#4edea3]" },
       { href: "/notifications", label: "Notifikasi", verb: "Info", icon: "bell", color: "text-[#F43F5E]" },
-      { href: "/tutorial", label: "Panduan Tutorial", verb: "Panduan", icon: "bookOpen", color: "text-[#F59E0B]" },
     ],
   },
 ];
 
 export function isActive(href: string, pathname: string): boolean {
+  if (href === "/today") return pathname === "/today" || pathname === "/";
   if (href === "/") return pathname === "/";
   return pathname === href || pathname.startsWith(href + "/");
 }
@@ -114,7 +106,7 @@ export function Sidebar({
     <div className="flex h-full flex-col select-none text-[#e2e2eb]">
       {/* Brand */}
       <Link
-        href="/"
+        href="/today"
         onClick={onNavigate}
         className="flex items-center gap-2.5 px-3 py-1 group"
       >
@@ -189,7 +181,23 @@ export function Sidebar({
       </nav>
 
       {/* Bottom section */}
-      <div className="mt-4 space-y-1.5 border-t border-white/[0.08] pt-3">
+      <div className="mt-4 space-y-1 border-t border-white/[0.08] pt-3">
+        <Link
+          href="/tutorial"
+          onClick={onNavigate}
+          className={`group flex items-center gap-2.5 rounded-xl px-3 py-2 text-[13px] font-medium transition-all border ${
+            isActive("/tutorial", pathname)
+              ? "bg-[#8B5CF6]/15 border-[#8B5CF6]/35 text-white"
+              : "text-[#94a3b8] hover:bg-white/[0.06] hover:text-white border-transparent"
+          }`}
+        >
+          <Icon name="bookOpen" size={15} className="text-[#F59E0B]" />
+          <span className="min-w-0 flex-1 truncate">Panduan Tutorial</span>
+          <span className="text-[9.5px] font-semibold px-1.5 py-0.5 rounded bg-white/[0.04] text-[#64748b]">
+            Bantuan
+          </span>
+        </Link>
+
         <Link
           href="/settings"
           onClick={onNavigate}

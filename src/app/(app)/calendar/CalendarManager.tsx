@@ -277,11 +277,15 @@ export function CalendarManager({
         const isUrgent = dDate.getTime() - Date.now() <= 86400000;
         return {
           id: `task-${t.id}`,
+          taskId: t.id,
           title: t.title,
           date: dDate,
           isUrgent,
           source: "Tugas",
           isThisWeek,
+          href: `/tasks/${t.id}`,
+          focusHref: `/focus?taskId=${t.id}`,
+          event: null as EventItem | null,
         };
       })
       .filter((item) => item.isThisWeek);
@@ -295,11 +299,15 @@ export function CalendarManager({
         const isUrgent = dDate.getTime() - Date.now() <= 86400000;
         return {
           id: `event-${e.id}`,
+          taskId: e.taskId || undefined,
           title: e.title,
           date: dDate,
           isUrgent,
           source: "Kalender",
           isThisWeek,
+          href: e.taskId ? `/tasks/${e.taskId}` : null,
+          focusHref: e.taskId ? `/focus?taskId=${e.taskId}` : null,
+          event: e,
         };
       })
       .filter((item) => item.isThisWeek);
@@ -878,36 +886,77 @@ export function CalendarManager({
                   Tidak ada tenggat waktu mendesak untuk pekan ini.
                 </div>
               ) : (
-                criticalDeadlines.slice(0, 4).map((dl) => (
-                  <div
-                    key={dl.id}
-                    className="p-3 rounded-lg bg-[#191b22] border border-white/[0.05] flex items-start justify-between gap-2"
-                  >
-                    <div className="flex flex-col gap-0.5 min-w-0">
-                      <span className="text-xs font-semibold text-[#e2e2eb] truncate">
-                        {dl.title}
-                      </span>
-                      <span className="font-mono text-[10px] text-[#958ea0]">
-                        {dl.date.toLocaleDateString("id-ID", {
-                          weekday: "short",
-                          day: "numeric",
-                          month: "short",
-                        })}{" "}
-                        • {dl.date.toLocaleTimeString("id-ID", { hour: "2-digit", minute: "2-digit" })} WIB
-                      </span>
-                    </div>
+                criticalDeadlines.slice(0, 5).map((dl) => {
+                  const cardContent = (
+                    <div className="flex items-start justify-between gap-2 w-full">
+                      <div className="flex flex-col gap-0.5 min-w-0 flex-1">
+                        <div className="flex items-center gap-2">
+                          <span className="text-xs font-semibold text-[#e2e2eb] group-hover:text-[#d0bcff] group-hover:underline truncate">
+                            {dl.title}
+                          </span>
+                          <span className="font-mono text-[9px] px-1.5 py-0.2 rounded bg-white/[0.06] text-[#d0bcff] shrink-0">
+                            {dl.source}
+                          </span>
+                        </div>
+                        <span className="font-mono text-[10px] text-[#958ea0]">
+                          {dl.date.toLocaleDateString("id-ID", {
+                            weekday: "short",
+                            day: "numeric",
+                            month: "short",
+                          })}{" "}
+                          • {dl.date.toLocaleTimeString("id-ID", { hour: "2-digit", minute: "2-digit" })} WIB
+                        </span>
+                      </div>
 
-                    <span
-                      className={`font-mono text-[9px] px-2 py-0.5 rounded-full font-bold shrink-0 ${
-                        dl.isUrgent
-                          ? "bg-[#F43F5E] text-white animate-pulse"
-                          : "bg-[#282a30] text-[#958ea0]"
-                      }`}
+                      <div className="flex items-center gap-1.5 shrink-0">
+                        {dl.focusHref && (
+                          <Link
+                            href={dl.focusHref}
+                            onClick={(e) => e.stopPropagation()}
+                            className="px-2 py-0.5 rounded bg-[#340080]/60 hover:bg-[#d0bcff] hover:text-[#23005c] text-[#d0bcff] font-mono text-[10px] font-semibold border border-[#d0bcff]/30 transition-all flex items-center gap-0.5"
+                            title="Fokuskan tugas ini di Mode Pomodoro"
+                          >
+                            <span>Fokus</span>
+                            <span>🍅</span>
+                          </Link>
+                        )}
+                        <span
+                          className={`font-mono text-[9px] px-2 py-0.5 rounded-full font-bold ${
+                            dl.isUrgent
+                              ? "bg-[#F43F5E] text-white animate-pulse"
+                              : "bg-[#282a30] text-[#958ea0]"
+                          }`}
+                        >
+                          {dl.isUrgent ? "MENDESAK" : "RUTIN"}
+                        </span>
+                      </div>
+                    </div>
+                  );
+
+                  if (dl.href) {
+                    return (
+                      <Link
+                        key={dl.id}
+                        href={dl.href}
+                        className="p-3 rounded-lg bg-[#191b22] hover:bg-[#1A2133] border border-white/[0.05] hover:border-[#d0bcff]/40 flex items-start justify-between gap-2 transition-all cursor-pointer group shadow-sm"
+                        title="Buka rincian tugas"
+                      >
+                        {cardContent}
+                      </Link>
+                    );
+                  }
+
+                  return (
+                    <div
+                      key={dl.id}
+                      onClick={() => dl.event && setSelectedEvent(dl.event)}
+                      className="p-3 rounded-lg bg-[#191b22] hover:bg-[#1A2133] border border-white/[0.05] hover:border-[#d0bcff]/40 flex items-start justify-between gap-2 transition-all cursor-pointer group shadow-sm"
+                      title="Lihat detail agenda kalender"
                     >
-                      {dl.isUrgent ? "MENDESAK" : "RUTIN"}
-                    </span>
-                  </div>
-                ))
+                      {cardContent}
+                    </div>
+                  );
+                })
               )}
             </div>
           </div>

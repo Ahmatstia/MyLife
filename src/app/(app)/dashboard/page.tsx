@@ -38,17 +38,35 @@ export default async function AnalyticsPage({
 
   return (
     <div className="flex flex-col w-full space-y-6 pb-16 text-gray-200">
-      {/* 1. Header Layar & Telemetri Real-Time */}
+      {/* Tab Navigasi Evaluasi: Jurnal Refleksi vs Grafik Analitik */}
+      <div className="flex items-center gap-1.5 p-1 rounded-xl bg-[#131825] border border-white/[0.08] w-fit font-mono text-xs">
+        <Link
+          href="/review"
+          className="flex items-center gap-2 px-4 py-2 rounded-lg text-[#94A3B8] hover:text-white hover:bg-white/[0.05] transition-colors"
+        >
+          <span className="material-symbols-outlined text-[16px]">edit_note</span>
+          <span>Jurnal Refleksi</span>
+        </Link>
+        <Link
+          href="/dashboard"
+          className="flex items-center gap-2 px-4 py-2 rounded-lg bg-purple-600/20 text-purple-300 font-semibold border border-purple-500/30 shadow-sm"
+        >
+          <span className="material-symbols-outlined text-[16px]">bar_chart</span>
+          <span>Grafik &amp; Analitik</span>
+        </Link>
+      </div>
+
+      {/* 1. Header Layar & Ringkasan Performa */}
       <section className="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-white/[0.08] pb-6">
         <div className="space-y-2 max-w-2xl">
           <div className="flex flex-wrap items-center gap-2 font-mono text-[10px] uppercase tracking-widest text-[#94A3B8]">
-            <span>MODUL // ANALITIK & EVALUASI</span>
+            <span>MODUL // GRAFIK &amp; ANALITIK</span>
             <span className="text-white/20">{"//"}</span>
-            <span className="text-[#d0bcff]">SISTEM MYLIFE OS v4.2</span>
+            <span className="text-[#d0bcff]">TREN PERFORMA</span>
             <span className="text-white/20">{"//"}</span>
             <div className="flex items-center gap-1.5 rounded-full bg-[#4edea3]/10 px-2 py-0.5 text-[#4edea3]">
               <span className="h-1.5 w-1.5 rounded-full bg-[#4edea3] animate-pulse"></span>
-              <span className="font-semibold">TELEMETRI PERFORMA AKTIF</span>
+              <span className="font-semibold">DATA AKTIF</span>
             </div>
           </div>
           <h1 className="text-3xl sm:text-4xl font-bold tracking-tight text-white">

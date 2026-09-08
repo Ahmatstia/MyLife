@@ -6,34 +6,26 @@ import { useRouter } from "next/navigation";
 import { useToast } from "@/app/components/ui/Toast";
 
 // ── Types ──────────────────────────────────────────────────────────
+export interface TaskItem {
+  id: string;
+  title: string;
+  notes?: string | null;
+  status: string;
+  priority: string;
+  dueDate?: string | Date | null;
+  estimatedHours?: number | null;
+  actualHours?: number | null;
+  stage?: { name: string; goal: { title: string } } | null;
+  project?: { title: string; goal?: { title: string } | null } | null;
+  area?: { name: string; color?: string | null } | null;
+  sessions?: Array<{ id: string; durationMinutes?: number | null }> | null;
+}
+
 export interface FocusItem {
   id: string;
   order: number;
   date: Date | string;
-  task: {
-    id: string;
-    title: string;
-    notes?: string | null;
-    status: string;
-    priority: string;
-    estimatedHours?: number | null;
-    actualHours?: number | null;
-    stage?: { name: string; goal: { title: string } } | null;
-    project?: { title: string; goal?: { title: string } | null } | null;
-    area?: { name: string; color?: string | null } | null;
-    sessions?: Array<{ id: string; durationMinutes?: number | null }> | null;
-  };
-}
-
-export interface TaskItem {
-  id: string;
-  title: string;
-  priority: string;
-  dueDate?: string | Date | null;
-  estimatedHours?: number | null;
-  stage?: { name: string; goal: { title: string } } | null;
-  project?: { title: string } | null;
-  area?: { name: string } | null;
+  task: TaskItem;
 }
 
 export interface ActiveSessionProp {
@@ -62,6 +54,7 @@ interface Props {
   activeSession?: ActiveSessionProp | null;
   initialTodaySessions?: TodaySessionItem[];
   streakDays?: number;
+  targetTaskId?: string | null;
 }
 
 // ── Soundscape Presets ──────────────────────────────────────────────
@@ -78,6 +71,7 @@ export function FocusManager({
   activeSession,
   initialTodaySessions = [],
   streakDays = 14,
+  targetTaskId,
 }: Props) {
   const { toast } = useToast();
   const router = useRouter();
@@ -87,7 +81,21 @@ export function FocusManager({
   const [modePreset, setModePreset] = useState<"pomodoro" | "flow">("pomodoro");
 
   // Focus queue & backlog
-  const [focusList, setFocusList] = useState<FocusItem[]>(initialFocus);
+  const [focusList, setFocusList] = useState<FocusItem[]>(() => {
+    if (targetTaskId && !initialFocus.some((f) => f.task.id === targetTaskId)) {
+      const matchInAvailable = availableTasks.find((t) => t.id === targetTaskId);
+      if (matchInAvailable) {
+        const syntheticItem: FocusItem = {
+          id: `focus-param-${matchInAvailable.id}`,
+          date: new Date(),
+          order: 0,
+          task: matchInAvailable,
+        };
+        return [syntheticItem, ...initialFocus];
+      }
+    }
+    return initialFocus;
+  });
   const [searchQuery, setSearchQuery] = useState("");
   const [loadingTaskId, setLoadingTaskId] = useState<string | null>(null);
 
@@ -103,7 +111,22 @@ export function FocusManager({
         priority: "HIGH",
       };
     }
-    return initialFocus[0]?.task ?? null;
+    if (targetTaskId) {
+      const inFocus = initialFocus.find((f) => f.task.id === targetTaskId);
+      if (inFocus) return inFocus.task;
+      const inAvailable = availableTasks.find((t) => t.id === targetTaskId);
+      if (inAvailable) return inAvailable;
+    }
+    // Default 1: First pending task in focus list
+    const firstPending = initialFocus.find((f) => f.task.status !== "COMPLETED")?.task;
+    if (firstPending) return firstPending;
+    if (initialFocus[0]?.task) return initialFocus[0].task;
+
+    // Default 2: First available task from backlog
+    if (availableTasks.length > 0) {
+      return availableTasks[0];
+    }
+    return null;
   });
 
   // Pomodoro Timer States
@@ -310,13 +333,26 @@ export function FocusManager({
     }
 
     // Timer is idle -> Start new session
-    if (!activePomodoroTask) {
-      toast("Pilih tugas terlebih dahulu dari antrean fokus.", "error");
+    let taskToRun = activePomodoroTask;
+    if (!taskToRun) {
+      const candidateFocus = focusList.find((f) => f.task.status !== "COMPLETED")?.task || focusList[0]?.task;
+      if (candidateFocus) {
+        taskToRun = candidateFocus;
+        setActivePomodoroTask(candidateFocus);
+      } else if (availableTasks.length > 0) {
+        taskToRun = availableTasks[0];
+        setActivePomodoroTask(availableTasks[0]);
+        handleAddBacklogToFocus(availableTasks[0].id, availableTasks[0].title);
+      }
+    }
+
+    if (!taskToRun) {
+      toast("Belum ada tugas yang tersedia untuk difokuskan. Buat atau pilih tugas terlebih dahulu dari antrean.", "error");
       return;
     }
 
     try {
-      const res = await fetch(`/api/tasks/${activePomodoroTask.id}/sessions`, {
+      const res = await fetch(`/api/tasks/${taskToRun.id}/sessions`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
       });
@@ -325,7 +361,7 @@ export function FocusManager({
         setCurrentSessionId(json.data.id);
       }
       setTimerStatus("running");
-      toast("Sesi fokus dimulai! Selamat berkonsentrasi.", "success");
+      toast(`Sesi fokus dimulai: "${taskToRun.title}". Selamat berkonsentrasi!`, "success");
     } catch {
       setTimerStatus("running");
     }
@@ -804,18 +840,59 @@ export function FocusManager({
                         EST: {activePomodoroTask.estimatedHours ? `${activePomodoroTask.estimatedHours * 60} MENIT` : `${presetMinutes} MENIT`}
                       </span>
                     </div>
-                    <h2 className="text-xl sm:text-2xl text-[#e2e2eb] font-semibold tracking-tight">
-                      {activePomodoroTask.title}
-                    </h2>
+                    <div className="flex items-center justify-between gap-3 flex-wrap">
+                      <h2 className="text-xl sm:text-2xl text-[#e2e2eb] font-semibold tracking-tight">
+                        <Link
+                          href={`/tasks/${activePomodoroTask.id}`}
+                          className="hover:underline hover:text-[#d0bcff] transition-colors"
+                          title="Lihat rincian tugas lengkap"
+                        >
+                          {activePomodoroTask.title}
+                        </Link>
+                      </h2>
+                      <Link
+                        href={`/tasks/${activePomodoroTask.id}`}
+                        className="text-xs font-mono text-[#d0bcff] hover:underline flex items-center gap-1 shrink-0 bg-[#282a30] hover:bg-[#343640] px-2.5 py-1 rounded-md border border-white/[0.08] transition-colors"
+                      >
+                        <span>Rincian Tugas</span>
+                        <span>→</span>
+                      </Link>
+                    </div>
                     <p className="text-sm text-[#958ea0] max-w-xl line-clamp-2">
                       {activePomodoroTask.notes ||
                         `Fokus mendalam untuk menyelesaikan tugas ${activePomodoroTask.title} tanpa distraksi berkecepatan tinggi.`}
                     </p>
                   </>
                 ) : (
-                  <div className="p-4 rounded-lg bg-[#191b22] border border-dashed border-white/10 text-center">
-                    <p className="text-sm text-[#e2e2eb] font-medium">Belum ada tugas fokus yang dipilih</p>
-                    <p className="text-xs text-[#958ea0] mt-1">Pilih salah satu tugas dari antrean prioritas di bawah untuk mulai sesi fokus.</p>
+                  <div className="p-5 rounded-lg bg-[#191b22] border border-dashed border-white/10 text-center flex flex-col items-center justify-center gap-3">
+                    <div>
+                      <p className="text-sm text-[#e2e2eb] font-medium">Belum ada tugas fokus yang dipilih</p>
+                      <p className="text-xs text-[#958ea0] mt-1">Pilih salah satu tugas dari antrean prioritas di bawah atau ambil dari backlog untuk mulai fokus.</p>
+                    </div>
+                    {availableTasks.length > 0 ? (
+                      <button
+                        type="button"
+                        onClick={() => {
+                          const topTask = availableTasks[0];
+                          setActivePomodoroTask(topTask);
+                          handleAddBacklogToFocus(topTask.id, topTask.title);
+                          toast(`Tugas "${topTask.title}" siap difokuskan. Klik Mulai Sesi untuk mulai!`, "success");
+                        }}
+                        className="px-4 py-2 rounded-lg bg-[#340080] hover:bg-[#a078ff] text-[#d0bcff] hover:text-[#23005c] font-semibold text-xs transition-all flex items-center gap-2 border border-[#d0bcff]/30 shadow-md"
+                      >
+                        <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
+                          <path d="M8 5v14l11-7z" />
+                        </svg>
+                        <span>⚡ Pilih Tugas Teratas Backlog: &quot;{availableTasks[0].title}&quot;</span>
+                      </button>
+                    ) : (
+                      <Link
+                        href="/today"
+                        className="px-4 py-2 rounded-lg bg-[#282a30] hover:bg-[#343640] text-[#d0bcff] font-medium text-xs transition-all flex items-center gap-1.5 border border-white/[0.08]"
+                      >
+                        <span>+ Tambah Tugas di Halaman Hari Ini</span>
+                      </Link>
+                    )}
                   </div>
                 )}
               </div>
@@ -1055,13 +1132,15 @@ export function FocusManager({
 
                           <div className="flex flex-col min-w-0 flex-1">
                             <div className="flex items-center gap-2 flex-wrap">
-                              <span
-                                className={`text-sm font-medium truncate ${
+                              <Link
+                                href={`/tasks/${item.task.id}`}
+                                className={`text-sm font-medium truncate hover:underline hover:text-[#d0bcff] transition-colors ${
                                   isDone ? "text-[#958ea0] line-through" : "text-[#e2e2eb]"
                                 }`}
+                                title="Lihat rincian tugas"
                               >
                                 {item.task.title}
-                              </span>
+                              </Link>
 
                               {isCurrent && timerStatus === "running" && (
                                 <span className="font-mono text-[10px] px-1.5 py-0.5 rounded bg-[#F59E0B]/15 text-[#F59E0B] font-bold border border-[#F59E0B]/30">

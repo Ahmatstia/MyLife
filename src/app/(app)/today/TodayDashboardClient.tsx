@@ -26,6 +26,8 @@ interface TaskItemData {
   badge?: string;
   badgeType?: string;
   xp?: string;
+  projectId?: string | null;
+  goalId?: string | null;
 }
 
 interface TimeblockData {
@@ -916,25 +918,45 @@ export function TodayDashboardClient({
                         </button>
 
                         <div className="flex flex-col min-w-0">
-                          <span
-                            className={`text-sm leading-snug truncate ${
+                          <Link
+                            href={`/tasks/${task.id}`}
+                            className={`text-sm leading-snug truncate hover:underline hover:text-[#d0bcff] transition-colors cursor-pointer ${
                               isDone
                                 ? "text-[#cbc3d7] line-through"
                                 : isRunning
                                 ? "text-white font-semibold"
                                 : "text-white font-medium"
                             }`}
+                            title="Buka rincian tugas"
                           >
                             {task.title}
-                          </span>
+                          </Link>
                           <div className="flex items-center gap-2 mt-0.5">
-                            <span
-                              className={`font-mono text-[11px] ${
-                                isRunning ? "text-[#d0bcff] font-semibold" : "text-[#cbc3d7]/80"
-                              }`}
-                            >
-                              {task.subtitle}
-                            </span>
+                            {task.projectId ? (
+                              <Link
+                                href={`/projects/${task.projectId}`}
+                                className="font-mono text-[11px] text-[#cbc3d7]/80 hover:text-[#d0bcff] hover:underline transition-colors truncate"
+                                title="Buka proyek terkait"
+                              >
+                                {task.subtitle}
+                              </Link>
+                            ) : task.goalId ? (
+                              <Link
+                                href={`/goals/${task.goalId}`}
+                                className="font-mono text-[11px] text-[#cbc3d7]/80 hover:text-[#d0bcff] hover:underline transition-colors truncate"
+                                title="Buka sasaran (goal) terkait"
+                              >
+                                {task.subtitle}
+                              </Link>
+                            ) : (
+                              <span
+                                className={`font-mono text-[11px] truncate ${
+                                  isRunning ? "text-[#d0bcff] font-semibold" : "text-[#cbc3d7]/80"
+                                }`}
+                              >
+                                {task.subtitle}
+                              </span>
+                            )}
                           </div>
                         </div>
                       </div>
@@ -945,10 +967,14 @@ export function TodayDashboardClient({
                             Selesai
                           </span>
                         ) : isRunning ? (
-                          <span className="px-2.5 py-0.5 rounded-full bg-[#a078ff]/20 text-[#d0bcff] font-mono text-[11px] font-semibold border border-[#d0bcff]/30 flex items-center gap-1.5 shadow-[0_0_10px_rgba(208,188,255,0.2)]">
+                          <Link
+                            href={`/focus?taskId=${task.id}`}
+                            className="px-2.5 py-0.5 rounded-full bg-[#a078ff]/20 text-[#d0bcff] hover:bg-[#a078ff]/30 font-mono text-[11px] font-semibold border border-[#d0bcff]/30 flex items-center gap-1.5 shadow-[0_0_10px_rgba(208,188,255,0.2)] transition-colors cursor-pointer"
+                            title="Lanjutkan fokus di Mode Pomodoro"
+                          >
                             <span>Sedang Berjalan</span>
                             <span>🍅</span>
-                          </span>
+                          </Link>
                         ) : (
                           <>
                             {task.badge && (
@@ -964,9 +990,11 @@ export function TodayDashboardClient({
                             )}
                             <Link
                               href={`/focus?taskId=${task.id}`}
-                              className="px-2.5 py-0.5 rounded bg-[#1e1f26] hover:bg-[#282a30] text-white font-mono text-xs border border-white/[0.07] transition-colors"
+                              className="px-2.5 py-0.5 rounded bg-[#1e1f26] hover:bg-[#d0bcff] hover:text-[#23005c] text-white font-mono text-xs border border-white/[0.07] transition-all font-medium flex items-center gap-1 cursor-pointer"
+                              title="Fokuskan tugas ini di Mode Pomodoro"
                             >
-                              Fokus 🍅
+                              <span>Fokus</span>
+                              <span>🍅</span>
                             </Link>
                           </>
                         )}

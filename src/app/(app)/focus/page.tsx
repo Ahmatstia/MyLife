@@ -6,8 +6,14 @@ import { FocusManager } from "./FocusManager";
 
 export const dynamic = "force-dynamic";
 
-export default async function FocusPage() {
+interface FocusPageProps {
+  searchParams?: Promise<{ taskId?: string }>;
+}
+
+export default async function FocusPage(props: FocusPageProps) {
   const user = await requirePageUser();
+  const searchParams = props.searchParams ? await props.searchParams : undefined;
+  const targetTaskId = searchParams?.taskId;
 
   const startOfDay = new Date();
   startOfDay.setHours(0, 0, 0, 0);
@@ -22,7 +28,16 @@ export default async function FocusPage() {
     findTodaySessions(user.id, startOfDay, endOfDay),
   ]);
 
-  const availableTasks = tasks.filter((t) => t.status !== "COMPLETED");
+  let availableTasks = tasks.filter((t) => t.status !== "COMPLETED");
+
+  // If a specific taskId was targeted in the URL but not yet in availableTasks (e.g. edge cases), find it
+  if (targetTaskId && !availableTasks.some((t) => t.id === targetTaskId)) {
+    const { findTaskForFocus } = await import("@/repositories/today.repository");
+    const extraTask = await findTaskForFocus(user.id, targetTaskId);
+    if (extraTask) {
+      availableTasks = [extraTask as unknown as typeof availableTasks[0], ...availableTasks];
+    }
+  }
 
   const formattedSession = activeSession
     ? {
@@ -61,6 +76,7 @@ export default async function FocusPage() {
       activeSession={formattedSession}
       initialTodaySessions={formattedTodaySessions}
       streakDays={14}
+      targetTaskId={targetTaskId}
     />
   );
 }
