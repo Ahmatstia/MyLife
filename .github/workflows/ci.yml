@@ -45,7 +45,7 @@ jobs:
         run: npx prisma generate
 
       - name: Setup test database schema
-        run: npx prisma db push --skip-generate
+        run: npx prisma db push
 
       - name: Typecheck
         run: npm run typecheck
