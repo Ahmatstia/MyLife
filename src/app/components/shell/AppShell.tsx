@@ -81,6 +81,39 @@ export function AppShell({
   const [aiOpen, setAiOpen] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
+  // Desktop sidebar collapse & lock state (default true for server & client hydration consistency)
+  const [isPinned, setIsPinned] = useState(true);
+  const [isHovered, setIsHovered] = useState(false);
+
+  useEffect(() => {
+    // Read client-side preference asynchronously after hydration to avoid SSR mismatch
+    const timer = setTimeout(() => {
+      try {
+        const saved = localStorage.getItem("mylife_sidebar_pinned");
+        if (saved !== null) {
+          setIsPinned(saved === "true");
+        }
+      } catch {
+        // ignore
+      }
+    }, 0);
+    return () => clearTimeout(timer);
+  }, []);
+
+  const togglePin = () => {
+    setIsPinned((prev) => {
+      const next = !prev;
+      try {
+        localStorage.setItem("mylife_sidebar_pinned", String(next));
+      } catch {
+        // ignore
+      }
+      return next;
+    });
+  };
+
+  const isExpanded = isPinned || isHovered;
+
   useEffect(() => {
     const onKey = (event: KeyboardEvent) => {
       if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === "k") {
@@ -92,12 +125,28 @@ export function AppShell({
     return () => window.removeEventListener("keydown", onKey);
   }, []);
 
-
   return (
     <div className="min-h-screen bg-[#0B0D13] text-[#e2e2eb] w-full max-w-full overflow-x-hidden">
-      {/* Desktop sidebar */}
-      <aside className="fixed inset-y-0 left-0 z-40 hidden w-60 border-r border-white/[0.08] bg-[#0c0e14]/95 px-3 py-4 backdrop-blur-xl lg:block">
-        <Sidebar user={user} />
+      {/* Desktop sidebar with minimize, auto-hover expand, and lock pin */}
+      <aside
+        onMouseEnter={() => {
+          if (!isPinned) setIsHovered(true);
+        }}
+        onMouseLeave={() => {
+          if (!isPinned) setIsHovered(false);
+        }}
+        className={`fixed inset-y-0 left-0 z-40 hidden border-r border-white/[0.08] bg-[#0c0e14]/95 backdrop-blur-xl transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] will-change-[width] lg:block px-2.5 py-4 ${
+          isExpanded
+            ? "w-60 shadow-[0_10px_35px_rgba(0,0,0,0.7)]"
+            : "w-[4.5rem] shadow-md"
+        }`}
+      >
+        <Sidebar
+          user={user}
+          isExpanded={isExpanded}
+          isPinned={isPinned}
+          onTogglePin={togglePin}
+        />
       </aside>
 
       {/* Mobile drawer */}
@@ -109,13 +158,18 @@ export function AppShell({
           }}
         >
           <div className="h-full w-64 bg-[#0c0e14] p-4 shadow-2xl border-r border-white/[0.08]">
-            <Sidebar user={user} onNavigate={() => setSidebarOpen(false)} />
+            <Sidebar
+              user={user}
+              onNavigate={() => setSidebarOpen(false)}
+              isExpanded={true}
+              isPinned={true}
+            />
           </div>
         </div>
       )}
 
       {/* Main column */}
-      <div className="lg:pl-60">
+      <div className={`transition-[padding] duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] ${isPinned ? "lg:pl-60" : "lg:pl-[4.5rem]"}`}>
         {/* Topbar */}
         <header className="sticky top-0 z-30 border-b border-white/[0.08] bg-[#0B0D13]/85 backdrop-blur-xl text-[#e2e2eb] transition-all duration-300">
           <div className="mx-auto flex h-14 max-w-[1400px] items-center gap-3 px-4 sm:px-6">
