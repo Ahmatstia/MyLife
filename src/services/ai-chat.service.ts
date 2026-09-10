@@ -62,37 +62,57 @@ const READ_INTENTS = new Set([
   "REVIEW", "REFLECTION", "OVERDUE", "STAGE_STATUS",
 ]);
 
+/** Out-of-scope regex patterns for deterministic local guardrail */
+export const OUT_OF_SCOPE_PATTERNS = [
+  /\b(resep|masak|bumbu|makanan|kuliner)\b/i,
+  /\b(presiden|menteri|politik|pemilu|partai|dpr)\b/i,
+  /\b(siapa\s+penemu|ibu\s+kota|sejarah\s+dunia|luas\s+negara)\b/i,
+  /\b(film|aktor|artis|selebriti|sinetron|gosip)\b/i,
+  /\b(cuaca\s+hari\s+ini|ramalan\s+zodiak)\b/i,
+  /\b(script|koding|coding|python\s+scraping|sql\s+query|c\+\+|java\s+code)\b/i,
+];
+
+export function isOutOfScopeQuery(text: string): boolean {
+  return OUT_OF_SCOPE_PATTERNS.some((pattern) => pattern.test(text));
+}
+
 /**
- * System Prompt with Strict Domain Guardrails & Life Copilot Persona.
+ * High-Intelligence Executive Life Strategist & Copilot Persona.
  */
 const COPILOT_SYSTEM_PROMPT = `
-Kamu adalah MyLife Copilot — sahabat produktivitas pribadi, perencana hidup, dan life coach personal bagi pengguna di aplikasi MyLife.
+Kamu adalah MyLife Copilot — Chief of Staff pribadi, penasihat hidup strategis (Life Strategist), dan coach produktivitas cerdas bagi pengguna aplikasi MyLife.
 
-PERAN & KARAKTER:
-- Berbicaralah dalam Bahasa Indonesia yang alami, hangat, ramah, cerdas, dan empatik layaknya seorang sahabat atau mentor produktivitas yang bijak.
-- Jawablah secara ringkas, solutif, dan membumi (maksimal 2-4 kalimat). Hindari respon bertele-tele atau membuat daftar terlalu panjang kecuali pengguna memintanya secara eksplisit.
-- Gunakan konteks data pengguna (target impian, tugas hari ini, fokus kerja) untuk memberikan respon yang terasa personal dan relevan.
-- JANGAN menyebutkan istilah teknis internal software (seperti "Prisma", "Zod", "IDOR", "endpoint", "database schema", "HMAC token").
+PERAN & LEVEL KECERDASAN:
+- Kamu berpikir layaknya Executive Life Coach berpengalaman: kamu memandang hidup pengguna secara holistik (keseimbangan antara pilar Karier/Bisnis, Finansial, Kesehatan/Fisik, dan Pengembangan Diri).
+- Kamu MAMPU MENGHUBUNGKAN berbagai titik data: tugas mendesak, target besar, proyek aktif, jadwal kalender, dan pilar kehidupan secara tajam dan berbobot.
+- Berbicaralah dalam Bahasa Indonesia yang alami, hangat, elegan, percaya diri, dan solutif.
+- Format respon dengan markdown yang rapi (gunakan cetak tebal, bullet points terstruktur, dan penomoran) sehingga mudah dipahami dan enak dibaca.
 
-PAGAR KONTEKS & ATURAN DOMAIN KETAT (GUARDRAIL - SANGAT PENTING):
-1. TOPIK YANG DIIZINKAN (HANYA INI YANG BOLEH DIBAHAS):
-   - Produktivitas, manajemen waktu, fokus kerja/belajar, kebiasaan positif (habits), dan rutinitas harian.
-   - Perencanaan target hidup (Goals), tahapan kemajuan (Stages), dan daftar tugas (Tasks) di aplikasi MyLife.
-   - Evaluasi harian/mingguan (Review), refleksi, mengatasi rasa malas, prokrastinasi, kelelahan mental (burnout), atau stres kerja.
-   - Bantuan & panduan penggunaan fitur MyLife (Hari Ini, Mode Fokus Pomodoro, Kotak Masuk/Capture, Jadwal, Refleksi).
-   - Sapaan santai, perkenalan diri, dan obrolan suportif seputar aktivitas pengguna.
+PANDUAN MENJAWAB BERDASARKAN TIPE PERTANYAAN:
 
-2. TOPIK DILARANG / DI LUAR DOMAIN (WAJIB DITOLAK SECARA SOPAN):
-   - Pertanyaan pengetahuan umum/trivia/fakta dunia (misal: "siapa presiden...", "ibu kota negara...", "sejarah dunia").
-   - Resep masakan/kuliner, dunia hiburan/selebriti, lagu, film, gosip, atau politik.
-   - Konsultasi medis/obat-obatan atau hukum formal.
-   - Pemrograman atau coding teknis umum yang tidak berkaitan dengan MyLife (misal: "buatkan script scraping", "tulis kode C++").
-   - Tugas sekolah/kuliah umum yang bukan tentang manajemen waktu/produktivitas.
+1. JIKA PENGGUNA MEMINTA SARAN PRIORITAS, RENCANA HARIAN, ATAU MENANYAKAN PILAR HIDUP:
+   (Contoh: "apa langkah prioritas hari ini?", "menurutmu dari semua target dan pilar hidup saya apa yang harus saya lakukan?", "bagaimana prioritasku?")
+   - JANGAN PERNAH memberikan jawaban 1-2 kalimat pemalas atau sekadar menyebut satu tugas pertama!
+   - Berikan STRATEGIC GAMEPLAN yang terstruktur:
+     * **Kondisi Hari Ini**: Catat situasi kalender (misal: kalender luang tanpa rapat, kesempatan emas untuk deep work) dan beban tugas.
+     * **Prioritas #1 (The Big Rock / Deep Work)**: Tugas dengan dampak terbesar atau urgensi tertinggi (cek tugas dengan status URGENT / HIGH deadline dekat, misal Pricing Table / SaaS Launch). Jelaskan secara ringkas MENGAPA ini nomor satu.
+     * **Prioritas #2 (Skill & Growth / Pengembangan Diri)**: Langkah berikutnya untuk mencicil target jangka panjang (misal: pembelajaran AI Engineer).
+     * **Keseimbangan Pilar (Life & Health Balance)**: Ingatkan pentingnya menjaga pilar Kesehatan & Fisik (olahraga ringan, hidrasi, istirahat cukup) agar performa tetap prima dan terhindar dari burnout.
+     * **Aksi Konkret Pertama**: Dorong pengguna untuk mengambil satu langkah pertama sekarang (misal: mulai sesi fokus 25 menit).
 
-3. CARA MENOLAK TOPIK DI LUAR DOMAIN:
-   Jika pengguna menanyakan hal di luar domain di atas, TOLAK DENGAN SANTUN DAN SINGKAT, lalu tawarkan bantuan seputar target/tugas MyLife.
-   Contoh respon penolakan:
-   "Maaf, sebagai asisten pribadi MyLife, saya hanya fokus mendampingi produktivitas, target (goals), dan tugas harianmu. Ada rencana atau tugas hari ini yang ingin kita diskusikan bersama?"
+2. JIKA PENGGUNA BERTANYA TENTANG KALENDER / JADWAL SPESIFIK:
+   (Contoh: "dikalender saya ada tugas ga?", "jadwal hari ini apa?")
+   - Berikan jawaban langsung, jujur, dan jelas.
+   - Bila kalender kosong: sampaikan bahwa kalender hari ini bebas agenda/pertemuan eksternal, sehingga punya blok waktu fokus yang luas, lalu rekomendasikan tugas prioritas yang bisa dieksekusi.
+   - Bila kalender ada jadwal: sebutkan jam mulai, selesai, dan nama acaranya.
+
+3. KESADARAN RIWAYAT PERCAKAPAN (MULTI-TURN MEMORY):
+   - BACA RIWAYAT PERCAKAPAN! Jangan mengulang pembuka yang sama persis ("Mengingat jadwalmu hari ini...") atau merekomendasikan hal yang sama terus-menerus tanpa nilai tambah.
+   - Jika pengguna bertanya lebih mendalam atau menguji ("menurutmu dari SEMUA target dan pilar hidup saya..."), tunjukkan bahwa kamu benar-benar mengerti peta semua pilar mereka dan berikan analisis yang lebih komprehensif!
+
+4. TOPIK DILARANG (DOMAIN GUARDRAIL):
+   - Hanya layani topik seputar produktivitas, target hidup, tugas, kalender, manajemen waktu, kebiasaan, dan pencegahan burnout.
+   - Tolak secara santun dan singkat jika ditanya topik di luar sistem (resep makanan, trivia umum, gosip artis, politik, coding umum di luar MyLife).
 `.trim();
 
 /**
@@ -110,6 +130,16 @@ export async function processChat(
   history?: ChatHistoryItem[]
 ): Promise<ChatResponse> {
   const owner = requireUserId(userId);
+
+  // ── TRACK 0: STRICT DOMAIN GUARDRAIL ──────────────────────────────────
+  if (isOutOfScopeQuery(text)) {
+    return {
+      success: true,
+      message:
+        "Maaf, sebagai asisten pribadi MyLife, saya khusus diprogram untuk mendampingi produktivitas, pencapaian target (goals), dan tugas harianmu. Ada target atau rencana tugas yang ingin kita bahas bersama hari ini?",
+      source: "tier1",
+    };
+  }
 
   // Build sanitized context for Gemini (no raw DB data, no secrets)
   const safeCtx = await buildSafeContext(owner, currentPage);
@@ -204,7 +234,8 @@ export async function executeConfirmedChatCommand(
 }
 
 /**
- * Generate a conversational reply using Gemini with strict domain guardrails & history.
+ * Generate an empathetic, domain-aligned conversational reply using Gemini.
+ * Sanitized context is provided so Gemini knows about goals, tasks, and progress.
  */
 async function generateCopilotChatReply(
   text: string,
@@ -214,16 +245,116 @@ async function generateCopilotChatReply(
   const apiKey = process.env.GEMINI_API_KEY ?? "";
   if (!apiKey) return null;
 
-  const model = process.env.GEMINI_MODEL ?? "gemini-3.6-flash";
-  const timeout = Number(process.env.GEMINI_TIMEOUT_MS ?? "5000");
-  const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`;
+  const primaryModel = process.env.GEMINI_MODEL ?? "gemini-3.5-flash-lite";
+  const candidateModels = Array.from(
+    new Set([primaryModel, "gemini-3.5-flash-lite", "gemini-flash-latest"])
+  );
+  const timeout = Math.max(Number(process.env.GEMINI_TIMEOUT_MS ?? "10000"), 10000);
+
+  const calendarSummary =
+    safeCtx.calendarEvents && safeCtx.calendarEvents.length > 0
+      ? safeCtx.calendarEvents
+          .map(
+            (e) =>
+              `- ${e.isToday ? "[HARI INI]" : "[AKAN DATANG]"} "${e.title}" (${e.startTime} - ${e.endTime})`
+          )
+          .join("\n")
+      : "Tidak ada jadwal atau agenda khusus di kalender untuk hari ini (jadwal kosong/luang).";
+
+  const areasSummary =
+    safeCtx.areas && safeCtx.areas.length > 0
+      ? safeCtx.areas
+          .map((a) => {
+            if (typeof a === "string") return `- Pilar: "${a}"`;
+            const goalsList =
+              a.activeGoals && a.activeGoals.length > 0
+                ? ` (Target: ${a.activeGoals.join(", ")})`
+                : " (Belum ada target khusus)";
+            return `- Pilar: "${a.name}"${goalsList}`;
+          })
+          .join("\n")
+      : "Belum ada pilar hidup.";
+
+  const goalsSummary =
+    safeCtx.goals && safeCtx.goals.length > 0
+      ? safeCtx.goals
+          .map(
+            (g) =>
+              `- Target: "${g.title}" [Pilar: ${g.areaName ?? "Umum"}] (Tipe: ${g.type ?? "GENERAL"}, Prio: ${g.priority ?? "MEDIUM"})${
+                g.stages && g.stages.length > 0 ? `, Tahapan: ${g.stages.join(" -> ")}` : ""
+              }`
+          )
+          .join("\n")
+      : "Belum ada target aktif.";
+
+  const projectsSummary =
+    safeCtx.projects && safeCtx.projects.length > 0
+      ? safeCtx.projects
+          .map(
+            (p) =>
+              `- Proyek: "${p.title}" [Pilar: ${p.areaName ?? "Umum"}] (${p.status ?? "ACTIVE"})${
+                p.goalTitle ? `, Terkait Target: "${p.goalTitle}"` : ""
+              }${
+                p.milestones && p.milestones.length > 0 ? `, Milestones: ${p.milestones.join(", ")}` : ""
+              }`
+          )
+          .join("\n")
+      : "Belum ada proyek aktif.";
+
+  const tasksSummary = safeCtx.tasks
+    ? [
+        `Tugas Fokus Hari Ini: ${safeCtx.tasks.focus.length > 0 ? safeCtx.tasks.focus.join(", ") : "Belum memilih tugas fokus"}`,
+        `Tugas Terlambat (Overdue): ${safeCtx.tasks.overdue.length > 0 ? safeCtx.tasks.overdue.join(", ") : "Tidak ada yang terlambat"}`,
+        `Daftar Tugas Todo (Terurut Prioritas & Urgensi):\n${
+          safeCtx.tasks.todo.length > 0
+            ? safeCtx.tasks.todo
+                .map(
+                  (t, idx) =>
+                    `  ${idx + 1}. "${t.title}" | Prioritas: ${t.priority}${
+                      t.dueDate ? ` | Deadline: ${t.dueDate}` : ""
+                    }${t.areaName ? ` | Pilar: ${t.areaName}` : ""}${
+                      t.goalTitle ? ` | Target: ${t.goalTitle}` : ""
+                    }`
+                )
+                .join("\n")
+            : "  (Tidak ada tugas todo)"
+        }`,
+        `Tugas Selesai Hari Ini: ${safeCtx.tasks.completedToday.length > 0 ? safeCtx.tasks.completedToday.join(", ") : "Belum ada yang diselesaikan"}`,
+      ].join("\n")
+    : `Tugas Fokus: ${JSON.stringify(safeCtx.recentTaskTitles ?? [])}`;
+
+  const inboxSummary = safeCtx.inbox
+    ? `Jumlah ide/catatan mentah belum diproses: ${safeCtx.inbox.pendingCount}${
+        safeCtx.inbox.items.length > 0
+          ? `, Catatan terbaru: ${safeCtx.inbox.items.map((i) => `"${i.content}" [${i.category}]`).join(", ")}`
+          : ""
+      }`
+    : "Kotak masuk kosong.";
 
   const contextBlock = `
-KONTEKS DATA PENGGUNA SAAT INI (Gunakan untuk relevansi):
-- Halaman saat ini: ${safeCtx.currentPage ?? "assistant"}
-- Target aktif pengguna: ${JSON.stringify(safeCtx.activeGoalTitles ?? [])}
-- Tugas fokus hari ini: ${JSON.stringify(safeCtx.recentTaskTitles ?? [])}
-- Ringkasan statistik hari ini: ${JSON.stringify(safeCtx.todayStats ?? {})}
+DATA LENGKAP SISTEM MYLIFE PENGGUNA SAAT INI (BACA DENGAN TELITI):
+1. PILAR HIDUP (AREAS):
+${areasSummary}
+
+2. TARGET AKTIF (GOALS & STAGES):
+${goalsSummary}
+
+3. PROYEK AKTIF (PROJECTS):
+${projectsSummary}
+
+4. STATUS TUGAS (TASKS & PRIORITIES):
+${tasksSummary}
+
+5. JADWAL & KALENDER (CALENDAR & SCHEDULE):
+${calendarSummary}
+
+6. KOTAK MASUK (CAPTURE INBOX):
+${inboxSummary}
+
+7. STATISTIK HARI INI:
+   - Selesai hari ini: ${safeCtx.todayStats?.completedToday ?? 0} tugas
+   - Sisa fokus: ${safeCtx.todayStats?.focusTaskCount ?? 0} tugas
+   - Terlambat: ${safeCtx.todayStats?.overdueCount ?? 0} tugas
 `.trim();
 
   const historyBlock =
@@ -236,35 +367,47 @@ KONTEKS DATA PENGGUNA SAAT INI (Gunakan untuk relevansi):
 
   const fullPrompt = `${COPILOT_SYSTEM_PROMPT}\n\n${contextBlock}${historyBlock}\nPengguna: ${text}\nAsisten:`;
 
-  try {
-    const controller = new AbortController();
-    const timer = setTimeout(() => controller.abort(), timeout);
-    let response: Response;
+  for (const model of candidateModels) {
+    const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`;
     try {
-      response = await fetch(apiUrl, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          contents: [{ parts: [{ text: fullPrompt }] }],
-          generationConfig: {
-            temperature: 0.7,
-            maxOutputTokens: 350,
-          },
-        }),
-        signal: controller.signal,
-      });
-    } finally {
-      clearTimeout(timer);
-    }
+      const controller = new AbortController();
+      const timer = setTimeout(() => controller.abort(), timeout);
+      let response: Response;
+      try {
+        response = await fetch(apiUrl, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            contents: [{ parts: [{ text: fullPrompt }] }],
+            generationConfig: {
+              temperature: 0.7,
+              maxOutputTokens: 1000,
+            },
+          }),
+          signal: controller.signal,
+        });
+      } finally {
+        clearTimeout(timer);
+      }
 
-    if (!response.ok) return null;
-    const json = (await response.json()) as {
-      candidates?: Array<{ content?: { parts?: Array<{ text?: string }> } }>;
-    };
-    return json?.candidates?.[0]?.content?.parts?.[0]?.text?.trim() ?? null;
-  } catch {
-    return null;
+      if (!response.ok) {
+        console.warn(`[GeminiChat] Model ${model} returned ${response.status}, trying next model...`);
+        continue;
+      }
+
+      const json = (await response.json()) as {
+        candidates?: Array<{ content?: { parts?: Array<{ text?: string }> } }>;
+      };
+      const textResult = json?.candidates?.[0]?.content?.parts?.[0]?.text?.trim();
+      if (textResult) return textResult;
+    } catch (err) {
+      console.warn(`[GeminiChat] Model ${model} caught exception:`, err);
+      // Continue to next candidate model
+      continue;
+    }
   }
+
+  return null;
 }
 
 /**

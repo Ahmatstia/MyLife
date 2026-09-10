@@ -26,16 +26,53 @@ export const LLM_CONFIDENCE_THRESHOLD = 0.6;
 
 export type GeminiAvailability = "available" | "no-key" | "unavailable";
 
-/** Minimal sanitized context passed to Gemini — no DB IDs, no secrets */
+/** Complete sanitized context passed to Gemini — no DB IDs, no secrets */
 export type SafeAIContext = {
   currentPage?: string;
   activeGoalTitles?: string[];
+  recentTaskTitles?: string[];
   todayStats?: {
     focusTaskCount: number;
     overdueCount: number;
     completedToday: number;
   };
-  recentTaskTitles?: string[];
+  // Holistic Life OS context
+  areas?: Array<{
+    name: string;
+    description?: string;
+    activeGoals?: string[];
+  }> | string[];
+  goals?: Array<{
+    title: string;
+    type?: string;
+    priority?: string;
+    areaName?: string;
+    stages?: string[];
+  }>;
+  projects?: Array<{
+    title: string;
+    status?: string;
+    areaName?: string;
+    goalTitle?: string;
+    milestones?: string[];
+  }>;
+  tasks?: {
+    focus: string[];
+    overdue: string[];
+    todo: Array<{ title: string; priority: string; dueDate?: string; goalTitle?: string; areaName?: string }>;
+    completedToday: string[];
+  };
+  calendarEvents?: Array<{
+    title: string;
+    startTime: string;
+    endTime: string;
+    isToday: boolean;
+  }>;
+  inbox?: {
+    pendingCount: number;
+    items: Array<{ content: string; category: string }>;
+  };
+  streak?: number;
 };
 
 /**
@@ -108,7 +145,10 @@ export async function classifyWithGemini(
   const apiKey = process.env.GEMINI_API_KEY ?? "";
   if (!apiKey) return null;
 
-  const model = process.env.GEMINI_MODEL ?? "gemini-3.6-flash";
+  const primaryModel = process.env.GEMINI_MODEL ?? "gemini-3.5-flash-lite";
+  const candidateModels = Array.from(
+    new Set([primaryModel, "gemini-3.5-flash-lite", "gemini-flash-latest"])
+  );
   const timeoutMs = Number(process.env.GEMINI_TIMEOUT_MS ?? "5000");
 
   const normalizedText = normalizeText(text);
@@ -134,52 +174,57 @@ export async function classifyWithGemini(
     },
   };
 
-  const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`;
+  for (const model of candidateModels) {
+    const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`;
 
-  try {
-    const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), timeoutMs);
-
-    let response: Response;
     try {
-      response = await fetch(apiUrl, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(requestBody),
-        signal: controller.signal,
-      });
-    } finally {
-      clearTimeout(timeout);
-    }
+      const controller = new AbortController();
+      const timeout = setTimeout(() => controller.abort(), timeoutMs);
 
-    if (!response.ok) {
-      console.warn(`[GeminiBridge] API returned ${response.status}`);
-      return null;
-    }
+      let response: Response;
+      try {
+        response = await fetch(apiUrl, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(requestBody),
+          signal: controller.signal,
+        });
+      } finally {
+        clearTimeout(timeout);
+      }
 
-    const json = await response.json() as {
-      candidates?: Array<{
-        content?: { parts?: Array<{ text?: string }> };
-      }>;
-    };
+      if (!response.ok) {
+        console.warn(`[GeminiBridge] Model ${model} returned ${response.status}, trying next model...`);
+        continue;
+      }
 
-    const parts = json?.candidates?.[0]?.content?.parts ?? [];
-    const textPart = parts.find((p) => typeof p.text === "string" && p.text.trim().length > 0) ?? parts[0];
-    const rawText = textPart?.text;
-    if (!rawText) {
-      console.warn("[GeminiBridge] Empty response from Gemini");
-      return null;
-    }
+      const json = await response.json() as {
+        candidates?: Array<{
+          content?: { parts?: Array<{ text?: string }> };
+        }>;
+      };
 
-    return parseGeminiResponse(rawText, normalizedText);
-  } catch (err) {
-    if (err instanceof Error && err.name === "AbortError") {
-      console.warn(`[GeminiBridge] Request timed out after ${GEMINI_TIMEOUT_MS}ms`);
-    } else {
-      console.warn("[GeminiBridge] Network or parse error:", err instanceof Error ? err.message : String(err));
+      const parts = json?.candidates?.[0]?.content?.parts ?? [];
+      const textPart = parts.find((p) => typeof p.text === "string" && p.text.trim().length > 0) ?? parts[0];
+      const rawText = textPart?.text;
+      if (!rawText) {
+        console.warn(`[GeminiBridge] Empty response from Gemini model ${model}`);
+        continue;
+      }
+
+      const parsed = parseGeminiResponse(rawText, normalizedText);
+      if (parsed) return parsed;
+    } catch (err) {
+      if (err instanceof Error && err.name === "AbortError") {
+        console.warn(`[GeminiBridge] Request to ${model} timed out after ${timeoutMs}ms`);
+      } else {
+        console.warn(`[GeminiBridge] Error with ${model}:`, err instanceof Error ? err.message : String(err));
+      }
+      continue;
     }
-    return null;
   }
+
+  return null;
 }
 
 /**
