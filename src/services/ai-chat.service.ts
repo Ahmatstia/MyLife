@@ -186,14 +186,18 @@ export async function processChat(
     };
 
     const result = await executeAICommand(commandInput, owner);
-    const source = interpretation.source === "gemini-llm" ? "gemini" : "tier1";
-
-    return {
-      success: result.success,
-      message: result.message,
-      commandResult: result,
-      source,
-    };
+    // If lookup succeeded, return the structured data directly
+    if (result.success) {
+      const source = interpretation.source === "gemini-llm" ? "gemini" : "tier1";
+      return {
+        success: true,
+        message: result.message,
+        commandResult: result,
+        source,
+      };
+    }
+    // If the entity lookup failed (e.g. user phrased it conversationally),
+    // FALL THROUGH to Track 3 so Gemini can answer conversationally and connect with real goals!
   }
 
   // ── TRACK 3: CONVERSATIONAL COPILOT WITH DOMAIN GUARDRAILS ──────────────

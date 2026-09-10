@@ -175,9 +175,9 @@ export function AssistantChat({ currentPage }: { currentPage?: string }) {
     setIsLoading(true);
 
     const recentHistory = messages
-      .filter((m) => !m.isLoading && !m.isError && (m.role === "user" || m.role === "assistant"))
+      .filter((m) => !m.isLoading && !m.isError && (m.role === "user" || m.role === "assistant") && m.content.trim().length > 0)
       .slice(-6)
-      .map((m) => ({ role: m.role as "user" | "assistant", content: m.content }));
+      .map((m) => ({ role: m.role as "user" | "assistant", content: m.content.slice(0, 4000) }));
 
     try {
       const res = await fetch("/api/ai/chat", {
