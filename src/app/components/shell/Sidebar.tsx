@@ -41,6 +41,7 @@ const navigationGroups: NavGroup[] = [
       { href: "/capture", label: "Kotak Masuk (Inbox)", verb: "Catat", icon: "inbox", color: "text-[#F59E0B]" },
       { href: "/review", label: "Refleksi & Evaluasi", verb: "Jurnal", icon: "capture", color: "text-[#38bdf8]" },
       { href: "/insights", label: "Wawasan & AI", verb: "Insights", icon: "sparkles", color: "text-[#d0bcff]" },
+      { href: "/assistant", label: "Life Copilot AI", verb: "Asisten", icon: "sparkles", color: "text-[#a078ff]" },
       { href: "/dashboard", label: "Grafik & Analitik", verb: "Statistik", icon: "chart", color: "text-[#4edea3]" },
       { href: "/notifications", label: "Notifikasi", verb: "Info", icon: "bell", color: "text-[#F43F5E]" },
     ],

@@ -50,7 +50,10 @@ export type IconName =
   | "brain"
   | "pomodoro"
   | "flame"
-  | "bell";
+  | "bell"
+  | "mic"
+  | "micOff"
+  | "send";
 
 const paths: Record<IconName, React.ReactNode> = {
   sparkles: (
@@ -278,6 +281,19 @@ const paths: Record<IconName, React.ReactNode> = {
       <path d="M13.73 21a2 2 0 0 1-3.46 0" />
     </>
   ),
+  mic: (
+    <>
+      <rect x="9" y="2" width="6" height="11" rx="3" />
+      <path d="M5 11a7 7 0 0014 0M12 22v-4M8 22h8" />
+    </>
+  ),
+  micOff: (
+    <>
+      <line x1="2" y1="2" x2="22" y2="22" />
+      <path d="M18.89 13.23A7 7 0 0019 11M5 11a7 7 0 0013 3.13M15 9.34V5a3 3 0 00-5.94-.6M9 9v3a3 3 0 005.12 2.12M12 19v3M8 23h8" />
+    </>
+  ),
+  send: <path d="M22 2L11 13M22 2L15 22l-4-9-9-4 20-7z" />,
 };
 
 export function Icon({

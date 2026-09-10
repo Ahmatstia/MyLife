@@ -11,7 +11,7 @@ export type AICommandResponse = {
     confidence: number;
     confidenceLevel: ConfidenceLevel;
     entities: Entity[];
-    source: "rule" | "baseline" | "v2-classifier" | "future-llm";
+    source: "rule" | "baseline" | "enhanced" | "v2-classifier" | "future-llm" | "gemini-llm";
   };
   data?: unknown;
   requiresConfirmation?: boolean;

@@ -1,10 +1,10 @@
 import { completeTask, createTask, findMatchingTasks, findTask, getTaskDetail, reopenTask, deleteTask } from "@/services/task.service";
-import { createGoal, deleteGoal } from "@/services/goal.service";
+import { createGoal, deleteGoal, findGoal } from "@/services/goal.service";
 import { endSession, getAnyActiveSession, startSession } from "@/services/session.service";
 import { addTodayFocus, getToday } from "@/services/today.service";
 import { getDashboardAnalytics, getGoalAnalytics } from "@/services/analytics.service";
 import { getGoalReviewPageData } from "@/services/review.service";
-import { interpretInput } from "@/services/ai.service";
+import { interpretInput, interpretInputHybrid } from "@/services/ai.service";
 import { routeIntent } from "../ai/router";
 import { canRead, canWrite, createConfirmationToken, verifyConfirmationToken } from "../ai/safety";
 import { requireUserId } from "@/lib/ownership";
@@ -15,6 +15,8 @@ import { addConversationTurn, getConversationContext, updateConversationContext 
 import { resolveContextReferences } from "../ai/context/context-resolver";
 import { buildExecutionPlan, executePlan } from "../ai/planner/decision-engine";
 import { executeTool } from "../ai/tools/registry";
+import { prisma } from "@/lib/prisma";
+import { buildSafeContext } from "../ai/llm/safe-context-builder";
 
 type CommandResult = {
   success: boolean;
@@ -55,7 +57,6 @@ const writeIntents = new Set([
   "TASK_UPDATE",
   "TASK_BULK_DELETE",
   "TASK_BULK_COMPLETE",
-  "TASK_REORDER",
   "SESSION_START",
   "SESSION_END",
   "FOCUS",
@@ -144,7 +145,8 @@ export async function executeAICommand(rawInput: AICommandInput, userId?: string
     text: input.text,
   });
 
-  const baseInterpretation = interpretInput(input.text);
+  const safeCtx = await buildSafeContext(owner, input.context?.goalName ? `Goal: ${input.context.goalName}` : undefined);
+  const baseInterpretation = await interpretInputHybrid(input.text, safeCtx);
   const interpretation = resolveContextInterpretation(input, baseInterpretation);
   const { intent, confidenceLevel } = interpretation;
 
@@ -176,7 +178,14 @@ export async function executeAICommand(rawInput: AICommandInput, userId?: string
           ambiguityCandidates: previewPlan.ambiguityCandidates,
         };
       }
-      return confirmation(input, interpretation, owner, previewPlan.message);
+      const taskNamePreview = input.context?.taskName ?? entityValue(interpretation, "TASK");
+      const confirmMessage =
+        previewPlan.type !== "FALLBACK"
+          ? previewPlan.message
+          : intent === "TASK_CREATE"
+          ? `Buat task baru "${taskNamePreview || input.text}"? Konfirmasi untuk melanjutkan.`
+          : undefined;
+      return confirmation(input, interpretation, owner, confirmMessage);
     }
   }
 
@@ -472,8 +481,63 @@ export async function executeAICommand(rawInput: AICommandInput, userId?: string
 
     // ── TASK CRUD ─────────────────────────────────────────
     case "TASK_CREATE": {
-      const name = input.context?.taskName ?? entityValue(interpretation, "TASK");
-      const stageId = input.context?.stageId ?? convContext.currentStage?.id;
+      let name = input.context?.taskName ?? entityValue(interpretation, "TASK");
+      if (!name) {
+        const cleaned = input.text
+          .replace(/^(?:buat(?:kan)?|bikin|tambah(?:kan)?)\s+(?:task|tugas|pekerjaan)\s+/i, "")
+          .replace(/\s+(?:besok|lusa|hari ini|nanti|jam\s+\d+|pukul\s+\d+|selama\s+\d+).*$/i, "")
+          .trim();
+        if (cleaned.length > 1) {
+          name = cleaned;
+        }
+      }
+      let stageId = input.context?.stageId ?? convContext.currentStage?.id;
+
+      if (!stageId) {
+        const goalId = input.context?.goalId ?? convContext.currentGoal?.id;
+        if (goalId) {
+          const stage = await prisma.stage.findFirst({
+            where: { goalId, userId: owner },
+            orderBy: { order: "asc" },
+          });
+          if (stage) stageId = stage.id;
+        }
+      }
+
+      if (!stageId) {
+        const stage = await prisma.stage.findFirst({
+          where: { userId: owner },
+          orderBy: { createdAt: "desc" },
+        });
+        if (stage) {
+          stageId = stage.id;
+        } else {
+          let goal = await prisma.goal.findFirst({
+            where: { userId: owner },
+            orderBy: { createdAt: "desc" },
+          });
+          if (!goal) {
+            goal = await prisma.goal.create({
+              data: {
+                userId: owner,
+                title: "General",
+                type: "LEARNING",
+                priority: "MEDIUM",
+              },
+            });
+          }
+          const newStage = await prisma.stage.create({
+            data: {
+              goalId: goal.id,
+              userId: owner,
+              name: "To Do",
+              order: 0,
+            },
+          });
+          stageId = newStage.id;
+        }
+      }
+
       if (!name || !stageId) {
         return {
           success: false,
@@ -482,15 +546,23 @@ export async function executeAICommand(rawInput: AICommandInput, userId?: string
           interpretation,
         };
       }
+
+      const rawDue = interpretation.entities.find((e) => e.type === "DATE")?.value;
+      let dueDate: Date | undefined;
+      if (rawDue) {
+        const parsed = new Date(rawDue);
+        if (!isNaN(parsed.getTime())) dueDate = parsed;
+      }
+
       const data = (await createTask(
-        { stageId, name, type: "TASK", priority: "MEDIUM", estimatedHours: 0, description: null, notes: null },
+        { stageId, name, type: "TASK", priority: "MEDIUM", estimatedHours: 0, dueDate, description: null, notes: null },
         owner
       )) as { id: string; name: string };
       updateConversationContext(owner, () => ({
         currentTask: { id: data.id, name: data.name, stageId, goalId: "" },
         lastReferencedEntity: { id: data.id, name: data.name, type: "TASK" },
       }));
-      return { success: true, code: "CREATED", message: `Task ${data.name} berhasil dibuat.`, interpretation, data };
+      return { success: true, code: "CREATED", message: `Task "${data.name}" berhasil dibuat.`, interpretation, data };
     }
 
     case "TASK_COMPLETE":
@@ -552,6 +624,142 @@ export async function executeAICommand(rawInput: AICommandInput, userId?: string
       }
       const data = await endSession(active.id, { sessionId: active.id }, owner);
       return { success: true, code: "ENDED", message: "Session aktif berhasil diakhiri.", interpretation, data };
+    }
+
+    // ── GOAL READ ─────────────────────────────────────────
+    case "GOAL_GET": {
+      const goalQuery = input.context?.goalName ?? entityValue(interpretation, "GOAL");
+      const goalId = input.context?.goalId ?? convContext.currentGoal?.id;
+      if (goalId) {
+        const data = await findGoal(owner, goalId, true);
+        if (!data) return { success: false, code: "GOAL_NOT_FOUND", message: "Goal tidak ditemukan.", interpretation };
+        return { success: true, code: "OK", message: `Goal "${data.title}" ditemukan.`, interpretation, data };
+      }
+      if (!goalQuery) {
+        return { success: false, code: "MISSING_GOAL_NAME", message: "Sebutkan nama goal yang ingin dilihat.", interpretation };
+      }
+      const gRes = await resolveGoalEntity(goalQuery, owner);
+      if (gRes.status === "AMBIGUOUS") {
+        return { success: false, code: "AMBIGUOUS_ENTITY", message: `Ditemukan beberapa goal cocok dengan "${goalQuery}". Pilih satu:`, interpretation, ambiguityCandidates: gRes.candidates.map((c) => ({ id: c.id, name: c.name, type: "GOAL" })) };
+      }
+      if (!gRes.resolvedEntity) {
+        return { success: false, code: "GOAL_NOT_FOUND", message: `Goal "${goalQuery}" tidak ditemukan.`, interpretation };
+      }
+      const goalData = await findGoal(owner, gRes.resolvedEntity.id, true);
+      return { success: true, code: "OK", message: `Goal "${gRes.resolvedEntity.name}" ditemukan.`, interpretation, data: goalData };
+    }
+
+    case "GOAL_UPDATE": {
+      const goalQuery = input.context?.goalName ?? entityValue(interpretation, "GOAL");
+      const goalId = input.context?.goalId ?? convContext.currentGoal?.id;
+      let targetGoalId = goalId;
+      let targetGoalName = goalQuery ?? "Goal";
+      if (!targetGoalId && goalQuery) {
+        const gRes = await resolveGoalEntity(goalQuery, owner);
+        if (gRes.status === "AMBIGUOUS") {
+          return { success: false, code: "AMBIGUOUS_ENTITY", message: `Ditemukan beberapa goal. Pilih satu:`, interpretation, ambiguityCandidates: gRes.candidates.map((c) => ({ id: c.id, name: c.name, type: "GOAL" })) };
+        }
+        if (!gRes.resolvedEntity) return { success: false, code: "GOAL_NOT_FOUND", message: `Goal "${goalQuery}" tidak ditemukan.`, interpretation };
+        targetGoalId = gRes.resolvedEntity.id;
+        targetGoalName = gRes.resolvedEntity.name;
+      }
+      if (!targetGoalId) {
+        return { success: false, code: "MISSING_GOAL_NAME", message: "Sebutkan nama goal yang ingin diperbarui.", interpretation };
+      }
+      // Collect update payload from entities
+      const newName = entityValue(interpretation, "GOAL") !== targetGoalName ? entityValue(interpretation, "GOAL") : undefined;
+      const res = await executeTool("update_goal", { id: targetGoalId, name: newName }, { userId: owner });
+      return { success: res.success, code: res.success ? "UPDATED" : "FAILED", message: res.success ? `Goal "${targetGoalName}" berhasil diperbarui.` : res.message, interpretation, data: res.data };
+    }
+
+    // ── STAGE READ ────────────────────────────────────────
+    case "STAGE_STATUS": {
+      const stageQuery = entityValue(interpretation, "STAGE");
+      const stageId = input.context?.stageId ?? convContext.currentStage?.id;
+      if (stageId) {
+        const res = await executeTool("get_stage", { id: stageId }, { userId: owner });
+        if (!res.success) return { success: false, code: "STAGE_NOT_FOUND", message: "Stage tidak ditemukan.", interpretation };
+        return { success: true, code: "OK", message: res.message, interpretation, data: res.data };
+      }
+      if (!stageQuery) {
+        return { success: false, code: "MISSING_STAGE_CONTEXT", message: "Sebutkan nama stage yang ingin dilihat.", interpretation };
+      }
+      const sRes = await resolveStageEntity(stageQuery, owner, input.context?.goalId);
+      if (sRes.status === "AMBIGUOUS") {
+        return { success: false, code: "AMBIGUOUS_ENTITY", message: `Ditemukan beberapa stage. Pilih satu:`, interpretation, ambiguityCandidates: sRes.candidates.map((c) => ({ id: c.id, name: c.name, type: "STAGE", parentName: c.parentName })) };
+      }
+      if (!sRes.resolvedEntity) return { success: false, code: "STAGE_NOT_FOUND", message: `Stage "${stageQuery}" tidak ditemukan.`, interpretation };
+      const stageRes = await executeTool("get_stage", { id: sRes.resolvedEntity.id }, { userId: owner });
+      return { success: stageRes.success, code: stageRes.success ? "OK" : "FAILED", message: stageRes.message, interpretation, data: stageRes.data };
+    }
+
+    case "STAGE_UPDATE": {
+      const stageQuery = entityValue(interpretation, "STAGE");
+      let stageId = input.context?.stageId ?? convContext.currentStage?.id;
+      if (!stageId && stageQuery) {
+        const sRes = await resolveStageEntity(stageQuery, owner, input.context?.goalId);
+        if (sRes.status === "AMBIGUOUS") {
+          return { success: false, code: "AMBIGUOUS_ENTITY", message: "Ditemukan beberapa stage. Pilih satu:", interpretation, ambiguityCandidates: sRes.candidates.map((c) => ({ id: c.id, name: c.name, type: "STAGE", parentName: c.parentName })) };
+        }
+        if (sRes.resolvedEntity) stageId = sRes.resolvedEntity.id;
+      }
+      if (!stageId) {
+        return { success: false, code: "STAGE_NOT_FOUND", message: "Stage yang dimaksud tidak ditemukan.", interpretation };
+      }
+      const newStageName = stageQuery ?? undefined;
+      const res = await executeTool("update_stage", { id: stageId, name: newStageName }, { userId: owner });
+      return { success: res.success, code: res.success ? "UPDATED" : "FAILED", message: res.message, interpretation, data: res.data };
+    }
+
+    case "STAGE_REORDER": {
+      const stageQuery = entityValue(interpretation, "STAGE");
+      let stageId = input.context?.stageId ?? convContext.currentStage?.id;
+      if (!stageId && stageQuery) {
+        const sRes = await resolveStageEntity(stageQuery, owner, input.context?.goalId);
+        if (sRes.status === "AMBIGUOUS") {
+          return { success: false, code: "AMBIGUOUS_ENTITY", message: "Ditemukan beberapa stage. Pilih satu:", interpretation, ambiguityCandidates: sRes.candidates.map((c) => ({ id: c.id, name: c.name, type: "STAGE", parentName: c.parentName })) };
+        }
+        if (sRes.resolvedEntity) stageId = sRes.resolvedEntity.id;
+      }
+      if (!stageId) {
+        return { success: false, code: "STAGE_NOT_FOUND", message: "Sebutkan stage yang ingin diubah urutannya.", interpretation };
+      }
+      const direction = interpretation.entities.find((e) => e.type === "DIRECTION")?.value;
+      const dir = direction === "up" || direction === "naik" ? "up" : "down";
+      const res = await executeTool("reorder_stage", { id: stageId, direction: dir }, { userId: owner });
+      return { success: res.success, code: res.success ? "UPDATED" : "FAILED", message: res.message, interpretation, data: res.data };
+    }
+
+    // ── TASK UPDATE / REORDER ─────────────────────────────
+    case "TASK_UPDATE": {
+      const matches = await resolveWriteTarget("TASK_UPDATE", input, interpretation, owner);
+      if (matches.length !== 1) {
+        return {
+          success: false,
+          code: matches.length ? "AMBIGUOUS_TASK" : "TASK_NOT_FOUND",
+          message: matches.length ? "Ditemukan beberapa task yang cocok. Pilih satu:" : "Task yang ingin diperbarui tidak ditemukan.",
+          interpretation,
+          data: matches,
+          confirmationToken: createConfirmationToken("TASK_UPDATE", owner).token,
+          ambiguityCandidates: matches.map((m) => ({ id: m.id, name: m.title, type: "TASK" })),
+        };
+      }
+      const priorityEntity = interpretation.entities.find((e) => e.type === "PRIORITY");
+      const priority = priorityEntity ? (priorityEntity.value as string) : undefined;
+      const updatePayload: Record<string, unknown> = { id: matches[0].id };
+      if (priority) updatePayload.priority = priority.toUpperCase();
+      const res = await executeTool("update_task", updatePayload, { userId: owner });
+      return { success: res.success, code: res.success ? "UPDATED" : "FAILED", message: res.success ? `Task "${matches[0].title}" berhasil diperbarui.` : res.message, interpretation, data: res.data };
+    }
+
+    case "TASK_REORDER": {
+      // TASK_REORDER requires explicit UI; provide guidance
+      return {
+        success: false,
+        code: "UNSUPPORTED_INTENT",
+        message: "Untuk mengubah urutan task, gunakan fitur drag-and-drop di halaman Goal.",
+        interpretation,
+      };
     }
 
     default:

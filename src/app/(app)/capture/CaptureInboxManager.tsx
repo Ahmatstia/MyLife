@@ -2,9 +2,10 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Icon } from "@/app/components/ui/Icon";
 import { Dialog } from "@/app/components/ui/Dialog";
 import { useToast } from "@/app/components/ui/Toast";
+import { parseAmbientCapture } from "@/ai/ambient/ambient-nlp";
+import { VoiceInputButton } from "@/app/components/ai/VoiceInputButton";
 
 interface CaptureItem {
   id: string;
@@ -70,20 +71,20 @@ export function CaptureInboxManager({
   const [selectedStageId, setSelectedStageId] = useState<string>("");
   const [selectedAreaId, setSelectedAreaId] = useState<string>(areas[0]?.id || "");
   const [taskPriority, setTaskPriority] = useState<"LOW" | "MEDIUM" | "HIGH" | "URGENT">("MEDIUM");
-  const [taskEstimatedHours, setTaskEstimatedHours] = useState(1);
+  const taskEstimatedHours = 1;
   const [taskDueDate, setTaskDueDate] = useState("");
 
   // Convert to Goal Form State
   const [goalTitle, setGoalTitle] = useState("");
   const [goalAreaId, setGoalAreaId] = useState<string>(areas[0]?.id || "");
   const [goalType, setGoalType] = useState<"LEARNING" | "ACHIEVEMENT" | "HABIT" | "MAINTENANCE">("LEARNING");
-  const [goalPriority, setGoalPriority] = useState<"LOW" | "MEDIUM" | "HIGH" | "URGENT">("MEDIUM");
+  const goalPriority = "MEDIUM" as const;
 
   // Convert to Project Form State
   const [projectTitle, setProjectTitle] = useState("");
   const [projectAreaId, setProjectAreaId] = useState<string>(areas[0]?.id || "");
-  const [projectGoalId, setProjectGoalId] = useState<string>("");
-  const [projectPriority, setProjectPriority] = useState<"LOW" | "MEDIUM" | "HIGH" | "URGENT">("MEDIUM");
+  const projectGoalId = "";
+  const projectPriority = "MEDIUM" as const;
   const [projectTargetDate, setProjectTargetDate] = useState("");
 
   const { toast } = useToast();
@@ -302,75 +303,106 @@ export function CaptureInboxManager({
       </section>
 
       {/* 2. Quick Capture Station */}
-      <section className="relative rounded-2xl bg-[#131825] border border-white/[0.08] p-5 shadow-xl overflow-hidden focus-within:border-purple-500/50 transition-all">
-        <div className="absolute -right-20 -top-20 w-64 h-64 rounded-full bg-purple-600/10 blur-3xl pointer-events-none" />
+        {/* Quick Capture Station */}
+        {(() => {
+          const ambient = parseAmbientCapture(newContent);
+          const showSuggestion = newContent.trim().length >= 4 && ambient.suggestedCategory !== newCategory;
 
-        <div className="flex items-center justify-between pb-3 mb-3 border-b border-white/[0.06]">
-          <div className="flex items-center gap-2 text-purple-300 font-mono text-xs font-semibold tracking-wider">
-            <span className="material-symbols-outlined text-[16px] text-purple-400 animate-pulse">flash_on</span>
-            <span>TANGKAP CEPAT SEKARANG</span>
-          </div>
-          <div className="flex items-center gap-1.5 text-gray-400 font-mono text-[11px]">
-            <span>Tekan</span>
-            <kbd className="px-1.5 py-0.5 rounded bg-[#0B0D13] border border-white/[0.1] text-gray-200">Ctrl</kbd>
-            <span>+</span>
-            <kbd className="px-1.5 py-0.5 rounded bg-[#0B0D13] border border-white/[0.1] text-gray-200">Enter</kbd>
-            <span>untuk simpan</span>
-          </div>
-        </div>
+          return (
+            <section className="relative rounded-2xl bg-[#131825] border border-white/[0.08] p-5 shadow-xl overflow-hidden focus-within:border-purple-500/50 transition-all">
+              <div className="absolute -right-20 -top-20 w-64 h-64 rounded-full bg-purple-600/10 blur-3xl pointer-events-none" />
 
-        <div className="relative w-full">
-          <textarea
-            rows={3}
-            value={newContent}
-            onChange={(e) => setNewContent(e.target.value)}
-            onKeyDown={handleKeyDown}
-            placeholder="Ketik apa saja yang terlintas di pikiran… ide inovasi, draft tugas mendadak, catatan rapat, atau pengingat penting…"
-            className="w-full bg-[#0B0D13]/80 rounded-xl p-3.5 font-sans text-sm text-white placeholder:text-gray-500 border border-white/[0.08] focus:outline-none focus:border-purple-500/50 transition-all resize-none"
-          />
-        </div>
+              <div className="flex items-center justify-between pb-3 mb-3 border-b border-white/[0.06]">
+                <div className="flex items-center gap-2 text-purple-300 font-mono text-xs font-semibold tracking-wider">
+                  <span className="material-symbols-outlined text-[16px] text-purple-400 animate-pulse">flash_on</span>
+                  <span>TANGKAP CEPAT SEKARANG</span>
+                </div>
+                <div className="flex items-center gap-2.5">
+                  <div className="flex items-center gap-1.5 text-gray-400 font-mono text-[11px] hidden sm:flex">
+                    <span>Tekan</span>
+                    <kbd className="px-1.5 py-0.5 rounded bg-[#0B0D13] border border-white/[0.1] text-gray-200">Ctrl</kbd>
+                    <span>+</span>
+                    <kbd className="px-1.5 py-0.5 rounded bg-[#0B0D13] border border-white/[0.1] text-gray-200">Enter</kbd>
+                    <span>untuk simpan</span>
+                  </div>
+                  <VoiceInputButton
+                    onTranscript={(text) => setNewContent((prev) => (prev ? `${prev} ${text}` : text))}
+                    className="scale-90"
+                  />
+                </div>
+              </div>
 
-        <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 pt-3">
-          {/* Selector Kategori Cepat */}
-          <div className="flex items-center gap-1.5 flex-wrap">
-            {[
-              { id: "TASK_CANDIDATE", label: "Calon Tugas", dot: "bg-amber-400" },
-              { id: "IDEA", label: "Ide & Inovasi", dot: "bg-purple-400" },
-              { id: "NOTE", label: "Catatan Bebas", dot: "bg-indigo-400" },
-              { id: "REMINDER", label: "Pengingat", dot: "bg-emerald-400" },
-            ].map((cat) => {
-              const active = newCategory === cat.id;
-              return (
+              <div className="relative w-full">
+                <textarea
+                  rows={3}
+                  value={newContent}
+                  onChange={(e) => setNewContent(e.target.value)}
+                  onKeyDown={handleKeyDown}
+                  placeholder="Ketik apa saja yang terlintas di pikiran… ide inovasi, draft tugas mendadak, catatan rapat, atau pengingat penting…"
+                  className="w-full bg-[#0B0D13]/80 rounded-xl p-3.5 font-sans text-sm text-white placeholder:text-gray-500 border border-white/[0.08] focus:outline-none focus:border-purple-500/50 transition-all resize-none"
+                />
+              </div>
+
+              {/* Ambient Category Recommendation */}
+              {showSuggestion && (
+                <div className="flex items-center justify-between gap-2 px-3 py-1.5 mt-2 rounded-lg bg-purple-500/10 border border-purple-500/20 text-xs">
+                  <span className="text-purple-300 flex items-center gap-1.5">
+                    <span className="text-[11px] font-semibold">✦ Saran AI:</span>
+                    <span>Terdeteksi cocok sebagai <strong>{ambient.label}</strong></span>
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => setNewCategory(ambient.suggestedCategory)}
+                    className="px-2 py-0.5 rounded bg-purple-500/20 text-purple-200 hover:bg-purple-500/30 text-[11px] font-mono transition-colors cursor-pointer"
+                  >
+                    Terapkan
+                  </button>
+                </div>
+              )}
+
+              <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 pt-3">
+                {/* Selector Kategori Cepat */}
+                <div className="flex items-center gap-1.5 flex-wrap">
+                  {[
+                    { id: "TASK_CANDIDATE", label: "Calon Tugas", dot: "bg-amber-400" },
+                    { id: "IDEA", label: "Ide & Inovasi", dot: "bg-purple-400" },
+                    { id: "NOTE", label: "Catatan Bebas", dot: "bg-indigo-400" },
+                    { id: "REMINDER", label: "Pengingat", dot: "bg-emerald-400" },
+                  ].map((cat) => {
+                    const active = newCategory === cat.id;
+                    return (
+                      <button
+                        key={cat.id}
+                        type="button"
+                        onClick={() => setNewCategory(cat.id as CaptureItem["category"])}
+                        className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg font-mono text-xs transition-all cursor-pointer ${
+                          active
+                            ? "bg-purple-600/20 text-purple-300 border border-purple-500/40 font-semibold shadow-xs"
+                            : "bg-[#0B0D13] text-gray-400 border border-white/[0.06] hover:text-white"
+                        }`}
+                      >
+                        <span className={`w-1.5 h-1.5 rounded-full ${cat.dot}`} />
+                        <span>{cat.label}</span>
+                      </button>
+                    );
+                  })}
+                </div>
+
+                {/* Action Button */}
                 <button
-                  key={cat.id}
                   type="button"
-                  onClick={() => setNewCategory(cat.id as CaptureItem["category"])}
-                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg font-mono text-xs transition-all ${
-                    active
-                      ? "bg-purple-600/20 text-purple-300 border border-purple-500/40 font-semibold shadow-xs"
-                      : "bg-[#0B0D13] text-gray-400 border border-white/[0.06] hover:text-white"
-                  }`}
+                  onClick={() => handleCreate()}
+                  disabled={creating || !newContent.trim()}
+                  className="flex items-center justify-center gap-2 px-5 py-2 rounded-xl bg-gradient-to-r from-purple-600 to-indigo-600 text-white font-mono text-xs font-semibold shadow-[0_0_20px_rgba(168,85,247,0.35)] hover:brightness-110 disabled:opacity-50 transition-all cursor-pointer"
                 >
-                  <span className={`w-1.5 h-1.5 rounded-full ${cat.dot}`} />
-                  <span>{cat.label}</span>
+                  <span className="material-symbols-outlined text-[16px]">add_task</span>
+                  <span>{creating ? "Menyimpan…" : "Simpan ke Inbox"}</span>
+                  <kbd className="ml-1 px-1.5 py-0.5 rounded bg-black/30 text-[10px]">Ctrl+↵</kbd>
                 </button>
-              );
-            })}
-          </div>
-
-          {/* Action Button */}
-          <button
-            type="button"
-            onClick={() => handleCreate()}
-            disabled={creating || !newContent.trim()}
-            className="flex items-center justify-center gap-2 px-5 py-2 rounded-xl bg-gradient-to-r from-purple-600 to-indigo-600 text-white font-mono text-xs font-semibold shadow-[0_0_20px_rgba(168,85,247,0.35)] hover:brightness-110 disabled:opacity-50 transition-all"
-          >
-            <span className="material-symbols-outlined text-[16px]">add_task</span>
-            <span>{creating ? "Menyimpan…" : "Simpan ke Inbox"}</span>
-            <kbd className="ml-1 px-1.5 py-0.5 rounded bg-black/30 text-[10px]">Ctrl+↵</kbd>
-          </button>
-        </div>
-      </section>
+              </div>
+            </section>
+          );
+        })()}
 
       {/* 3. Toolbar Filter & Pemrosesan */}
       <section className="flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-3">

@@ -2,6 +2,7 @@
 
 import { useState, useRef } from "react";
 import { Icon } from "../ui/Icon";
+import { VoiceInputButton } from "./VoiceInputButton";
 
 type AIInputProps = {
   onSubmit: (text: string) => void;
@@ -38,8 +39,17 @@ export default function AIInput({ onSubmit, disabled, placeholder, autoFocus = f
           disabled={disabled}
           placeholder={placeholder ?? "Tanya atau perintahkan sistem…"}
           aria-label="Masukan perintah AI"
-          className="h-11 w-full rounded-xl border border-surface-200 bg-surface-0 pl-10 pr-3.5 text-sm text-surface-900 outline-none transition placeholder:text-surface-400 focus:border-ai-400 focus:ring-2 focus:ring-ai-100 disabled:opacity-50"
+          className="h-11 w-full rounded-xl border border-surface-200 bg-surface-0 pl-10 pr-11 text-sm text-surface-900 outline-none transition placeholder:text-surface-400 focus:border-ai-400 focus:ring-2 focus:ring-ai-100 disabled:opacity-50"
         />
+        <div className="absolute inset-y-0 right-1 flex items-center">
+          <VoiceInputButton
+            onTranscript={(text) => {
+              setValue(text);
+              onSubmit(text);
+            }}
+            disabled={disabled}
+          />
+        </div>
       </div>
       <button
         type="submit"

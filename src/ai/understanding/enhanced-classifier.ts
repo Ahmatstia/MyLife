@@ -79,6 +79,11 @@ const intentPhraseConfigs: PhraseConfig[] = [
 
   // ── Stage CRUD ──────────────────────────────────────────
   {
+    intent: "STAGE_STATUS",
+    phrases: ["status stage", "lihat stage", "progres stage", "kondisi stage", "info stage", "status tahap"],
+    weight: 1.3,
+  },
+  {
     intent: "STAGE_DELETE",
     phrases: ["hapus stage", "delete stage", "buang stage", "hapus tahap", "delete tahap"],
     weight: 1.5,
@@ -128,6 +133,11 @@ const intentPhraseConfigs: PhraseConfig[] = [
     intent: "TASK_UPDATE",
     phrases: ["ubah task", "edit task", "update task", "perbarui task", "ganti prioritas task"],
     weight: 1.2,
+  },
+  {
+    intent: "TASK_REORDER",
+    phrases: ["ubah urutan task", "pindahkan task", "urutan tugas", "reorder task", "naikkan task", "turunkan task"],
+    weight: 1.3,
   },
   {
     intent: "TASK_CREATE",

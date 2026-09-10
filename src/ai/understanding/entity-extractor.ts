@@ -35,7 +35,7 @@ export function extractEntitiesV2(text: string): Entity[] {
   if (taskQuotes) {
     add(taskQuotes[1], "TASK");
   } else {
-    const taskRegex = /(?:task|tugas|pekerjaan)\s+([a-z0-9][a-z0-9 -]{1,60}?)(?=\s+(?:di|pada|hari|sekarang|ya|saya|dengan|untuk|dan|lalu|$))/i;
+    const taskRegex = /(?:task|tugas|pekerjaan)\s+([a-z0-9][a-z0-9 -]{1,60}?)(?=\s+(?:di|pada|hari|besok|lusa|jam|pukul|nanti|selama|sekarang|ya|saya|dengan|untuk|dan|lalu|$))/i;
     const taskMatch = norm.match(taskRegex);
     if (taskMatch) add(taskMatch[1], "TASK");
   }

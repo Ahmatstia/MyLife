@@ -19,5 +19,5 @@ export const aiInterpretationSchema = z.object({
       metadata: z.record(z.string(), z.unknown()).optional(),
     })
   ),
-  source: z.enum(["rule", "baseline", "future-llm"]),
+  source: z.enum(["rule", "baseline", "enhanced", "future-llm", "gemini-llm"]),
 });

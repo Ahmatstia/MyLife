@@ -4,6 +4,8 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useToast } from "@/app/components/ui/Toast";
+import { parseAmbientTask } from "@/ai/ambient/ambient-nlp";
+import { VoiceInputButton } from "@/app/components/ai/VoiceInputButton";
 
 interface AreaOption {
   id: string;
@@ -354,17 +356,26 @@ export function TodayDashboardClient({
     const nextNumber = seqId + 1;
     setSeqId(nextNumber);
 
+    const ambient = parseAmbientTask(title);
+    const taskPriority = ambient.detectedPriority?.level ?? "MEDIUM";
+    const estimatedHours = ambient.detectedDuration?.hours ??
+      (selectedDuration.includes("1h") ? 1 : selectedDuration.includes("2h") ? 2 : selectedDuration.includes("45m") ? 0.75 : 0.5);
+    const dueDate = ambient.detectedDate?.isoDate;
+
+    const displayTitle = ambient.cleanTitle || title;
+
     const newTask: TaskItemData = {
       id: `task-${nextNumber}`,
-      title,
-      subtitle: `${selectedCategory} • ${selectedDuration.replace("⏱ ", "")}`,
+      title: displayTitle,
+      subtitle: `${selectedCategory} • ${ambient.detectedDuration?.label ?? selectedDuration.replace("⏱ ", "")}${ambient.detectedDate ? ` • 📅 ${ambient.detectedDate.label}` : ""}`,
       status: "PENDING",
-      badge: "Antrean",
-      badgeType: "neutral",
+      priority: taskPriority,
+      badge: ambient.detectedPriority?.label ?? "Antrean",
+      badgeType: ambient.detectedPriority?.level === "URGENT" ? "urgent" : ambient.detectedPriority?.level === "HIGH" ? "high" : "neutral",
     };
     setTaskQueue((prev) => [...prev, newTask]);
     setNewTaskTitle("");
-    toast(`Tugas "${title}" ditambahkan ke antrean!`, "success");
+    toast(`Tugas "${displayTitle}" ditambahkan ke antrean!`, "success");
 
     try {
       const area = areas.find((a) => selectedCategory.includes(a.name));
@@ -374,9 +385,10 @@ export function TodayDashboardClient({
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          title,
-          estimatedHours: selectedDuration.includes("1h") ? 1 : selectedDuration.includes("2h") ? 2 : 0.5,
-          priority: "MEDIUM",
+          title: displayTitle,
+          estimatedHours,
+          priority: taskPriority,
+          dueDate,
           areaId: area?.id,
           projectId: project?.id,
         }),
@@ -1081,64 +1093,103 @@ export function TodayDashboardClient({
             )}
 
             {/* Inline Quick Task Add Bar */}
-            <form
-              onSubmit={handleAddInlineTask}
-              className="mt-4 pt-4 border-t border-white/[0.07] flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5"
-            >
-              <div className="relative flex-1">
-                <span className="material-symbols-outlined absolute left-3 top-2.5 text-[18px] text-[#cbc3d7]">
-                  add_circle
-                </span>
-                <input
-                  type="text"
-                  value={newTaskTitle}
-                  onChange={(e) => setNewTaskTitle(e.target.value)}
-                  placeholder="Tambah tugas cepat ke antrean hari ini... [Enter]"
-                  className="w-full bg-[#191b22] pl-10 pr-3 py-2 rounded-lg border border-white/[0.07] text-white placeholder:text-[#cbc3d7]/60 text-xs focus:outline-none focus:border-[#d0bcff] transition-colors"
-                />
-              </div>
+            {(() => {
+              const ambient = parseAmbientTask(newTaskTitle);
+              return (
+                <div className="mt-4 pt-4 border-t border-white/[0.07] space-y-2">
+                  <form
+                    onSubmit={handleAddInlineTask}
+                    className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5"
+                  >
+                    <div className="relative flex-1">
+                      <span className="material-symbols-outlined absolute left-3 top-2.5 text-[18px] text-[#cbc3d7]">
+                        add_circle
+                      </span>
+                      <input
+                        type="text"
+                        value={newTaskTitle}
+                        onChange={(e) => setNewTaskTitle(e.target.value)}
+                        placeholder="Tambah tugas cepat ke antrean hari ini... (mis. Kirim laporan besok sore penting)"
+                        className="w-full bg-[#191b22] pl-10 pr-10 py-2 rounded-lg border border-white/[0.07] text-white placeholder:text-[#cbc3d7]/60 text-xs focus:outline-none focus:border-[#d0bcff] transition-colors"
+                      />
+                      <div className="absolute right-1.5 top-1 flex items-center">
+                        <VoiceInputButton
+                          onTranscript={(text) => {
+                            setNewTaskTitle(text);
+                          }}
+                          className="scale-90"
+                        />
+                      </div>
+                    </div>
 
-              <div className="flex items-center gap-2 shrink-0">
-                <select
-                  value={selectedCategory}
-                  onChange={(e) => setSelectedCategory(e.target.value)}
-                  className="px-2.5 py-2 rounded-lg bg-[#1e1f26] text-[#cbc3d7] hover:text-white border border-white/[0.07] font-mono text-xs focus:outline-none cursor-pointer max-w-[160px] truncate"
-                >
-                  {projects.map((p) => (
-                    <option key={p.id} value={`📁 ${p.title}`}>
-                      📁 {p.title} ▼
-                    </option>
-                  ))}
-                  {areas.map((a) => (
-                    <option key={a.id} value={`📁 ${a.name}`}>
-                      📁 {a.name} ▼
-                    </option>
-                  ))}
-                  {projects.length === 0 && areas.length === 0 && (
-                    <option value="📁 Tugas">📁 Tugas ▼</option>
+                    <div className="flex items-center gap-2 shrink-0">
+                      <select
+                        value={selectedCategory}
+                        onChange={(e) => setSelectedCategory(e.target.value)}
+                        className="px-2.5 py-2 rounded-lg bg-[#1e1f26] text-[#cbc3d7] hover:text-white border border-white/[0.07] font-mono text-xs focus:outline-none cursor-pointer max-w-[160px] truncate"
+                      >
+                        {projects.map((p) => (
+                          <option key={p.id} value={`📁 ${p.title}`}>
+                            📁 {p.title} ▼
+                          </option>
+                        ))}
+                        {areas.map((a) => (
+                          <option key={a.id} value={`📁 ${a.name}`}>
+                            📁 {a.name} ▼
+                          </option>
+                        ))}
+                        {projects.length === 0 && areas.length === 0 && (
+                          <option value="📁 Tugas">📁 Tugas ▼</option>
+                        )}
+                      </select>
+
+                      <select
+                        value={selectedDuration}
+                        onChange={(e) => setSelectedDuration(e.target.value)}
+                        className="px-2.5 py-2 rounded-lg bg-[#1e1f26] text-[#cbc3d7] hover:text-white border border-white/[0.07] font-mono text-xs focus:outline-none cursor-pointer"
+                      >
+                        <option value="⏱ 30m">⏱ 30m</option>
+                        <option value="⏱ 45m">⏱ 45m</option>
+                        <option value="⏱ 1h">⏱ 1h</option>
+                        <option value="⏱ 2h">⏱ 2h</option>
+                      </select>
+
+                      <button
+                        type="submit"
+                        disabled={isAddingTask || !newTaskTitle.trim()}
+                        className="px-4 py-2 rounded-lg bg-[#d0bcff]/20 hover:bg-[#d0bcff]/30 text-[#d0bcff] border border-[#d0bcff]/30 font-mono text-xs font-semibold flex items-center gap-1 whitespace-nowrap transition-colors disabled:opacity-40 cursor-pointer"
+                      >
+                        + Tambah
+                      </button>
+                    </div>
+                  </form>
+
+                  {/* Real-time Ambient NLP Intelligence Chips */}
+                  {ambient.hasAmbientData && (
+                    <div className="flex flex-wrap items-center gap-1.5 px-2 py-1 rounded-md bg-white/[0.03] border border-white/[0.05]">
+                      <span className="text-[10px] font-mono uppercase tracking-wider text-[#a078ff] flex items-center gap-1 font-semibold">
+                        ✦ AI Ambient:
+                      </span>
+                      {ambient.detectedPriority && (
+                        <span className={`inline-flex items-center gap-1 rounded px-2 py-0.5 text-[10px] font-mono border ${ambient.detectedPriority.color}`}>
+                          {ambient.detectedPriority.label}
+                        </span>
+                      )}
+                      {ambient.detectedDate && (
+                        <span className="inline-flex items-center gap-1 rounded px-2 py-0.5 text-[10px] font-mono bg-[#38bdf8]/10 text-[#38bdf8] border border-[#38bdf8]/20">
+                          📅 {ambient.detectedDate.label}
+                        </span>
+                      )}
+                      {ambient.detectedDuration && (
+                        <span className="inline-flex items-center gap-1 rounded px-2 py-0.5 text-[10px] font-mono bg-[#d0bcff]/10 text-[#d0bcff] border border-[#d0bcff]/20">
+                          ⏱ {ambient.detectedDuration.label}
+                        </span>
+                      )}
+                    </div>
                   )}
-                </select>
-
-                <select
-                  value={selectedDuration}
-                  onChange={(e) => setSelectedDuration(e.target.value)}
-                  className="px-2.5 py-2 rounded-lg bg-[#1e1f26] text-[#cbc3d7] hover:text-white border border-white/[0.07] font-mono text-xs focus:outline-none cursor-pointer"
-                >
-                  <option value="⏱ 30m">⏱ 30m</option>
-                  <option value="⏱ 45m">⏱ 45m</option>
-                  <option value="⏱ 1h">⏱ 1h</option>
-                  <option value="⏱ 2h">⏱ 2h</option>
-                </select>
-
-                <button
-                  type="submit"
-                  disabled={isAddingTask || !newTaskTitle.trim()}
-                  className="px-4 py-2 rounded-lg bg-[#d0bcff]/20 hover:bg-[#d0bcff]/30 text-[#d0bcff] border border-[#d0bcff]/30 font-mono text-xs font-semibold flex items-center gap-1 whitespace-nowrap transition-colors disabled:opacity-40"
-                >
-                  + Tambah
-                </button>
-              </div>
-            </form>
+                </div>
+              );
+            })()}
           </section>
 
           {/* AGENDA KALENDER & TIME-BLOCKING HARI INI */}

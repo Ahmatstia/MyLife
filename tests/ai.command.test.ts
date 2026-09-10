@@ -6,17 +6,21 @@ vi.mock("@/services/session.service", () => ({ endSession: vi.fn(), getAnyActive
 vi.mock("@/services/today.service", () => ({ addTodayFocus: vi.fn(), getToday: vi.fn() }));
 vi.mock("@/services/analytics.service", () => ({ getDashboardAnalytics: vi.fn(), getGoalAnalytics: vi.fn() }));
 vi.mock("@/services/review.service", () => ({ getGoalReviewPageData: vi.fn() }));
-vi.mock("@/services/ai.service", () => ({
-  interpretInput: vi.fn((text: string) => ({
+vi.mock("@/services/ai.service", () => {
+  const mockInterpret = (text: string) => ({
     input: text,
     normalizedText: text.toLocaleLowerCase("id-ID"),
     intent: text.includes("random") || text.includes("yang tadi") ? "UNKNOWN" : "TASK_COMPLETE",
     confidence: text.includes("random") ? 0 : 0.74,
     confidenceLevel: text.includes("random") ? "LOW" : "MEDIUM",
     entities: [],
-    source: "baseline",
-  })),
-}));
+    source: "baseline" as const,
+  });
+  return {
+    interpretInput: vi.fn(mockInterpret),
+    interpretInputHybrid: vi.fn(async (text: string) => mockInterpret(text)),
+  };
+});
 import { canRead, canWrite, createConfirmationToken } from "../src/ai/safety";
 import { aiCommandSchema } from "../src/schemas/ai-command.schema";
 import { executeAICommand, resolveContextInterpretation } from "../src/services/ai-command.service";

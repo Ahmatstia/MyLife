@@ -79,5 +79,5 @@ export type IntentResult = {
   confidence: number;
   normalizedText: string;
   entities: Entity[];
-  source: "rule" | "baseline" | "future-llm";
+  source: "rule" | "baseline" | "enhanced" | "future-llm" | "gemini-llm";
 };
