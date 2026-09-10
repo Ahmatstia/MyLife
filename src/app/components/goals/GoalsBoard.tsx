@@ -623,7 +623,7 @@ export function GoalsBoard({
                         <div className="flex items-center gap-2 mt-1">
                           {!isDone && (
                             <Link
-                              href="/focus"
+                              href={goal.nextTaskId ? `/focus?taskId=${goal.nextTaskId}` : "/focus"}
                               className="px-3 py-1 rounded bg-[#d0bcff] hover:bg-[#b098f0] text-[#23005c] font-mono text-xs font-semibold flex items-center gap-1.5 transition-all shadow-sm"
                             >
                               <span>Lanjut Eksekusi 🍅</span>

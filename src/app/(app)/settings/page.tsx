@@ -55,7 +55,7 @@ export default async function SettingsPage() {
             <span className="text-[#8B5CF6]">💾</span>
             <div className="flex flex-col">
               <span className="font-mono text-[9px] uppercase tracking-wider text-[#64748B] leading-none">PENYIMPANAN</span>
-              <span className="font-mono text-xs font-semibold text-white">SQLite Local First</span>
+              <span className="font-mono text-xs font-semibold text-white">PostgreSQL Cloud &amp; Sync</span>
             </div>
           </div>
         </div>

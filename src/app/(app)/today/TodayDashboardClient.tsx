@@ -1325,10 +1325,10 @@ export function TodayDashboardClient({
                     PRODUKTIVITAS &amp; XP
                   </span>
                   <span className="font-mono text-lg font-bold text-[#d0bcff] mt-1">
-                    +{completedCount * 50 || 150} XP
+                    +{completedCount * 50} XP
                   </span>
                   <span className="font-mono text-[11px] text-[#F59E0B] flex items-center gap-1 mt-1 font-semibold">
-                    🔥 14 Hari Beruntun
+                    {completedCount > 0 ? "🔥 Fokus Aktif Hari Ini" : "⚡ Siap Memulai Hari"}
                   </span>
                 </div>
                 <div className="w-8 h-8 rounded-lg bg-[#F59E0B]/10 text-[#F59E0B] border border-[#F59E0B]/20 flex items-center justify-center">

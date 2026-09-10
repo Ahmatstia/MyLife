@@ -68,6 +68,22 @@ export default async function FocusPage(props: FocusPageProps) {
     };
   });
 
+  // Compute real streak from daily focus history and today's activity
+  let streakDays = 0;
+  const historyDates = new Set(history.map((h) => new Date(h.date).toDateString()));
+  const checkDate = new Date();
+  if (!historyDates.has(checkDate.toDateString())) {
+    // If today is not yet recorded in history, check if today has active sessions
+    if (todaySessions.length > 0) {
+      streakDays = 1;
+    }
+    checkDate.setDate(checkDate.getDate() - 1);
+  }
+  while (historyDates.has(checkDate.toDateString())) {
+    streakDays++;
+    checkDate.setDate(checkDate.getDate() - 1);
+  }
+
   return (
     <FocusManager
       initialFocus={todayFocus}
@@ -75,7 +91,7 @@ export default async function FocusPage(props: FocusPageProps) {
       availableTasks={availableTasks}
       activeSession={formattedSession}
       initialTodaySessions={formattedTodaySessions}
-      streakDays={14}
+      streakDays={streakDays}
       targetTaskId={targetTaskId}
     />
   );

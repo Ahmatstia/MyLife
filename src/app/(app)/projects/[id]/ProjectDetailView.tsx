@@ -783,12 +783,10 @@ export function ProjectDetailView({ project }: { project: ProjectDetail }) {
                   ? Math.round((mDone / mTasks.length) * 100)
                   : isCompleted
                   ? 100
-                  : m.status === "IN_PROGRESS"
-                  ? 62
                   : 0;
 
-              const isActive = !isCompleted && (m.status === "IN_PROGRESS" || idx === 1 || mPct > 0);
-              const isScheduled = !isCompleted && !isActive && idx >= 3;
+              const isActive = !isCompleted && (m.status === "IN_PROGRESS" || mPct > 0);
+              const isScheduled = !isCompleted && !isActive;
 
               if (isCompleted) {
                 // Completed milestone
@@ -805,13 +803,31 @@ export function ProjectDetailView({ project }: { project: ProjectDetail }) {
                           className="w-6 h-6 rounded-full bg-[#00a572] flex items-center justify-center text-[#003824] cursor-pointer"
                           title="Tandai belum selesai"
                         >
-                          <span className="material-symbols-outlined text-[16px] font-bold">done_all</span>
+                          <span className="material-symbols-outlined text-[16px] font-bold">check</span>
                         </button>
-                        <span className="font-mono text-[10px] text-[#4edea3] bg-[#191b22] px-2 py-0.5 rounded font-bold">
+                        <span className="font-mono text-[10px] text-[#00a572] bg-[#00a572]/10 border border-[#00a572]/20 px-2 py-0.5 rounded font-bold">
                           #{idx + 1} TUNTAS
                         </span>
                       </div>
-                      <span className="font-mono text-xs font-bold text-[#4edea3]">100% SELESAI</span>
+                      <div className="flex items-center gap-2">
+                        <button
+                          type="button"
+                          onClick={() => openEditMilestone(m)}
+                          className="text-gray-400 hover:text-white p-1 rounded transition-colors cursor-pointer"
+                          title="Sunting tonggak"
+                        >
+                          <span className="material-symbols-outlined text-[16px]">edit</span>
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => handleDeleteMilestone(m)}
+                          className="text-gray-400 hover:text-[#F43F5E] p-1 rounded transition-colors cursor-pointer"
+                          title="Hapus tonggak"
+                        >
+                          <span className="material-symbols-outlined text-[16px]">delete</span>
+                        </button>
+                        <span className="font-mono text-xs font-bold text-[#00a572]">100%</span>
+                      </div>
                     </div>
 
                     <div>
@@ -829,13 +845,13 @@ export function ProjectDetailView({ project }: { project: ProjectDetail }) {
 
                     <div className="flex items-center justify-between font-mono text-[10px] text-gray-400 pt-1">
                       <span>
-                        {mDone}/{mTasks.length || 5} Tugas Selesai
+                        {mDone}/{mTasks.length} Tugas Selesai
                       </span>
                       <span>
                         Target:{" "}
                         {m.dueDate
                           ? new Date(m.dueDate).toLocaleDateString("id-ID", { day: "numeric", month: "short", year: "numeric" })
-                          : "18 Sep 2026"}
+                          : "Belum ditentukan"}
                       </span>
                     </div>
                   </div>
@@ -897,13 +913,13 @@ export function ProjectDetailView({ project }: { project: ProjectDetail }) {
 
                     <div className="flex items-center justify-between font-mono text-[10px] text-gray-400 pt-1">
                       <span>
-                        {mDone}/{mTasks.length || 8} Tugas Selesai
+                        {mDone}/{mTasks.length} Tugas Selesai
                       </span>
                       <span className="text-[#F59E0B]">
                         Target:{" "}
                         {m.dueDate
                           ? new Date(m.dueDate).toLocaleDateString("id-ID", { day: "numeric", month: "short", year: "numeric" })
-                          : "24 Sep 2026"}
+                          : "Belum ditentukan"}
                       </span>
                     </div>
                   </div>
@@ -927,7 +943,7 @@ export function ProjectDetailView({ project }: { project: ProjectDetail }) {
                         </span>
                       </div>
                       <span className="font-mono text-[10px] text-gray-400">
-                        {mDone}/{mTasks.length || 3} Tugas
+                        {mDone}/{mTasks.length} Tugas
                       </span>
                     </div>
 
@@ -938,7 +954,7 @@ export function ProjectDetailView({ project }: { project: ProjectDetail }) {
                         Target:{" "}
                         {m.dueDate
                           ? new Date(m.dueDate).toLocaleDateString("id-ID", { day: "numeric", month: "short", year: "numeric" })
-                          : "05 Okt 2026"}
+                          : "Belum ditentukan"}
                       </span>
                       <span className="text-[#4edea3] font-semibold">SIAP EVALUASI</span>
                     </div>
@@ -978,12 +994,12 @@ export function ProjectDetailView({ project }: { project: ProjectDetail }) {
                   </div>
 
                   <div className="flex items-center justify-between font-mono text-[10px] text-gray-400 pt-1">
-                    <span>{mTasks.length || 5} Tugas Terhubung</span>
+                    <span>{mTasks.length} Tugas Terhubung</span>
                     <span>
                       Target:{" "}
                       {m.dueDate
                         ? new Date(m.dueDate).toLocaleDateString("id-ID", { day: "numeric", month: "short", year: "numeric" })
-                        : "28 Sep 2026"}
+                        : "Belum ditentukan"}
                     </span>
                   </div>
                 </div>

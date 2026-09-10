@@ -216,7 +216,7 @@ export default function GoalActionsMenu({
             {/* Add Review Action */}
             <Link
               role="menuitem"
-              href={`/goals/${goalId}/review`}
+              href={`/goals/${goalId}/reviews`}
               onClick={() => setMenuOpen(false)}
               className="flex w-full items-center gap-2.5 px-3 py-2 text-[13px] font-medium text-surface-700 hover:bg-surface-50 hover:text-surface-900 transition-colors"
             >

@@ -342,13 +342,14 @@ export function CalendarManager({
     const workHours = Math.round(workMinutes / 60);
     const personalHours = Math.round(personalMinutes / 60);
 
+    const efficiency = totalHours > 0 ? Math.min(100, Math.round((focusHours / 25) * 100)) : 0;
     return {
-      totalHours: totalHours || 29,
-      focusHours: focusHours || 18,
+      totalHours,
+      focusHours,
       focusTargetHours: 25,
-      workHours: workHours || 6,
-      personalHours: personalHours || 5,
-      efficiencyPercent: Math.min(100, Math.max(70, Math.round((focusHours / 25) * 100) || 88)),
+      workHours,
+      personalHours,
+      efficiencyPercent: efficiency,
     };
   }, [events, weekDays]);
 
@@ -784,15 +785,100 @@ export function CalendarManager({
               )}
             </div>
           ) : (
-            /* BULANAN VIEW (Ringkasan Cepat) */
-            <div className="p-8 text-center flex flex-col items-center gap-2 text-[#958ea0]">
-              <svg className="w-10 h-10 text-[#d0bcff]" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M19 4h-1V2h-2v2H8V2H6v2H5c-1.11 0-1.99.9-1.99 2L3 20a2 2 0 0 0 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 16H5V10h14v10z" />
-              </svg>
-              <p className="text-sm font-semibold text-[#e2e2eb]">Tampilan Bulanan Terjadwal</p>
-              <p className="text-xs max-w-md">
-                Gunakan tampilan mingguan untuk alokasi time-blocking presisi tingkat jam, atau buka daftar agenda di atas.
-              </p>
+            /* BULANAN VIEW (Kalender Bulanan Fungsional) */
+            <div className="p-4 flex flex-col gap-4">
+              <div className="flex items-center justify-between px-2 pb-2 border-b border-white/[0.06]">
+                <div className="flex items-center gap-2">
+                  <span className="font-mono text-xs uppercase tracking-wider text-[#d0bcff] font-bold">
+                    {weekDays[0].toLocaleString("id-ID", { month: "long", year: "numeric" }).toUpperCase()}
+                  </span>
+                  <span className="text-xs text-[#958ea0]">({events.length} total event tercatat)</span>
+                </div>
+              </div>
+
+              {/* 7 Columns Header */}
+              <div className="grid grid-cols-7 gap-1 text-center font-mono text-[11px] font-bold text-[#958ea0] py-1 border-b border-white/[0.04]">
+                {["SEN", "SEL", "RAB", "KAM", "JUM", "SAB", "MIN"].map((d) => (
+                  <div key={d}>{d}</div>
+                ))}
+              </div>
+
+              {/* Grid Days */}
+              <div className="grid grid-cols-7 gap-1.5 auto-rows-fr">
+                {(() => {
+                  const activeY = weekDays[0].getFullYear();
+                  const activeM = weekDays[0].getMonth();
+                  const daysCount = new Date(activeY, activeM + 1, 0).getDate();
+                  const firstDay = new Date(activeY, activeM, 1).getDay();
+                  const offset = (firstDay + 6) % 7; // 0 for Monday
+                  const cells = [];
+
+                  // Empty previous month cells
+                  for (let i = 0; i < offset; i++) {
+                    cells.push(
+                      <div key={`empty-${i}`} className="min-h-[85px] rounded-lg bg-white/[0.01] border border-white/[0.03] p-1.5 opacity-30" />
+                    );
+                  }
+
+                  // Active month days
+                  const todayStr = new Date().toDateString();
+                  for (let d = 1; d <= daysCount; d++) {
+                    const thisDate = new Date(activeY, activeM, d);
+                    const isToday = thisDate.toDateString() === todayStr;
+                    const dayEvents = filteredEvents.filter((ev) => {
+                      const evDate = new Date(ev.startTime);
+                      return evDate.getFullYear() === activeY && evDate.getMonth() === activeM && evDate.getDate() === d;
+                    });
+
+                    cells.push(
+                      <div
+                        key={`day-${d}`}
+                        className={`min-h-[85px] rounded-lg border p-1.5 flex flex-col justify-between transition-colors ${
+                          isToday
+                            ? "bg-[#340080]/20 border-[#d0bcff]/40 shadow-sm"
+                            : "bg-[#131825]/60 border-white/[0.06] hover:border-white/[0.12]"
+                        }`}
+                      >
+                        <div className="flex items-center justify-between mb-1">
+                          <span
+                            className={`font-mono text-xs font-bold ${
+                              isToday ? "text-[#d0bcff] bg-[#d0bcff]/20 px-1.5 py-0.5 rounded" : "text-[#e2e2eb]"
+                            }`}
+                          >
+                            {d}
+                          </span>
+                          {dayEvents.length > 0 && (
+                            <span className="text-[10px] font-mono text-[#4edea3]">
+                              {dayEvents.length} ev
+                            </span>
+                          )}
+                        </div>
+
+                        <div className="flex flex-col gap-1 overflow-y-auto max-h-[55px]">
+                          {dayEvents.slice(0, 3).map((ev) => (
+                            <button
+                              key={ev.id}
+                              type="button"
+                              onClick={() => setSelectedEvent(ev)}
+                              className="text-left text-[10px] px-1.5 py-0.5 rounded truncate bg-[#282a30] hover:bg-[#340080]/50 text-[#e2e2eb] transition-colors border border-white/[0.05]"
+                              title={ev.title}
+                            >
+                              {ev.title}
+                            </button>
+                          ))}
+                          {dayEvents.length > 3 && (
+                            <span className="text-[9px] text-[#958ea0] font-mono">
+                              +{dayEvents.length - 3} lainnya
+                            </span>
+                          )}
+                        </div>
+                      </div>
+                    );
+                  }
+
+                  return cells;
+                })()}
+              </div>
             </div>
           )}
         </main>

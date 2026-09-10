@@ -567,17 +567,16 @@ export default function InsightsDashboard({
             </div>
 
             {/* Multi-segment Stacked Bar */}
-            {(() => {
-              const displayAreas =
-                analytics.areaDistribution.length > 0
-                  ? analytics.areaDistribution
-                  : [
-                      { areaId: "default-1", name: "Karier & Bisnis", color: "#c0c1ff", percentage: 40, focusHours: 0, taskCount: 0, completedTaskCount: 0, goalCount: 0 },
-                      { areaId: "default-2", name: "Kesehatan & Fisik", color: "#4edea3", percentage: 25, focusHours: 0, taskCount: 0, completedTaskCount: 0, goalCount: 0 },
-                      { areaId: "default-3", name: "Finansial & Aset", color: "#F59E0B", percentage: 20, focusHours: 0, taskCount: 0, completedTaskCount: 0, goalCount: 0 },
-                      { areaId: "default-4", name: "Pengembangan Diri", color: "#d0bcff", percentage: 15, focusHours: 0, taskCount: 0, completedTaskCount: 0, goalCount: 0 },
-                    ];
-
+            {analytics.areaDistribution.length === 0 ? (
+              <div className="py-8 text-center flex flex-col items-center gap-2 text-gray-400">
+                <span className="text-2xl">⚖️</span>
+                <p className="text-sm font-semibold text-white">Belum Ada Distribusi Fokus Area</p>
+                <p className="text-xs max-w-md text-gray-500">
+                  Lakukan sesi fokus atau selesaikan tugas di menu Area untuk melihat keseimbangan energi dan waktu Anda di sini.
+                </p>
+              </div>
+            ) : (() => {
+              const displayAreas = analytics.areaDistribution;
               return (
                 <>
                   <div className="space-y-2">

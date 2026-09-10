@@ -2,9 +2,9 @@ import type { Metadata } from "next";
 import { InteractiveTutorialExperience } from "./InteractiveTutorialExperience";
 
 export const metadata: Metadata = {
-  title: "Tutorial & Panduan Arsitektur Sistem | Personal Progress OS",
+  title: "Panduan Penggunaan MyLife | Sahabat Mengatur Hidup & Fokus Anda",
   description:
-    "Panduan komprehensif cara kerja, relasi antar fitur, dan alur eksekusi di Personal Progress OS.",
+    "Panduan mudah dan praktis cara menata arah hidup, mencapai target impian, dan menjaga fokus harian bersama MyLife.",
 };
 
 export const dynamic = "force-dynamic";
