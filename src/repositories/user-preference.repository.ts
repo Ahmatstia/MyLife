@@ -16,6 +16,7 @@ export function upsertUserPreference(
     enableNotifications?: boolean;
     enableAiAssistance?: boolean;
     timezone?: string;
+    defaultReminderMinutes?: number;
   }
 ) {
   return prisma.userPreference.upsert({
@@ -28,6 +29,7 @@ export function upsertUserPreference(
       enableNotifications: data.enableNotifications ?? true,
       enableAiAssistance: data.enableAiAssistance ?? true,
       timezone: data.timezone ?? "Asia/Jakarta",
+      defaultReminderMinutes: data.defaultReminderMinutes ?? 15,
     },
     update: {
       ...(data.theme !== undefined && { theme: data.theme }),
@@ -36,6 +38,7 @@ export function upsertUserPreference(
       ...(data.enableNotifications !== undefined && { enableNotifications: data.enableNotifications }),
       ...(data.enableAiAssistance !== undefined && { enableAiAssistance: data.enableAiAssistance }),
       ...(data.timezone !== undefined && { timezone: data.timezone }),
+      ...(data.defaultReminderMinutes !== undefined && { defaultReminderMinutes: data.defaultReminderMinutes }),
     },
   });
 }

@@ -54,12 +54,20 @@ export function findTodayTasks(userId: string) {
   });
 }
 
-export function findTodayCalendarEvents(userId: string, start: Date, end: Date) {
-  return prisma.calendarEvent.findMany({
+export async function findTodayCalendarEvents(userId: string, start: Date, end: Date) {
+  const events = await prisma.calendarEvent.findMany({
     where: {
       userId,
-      startTime: { lte: end },
-      endTime: { gte: start },
+      OR: [
+        {
+          startTime: { lte: end },
+          endTime: { gte: start },
+        },
+        {
+          recurrence: { not: "NONE" },
+          startTime: { lte: end },
+        },
+      ],
     },
     orderBy: { startTime: "asc" },
     include: {
@@ -67,6 +75,48 @@ export function findTodayCalendarEvents(userId: string, start: Date, end: Date) 
       project: { select: { id: true, title: true } },
     },
   });
+
+  const targetDay = start.getDay();
+  const targetDate = start.getDate();
+
+  const projected = events.flatMap((event) => {
+    if (event.recurrence === "NONE") {
+      return [event];
+    }
+
+    const isDirect = event.startTime <= end && event.endTime >= start;
+    let matchesRecurrence = false;
+    if (event.recurrence === "DAILY") {
+      matchesRecurrence = true;
+    } else if (event.recurrence === "WEEKLY") {
+      matchesRecurrence = event.startTime.getDay() === targetDay;
+    } else if (event.recurrence === "MONTHLY") {
+      matchesRecurrence = event.startTime.getDate() === targetDate;
+    }
+
+    if (!matchesRecurrence) return [];
+    if (isDirect) return [event];
+
+    const durationMs = event.endTime.getTime() - event.startTime.getTime();
+    const projectedStart = new Date(start);
+    projectedStart.setHours(
+      event.startTime.getHours(),
+      event.startTime.getMinutes(),
+      event.startTime.getSeconds(),
+      0
+    );
+    const projectedEnd = new Date(projectedStart.getTime() + durationMs);
+
+    return [
+      {
+        ...event,
+        startTime: projectedStart,
+        endTime: projectedEnd,
+      },
+    ];
+  });
+
+  return projected.sort((a, b) => a.startTime.getTime() - b.startTime.getTime());
 }
 
 export function findTodaySessions(userId: string, start: Date, end: Date) {

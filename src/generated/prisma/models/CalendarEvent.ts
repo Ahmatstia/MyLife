@@ -20,8 +20,18 @@ export type CalendarEventModel = runtime.Types.Result.DefaultSelection<Prisma.$C
 
 export type AggregateCalendarEvent = {
   _count: CalendarEventCountAggregateOutputType | null
+  _avg: CalendarEventAvgAggregateOutputType | null
+  _sum: CalendarEventSumAggregateOutputType | null
   _min: CalendarEventMinAggregateOutputType | null
   _max: CalendarEventMaxAggregateOutputType | null
+}
+
+export type CalendarEventAvgAggregateOutputType = {
+  reminderMinutes: number | null
+}
+
+export type CalendarEventSumAggregateOutputType = {
+  reminderMinutes: number | null
 }
 
 export type CalendarEventMinAggregateOutputType = {
@@ -37,6 +47,8 @@ export type CalendarEventMinAggregateOutputType = {
   location: string | null
   taskId: string | null
   projectId: string | null
+  reminderMinutes: number | null
+  ignoreQuietHours: boolean | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -54,6 +66,8 @@ export type CalendarEventMaxAggregateOutputType = {
   location: string | null
   taskId: string | null
   projectId: string | null
+  reminderMinutes: number | null
+  ignoreQuietHours: boolean | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -71,11 +85,21 @@ export type CalendarEventCountAggregateOutputType = {
   location: number
   taskId: number
   projectId: number
+  reminderMinutes: number
+  ignoreQuietHours: number
   createdAt: number
   updatedAt: number
   _all: number
 }
 
+
+export type CalendarEventAvgAggregateInputType = {
+  reminderMinutes?: true
+}
+
+export type CalendarEventSumAggregateInputType = {
+  reminderMinutes?: true
+}
 
 export type CalendarEventMinAggregateInputType = {
   id?: true
@@ -90,6 +114,8 @@ export type CalendarEventMinAggregateInputType = {
   location?: true
   taskId?: true
   projectId?: true
+  reminderMinutes?: true
+  ignoreQuietHours?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -107,6 +133,8 @@ export type CalendarEventMaxAggregateInputType = {
   location?: true
   taskId?: true
   projectId?: true
+  reminderMinutes?: true
+  ignoreQuietHours?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -124,6 +152,8 @@ export type CalendarEventCountAggregateInputType = {
   location?: true
   taskId?: true
   projectId?: true
+  reminderMinutes?: true
+  ignoreQuietHours?: true
   createdAt?: true
   updatedAt?: true
   _all?: true
@@ -167,6 +197,18 @@ export type CalendarEventAggregateArgs<ExtArgs extends runtime.Types.Extensions.
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
    * 
+   * Select which fields to average
+  **/
+  _avg?: CalendarEventAvgAggregateInputType
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+   * 
+   * Select which fields to sum
+  **/
+  _sum?: CalendarEventSumAggregateInputType
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+   * 
    * Select which fields to find the minimum value
   **/
   _min?: CalendarEventMinAggregateInputType
@@ -197,6 +239,8 @@ export type CalendarEventGroupByArgs<ExtArgs extends runtime.Types.Extensions.In
   take?: number
   skip?: number
   _count?: CalendarEventCountAggregateInputType | true
+  _avg?: CalendarEventAvgAggregateInputType
+  _sum?: CalendarEventSumAggregateInputType
   _min?: CalendarEventMinAggregateInputType
   _max?: CalendarEventMaxAggregateInputType
 }
@@ -214,9 +258,13 @@ export type CalendarEventGroupByOutputType = {
   location: string | null
   taskId: string | null
   projectId: string | null
+  reminderMinutes: number | null
+  ignoreQuietHours: boolean
   createdAt: Date
   updatedAt: Date
   _count: CalendarEventCountAggregateOutputType | null
+  _avg: CalendarEventAvgAggregateOutputType | null
+  _sum: CalendarEventSumAggregateOutputType | null
   _min: CalendarEventMinAggregateOutputType | null
   _max: CalendarEventMaxAggregateOutputType | null
 }
@@ -252,6 +300,8 @@ export type CalendarEventWhereInput = {
   location?: Prisma.StringNullableFilter<"CalendarEvent"> | string | null
   taskId?: Prisma.StringNullableFilter<"CalendarEvent"> | string | null
   projectId?: Prisma.StringNullableFilter<"CalendarEvent"> | string | null
+  reminderMinutes?: Prisma.IntNullableFilter<"CalendarEvent"> | number | null
+  ignoreQuietHours?: Prisma.BoolFilter<"CalendarEvent"> | boolean
   createdAt?: Prisma.DateTimeFilter<"CalendarEvent"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"CalendarEvent"> | Date | string
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
@@ -272,6 +322,8 @@ export type CalendarEventOrderByWithRelationInput = {
   location?: Prisma.SortOrderInput | Prisma.SortOrder
   taskId?: Prisma.SortOrderInput | Prisma.SortOrder
   projectId?: Prisma.SortOrderInput | Prisma.SortOrder
+  reminderMinutes?: Prisma.SortOrderInput | Prisma.SortOrder
+  ignoreQuietHours?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   user?: Prisma.UserOrderByWithRelationInput
@@ -295,6 +347,8 @@ export type CalendarEventWhereUniqueInput = Prisma.AtLeast<{
   location?: Prisma.StringNullableFilter<"CalendarEvent"> | string | null
   taskId?: Prisma.StringNullableFilter<"CalendarEvent"> | string | null
   projectId?: Prisma.StringNullableFilter<"CalendarEvent"> | string | null
+  reminderMinutes?: Prisma.IntNullableFilter<"CalendarEvent"> | number | null
+  ignoreQuietHours?: Prisma.BoolFilter<"CalendarEvent"> | boolean
   createdAt?: Prisma.DateTimeFilter<"CalendarEvent"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"CalendarEvent"> | Date | string
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
@@ -315,11 +369,15 @@ export type CalendarEventOrderByWithAggregationInput = {
   location?: Prisma.SortOrderInput | Prisma.SortOrder
   taskId?: Prisma.SortOrderInput | Prisma.SortOrder
   projectId?: Prisma.SortOrderInput | Prisma.SortOrder
+  reminderMinutes?: Prisma.SortOrderInput | Prisma.SortOrder
+  ignoreQuietHours?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   _count?: Prisma.CalendarEventCountOrderByAggregateInput
+  _avg?: Prisma.CalendarEventAvgOrderByAggregateInput
   _max?: Prisma.CalendarEventMaxOrderByAggregateInput
   _min?: Prisma.CalendarEventMinOrderByAggregateInput
+  _sum?: Prisma.CalendarEventSumOrderByAggregateInput
 }
 
 export type CalendarEventScalarWhereWithAggregatesInput = {
@@ -338,6 +396,8 @@ export type CalendarEventScalarWhereWithAggregatesInput = {
   location?: Prisma.StringNullableWithAggregatesFilter<"CalendarEvent"> | string | null
   taskId?: Prisma.StringNullableWithAggregatesFilter<"CalendarEvent"> | string | null
   projectId?: Prisma.StringNullableWithAggregatesFilter<"CalendarEvent"> | string | null
+  reminderMinutes?: Prisma.IntNullableWithAggregatesFilter<"CalendarEvent"> | number | null
+  ignoreQuietHours?: Prisma.BoolWithAggregatesFilter<"CalendarEvent"> | boolean
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"CalendarEvent"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"CalendarEvent"> | Date | string
 }
@@ -352,6 +412,8 @@ export type CalendarEventCreateInput = {
   eventType?: $Enums.EventType
   recurrence?: $Enums.RecurrenceType
   location?: string | null
+  reminderMinutes?: number | null
+  ignoreQuietHours?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   user: Prisma.UserCreateNestedOneWithoutCalendarEventsInput
@@ -372,6 +434,8 @@ export type CalendarEventUncheckedCreateInput = {
   location?: string | null
   taskId?: string | null
   projectId?: string | null
+  reminderMinutes?: number | null
+  ignoreQuietHours?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -386,6 +450,8 @@ export type CalendarEventUpdateInput = {
   eventType?: Prisma.EnumEventTypeFieldUpdateOperationsInput | $Enums.EventType
   recurrence?: Prisma.EnumRecurrenceTypeFieldUpdateOperationsInput | $Enums.RecurrenceType
   location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  reminderMinutes?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  ignoreQuietHours?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   user?: Prisma.UserUpdateOneRequiredWithoutCalendarEventsNestedInput
@@ -406,6 +472,8 @@ export type CalendarEventUncheckedUpdateInput = {
   location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   taskId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   projectId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  reminderMinutes?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  ignoreQuietHours?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -423,6 +491,8 @@ export type CalendarEventCreateManyInput = {
   location?: string | null
   taskId?: string | null
   projectId?: string | null
+  reminderMinutes?: number | null
+  ignoreQuietHours?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -437,6 +507,8 @@ export type CalendarEventUpdateManyMutationInput = {
   eventType?: Prisma.EnumEventTypeFieldUpdateOperationsInput | $Enums.EventType
   recurrence?: Prisma.EnumRecurrenceTypeFieldUpdateOperationsInput | $Enums.RecurrenceType
   location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  reminderMinutes?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  ignoreQuietHours?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -454,6 +526,8 @@ export type CalendarEventUncheckedUpdateManyInput = {
   location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   taskId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   projectId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  reminderMinutes?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  ignoreQuietHours?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -481,8 +555,14 @@ export type CalendarEventCountOrderByAggregateInput = {
   location?: Prisma.SortOrder
   taskId?: Prisma.SortOrder
   projectId?: Prisma.SortOrder
+  reminderMinutes?: Prisma.SortOrder
+  ignoreQuietHours?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+}
+
+export type CalendarEventAvgOrderByAggregateInput = {
+  reminderMinutes?: Prisma.SortOrder
 }
 
 export type CalendarEventMaxOrderByAggregateInput = {
@@ -498,6 +578,8 @@ export type CalendarEventMaxOrderByAggregateInput = {
   location?: Prisma.SortOrder
   taskId?: Prisma.SortOrder
   projectId?: Prisma.SortOrder
+  reminderMinutes?: Prisma.SortOrder
+  ignoreQuietHours?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -515,8 +597,14 @@ export type CalendarEventMinOrderByAggregateInput = {
   location?: Prisma.SortOrder
   taskId?: Prisma.SortOrder
   projectId?: Prisma.SortOrder
+  reminderMinutes?: Prisma.SortOrder
+  ignoreQuietHours?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+}
+
+export type CalendarEventSumOrderByAggregateInput = {
+  reminderMinutes?: Prisma.SortOrder
 }
 
 export type CalendarEventCreateNestedManyWithoutUserInput = {
@@ -663,6 +751,8 @@ export type CalendarEventCreateWithoutUserInput = {
   eventType?: $Enums.EventType
   recurrence?: $Enums.RecurrenceType
   location?: string | null
+  reminderMinutes?: number | null
+  ignoreQuietHours?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   task?: Prisma.TaskCreateNestedOneWithoutCalendarEventsInput
@@ -681,6 +771,8 @@ export type CalendarEventUncheckedCreateWithoutUserInput = {
   location?: string | null
   taskId?: string | null
   projectId?: string | null
+  reminderMinutes?: number | null
+  ignoreQuietHours?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -727,6 +819,8 @@ export type CalendarEventScalarWhereInput = {
   location?: Prisma.StringNullableFilter<"CalendarEvent"> | string | null
   taskId?: Prisma.StringNullableFilter<"CalendarEvent"> | string | null
   projectId?: Prisma.StringNullableFilter<"CalendarEvent"> | string | null
+  reminderMinutes?: Prisma.IntNullableFilter<"CalendarEvent"> | number | null
+  ignoreQuietHours?: Prisma.BoolFilter<"CalendarEvent"> | boolean
   createdAt?: Prisma.DateTimeFilter<"CalendarEvent"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"CalendarEvent"> | Date | string
 }
@@ -741,6 +835,8 @@ export type CalendarEventCreateWithoutProjectInput = {
   eventType?: $Enums.EventType
   recurrence?: $Enums.RecurrenceType
   location?: string | null
+  reminderMinutes?: number | null
+  ignoreQuietHours?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   user: Prisma.UserCreateNestedOneWithoutCalendarEventsInput
@@ -759,6 +855,8 @@ export type CalendarEventUncheckedCreateWithoutProjectInput = {
   recurrence?: $Enums.RecurrenceType
   location?: string | null
   taskId?: string | null
+  reminderMinutes?: number | null
+  ignoreQuietHours?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -799,6 +897,8 @@ export type CalendarEventCreateWithoutTaskInput = {
   eventType?: $Enums.EventType
   recurrence?: $Enums.RecurrenceType
   location?: string | null
+  reminderMinutes?: number | null
+  ignoreQuietHours?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   user: Prisma.UserCreateNestedOneWithoutCalendarEventsInput
@@ -817,6 +917,8 @@ export type CalendarEventUncheckedCreateWithoutTaskInput = {
   recurrence?: $Enums.RecurrenceType
   location?: string | null
   projectId?: string | null
+  reminderMinutes?: number | null
+  ignoreQuietHours?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -859,6 +961,8 @@ export type CalendarEventCreateManyUserInput = {
   location?: string | null
   taskId?: string | null
   projectId?: string | null
+  reminderMinutes?: number | null
+  ignoreQuietHours?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -873,6 +977,8 @@ export type CalendarEventUpdateWithoutUserInput = {
   eventType?: Prisma.EnumEventTypeFieldUpdateOperationsInput | $Enums.EventType
   recurrence?: Prisma.EnumRecurrenceTypeFieldUpdateOperationsInput | $Enums.RecurrenceType
   location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  reminderMinutes?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  ignoreQuietHours?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   task?: Prisma.TaskUpdateOneWithoutCalendarEventsNestedInput
@@ -891,6 +997,8 @@ export type CalendarEventUncheckedUpdateWithoutUserInput = {
   location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   taskId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   projectId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  reminderMinutes?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  ignoreQuietHours?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -907,6 +1015,8 @@ export type CalendarEventUncheckedUpdateManyWithoutUserInput = {
   location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   taskId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   projectId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  reminderMinutes?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  ignoreQuietHours?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -923,6 +1033,8 @@ export type CalendarEventCreateManyProjectInput = {
   recurrence?: $Enums.RecurrenceType
   location?: string | null
   taskId?: string | null
+  reminderMinutes?: number | null
+  ignoreQuietHours?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -937,6 +1049,8 @@ export type CalendarEventUpdateWithoutProjectInput = {
   eventType?: Prisma.EnumEventTypeFieldUpdateOperationsInput | $Enums.EventType
   recurrence?: Prisma.EnumRecurrenceTypeFieldUpdateOperationsInput | $Enums.RecurrenceType
   location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  reminderMinutes?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  ignoreQuietHours?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   user?: Prisma.UserUpdateOneRequiredWithoutCalendarEventsNestedInput
@@ -955,6 +1069,8 @@ export type CalendarEventUncheckedUpdateWithoutProjectInput = {
   recurrence?: Prisma.EnumRecurrenceTypeFieldUpdateOperationsInput | $Enums.RecurrenceType
   location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   taskId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  reminderMinutes?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  ignoreQuietHours?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -971,6 +1087,8 @@ export type CalendarEventUncheckedUpdateManyWithoutProjectInput = {
   recurrence?: Prisma.EnumRecurrenceTypeFieldUpdateOperationsInput | $Enums.RecurrenceType
   location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   taskId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  reminderMinutes?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  ignoreQuietHours?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -987,6 +1105,8 @@ export type CalendarEventCreateManyTaskInput = {
   recurrence?: $Enums.RecurrenceType
   location?: string | null
   projectId?: string | null
+  reminderMinutes?: number | null
+  ignoreQuietHours?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -1001,6 +1121,8 @@ export type CalendarEventUpdateWithoutTaskInput = {
   eventType?: Prisma.EnumEventTypeFieldUpdateOperationsInput | $Enums.EventType
   recurrence?: Prisma.EnumRecurrenceTypeFieldUpdateOperationsInput | $Enums.RecurrenceType
   location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  reminderMinutes?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  ignoreQuietHours?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   user?: Prisma.UserUpdateOneRequiredWithoutCalendarEventsNestedInput
@@ -1019,6 +1141,8 @@ export type CalendarEventUncheckedUpdateWithoutTaskInput = {
   recurrence?: Prisma.EnumRecurrenceTypeFieldUpdateOperationsInput | $Enums.RecurrenceType
   location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   projectId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  reminderMinutes?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  ignoreQuietHours?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -1035,6 +1159,8 @@ export type CalendarEventUncheckedUpdateManyWithoutTaskInput = {
   recurrence?: Prisma.EnumRecurrenceTypeFieldUpdateOperationsInput | $Enums.RecurrenceType
   location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   projectId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  reminderMinutes?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  ignoreQuietHours?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -1054,6 +1180,8 @@ export type CalendarEventSelect<ExtArgs extends runtime.Types.Extensions.Interna
   location?: boolean
   taskId?: boolean
   projectId?: boolean
+  reminderMinutes?: boolean
+  ignoreQuietHours?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
@@ -1074,6 +1202,8 @@ export type CalendarEventSelectCreateManyAndReturn<ExtArgs extends runtime.Types
   location?: boolean
   taskId?: boolean
   projectId?: boolean
+  reminderMinutes?: boolean
+  ignoreQuietHours?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
@@ -1094,6 +1224,8 @@ export type CalendarEventSelectUpdateManyAndReturn<ExtArgs extends runtime.Types
   location?: boolean
   taskId?: boolean
   projectId?: boolean
+  reminderMinutes?: boolean
+  ignoreQuietHours?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
@@ -1114,11 +1246,13 @@ export type CalendarEventSelectScalar = {
   location?: boolean
   taskId?: boolean
   projectId?: boolean
+  reminderMinutes?: boolean
+  ignoreQuietHours?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type CalendarEventOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "userId" | "title" | "description" | "startTime" | "endTime" | "isAllDay" | "eventType" | "recurrence" | "location" | "taskId" | "projectId" | "createdAt" | "updatedAt", ExtArgs["result"]["calendarEvent"]>
+export type CalendarEventOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "userId" | "title" | "description" | "startTime" | "endTime" | "isAllDay" | "eventType" | "recurrence" | "location" | "taskId" | "projectId" | "reminderMinutes" | "ignoreQuietHours" | "createdAt" | "updatedAt", ExtArgs["result"]["calendarEvent"]>
 export type CalendarEventInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   task?: boolean | Prisma.CalendarEvent$taskArgs<ExtArgs>
@@ -1155,6 +1289,8 @@ export type $CalendarEventPayload<ExtArgs extends runtime.Types.Extensions.Inter
     location: string | null
     taskId: string | null
     projectId: string | null
+    reminderMinutes: number | null
+    ignoreQuietHours: boolean
     createdAt: Date
     updatedAt: Date
   }, ExtArgs["result"]["calendarEvent"]>
@@ -1595,6 +1731,8 @@ export interface CalendarEventFieldRefs {
   readonly location: Prisma.FieldRef<"CalendarEvent", 'String'>
   readonly taskId: Prisma.FieldRef<"CalendarEvent", 'String'>
   readonly projectId: Prisma.FieldRef<"CalendarEvent", 'String'>
+  readonly reminderMinutes: Prisma.FieldRef<"CalendarEvent", 'Int'>
+  readonly ignoreQuietHours: Prisma.FieldRef<"CalendarEvent", 'Boolean'>
   readonly createdAt: Prisma.FieldRef<"CalendarEvent", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"CalendarEvent", 'DateTime'>
 }

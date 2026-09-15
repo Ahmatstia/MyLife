@@ -15,6 +15,8 @@ export const createCalendarEventSchema = z
     location: z.string().trim().max(255).optional().nullable(),
     taskId: z.string().trim().cuid().optional().nullable(),
     projectId: z.string().trim().cuid().optional().nullable(),
+    reminderMinutes: z.number().int().min(1).max(120).optional().nullable(),
+    ignoreQuietHours: z.boolean().default(false),
   })
   .refine(
     (data) => {
@@ -40,6 +42,8 @@ export const updateCalendarEventSchema = z
     location: z.string().trim().max(255).optional().nullable(),
     taskId: z.string().trim().cuid().optional().nullable(),
     projectId: z.string().trim().cuid().optional().nullable(),
+    reminderMinutes: z.number().int().min(1).max(120).optional().nullable(),
+    ignoreQuietHours: z.boolean().optional(),
   })
   .refine(
     (data) => {

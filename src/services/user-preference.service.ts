@@ -40,6 +40,7 @@ export async function getUserPreference(userId?: string) {
       enableNotifications: true,
       enableAiAssistance: true,
       timezone: "Asia/Jakarta",
+      defaultReminderMinutes: 15,
       createdAt: new Date(),
       updatedAt: new Date(),
     };
@@ -58,5 +59,6 @@ export async function updateUserPreference(input: UpdateUserPreferenceInput, use
     ...(parsed.enableNotifications !== undefined && { enableNotifications: parsed.enableNotifications }),
     ...(parsed.enableAiAssistance !== undefined && { enableAiAssistance: parsed.enableAiAssistance }),
     ...(parsed.timezone !== undefined && { timezone: parsed.timezone }),
+    ...(parsed.defaultReminderMinutes !== undefined && { defaultReminderMinutes: parsed.defaultReminderMinutes }),
   });
 }

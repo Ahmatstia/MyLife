@@ -11,6 +11,7 @@ type PreferenceData = {
   enableNotifications: boolean;
   enableAiAssistance: boolean;
   timezone: string;
+  defaultReminderMinutes: number;
 };
 
 export function UserPreferenceControls({ initialPref }: { initialPref: PreferenceData }) {
@@ -19,6 +20,7 @@ export function UserPreferenceControls({ initialPref }: { initialPref: Preferenc
   const [weekStartDay, setWeekStartDay] = useState(initialPref.weekStartDay);
   const [dailyFocusLimit, setDailyFocusLimit] = useState(initialPref.dailyFocusLimit);
   const [enableNotifications, setEnableNotifications] = useState(initialPref.enableNotifications);
+  const [defaultReminderMinutes, setDefaultReminderMinutes] = useState(initialPref.defaultReminderMinutes ?? 15);
   const [saving, setSaving] = useState(false);
   const [testingChannel, setTestingChannel] = useState<"telegram" | null>(null);
 
@@ -201,6 +203,40 @@ export function UserPreferenceControls({ initialPref }: { initialPref: Preferenc
                 />
                 <div className="w-11 h-6 bg-white/[0.1] peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#4edea3]"></div>
               </label>
+            </div>
+          </div>
+
+          {/* Baris 5: Default Reminder Minutes */}
+          <div className="p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4 hover:bg-[#1A2133]/40 transition-colors border-t border-white/[0.06]">
+            <div className="flex items-start gap-3">
+              <div className="p-2 rounded-xl bg-[#d0bcff]/15 text-[#d0bcff] mt-0.5 border border-[#d0bcff]/30">
+                <Icon name="bell" size={18} />
+              </div>
+              <div>
+                <span className="block text-sm font-semibold text-white">Waktu Default Reminder</span>
+                <span className="block text-xs text-[#94A3B8]">
+                  Berapa menit sebelum jadwal, Telegram reminder dikirim. Bisa di-override per jadwal di halaman /today.
+                </span>
+              </div>
+            </div>
+            <div className="flex items-center self-end sm:self-center">
+              <select
+                id="default-reminder-minutes"
+                value={defaultReminderMinutes}
+                disabled={saving}
+                onChange={(e) => {
+                  const val = Number(e.target.value);
+                  setDefaultReminderMinutes(val);
+                  updatePref({ defaultReminderMinutes: val } as Partial<PreferenceData>);
+                }}
+                className="px-3 py-2 rounded-lg bg-[#1e1f26] text-white border border-white/[0.08] font-mono text-xs focus:outline-none focus:border-[#d0bcff] disabled:opacity-50 cursor-pointer"
+              >
+                <option value={5}>5 menit</option>
+                <option value={10}>10 menit</option>
+                <option value={15}>15 menit (default)</option>
+                <option value={30}>30 menit</option>
+                <option value={60}>60 menit</option>
+              </select>
             </div>
           </div>
         </div>

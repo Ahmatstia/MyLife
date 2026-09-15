@@ -270,37 +270,84 @@ export async function runReminderCycle(
   // ==========================================
   // 2. CALENDAR EVENT REMINDERS (STARTING SOON)
   // ==========================================
-  const windowEnd = new Date(now.getTime() + 15 * 60 * 1000); // next 15 mins
-  const upcomingEvents = await prisma.calendarEvent.findMany({
+  const windowEndMax = new Date(now.getTime() + 120 * 60 * 1000);
+  const directEvents = await prisma.calendarEvent.findMany({
     where: {
       userId: owner,
+      recurrence: "NONE",
       startTime: {
         gte: now,
-        lte: windowEnd,
+        lte: windowEndMax,
       },
     },
   });
 
+  const recurringEvents = await prisma.calendarEvent.findMany({
+    where: {
+      userId: owner,
+      recurrence: { not: "NONE" },
+      startTime: { lte: windowEndMax },
+    },
+  });
+
+  const { dayOfWeek: localDayOfWeek } = getLocalTimeParts(now, timezone);
+  const localDateNum = now.getDate();
+
+  const projectedRecurring: typeof directEvents = [];
+  for (const ev of recurringEvents) {
+    let matches = false;
+    if (ev.recurrence === "DAILY") matches = true;
+    else if (ev.recurrence === "WEEKLY") matches = ev.startTime.getDay() === localDayOfWeek;
+    else if (ev.recurrence === "MONTHLY") matches = ev.startTime.getDate() === localDateNum;
+
+    if (!matches) continue;
+
+    const durationMs = ev.endTime.getTime() - ev.startTime.getTime();
+    const projStart = new Date(now);
+    projStart.setHours(ev.startTime.getHours(), ev.startTime.getMinutes(), ev.startTime.getSeconds(), 0);
+    const projEnd = new Date(projStart.getTime() + durationMs);
+
+    if (projStart >= now && projStart <= windowEndMax) {
+      projectedRecurring.push({
+        ...ev,
+        startTime: projStart,
+        endTime: projEnd,
+      });
+    }
+  }
+
+  const upcomingEvents = [...directEvents, ...projectedRecurring];
+
   evaluated += upcomingEvents.length;
 
   for (const event of upcomingEvents) {
-    if (inQuiet) {
+    // Per-event override, then user pref default, then system default (15 min)
+    const reminderWindowMinutes = event.reminderMinutes ?? pref.defaultReminderMinutes ?? 15;
+    const reminderWindowMs = reminderWindowMinutes * 60 * 1000;
+    const windowEnd = new Date(now.getTime() + reminderWindowMs);
+
+    // Skip if event does not start within this event's reminder window
+    if (event.startTime > windowEnd) continue;
+
+    // Quiet hours check — skip if in quiet hours AND event does not override
+    if (inQuiet && !event.ignoreQuietHours) {
       suppressedCount++;
       continue;
     }
 
-    // Idempotency check for event
+    // Idempotency check for event (scoped to startOfDay so recurring events trigger daily)
     const alreadyNotified = await findExistingNotification(
       owner,
       "CALENDAR_EVENT",
-      event.id
+      event.id,
+      startOfDay
     );
 
     if (!alreadyNotified) {
       const notif = await createNotification({
         userId: owner,
         title: `Jadwal Segera Dimulai: ${event.title}`,
-        message: `Acara "${event.title}" akan dimulai dalam kurang dari 15 menit.`,
+        message: `Acara "${event.title}" akan dimulai dalam kurang dari ${reminderWindowMinutes} menit.`,
         type: "CALENDAR_EVENT",
         severity: "INFO",
         entityType: "CALENDAR_EVENT",
@@ -458,5 +505,40 @@ export async function runReminderCycle(
     createdCount,
     suppressedCount,
     notifications: createdNotifications,
+  };
+}
+
+/**
+ * Run reminder cycle for all users who have notifications enabled.
+ * Designed for automated background cron invocations without leaking Prisma imports into route handlers.
+ */
+export async function runGlobalReminderCycle(): Promise<{
+  usersProcessed: number;
+  totalEvaluated: number;
+  totalCreated: number;
+}> {
+  const users = await prisma.userPreference.findMany({
+    where: { enableNotifications: true },
+    select: { userId: true },
+  });
+
+  let totalEvaluated = 0;
+  let totalCreated = 0;
+
+  for (const { userId } of users) {
+    try {
+      const result = await runReminderCycle(userId);
+      totalEvaluated += result.evaluated;
+      totalCreated += result.createdCount;
+    } catch (userErr) {
+      const msg = userErr instanceof Error ? userErr.message : "Unknown error";
+      console.error(`[runGlobalReminderCycle] Error for user ${userId}: ${msg}`);
+    }
+  }
+
+  return {
+    usersProcessed: users.length,
+    totalEvaluated,
+    totalCreated,
   };
 }

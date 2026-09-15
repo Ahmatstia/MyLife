@@ -126,6 +126,9 @@ export function TodayDashboardClient({
   const [tbStartTime, setTbStartTime] = useState("09:00");
   const [tbEndTime, setTbEndTime] = useState("10:30");
   const [tbType, setTbType] = useState<"BLOCKED" | "WORK" | "PERSONAL">("BLOCKED");
+  const [tbReminderMinutes, setTbReminderMinutes] = useState<number | null>(null); // null = pakai default pref
+  const [tbRecurrence, setTbRecurrence] = useState<"NONE" | "DAILY" | "WEEKLY" | "MONTHLY">("NONE");
+  const [tbIgnoreQuietHours, setTbIgnoreQuietHours] = useState(false);
   const [isSubmittingTb, setIsSubmittingTb] = useState(false);
 
   async function handleCreateTimeblock(e: React.FormEvent) {
@@ -151,6 +154,9 @@ export function TodayDashboardClient({
           startTime: startIso,
           endTime: endIso,
           eventType: tbType,
+          recurrence: tbRecurrence,
+          ...(tbReminderMinutes !== null && { reminderMinutes: tbReminderMinutes }),
+          ignoreQuietHours: tbIgnoreQuietHours,
         }),
       });
 
@@ -167,9 +173,21 @@ export function TodayDashboardClient({
       };
 
       setTimeblocks((prev) => [...prev, newBlock]);
+      // Reset form
       setTbTitle("");
+      setTbStartTime("09:00");
+      setTbEndTime("10:30");
+      setTbType("BLOCKED");
+      setTbReminderMinutes(null);
+      setTbRecurrence("NONE");
+      setTbIgnoreQuietHours(false);
       setIsCreatingTimeblock(false);
-      toast("Blok waktu berhasil dijadwalkan ke sistem!", "success");
+      toast(
+        tbRecurrence !== "NONE"
+          ? `Jadwal berulang "${tbTitle.trim()}" berhasil dibuat! 🔁`
+          : "Blok waktu berhasil dijadwalkan!",
+        "success"
+      );
       router.refresh();
     } catch (err) {
       toast(err instanceof Error ? err.message : "Gagal menjadwalkan blok waktu", "error");
@@ -1536,7 +1554,7 @@ export function TodayDashboardClient({
                   required
                   value={tbTitle}
                   onChange={(e) => setTbTitle(e.target.value)}
-                  placeholder="Misal: Sesi Deep Work Bab 2 Skripsi"
+                  placeholder="Misal: Kuliah Algoritma, Sarapan, Deep Work Skripsi"
                   className="w-full bg-[#191b22] px-3 py-2 rounded-lg border border-white/[0.08] text-white text-xs focus:outline-none focus:border-[#d0bcff]"
                 />
               </div>
@@ -1577,10 +1595,73 @@ export function TodayDashboardClient({
                 </select>
               </div>
 
+              {/* NEW: Recurring & Reminder row */}
+              <div className="grid grid-cols-2 gap-3">
+                <div className="flex flex-col gap-1">
+                  <label className="text-xs font-semibold text-[#cbc3d7]">Pengulangan</label>
+                  <select
+                    value={tbRecurrence}
+                    onChange={(e) => setTbRecurrence(e.target.value as "NONE" | "DAILY" | "WEEKLY" | "MONTHLY")}
+                    className="w-full bg-[#191b22] px-3 py-2 rounded-lg border border-white/[0.08] text-white text-xs font-mono focus:outline-none focus:border-[#d0bcff]"
+                  >
+                    <option value="NONE">Hanya hari ini</option>
+                    <option value="DAILY">🔁 Setiap hari</option>
+                    <option value="WEEKLY">📅 Setiap minggu</option>
+                    <option value="MONTHLY">🗓 Setiap bulan</option>
+                  </select>
+                </div>
+                <div className="flex flex-col gap-1">
+                  <label className="text-xs font-semibold text-[#cbc3d7]">Ingatkan saya</label>
+                  <select
+                    value={tbReminderMinutes === null ? "" : String(tbReminderMinutes)}
+                    onChange={(e) =>
+                      setTbReminderMinutes(e.target.value === "" ? null : Number(e.target.value))
+                    }
+                    className="w-full bg-[#191b22] px-3 py-2 rounded-lg border border-white/[0.08] text-white text-xs font-mono focus:outline-none focus:border-[#d0bcff]"
+                  >
+                    <option value="">🔔 Default (preferensi)</option>
+                    <option value="5">5 menit sebelum</option>
+                    <option value="10">10 menit sebelum</option>
+                    <option value="15">15 menit sebelum</option>
+                    <option value="30">30 menit sebelum</option>
+                    <option value="60">60 menit sebelum</option>
+                  </select>
+                </div>
+              </div>
+
+              {/* NEW: Ignore quiet hours toggle */}
+              <label
+                htmlFor="tb-ignore-quiet"
+                className="flex items-center gap-3 p-2.5 rounded-lg bg-[#0c0e14]/60 border border-white/[0.06] cursor-pointer hover:bg-[#0c0e14]/80 transition-colors"
+              >
+                <input
+                  id="tb-ignore-quiet"
+                  type="checkbox"
+                  checked={tbIgnoreQuietHours}
+                  onChange={(e) => setTbIgnoreQuietHours(e.target.checked)}
+                  className="w-4 h-4 rounded accent-[#d0bcff] cursor-pointer"
+                />
+                <div className="flex flex-col">
+                  <span className="text-xs font-semibold text-white">Abaikan Quiet Hours</span>
+                  <span className="text-[10px] text-[#cbc3d7]">
+                    Kirim reminder Telegram meskipun jam 22:00–07:00 (untuk alarm pagi)
+                  </span>
+                </div>
+              </label>
+
               <div className="flex items-center justify-end gap-2 pt-2 border-t border-white/[0.08]">
                 <button
                   type="button"
-                  onClick={() => setIsCreatingTimeblock(false)}
+                  onClick={() => {
+                    setIsCreatingTimeblock(false);
+                    setTbTitle("");
+                    setTbStartTime("09:00");
+                    setTbEndTime("10:30");
+                    setTbType("BLOCKED");
+                    setTbReminderMinutes(null);
+                    setTbRecurrence("NONE");
+                    setTbIgnoreQuietHours(false);
+                  }}
                   className="px-3.5 py-1.5 rounded-lg text-xs text-[#cbc3d7] hover:bg-white/[0.06] transition-colors"
                 >
                   Batal

@@ -175,6 +175,7 @@ model UserPreference {
   enableNotifications Boolean  @default(true)
   enableAiAssistance  Boolean  @default(true)
   timezone            String   @default("Asia/Jakarta")
+  defaultReminderMinutes Int   @default(15)
   createdAt           DateTime @default(now())
   updatedAt           DateTime @updatedAt
 
@@ -460,6 +461,8 @@ model CalendarEvent {
   location    String?
   taskId      String?
   projectId   String?
+  reminderMinutes   Int?      // per-event override; null = pakai UserPreference.defaultReminderMinutes
+  ignoreQuietHours  Boolean  @default(false) // true = kirim reminder meski quiet hours (untuk alarm pagi)
   createdAt   DateTime       @default(now())
   updatedAt   DateTime       @updatedAt
 

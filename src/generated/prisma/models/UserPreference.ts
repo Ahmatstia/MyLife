@@ -29,11 +29,13 @@ export type AggregateUserPreference = {
 export type UserPreferenceAvgAggregateOutputType = {
   weekStartDay: number | null
   dailyFocusLimit: number | null
+  defaultReminderMinutes: number | null
 }
 
 export type UserPreferenceSumAggregateOutputType = {
   weekStartDay: number | null
   dailyFocusLimit: number | null
+  defaultReminderMinutes: number | null
 }
 
 export type UserPreferenceMinAggregateOutputType = {
@@ -45,6 +47,7 @@ export type UserPreferenceMinAggregateOutputType = {
   enableNotifications: boolean | null
   enableAiAssistance: boolean | null
   timezone: string | null
+  defaultReminderMinutes: number | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -58,6 +61,7 @@ export type UserPreferenceMaxAggregateOutputType = {
   enableNotifications: boolean | null
   enableAiAssistance: boolean | null
   timezone: string | null
+  defaultReminderMinutes: number | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -71,6 +75,7 @@ export type UserPreferenceCountAggregateOutputType = {
   enableNotifications: number
   enableAiAssistance: number
   timezone: number
+  defaultReminderMinutes: number
   createdAt: number
   updatedAt: number
   _all: number
@@ -80,11 +85,13 @@ export type UserPreferenceCountAggregateOutputType = {
 export type UserPreferenceAvgAggregateInputType = {
   weekStartDay?: true
   dailyFocusLimit?: true
+  defaultReminderMinutes?: true
 }
 
 export type UserPreferenceSumAggregateInputType = {
   weekStartDay?: true
   dailyFocusLimit?: true
+  defaultReminderMinutes?: true
 }
 
 export type UserPreferenceMinAggregateInputType = {
@@ -96,6 +103,7 @@ export type UserPreferenceMinAggregateInputType = {
   enableNotifications?: true
   enableAiAssistance?: true
   timezone?: true
+  defaultReminderMinutes?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -109,6 +117,7 @@ export type UserPreferenceMaxAggregateInputType = {
   enableNotifications?: true
   enableAiAssistance?: true
   timezone?: true
+  defaultReminderMinutes?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -122,6 +131,7 @@ export type UserPreferenceCountAggregateInputType = {
   enableNotifications?: true
   enableAiAssistance?: true
   timezone?: true
+  defaultReminderMinutes?: true
   createdAt?: true
   updatedAt?: true
   _all?: true
@@ -222,6 +232,7 @@ export type UserPreferenceGroupByOutputType = {
   enableNotifications: boolean
   enableAiAssistance: boolean
   timezone: string
+  defaultReminderMinutes: number
   createdAt: Date
   updatedAt: Date
   _count: UserPreferenceCountAggregateOutputType | null
@@ -258,6 +269,7 @@ export type UserPreferenceWhereInput = {
   enableNotifications?: Prisma.BoolFilter<"UserPreference"> | boolean
   enableAiAssistance?: Prisma.BoolFilter<"UserPreference"> | boolean
   timezone?: Prisma.StringFilter<"UserPreference"> | string
+  defaultReminderMinutes?: Prisma.IntFilter<"UserPreference"> | number
   createdAt?: Prisma.DateTimeFilter<"UserPreference"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"UserPreference"> | Date | string
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
@@ -272,6 +284,7 @@ export type UserPreferenceOrderByWithRelationInput = {
   enableNotifications?: Prisma.SortOrder
   enableAiAssistance?: Prisma.SortOrder
   timezone?: Prisma.SortOrder
+  defaultReminderMinutes?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   user?: Prisma.UserOrderByWithRelationInput
@@ -289,6 +302,7 @@ export type UserPreferenceWhereUniqueInput = Prisma.AtLeast<{
   enableNotifications?: Prisma.BoolFilter<"UserPreference"> | boolean
   enableAiAssistance?: Prisma.BoolFilter<"UserPreference"> | boolean
   timezone?: Prisma.StringFilter<"UserPreference"> | string
+  defaultReminderMinutes?: Prisma.IntFilter<"UserPreference"> | number
   createdAt?: Prisma.DateTimeFilter<"UserPreference"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"UserPreference"> | Date | string
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
@@ -303,6 +317,7 @@ export type UserPreferenceOrderByWithAggregationInput = {
   enableNotifications?: Prisma.SortOrder
   enableAiAssistance?: Prisma.SortOrder
   timezone?: Prisma.SortOrder
+  defaultReminderMinutes?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   _count?: Prisma.UserPreferenceCountOrderByAggregateInput
@@ -324,6 +339,7 @@ export type UserPreferenceScalarWhereWithAggregatesInput = {
   enableNotifications?: Prisma.BoolWithAggregatesFilter<"UserPreference"> | boolean
   enableAiAssistance?: Prisma.BoolWithAggregatesFilter<"UserPreference"> | boolean
   timezone?: Prisma.StringWithAggregatesFilter<"UserPreference"> | string
+  defaultReminderMinutes?: Prisma.IntWithAggregatesFilter<"UserPreference"> | number
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"UserPreference"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"UserPreference"> | Date | string
 }
@@ -336,6 +352,7 @@ export type UserPreferenceCreateInput = {
   enableNotifications?: boolean
   enableAiAssistance?: boolean
   timezone?: string
+  defaultReminderMinutes?: number
   createdAt?: Date | string
   updatedAt?: Date | string
   user: Prisma.UserCreateNestedOneWithoutPreferenceInput
@@ -350,6 +367,7 @@ export type UserPreferenceUncheckedCreateInput = {
   enableNotifications?: boolean
   enableAiAssistance?: boolean
   timezone?: string
+  defaultReminderMinutes?: number
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -362,6 +380,7 @@ export type UserPreferenceUpdateInput = {
   enableNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
   enableAiAssistance?: Prisma.BoolFieldUpdateOperationsInput | boolean
   timezone?: Prisma.StringFieldUpdateOperationsInput | string
+  defaultReminderMinutes?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   user?: Prisma.UserUpdateOneRequiredWithoutPreferenceNestedInput
@@ -376,6 +395,7 @@ export type UserPreferenceUncheckedUpdateInput = {
   enableNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
   enableAiAssistance?: Prisma.BoolFieldUpdateOperationsInput | boolean
   timezone?: Prisma.StringFieldUpdateOperationsInput | string
+  defaultReminderMinutes?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -389,6 +409,7 @@ export type UserPreferenceCreateManyInput = {
   enableNotifications?: boolean
   enableAiAssistance?: boolean
   timezone?: string
+  defaultReminderMinutes?: number
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -401,6 +422,7 @@ export type UserPreferenceUpdateManyMutationInput = {
   enableNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
   enableAiAssistance?: Prisma.BoolFieldUpdateOperationsInput | boolean
   timezone?: Prisma.StringFieldUpdateOperationsInput | string
+  defaultReminderMinutes?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -414,6 +436,7 @@ export type UserPreferenceUncheckedUpdateManyInput = {
   enableNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
   enableAiAssistance?: Prisma.BoolFieldUpdateOperationsInput | boolean
   timezone?: Prisma.StringFieldUpdateOperationsInput | string
+  defaultReminderMinutes?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -432,6 +455,7 @@ export type UserPreferenceCountOrderByAggregateInput = {
   enableNotifications?: Prisma.SortOrder
   enableAiAssistance?: Prisma.SortOrder
   timezone?: Prisma.SortOrder
+  defaultReminderMinutes?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -439,6 +463,7 @@ export type UserPreferenceCountOrderByAggregateInput = {
 export type UserPreferenceAvgOrderByAggregateInput = {
   weekStartDay?: Prisma.SortOrder
   dailyFocusLimit?: Prisma.SortOrder
+  defaultReminderMinutes?: Prisma.SortOrder
 }
 
 export type UserPreferenceMaxOrderByAggregateInput = {
@@ -450,6 +475,7 @@ export type UserPreferenceMaxOrderByAggregateInput = {
   enableNotifications?: Prisma.SortOrder
   enableAiAssistance?: Prisma.SortOrder
   timezone?: Prisma.SortOrder
+  defaultReminderMinutes?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -463,6 +489,7 @@ export type UserPreferenceMinOrderByAggregateInput = {
   enableNotifications?: Prisma.SortOrder
   enableAiAssistance?: Prisma.SortOrder
   timezone?: Prisma.SortOrder
+  defaultReminderMinutes?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -470,6 +497,7 @@ export type UserPreferenceMinOrderByAggregateInput = {
 export type UserPreferenceSumOrderByAggregateInput = {
   weekStartDay?: Prisma.SortOrder
   dailyFocusLimit?: Prisma.SortOrder
+  defaultReminderMinutes?: Prisma.SortOrder
 }
 
 export type UserPreferenceCreateNestedOneWithoutUserInput = {
@@ -528,6 +556,7 @@ export type UserPreferenceCreateWithoutUserInput = {
   enableNotifications?: boolean
   enableAiAssistance?: boolean
   timezone?: string
+  defaultReminderMinutes?: number
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -540,6 +569,7 @@ export type UserPreferenceUncheckedCreateWithoutUserInput = {
   enableNotifications?: boolean
   enableAiAssistance?: boolean
   timezone?: string
+  defaultReminderMinutes?: number
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -568,6 +598,7 @@ export type UserPreferenceUpdateWithoutUserInput = {
   enableNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
   enableAiAssistance?: Prisma.BoolFieldUpdateOperationsInput | boolean
   timezone?: Prisma.StringFieldUpdateOperationsInput | string
+  defaultReminderMinutes?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -580,6 +611,7 @@ export type UserPreferenceUncheckedUpdateWithoutUserInput = {
   enableNotifications?: Prisma.BoolFieldUpdateOperationsInput | boolean
   enableAiAssistance?: Prisma.BoolFieldUpdateOperationsInput | boolean
   timezone?: Prisma.StringFieldUpdateOperationsInput | string
+  defaultReminderMinutes?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -595,6 +627,7 @@ export type UserPreferenceSelect<ExtArgs extends runtime.Types.Extensions.Intern
   enableNotifications?: boolean
   enableAiAssistance?: boolean
   timezone?: boolean
+  defaultReminderMinutes?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
@@ -609,6 +642,7 @@ export type UserPreferenceSelectCreateManyAndReturn<ExtArgs extends runtime.Type
   enableNotifications?: boolean
   enableAiAssistance?: boolean
   timezone?: boolean
+  defaultReminderMinutes?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
@@ -623,6 +657,7 @@ export type UserPreferenceSelectUpdateManyAndReturn<ExtArgs extends runtime.Type
   enableNotifications?: boolean
   enableAiAssistance?: boolean
   timezone?: boolean
+  defaultReminderMinutes?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
@@ -637,11 +672,12 @@ export type UserPreferenceSelectScalar = {
   enableNotifications?: boolean
   enableAiAssistance?: boolean
   timezone?: boolean
+  defaultReminderMinutes?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type UserPreferenceOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "userId" | "theme" | "weekStartDay" | "dailyFocusLimit" | "enableNotifications" | "enableAiAssistance" | "timezone" | "createdAt" | "updatedAt", ExtArgs["result"]["userPreference"]>
+export type UserPreferenceOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "userId" | "theme" | "weekStartDay" | "dailyFocusLimit" | "enableNotifications" | "enableAiAssistance" | "timezone" | "defaultReminderMinutes" | "createdAt" | "updatedAt", ExtArgs["result"]["userPreference"]>
 export type UserPreferenceInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }
@@ -666,6 +702,7 @@ export type $UserPreferencePayload<ExtArgs extends runtime.Types.Extensions.Inte
     enableNotifications: boolean
     enableAiAssistance: boolean
     timezone: string
+    defaultReminderMinutes: number
     createdAt: Date
     updatedAt: Date
   }, ExtArgs["result"]["userPreference"]>
@@ -1100,6 +1137,7 @@ export interface UserPreferenceFieldRefs {
   readonly enableNotifications: Prisma.FieldRef<"UserPreference", 'Boolean'>
   readonly enableAiAssistance: Prisma.FieldRef<"UserPreference", 'Boolean'>
   readonly timezone: Prisma.FieldRef<"UserPreference", 'String'>
+  readonly defaultReminderMinutes: Prisma.FieldRef<"UserPreference", 'Int'>
   readonly createdAt: Prisma.FieldRef<"UserPreference", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"UserPreference", 'DateTime'>
 }

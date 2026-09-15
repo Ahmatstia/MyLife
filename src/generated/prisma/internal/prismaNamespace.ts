@@ -1677,6 +1677,7 @@ export const UserPreferenceScalarFieldEnum = {
   enableNotifications: 'enableNotifications',
   enableAiAssistance: 'enableAiAssistance',
   timezone: 'timezone',
+  defaultReminderMinutes: 'defaultReminderMinutes',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
@@ -1876,6 +1877,8 @@ export const CalendarEventScalarFieldEnum = {
   location: 'location',
   taskId: 'taskId',
   projectId: 'projectId',
+  reminderMinutes: 'reminderMinutes',
+  ignoreQuietHours: 'ignoreQuietHours',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const

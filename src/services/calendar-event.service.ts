@@ -62,6 +62,8 @@ export async function createCalendarEvent(input: CreateCalendarEventInput, userI
     location: parsed.location,
     taskId: parsed.taskId,
     projectId: parsed.projectId,
+    reminderMinutes: parsed.reminderMinutes,
+    ignoreQuietHours: parsed.ignoreQuietHours,
   });
 }
 
@@ -134,6 +136,8 @@ export async function updateCalendarEvent(id: string, input: UpdateCalendarEvent
     ...(parsed.location !== undefined && { location: parsed.location }),
     ...(parsed.taskId !== undefined && { taskId: parsed.taskId }),
     ...(parsed.projectId !== undefined && { projectId: parsed.projectId }),
+    ...(parsed.reminderMinutes !== undefined && { reminderMinutes: parsed.reminderMinutes }),
+    ...(parsed.ignoreQuietHours !== undefined && { ignoreQuietHours: parsed.ignoreQuietHours }),
   });
 
   return findCalendarEventRecord(owner, id);

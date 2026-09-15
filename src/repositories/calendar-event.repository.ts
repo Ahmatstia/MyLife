@@ -14,6 +14,8 @@ export function createCalendarEvent(
     location?: string | null;
     taskId?: string | null;
     projectId?: string | null;
+    reminderMinutes?: number | null;
+    ignoreQuietHours?: boolean;
   }
 ) {
   return prisma.calendarEvent.create({
@@ -29,6 +31,8 @@ export function createCalendarEvent(
       location: data.location ?? null,
       taskId: data.taskId ?? null,
       projectId: data.projectId ?? null,
+      reminderMinutes: data.reminderMinutes ?? null,
+      ignoreQuietHours: data.ignoreQuietHours ?? false,
     },
     include: {
       task: { select: { id: true, title: true } },
@@ -88,6 +92,8 @@ export function updateCalendarEvent(
     location?: string | null;
     taskId?: string | null;
     projectId?: string | null;
+    reminderMinutes?: number | null;
+    ignoreQuietHours?: boolean;
   }
 ) {
   return prisma.calendarEvent.updateMany({
@@ -103,6 +109,8 @@ export function updateCalendarEvent(
       ...(data.location !== undefined && { location: data.location }),
       ...(data.taskId !== undefined && { taskId: data.taskId }),
       ...(data.projectId !== undefined && { projectId: data.projectId }),
+      ...(data.reminderMinutes !== undefined && { reminderMinutes: data.reminderMinutes }),
+      ...(data.ignoreQuietHours !== undefined && { ignoreQuietHours: data.ignoreQuietHours }),
     },
   });
 }
