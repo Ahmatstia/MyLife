@@ -95,12 +95,13 @@ export default async function TodayPage() {
     const startStr = new Intl.DateTimeFormat("id-ID", { hour: "2-digit", minute: "2-digit" }).format(new Date(evt.startTime));
     const endStr = new Intl.DateTimeFormat("id-ID", { hour: "2-digit", minute: "2-digit" }).format(new Date(evt.endTime));
     const isNow = new Date() >= new Date(evt.startTime) && new Date() <= new Date(evt.endTime);
-    const isPast = new Date() > new Date(evt.endTime);
+    const isDone = !!evt.isCompleted;
     return {
       id: evt.id,
       time: `${startStr} – ${endStr} WIB`,
       title: evt.title,
-      status: (isPast ? "SELESAI" : isNow ? "BERJALAN_SEKARANG" : "TERJADWAL") as "SELESAI" | "BERJALAN_SEKARANG" | "TERJADWAL",
+      isCompleted: isDone,
+      status: (isDone ? "SELESAI" : isNow ? "BERJALAN_SEKARANG" : "TERJADWAL") as "SELESAI" | "BERJALAN_SEKARANG" | "TERJADWAL",
     };
   });
 

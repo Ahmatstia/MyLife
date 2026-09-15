@@ -37,6 +37,7 @@ interface TimeblockData {
   time: string;
   title: string;
   status: "SELESAI" | "BERJALAN_SEKARANG" | "TERJADWAL";
+  isCompleted?: boolean;
 }
 
 interface CaptureData {
@@ -205,6 +206,49 @@ export function TodayDashboardClient({
       router.refresh();
     } catch {
       toast("Gagal menghapus blok waktu", "error");
+    }
+  }
+
+  // Toggle timeblock/to-do completion directly from /today
+  async function handleToggleTimeblockComplete(id: string, currentCompleted: boolean) {
+    const nextCompleted = !currentCompleted;
+    setTimeblocks((prev) =>
+      prev.map((b) =>
+        b.id === id
+          ? {
+              ...b,
+              isCompleted: nextCompleted,
+              status: nextCompleted ? "SELESAI" : "TERJADWAL",
+            }
+          : b
+      )
+    );
+
+    try {
+      const res = await fetch(`/api/calendar-events/${id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ isCompleted: nextCompleted }),
+      });
+      if (!res.ok) throw new Error();
+      toast(
+        nextCompleted ? "To-do selesai! Mantap 🎉" : "To-do dikembalikan ke aktif.",
+        "success"
+      );
+      router.refresh();
+    } catch {
+      setTimeblocks((prev) =>
+        prev.map((b) =>
+          b.id === id
+            ? {
+                ...b,
+                isCompleted: currentCompleted,
+                status: currentCompleted ? "SELESAI" : "TERJADWAL",
+              }
+            : b
+        )
+      );
+      toast("Gagal memperbarui status to-do.", "error");
     }
   }
 
@@ -1270,28 +1314,48 @@ export function TodayDashboardClient({
                   >
                     <div
                       className={`absolute -left-[23px] top-4 w-3 h-3 rounded-full ring-4 ring-[#0B0D13] ${
-                        block.status === "BERJALAN_SEKARANG"
-                          ? "bg-[#d0bcff] ring-[#d0bcff]/20 animate-pulse"
-                          : block.status === "SELESAI"
+                        block.isCompleted || block.status === "SELESAI"
                           ? "bg-[#4edea3]"
+                          : block.status === "BERJALAN_SEKARANG"
+                          ? "bg-[#d0bcff] ring-[#d0bcff]/20 animate-pulse"
                           : "bg-[#3131c0]"
                       }`}
                     />
-                    <div className="flex flex-col min-w-0 flex-1">
-                      <span
-                        className={`font-mono text-xs ${
-                          block.status === "BERJALAN_SEKARANG" ? "text-[#d0bcff] font-semibold" : "text-[#cbc3d7]"
+                    <div className="flex items-center gap-3 min-w-0 flex-1">
+                      {/* Direct Checkbox */}
+                      <button
+                        type="button"
+                        onClick={() => handleToggleTimeblockComplete(block.id, !!block.isCompleted)}
+                        className={`w-5 h-5 rounded border flex items-center justify-center transition-all shrink-0 cursor-pointer ${
+                          block.isCompleted
+                            ? "bg-[#4edea3] border-[#4edea3] text-[#00311f] shadow-[0_0_8px_rgba(78,222,163,0.4)]"
+                            : "border-white/30 bg-[#0c0e14] hover:border-[#4edea3] text-transparent hover:text-[#4edea3]"
                         }`}
+                        title={block.isCompleted ? "Tandai belum selesai" : "Tandai selesai"}
                       >
-                        {block.time}
-                      </span>
-                      <span
-                        className={`text-sm font-semibold mt-0.5 truncate ${
-                          block.status === "BERJALAN_SEKARANG" ? "text-white font-bold" : "text-white"
-                        }`}
-                      >
-                        {block.title}
-                      </span>
+                        <span className="material-symbols-outlined text-[14px]">check</span>
+                      </button>
+
+                      <div className="flex flex-col min-w-0 flex-1">
+                        <span
+                          className={`font-mono text-xs ${
+                            block.status === "BERJALAN_SEKARANG" ? "text-[#d0bcff] font-semibold" : "text-[#cbc3d7]"
+                          }`}
+                        >
+                          {block.time}
+                        </span>
+                        <span
+                          className={`text-sm font-semibold mt-0.5 truncate ${
+                            block.isCompleted
+                              ? "line-through text-[#958ea0]"
+                              : block.status === "BERJALAN_SEKARANG"
+                              ? "text-white font-bold"
+                              : "text-white"
+                          }`}
+                        >
+                          {block.title}
+                        </span>
+                      </div>
                     </div>
                     <div className="flex items-center gap-2 self-start sm:self-center shrink-0">
                       <span

@@ -275,6 +275,7 @@ export async function runReminderCycle(
     where: {
       userId: owner,
       recurrence: "NONE",
+      isCompleted: false,
       startTime: {
         gte: now,
         lte: windowEndMax,
@@ -286,6 +287,7 @@ export async function runReminderCycle(
     where: {
       userId: owner,
       recurrence: { not: "NONE" },
+      isCompleted: false,
       startTime: { lte: windowEndMax },
     },
   });

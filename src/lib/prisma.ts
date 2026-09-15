@@ -1,12 +1,21 @@
-﻿import "dotenv/config";
+import "dotenv/config";
 import { PrismaClient } from "../generated/prisma/client";
 import { PrismaPg } from "@prisma/adapter-pg";
 import { Pool } from "pg";
 
+const SCHEMA_VERSION = "cr003-v1";
+
 const globalForPrisma = globalThis as unknown as {
   prisma: PrismaClient | undefined;
   pool: Pool | undefined;
+  schemaVersion: string | undefined;
 };
+
+// Bust stale in-memory PrismaClient if schema was regenerated during hot-reload
+if (globalForPrisma.schemaVersion !== SCHEMA_VERSION) {
+  globalForPrisma.prisma = undefined;
+  globalForPrisma.schemaVersion = SCHEMA_VERSION;
+}
 
 const connectionString = process.env.DATABASE_URL || process.env.DIRECT_URL;
 

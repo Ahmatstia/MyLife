@@ -63,10 +63,6 @@ function formatTimeStr(d: Date) {
   return `${String(d.getHours()).padStart(2, "0")}:${String(d.getMinutes()).padStart(2, "0")}`;
 }
 
-function formatLocalDatetime(d: Date) {
-  const pad = (n: number) => String(n).padStart(2, "0");
-  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
-}
 
 function formatLocalDateOnly(d: Date) {
   const pad = (n: number) => String(n).padStart(2, "0");
@@ -79,6 +75,23 @@ function sameDay(a: Date, b: Date) {
     a.getMonth() === b.getMonth() &&
     a.getFullYear() === b.getFullYear()
   );
+}
+
+function getDayLabel(selectedDay: Date): string {
+  const now = new Date();
+  now.setHours(0, 0, 0, 0);
+  if (sameDay(selectedDay, now)) return "Hari Ini";
+  const tmr = new Date(now);
+  tmr.setDate(now.getDate() + 1);
+  if (sameDay(selectedDay, tmr)) return "Besok";
+  const yest = new Date(now);
+  yest.setDate(now.getDate() - 1);
+  if (sameDay(selectedDay, yest)) return "Kemarin";
+  return selectedDay.toLocaleDateString("id-ID", {
+    weekday: "long",
+    day: "numeric",
+    month: "long",
+  });
 }
 
 /** Project recurring events onto a target day */
@@ -884,8 +897,6 @@ function DailyFlowView({
 // ── MAIN COMPONENT ──────────────────────────────────────────────────
 export function CalendarManager({
   initialEvents,
-  projects = [],
-  tasks = [],
   defaultReminderMinutes = 15,
 }: Props) {
   const router = useRouter();
@@ -902,7 +913,7 @@ export function CalendarManager({
   });
 
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedEvent, setSelectedEvent] = useState<EventItem | null>(null);
+  const [editingEventId, setEditingEventId] = useState<string | null>(null);
 
   // Form states
   const [formTimeMode, setFormTimeMode] = useState<"START_ONLY" | "RANGE" | "ALL_DAY">("START_ONLY");
@@ -929,6 +940,7 @@ export function CalendarManager({
   const openCreateModal = useCallback(
     (prefillDate?: Date, hour = 5) => {
       const baseDate = prefillDate || selectedDay || new Date();
+      setEditingEventId(null);
       setFormTitle("");
       setFormCategory("PERSONAL");
       setFormTimeMode("START_ONLY");
@@ -942,11 +954,42 @@ export function CalendarManager({
       setFormRecurrence("NONE");
       setFormReminderMinutes("");
       setFormIgnoreQuietHours(false);
-      setSelectedEvent(null);
       setIsModalOpen(true);
     },
     [selectedDay]
   );
+
+  const openEditModal = useCallback((ev: EventItem) => {
+    const start = new Date(ev.startTime);
+    const end = new Date(ev.endTime);
+
+    setEditingEventId(ev.id);
+    setFormTitle(ev.title);
+    setFormCategory(ev.eventType);
+
+    if (ev.isAllDay) {
+      setFormTimeMode("ALL_DAY");
+    } else if (
+      end.getTime() === start.getTime() ||
+      (end.getHours() === start.getHours() && end.getMinutes() === start.getMinutes())
+    ) {
+      setFormTimeMode("START_ONLY");
+    } else {
+      setFormTimeMode("RANGE");
+    }
+
+    setFormDate(formatLocalDateOnly(start));
+    setFormStartTime(formatTimeStr(start));
+    setFormEndTime(formatTimeStr(end));
+    setFormLocation(ev.location || "");
+    setFormProjectId(ev.projectId || "");
+    setFormTaskId(ev.taskId || "");
+    setFormDescription(ev.description || "");
+    setFormRecurrence(ev.recurrence || "NONE");
+    setFormReminderMinutes(ev.reminderMinutes ?? "");
+    setFormIgnoreQuietHours(!!ev.ignoreQuietHours);
+    setIsModalOpen(true);
+  }, []);
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -964,7 +1007,7 @@ export function CalendarManager({
         toast("Kembali ke hari ini.", "info");
       } else if (e.key === "Escape") {
         setIsModalOpen(false);
-        setSelectedEvent(null);
+        setEditingEventId(null);
       }
     };
     window.addEventListener("keydown", handleKeyDown);
@@ -1041,6 +1084,7 @@ export function CalendarManager({
     let endIso: string;
     let isAllDay = false;
 
+    let ignoreQuietHours = false;
     if (timeMode === "ALL_DAY") {
       isAllDay = true;
       startIso = new Date(`${dateStr}T00:00:00`).toISOString();
@@ -1048,6 +1092,10 @@ export function CalendarManager({
     } else {
       startIso = new Date(`${dateStr}T${timeStr}:00`).toISOString();
       endIso = new Date(`${dateStr}T${timeStr}:00`).toISOString();
+      const hourNum = Number(timeStr.split(":")[0]);
+      if (hourNum < 7) {
+        ignoreQuietHours = true; // Alarm bangun pagi harus abaikan jam hening
+      }
     }
 
     try {
@@ -1061,6 +1109,7 @@ export function CalendarManager({
           isAllDay,
           eventType: category,
           recurrence: "NONE",
+          ignoreQuietHours,
         }),
       });
       const json = await res.json();
@@ -1073,8 +1122,8 @@ export function CalendarManager({
     }
   }
 
-  // Handle Create Event from Modal
-  async function handleCreateEvent(e: React.FormEvent) {
+  // Handle Save (Create or Edit) Event from Modal
+  async function handleSaveEvent(e: React.FormEvent) {
     e.preventDefault();
     if (!formTitle.trim()) {
       toast("Isi judul to-do atau kegiatan.", "error");
@@ -1099,36 +1148,55 @@ export function CalendarManager({
 
     setLoading(true);
     try {
-      const res = await fetch("/api/calendar-events", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          title: formTitle.trim(),
-          description: formDescription.trim() || null,
-          startTime: startIso,
-          endTime: endIso,
-          isAllDay,
-          eventType: formCategory,
-          recurrence: formRecurrence,
-          reminderMinutes:
-            formReminderMinutes === "" ? null : Number(formReminderMinutes),
-          ignoreQuietHours: formIgnoreQuietHours,
-          location: formLocation.trim() || null,
-          projectId: formProjectId || null,
-          taskId: formTaskId || null,
-        }),
-      });
-      const json = await res.json();
-      if (!res.ok) throw new Error(json.error?.message || "Gagal menyimpan jadwal.");
-      setEvents((prev) => [json.data, ...prev]);
-      setIsModalOpen(false);
-      toast(
-        formRecurrence !== "NONE"
-          ? `Rutinitas "${formTitle.trim()}" berhasil dibuat! 🔁`
-          : "Jadwal/To-do berhasil disimpan! 📋",
-        "success"
-      );
-      router.refresh();
+      const payload = {
+        title: formTitle.trim(),
+        description: formDescription.trim() || null,
+        startTime: startIso,
+        endTime: endIso,
+        isAllDay,
+        eventType: formCategory,
+        recurrence: formRecurrence,
+        reminderMinutes:
+          formReminderMinutes === "" ? null : Number(formReminderMinutes),
+        ignoreQuietHours: formIgnoreQuietHours,
+        location: formLocation.trim() || null,
+        projectId: formProjectId || null,
+        taskId: formTaskId || null,
+      };
+
+      if (editingEventId) {
+        const res = await fetch(`/api/calendar-events/${editingEventId}`, {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload),
+        });
+        const json = await res.json();
+        if (!res.ok) throw new Error(json.error?.message || "Gagal memperbarui jadwal.");
+        setEvents((prev) =>
+          prev.map((item) => (item.id === editingEventId ? json.data : item))
+        );
+        setIsModalOpen(false);
+        setEditingEventId(null);
+        toast("Jadwal/To-do berhasil diperbarui! 💾", "success");
+        router.refresh();
+      } else {
+        const res = await fetch("/api/calendar-events", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload),
+        });
+        const json = await res.json();
+        if (!res.ok) throw new Error(json.error?.message || "Gagal menyimpan jadwal.");
+        setEvents((prev) => [json.data, ...prev]);
+        setIsModalOpen(false);
+        toast(
+          formRecurrence !== "NONE"
+            ? `Rutinitas "${formTitle.trim()}" berhasil dibuat! 🔁`
+            : "Jadwal/To-do berhasil disimpan! 📋",
+          "success"
+        );
+        router.refresh();
+      }
     } catch (err: unknown) {
       toast(err instanceof Error ? err.message : "Terjadi kesalahan.", "error");
     } finally {
@@ -1141,7 +1209,10 @@ export function CalendarManager({
       const res = await fetch(`/api/calendar-events/${id}`, { method: "DELETE" });
       if (!res.ok) throw new Error();
       setEvents((prev) => prev.filter((item) => item.id !== id));
-      setSelectedEvent(null);
+      if (editingEventId === id) {
+        setIsModalOpen(false);
+        setEditingEventId(null);
+      }
       toast("Berhasil dihapus.", "info");
       router.refresh();
     } catch {
@@ -1169,22 +1240,7 @@ export function CalendarManager({
     )
   );
 
-  const selectedDayLabel = useMemo(() => {
-    const now = new Date();
-    now.setHours(0, 0, 0, 0);
-    if (sameDay(selectedDay, now)) return "Hari Ini";
-    const tmr = new Date(now);
-    tmr.setDate(now.getDate() + 1);
-    if (sameDay(selectedDay, tmr)) return "Besok";
-    const yest = new Date(now);
-    yest.setDate(now.getDate() - 1);
-    if (sameDay(selectedDay, yest)) return "Kemarin";
-    return selectedDay.toLocaleDateString("id-ID", {
-      weekday: "long",
-      day: "numeric",
-      month: "long",
-    });
-  }, [selectedDay]);
+  const selectedDayLabel = getDayLabel(selectedDay);
 
   function shiftDay(delta: number) {
     setSelectedDay((prev) => {
@@ -1393,7 +1449,7 @@ export function CalendarManager({
               targetDay={selectedDay}
               onToggleComplete={handleToggleComplete}
               onQuickAdd={handleQuickAdd}
-              onSelectEvent={setSelectedEvent}
+              onSelectEvent={openEditModal}
               onDeleteEvent={handleDeleteEvent}
               onOpenModal={() => openCreateModal(selectedDay)}
             />
@@ -1406,7 +1462,7 @@ export function CalendarManager({
               now={currentTime}
               targetDay={selectedDay}
               onAddAtHour={(h) => openCreateModal(selectedDay, h)}
-              onSelectEvent={setSelectedEvent}
+              onSelectEvent={openEditModal}
               onToggleComplete={handleToggleComplete}
             />
           )}
@@ -1562,7 +1618,7 @@ export function CalendarManager({
                                 key={ev.id}
                                 onClick={(e) => {
                                   e.stopPropagation();
-                                  setSelectedEvent(ev);
+                                  openEditModal(ev);
                                 }}
                                 className={`pointer-events-auto absolute left-1 right-1 rounded p-1 border cursor-pointer hover:z-20 transition-all ${cat.bg} ${cat.border} ${isDone ? "opacity-40" : ""}`}
                                 style={{
@@ -1640,10 +1696,10 @@ export function CalendarManager({
                       <div className="flex items-center gap-2">
                         <button
                           type="button"
-                          onClick={() => setSelectedEvent(ev)}
+                          onClick={() => openEditModal(ev)}
                           className="px-2.5 py-1 rounded bg-[#282a30] text-xs text-[#e2e2eb] hover:bg-[#340080]"
                         >
-                          Detail
+                          Edit
                         </button>
                         <button
                           type="button"
@@ -1696,12 +1752,15 @@ export function CalendarManager({
                   <path d="M19 4h-1V2h-2v2H8V2H6v2H5c-1.11 0-1.99.9-1.99 2L3 20a2 2 0 0 0 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 16H5V10h14v10z" />
                 </svg>
                 <h2 className="text-base font-semibold text-[#e2e2eb]">
-                  Tambah To-Do / Jadwal Baru
+                  {editingEventId ? "Edit To-Do / Jadwal ✏️" : "Tambah To-Do / Jadwal Baru"}
                 </h2>
               </div>
               <button
                 type="button"
-                onClick={() => setIsModalOpen(false)}
+                onClick={() => {
+                  setIsModalOpen(false);
+                  setEditingEventId(null);
+                }}
                 className="text-[#958ea0] hover:text-[#e2e2eb] p-1 rounded-lg hover:bg-[#1A2133] transition-colors"
               >
                 <span className="font-mono text-xs px-1.5 py-0.5 rounded bg-[#282a30]">
@@ -1710,7 +1769,7 @@ export function CalendarManager({
               </button>
             </div>
 
-            <form onSubmit={handleCreateEvent} className="flex flex-col gap-4">
+            <form onSubmit={handleSaveEvent} className="flex flex-col gap-4">
               {/* Title */}
               <div className="flex flex-col gap-1">
                 <label className="font-mono text-[10px] uppercase text-[#958ea0] font-semibold">
@@ -1892,121 +1951,51 @@ export function CalendarManager({
                 </div>
               </div>
 
-              {/* Submit */}
-              <div className="flex items-center justify-end gap-3 pt-2 border-t border-white/[0.06]">
-                <button
-                  type="button"
-                  onClick={() => setIsModalOpen(false)}
-                  className="px-4 py-2 font-mono text-xs text-[#958ea0] hover:text-[#e2e2eb] transition-colors"
-                >
-                  Batal
-                </button>
-                <button
-                  type="submit"
-                  disabled={loading}
-                  className="px-5 py-2.5 rounded-lg bg-[#4edea3] hover:bg-[#3ec48e] text-[#00311f] font-mono text-xs font-bold transition-all shadow-[0_0_16px_rgba(78,222,163,0.3)] disabled:opacity-50 active:scale-98 cursor-pointer"
-                >
-                  {loading
-                    ? "Menyimpan..."
-                    : formRecurrence !== "NONE"
-                    ? "Simpan Rutinitas 🔁"
-                    : "Simpan To-Do 📋"}
-                </button>
+              {/* Submit & Delete */}
+              <div className="flex items-center justify-between pt-2 border-t border-white/[0.06]">
+                {editingEventId ? (
+                  <button
+                    type="button"
+                    onClick={() => handleDeleteEvent(editingEventId)}
+                    className="px-3 py-2 rounded-lg bg-red-500/15 hover:bg-red-500/25 text-red-400 font-mono text-xs transition-colors cursor-pointer flex items-center gap-1.5"
+                  >
+                    <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                      <polyline points="3 6 5 6 21 6" />
+                      <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+                    </svg>
+                    <span>Hapus To-Do</span>
+                  </button>
+                ) : (
+                  <div />
+                )}
+
+                <div className="flex items-center gap-3">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setIsModalOpen(false);
+                      setEditingEventId(null);
+                    }}
+                    className="px-4 py-2 font-mono text-xs text-[#958ea0] hover:text-[#e2e2eb] transition-colors"
+                  >
+                    Batal
+                  </button>
+                  <button
+                    type="submit"
+                    disabled={loading}
+                    className="px-5 py-2.5 rounded-lg bg-[#4edea3] hover:bg-[#3ec48e] text-[#00311f] font-mono text-xs font-bold transition-all shadow-[0_0_16px_rgba(78,222,163,0.3)] disabled:opacity-50 active:scale-98 cursor-pointer"
+                  >
+                    {loading
+                      ? "Menyimpan..."
+                      : editingEventId
+                      ? "Simpan Perubahan 💾"
+                      : formRecurrence !== "NONE"
+                      ? "Simpan Rutinitas 🔁"
+                      : "Simpan To-Do 📋"}
+                  </button>
+                </div>
               </div>
             </form>
-          </div>
-        </div>
-      )}
-
-      {/* ── MODAL DETAIL / EDIT EVENT ── */}
-      {selectedEvent && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#0B0D13]/80 backdrop-blur-md">
-          <div className="w-full max-w-md bg-[#131825] rounded-xl shadow-2xl p-6 flex flex-col gap-4 border border-white/[0.08]">
-            <div className="flex items-center justify-between pb-2 border-b border-white/[0.08]">
-              <span className="font-mono text-xs text-[#4edea3] font-bold">DETAIL TO-DO</span>
-              <button
-                type="button"
-                onClick={() => setSelectedEvent(null)}
-                className="text-[#958ea0] hover:text-[#e2e2eb] text-sm"
-              >
-                ✕
-              </button>
-            </div>
-
-            <div className="flex flex-col gap-3">
-              <div className="flex items-center gap-3">
-                <button
-                  type="button"
-                  onClick={() => {
-                    handleToggleComplete(selectedEvent.id, !!selectedEvent.isCompleted);
-                    setSelectedEvent((prev) =>
-                      prev ? { ...prev, isCompleted: !prev.isCompleted } : null
-                    );
-                  }}
-                  className={`w-6 h-6 rounded-md border flex items-center justify-center ${
-                    selectedEvent.isCompleted
-                      ? "bg-[#4edea3] border-[#4edea3] text-[#00311f]"
-                      : "border-white/30 bg-[#0c0e14] text-transparent hover:text-[#4edea3]"
-                  }`}
-                >
-                  ✓
-                </button>
-                <h3
-                  className={`text-lg font-bold text-[#e2e2eb] ${
-                    selectedEvent.isCompleted ? "line-through text-[#958ea0]" : ""
-                  }`}
-                >
-                  {selectedEvent.title}
-                </h3>
-              </div>
-
-              <div className="font-mono text-xs text-[#958ea0] flex flex-col gap-1 bg-[#0c0e14] p-3 rounded-lg border border-white/[0.04]">
-                <div>
-                  📅 {new Date(selectedEvent.startTime).toLocaleDateString("id-ID", {
-                    weekday: "long",
-                    day: "numeric",
-                    month: "long",
-                    year: "numeric",
-                  })}
-                </div>
-                <div>
-                  ⏰ {formatTimeStr(new Date(selectedEvent.startTime))}
-                  {new Date(selectedEvent.endTime).getTime() !== new Date(selectedEvent.startTime).getTime() &&
-                    ` – ${formatTimeStr(new Date(selectedEvent.endTime))}`}
-                </div>
-                {selectedEvent.recurrence && selectedEvent.recurrence !== "NONE" && (
-                  <div>🔁 {recurrenceLabel[selectedEvent.recurrence]}</div>
-                )}
-                {selectedEvent.completedAt && (
-                  <div className="text-[#4edea3]">
-                    ✓ Selesai pada: {new Date(selectedEvent.completedAt).toLocaleTimeString("id-ID", { hour: "2-digit", minute: "2-digit" })}
-                  </div>
-                )}
-              </div>
-
-              {selectedEvent.description && (
-                <p className="text-xs text-[#cbc3d7] bg-[#191b22] p-3 rounded-lg border border-white/[0.04]">
-                  {selectedEvent.description}
-                </p>
-              )}
-
-              <div className="flex items-center justify-end gap-2 pt-3 border-t border-white/[0.06]">
-                <button
-                  type="button"
-                  onClick={() => handleDeleteEvent(selectedEvent.id)}
-                  className="px-3 py-1.5 rounded bg-red-500/10 text-red-400 hover:bg-red-500/20 font-mono text-xs transition-colors"
-                >
-                  Hapus To-Do
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setSelectedEvent(null)}
-                  className="px-4 py-1.5 rounded bg-[#282a30] text-[#e2e2eb] hover:bg-[#340080] font-mono text-xs transition-colors"
-                >
-                  Tutup
-                </button>
-              </div>
-            </div>
           </div>
         </div>
       )}
