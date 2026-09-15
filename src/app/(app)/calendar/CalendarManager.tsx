@@ -14,6 +14,11 @@ export interface EventItem {
   endTime: string | Date;
   isAllDay: boolean;
   eventType: string;
+  recurrence?: string | null;
+  reminderMinutes?: number | null;
+  ignoreQuietHours?: boolean;
+  isCompleted?: boolean;
+  completedAt?: string | Date | null;
   location?: string | null;
   taskId?: string | null;
   projectId?: string | null;
@@ -38,9 +43,10 @@ interface Props {
   initialEvents: EventItem[];
   projects?: ProjectOption[];
   tasks?: TaskOption[];
+  defaultReminderMinutes?: number;
 }
 
-// ── Helper formatters ──────────────────────────────────────────────
+// ── Helpers ──────────────────────────────────────────────────────────
 function getWeekNumber(d: Date): number {
   const target = new Date(d.valueOf());
   const dayNr = (d.getDay() + 6) % 7;
@@ -53,89 +59,909 @@ function getWeekNumber(d: Date): number {
   return 1 + Math.ceil((firstThursday - target.valueOf()) / 604800000);
 }
 
+function formatTimeStr(d: Date) {
+  return `${String(d.getHours()).padStart(2, "0")}:${String(d.getMinutes()).padStart(2, "0")}`;
+}
+
+function formatLocalDatetime(d: Date) {
+  const pad = (n: number) => String(n).padStart(2, "0");
+  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
+}
+
+function formatLocalDateOnly(d: Date) {
+  const pad = (n: number) => String(n).padStart(2, "0");
+  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+}
+
+function sameDay(a: Date, b: Date) {
+  return (
+    a.getDate() === b.getDate() &&
+    a.getMonth() === b.getMonth() &&
+    a.getFullYear() === b.getFullYear()
+  );
+}
+
+/** Project recurring events onto a target day */
+function projectRecurringEvents(events: EventItem[], targetDay: Date): EventItem[] {
+  const result: EventItem[] = [];
+  const dayStart = new Date(targetDay);
+  dayStart.setHours(0, 0, 0, 0);
+  const dayEnd = new Date(targetDay);
+  dayEnd.setHours(23, 59, 59, 999);
+
+  for (const ev of events) {
+    const start = new Date(ev.startTime);
+    const end = new Date(ev.endTime);
+
+    if (!ev.recurrence || ev.recurrence === "NONE") {
+      if (start <= dayEnd && end >= dayStart) result.push(ev);
+      continue;
+    }
+
+    if (sameDay(start, targetDay)) {
+      result.push(ev);
+      continue;
+    }
+
+    if (start > dayEnd) continue;
+
+    const matches =
+      ev.recurrence === "DAILY" ||
+      (ev.recurrence === "WEEKLY" && start.getDay() === targetDay.getDay()) ||
+      (ev.recurrence === "MONTHLY" && start.getDate() === targetDay.getDate());
+
+    if (!matches) continue;
+
+    const durationMs = Math.max(0, end.getTime() - start.getTime());
+    const projStart = new Date(targetDay);
+    projStart.setHours(start.getHours(), start.getMinutes(), start.getSeconds(), 0);
+    const projEnd = new Date(projStart.getTime() + durationMs);
+
+    result.push({ ...ev, startTime: projStart, endTime: projEnd });
+  }
+
+  return result.sort(
+    (a, b) => new Date(a.startTime).getTime() - new Date(b.startTime).getTime()
+  );
+}
+
+// ── Category Config ──────────────────────────────────────────────────
+const CATEGORY_MAP: Record<
+  string,
+  { label: string; dot: string; bg: string; border: string; text: string; glow: string }
+> = {
+  BLOCKED: {
+    label: "Fokus",
+    dot: "#d0bcff",
+    bg: "bg-[#340080]/25",
+    border: "border-[#d0bcff]/40",
+    text: "text-[#d0bcff]",
+    glow: "shadow-[0_0_20px_rgba(208,188,255,0.25)]",
+  },
+  WORK: {
+    label: "Pekerjaan",
+    dot: "#c0c1ff",
+    bg: "bg-[#3131c0]/25",
+    border: "border-[#c0c1ff]/40",
+    text: "text-[#c0c1ff]",
+    glow: "",
+  },
+  PERSONAL: {
+    label: "Pribadi",
+    dot: "#4edea3",
+    bg: "bg-[#00311f]/40",
+    border: "border-[#4edea3]/40",
+    text: "text-[#4edea3]",
+    glow: "",
+  },
+  TASK_DEADLINE: {
+    label: "Tenggat",
+    dot: "#F43F5E",
+    bg: "bg-[#93000a]/35",
+    border: "border-[#F43F5E]/40",
+    text: "text-[#F43F5E]",
+    glow: "",
+  },
+  REMINDER: {
+    label: "Pengingat",
+    dot: "#F59E0B",
+    bg: "bg-[#F59E0B]/15",
+    border: "border-[#F59E0B]/40",
+    text: "text-[#F59E0B]",
+    glow: "",
+  },
+};
+
 const CATEGORIES = [
-  { id: "ALL", label: "Semua", dot: "" },
-  { id: "BLOCKED", label: "Sesi Fokus (Deep Work)", dot: "#d0bcff", bg: "bg-[#340080]/30", border: "border-[#d0bcff]/40", text: "text-[#d0bcff]" },
-  { id: "WORK", label: "Pekerjaan", dot: "#c0c1ff", bg: "bg-[#3131c0]/30", border: "border-[#c0c1ff]/40", text: "text-[#c0c1ff]" },
-  { id: "TASK_DEADLINE", label: "Tenggat Waktu", dot: "#F43F5E", bg: "bg-[#93000a]/40", border: "border-[#F43F5E]/40", text: "text-[#F43F5E]" },
-  { id: "PERSONAL", label: "Pribadi & Kesehatan", dot: "#4edea3", bg: "bg-[#00311f]/50", border: "border-[#4edea3]/40", text: "text-[#4edea3]" },
-  { id: "REMINDER", label: "Pengingat", dot: "#F59E0B", bg: "bg-[#F59E0B]/15", border: "border-[#F59E0B]/40", text: "text-[#F59E0B]" },
+  { id: "ALL", label: "Semua" },
+  ...Object.entries(CATEGORY_MAP).map(([id, v]) => ({ id, label: v.label })),
 ];
 
+const recurrenceLabel: Record<string, string> = {
+  DAILY: "🔁 Setiap hari",
+  WEEKLY: "📅 Setiap minggu",
+  MONTHLY: "🗓 Setiap bulan",
+};
+
+// ── TO-DO LIST VIEW ──────────────────────────────────────────────────
+function ToDoListView({
+  events,
+  targetDay,
+  onToggleComplete,
+  onQuickAdd,
+  onSelectEvent,
+  onDeleteEvent,
+  onOpenModal,
+}: {
+  events: EventItem[];
+  targetDay: Date;
+  onToggleComplete: (id: string, currentCompleted: boolean) => Promise<void>;
+  onQuickAdd: (
+    title: string,
+    timeMode: "START_ONLY" | "ALL_DAY",
+    timeStr: string,
+    category: string
+  ) => Promise<void>;
+  onSelectEvent: (ev: EventItem) => void;
+  onDeleteEvent: (id: string) => Promise<void>;
+  onOpenModal: () => void;
+}) {
+  const [quickTitle, setQuickTitle] = useState("");
+  const [quickMode, setQuickMode] = useState<"START_ONLY" | "ALL_DAY">("START_ONLY");
+  const [quickTime, setQuickTime] = useState("05:00");
+  const [quickCategory, setQuickCategory] = useState("PERSONAL");
+  const [submitting, setSubmitting] = useState(false);
+  const [statusFilter, setStatusFilter] = useState<"ALL" | "PENDING" | "DONE">("ALL");
+
+  const dayEvents = useMemo(
+    () => projectRecurringEvents(events, targetDay),
+    [events, targetDay]
+  );
+
+  const totalCount = dayEvents.length;
+  const completedCount = dayEvents.filter((e) => e.isCompleted).length;
+  const pendingCount = totalCount - completedCount;
+  const progressPct = totalCount > 0 ? Math.round((completedCount / totalCount) * 100) : 0;
+
+  // Split into:
+  // 1. Scheduled (has time, not all-day)
+  // 2. Anytime (isAllDay)
+  const scheduledEvents = dayEvents
+    .filter((e) => !e.isAllDay)
+    .sort((a, b) => new Date(a.startTime).getTime() - new Date(b.startTime).getTime());
+
+  const allDayEvents = dayEvents.filter((e) => e.isAllDay);
+
+  async function handleFormSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    if (!quickTitle.trim() || submitting) return;
+    setSubmitting(true);
+    try {
+      await onQuickAdd(quickTitle.trim(), quickMode, quickTime, quickCategory);
+      setQuickTitle("");
+    } finally {
+      setSubmitting(false);
+    }
+  }
+
+  return (
+    <div className="flex flex-col gap-6 p-4 sm:p-6">
+      {/* ── QUICK ADD BAR ── */}
+      <div className="bg-[#191b22] p-4 rounded-xl border border-white/[0.08] shadow-lg flex flex-col gap-3">
+        <form onSubmit={handleFormSubmit} className="flex flex-col md:flex-row items-stretch md:items-center gap-2.5">
+          <div className="relative flex-1">
+            <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#4edea3] font-bold text-sm">
+              +
+            </span>
+            <input
+              type="text"
+              value={quickTitle}
+              onChange={(e) => setQuickTitle(e.target.value)}
+              placeholder="Tulis to-do baru... (cth: Bangun subuh, Sarapan, Beli buku)"
+              className="w-full bg-[#0c0e14] pl-8 pr-3.5 py-2.5 rounded-lg font-mono text-xs text-[#e2e2eb] border border-white/[0.06] placeholder-[#6b6675] focus:outline-none focus:border-[#4edea3]/60 shadow-inner"
+            />
+          </div>
+
+          {/* Quick time picker */}
+          <div className="flex items-center gap-2 shrink-0">
+            <div className="flex items-center bg-[#0c0e14] rounded-lg border border-white/[0.06] p-0.5">
+              <button
+                type="button"
+                onClick={() => setQuickMode("START_ONLY")}
+                className={`px-2.5 py-1.5 rounded font-mono text-xs transition-all ${
+                  quickMode === "START_ONLY"
+                    ? "bg-[#340080] text-[#d0bcff] font-semibold"
+                    : "text-[#958ea0] hover:text-[#e2e2eb]"
+                }`}
+              >
+                ⏰ Jam
+              </button>
+              <button
+                type="button"
+                onClick={() => setQuickMode("ALL_DAY")}
+                className={`px-2.5 py-1.5 rounded font-mono text-xs transition-all ${
+                  quickMode === "ALL_DAY"
+                    ? "bg-[#340080] text-[#d0bcff] font-semibold"
+                    : "text-[#958ea0] hover:text-[#e2e2eb]"
+                }`}
+              >
+                📝 Bebas
+              </button>
+            </div>
+
+            {quickMode === "START_ONLY" && (
+              <input
+                type="time"
+                value={quickTime}
+                onChange={(e) => setQuickTime(e.target.value)}
+                className="bg-[#0c0e14] px-2.5 py-2 rounded-lg font-mono text-xs text-[#4edea3] border border-white/[0.06] focus:outline-none focus:border-[#4edea3]/60 cursor-pointer"
+              />
+            )}
+
+            <select
+              value={quickCategory}
+              onChange={(e) => setQuickCategory(e.target.value)}
+              className="bg-[#0c0e14] px-2.5 py-2 rounded-lg font-mono text-xs text-[#d0bcff] border border-white/[0.06] focus:outline-none focus:border-[#d0bcff]/60 cursor-pointer"
+            >
+              <option value="PERSONAL">🌱 Pribadi</option>
+              <option value="BLOCKED">🎯 Fokus</option>
+              <option value="WORK">💼 Pekerjaan</option>
+              <option value="REMINDER">🔔 Pengingat</option>
+            </select>
+
+            <button
+              type="submit"
+              disabled={submitting || !quickTitle.trim()}
+              className="px-4 py-2 bg-[#4edea3] hover:bg-[#3ec48e] disabled:opacity-40 text-[#00311f] font-mono text-xs font-bold rounded-lg transition-all shadow-[0_2px_12px_rgba(78,222,163,0.3)] active:scale-95 shrink-0"
+            >
+              {submitting ? "..." : "+ Tambah"}
+            </button>
+          </div>
+        </form>
+
+        <div className="flex items-center justify-between text-[11px] text-[#958ea0] pt-1">
+          <span>
+            💡 <strong>Tips:</strong> To-do jam tidak mewajibkan jam selesai. Cukup tentukan jam mulai lalu ceklis saat selesai!
+          </span>
+          <button
+            type="button"
+            onClick={onOpenModal}
+            className="text-[#d0bcff] hover:underline font-mono text-xs"
+          >
+            Form Lengkap &amp; Rutinitas ↗
+          </button>
+        </div>
+      </div>
+
+      {/* ── PROGRESS BAR & STATS ── */}
+      <div className="bg-[#191b22]/70 p-4 rounded-xl border border-white/[0.06] flex flex-col gap-2.5">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2 font-mono text-xs text-[#e2e2eb]">
+            <span className="font-bold text-sm text-[#4edea3]">{completedCount}</span>
+            <span className="text-[#958ea0]">dari {totalCount} To-Do Selesai</span>
+            {totalCount > 0 && progressPct === 100 && (
+              <span className="px-2 py-0.5 bg-[#4edea3]/20 text-[#4edea3] rounded-full text-[10px] font-bold animate-pulse">
+                Semua Beres! 🎉
+              </span>
+            )}
+          </div>
+
+          {/* Filter status */}
+          <div className="flex items-center gap-1 bg-[#0c0e14] p-0.5 rounded-lg border border-white/[0.06]">
+            {(
+              [
+                { id: "ALL", label: `Semua (${totalCount})` },
+                { id: "PENDING", label: `Belum (${pendingCount})` },
+                { id: "DONE", label: `Selesai (${completedCount})` },
+              ] as const
+            ).map((s) => (
+              <button
+                key={s.id}
+                type="button"
+                onClick={() => setStatusFilter(s.id)}
+                className={`px-2.5 py-1 rounded font-mono text-[11px] transition-all ${
+                  statusFilter === s.id
+                    ? "bg-[#340080] text-[#d0bcff] font-semibold"
+                    : "text-[#958ea0] hover:text-[#e2e2eb]"
+                }`}
+              >
+                {s.label}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        <div className="w-full h-2 bg-[#0c0e14] rounded-full overflow-hidden border border-white/[0.04]">
+          <div
+            className="h-full bg-gradient-to-r from-[#4edea3] to-[#a078ff] rounded-full transition-all duration-500"
+            style={{ width: `${progressPct}%` }}
+          />
+        </div>
+      </div>
+
+      {/* ── TO-DO LIST CONTENT ── */}
+      {totalCount === 0 ? (
+        <div className="p-12 text-center flex flex-col items-center justify-center gap-3 bg-[#191b22]/30 rounded-xl border border-dashed border-white/[0.08]">
+          <div className="w-12 h-12 rounded-full bg-[#340080]/30 border border-[#d0bcff]/20 flex items-center justify-center text-xl">
+            📋
+          </div>
+          <h3 className="text-base font-semibold text-[#e2e2eb]">
+            Belum ada to-do untuk hari ini
+          </h3>
+          <p className="text-xs text-[#958ea0] max-w-sm">
+            Mulai susun harimu dari bangun pagi, sarapan, belajar, hingga tidur malam. Tulis di kotak tambah to-do di atas!
+          </p>
+        </div>
+      ) : (
+        <div className="flex flex-col gap-6">
+          {/* 1. SCHEDULED TO-DOS */}
+          {scheduledEvents.length > 0 && (
+            <div className="flex flex-col gap-2.5">
+              <div className="flex items-center gap-2 font-mono text-xs font-bold text-[#d0bcff] tracking-wider uppercase">
+                <span>⏰ TO-DO BERJADWAL</span>
+                <span className="text-[#958ea0]">({scheduledEvents.length})</span>
+              </div>
+
+              <div className="flex flex-col gap-2">
+                {scheduledEvents
+                  .filter((ev) => {
+                    if (statusFilter === "PENDING") return !ev.isCompleted;
+                    if (statusFilter === "DONE") return ev.isCompleted;
+                    return true;
+                  })
+                  .map((ev) => {
+                    const evStart = new Date(ev.startTime);
+                    const evEnd = new Date(ev.endTime);
+                    const isRange =
+                      evEnd.getTime() - evStart.getTime() > 60000 &&
+                      (evEnd.getHours() !== evStart.getHours() ||
+                        evEnd.getMinutes() !== evStart.getMinutes());
+                    const cat = CATEGORY_MAP[ev.eventType] || CATEGORY_MAP["PERSONAL"];
+                    const isDone = !!ev.isCompleted;
+
+                    return (
+                      <div
+                        key={ev.id}
+                        className={`group flex items-center justify-between gap-3 p-3 sm:p-3.5 rounded-xl border transition-all ${
+                          isDone
+                            ? "bg-[#0c0e14]/60 border-white/[0.04] opacity-60"
+                            : `${cat.bg} ${cat.border} hover:border-[#4edea3]/50 shadow-sm`
+                        }`}
+                      >
+                        <div className="flex items-center gap-3 min-w-0 flex-1">
+                          {/* Interactive Checkbox */}
+                          <button
+                            type="button"
+                            onClick={() => onToggleComplete(ev.id, isDone)}
+                            className={`w-6 h-6 rounded-md border flex items-center justify-center transition-all shrink-0 cursor-pointer ${
+                              isDone
+                                ? "bg-[#4edea3] border-[#4edea3] text-[#00311f] shadow-[0_0_10px_rgba(78,222,163,0.5)]"
+                                : "border-white/30 bg-[#0c0e14] hover:border-[#4edea3] text-transparent hover:text-[#4edea3]/50"
+                            }`}
+                            title={isDone ? "Klik untuk tandai belum selesai" : "Klik untuk tandai selesai"}
+                          >
+                            <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+                              <polyline points="20 6 9 17 4 12" />
+                            </svg>
+                          </button>
+
+                          {/* Time badge */}
+                          <div className="flex items-center gap-1 font-mono text-xs px-2 py-0.5 rounded bg-black/40 border border-white/[0.06] text-[#4edea3] font-semibold shrink-0">
+                            <span>{formatTimeStr(evStart)}</span>
+                            {isRange && (
+                              <span className="text-[#958ea0] font-normal">
+                                –{formatTimeStr(evEnd)}
+                              </span>
+                            )}
+                          </div>
+
+                          {/* Title & tags */}
+                          <div className="flex flex-col min-w-0">
+                            <div className="flex items-center gap-2">
+                              <span
+                                className={`text-sm font-medium truncate ${
+                                  isDone
+                                    ? "line-through text-[#958ea0]"
+                                    : "text-[#e2e2eb]"
+                                }`}
+                              >
+                                {ev.title}
+                              </span>
+                              {ev.recurrence && ev.recurrence !== "NONE" && (
+                                <span className="font-mono text-[9px] bg-white/[0.08] text-[#cbc3d7] px-1 rounded shrink-0" title={recurrenceLabel[ev.recurrence]}>
+                                  🔁 {ev.recurrence === "DAILY" ? "Harian" : ev.recurrence === "WEEKLY" ? "Mingguan" : "Bulanan"}
+                                </span>
+                              )}
+                            </div>
+                            {ev.description && (
+                              <span className="text-xs text-[#958ea0] truncate">
+                                {ev.description}
+                              </span>
+                            )}
+                          </div>
+                        </div>
+
+                        {/* Right side actions */}
+                        <div className="flex items-center gap-2 shrink-0">
+                          <span
+                            className={`font-mono text-[10px] px-2 py-0.5 rounded-full ${cat.text} bg-black/30 border border-white/[0.06] hidden sm:inline-block`}
+                          >
+                            {cat.label}
+                          </span>
+
+                          <div className="opacity-0 group-hover:opacity-100 flex items-center gap-1 transition-opacity">
+                            <button
+                              type="button"
+                              onClick={() => onSelectEvent(ev)}
+                              className="p-1.5 hover:bg-white/[0.08] rounded text-[#958ea0] hover:text-[#e2e2eb] transition-colors"
+                              title="Edit / Detail"
+                            >
+                              <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                <path d="M12 20h9" />
+                                <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z" />
+                              </svg>
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => onDeleteEvent(ev.id)}
+                              className="p-1.5 hover:bg-red-500/20 rounded text-[#958ea0] hover:text-red-400 transition-colors"
+                              title="Hapus"
+                            >
+                              <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                <polyline points="3 6 5 6 21 6" />
+                                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+                              </svg>
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  })}
+              </div>
+            </div>
+          )}
+
+          {/* 2. ANYTIME / ALL-DAY TO-DOS */}
+          {allDayEvents.length > 0 && (
+            <div className="flex flex-col gap-2.5">
+              <div className="flex items-center gap-2 font-mono text-xs font-bold text-[#4edea3] tracking-wider uppercase">
+                <span>📌 TO-DO FLEKSIBEL (KAPAN SAJA HARI INI)</span>
+                <span className="text-[#958ea0]">({allDayEvents.length})</span>
+              </div>
+
+              <div className="flex flex-col gap-2">
+                {allDayEvents
+                  .filter((ev) => {
+                    if (statusFilter === "PENDING") return !ev.isCompleted;
+                    if (statusFilter === "DONE") return ev.isCompleted;
+                    return true;
+                  })
+                  .map((ev) => {
+                    const cat = CATEGORY_MAP[ev.eventType] || CATEGORY_MAP["PERSONAL"];
+                    const isDone = !!ev.isCompleted;
+
+                    return (
+                      <div
+                        key={ev.id}
+                        className={`group flex items-center justify-between gap-3 p-3 sm:p-3.5 rounded-xl border transition-all ${
+                          isDone
+                            ? "bg-[#0c0e14]/60 border-white/[0.04] opacity-60"
+                            : "bg-[#191b22] border-white/[0.08] hover:border-[#4edea3]/50 shadow-sm"
+                        }`}
+                      >
+                        <div className="flex items-center gap-3 min-w-0 flex-1">
+                          {/* Interactive Checkbox */}
+                          <button
+                            type="button"
+                            onClick={() => onToggleComplete(ev.id, isDone)}
+                            className={`w-6 h-6 rounded-md border flex items-center justify-center transition-all shrink-0 cursor-pointer ${
+                              isDone
+                                ? "bg-[#4edea3] border-[#4edea3] text-[#00311f] shadow-[0_0_10px_rgba(78,222,163,0.5)]"
+                                : "border-white/30 bg-[#0c0e14] hover:border-[#4edea3] text-transparent hover:text-[#4edea3]/50"
+                            }`}
+                            title={isDone ? "Klik untuk tandai belum selesai" : "Klik untuk tandai selesai"}
+                          >
+                            <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+                              <polyline points="20 6 9 17 4 12" />
+                            </svg>
+                          </button>
+
+                          <span className="font-mono text-xs px-2 py-0.5 rounded bg-white/[0.06] text-[#cbc3d7] shrink-0">
+                            Bebas Jam
+                          </span>
+
+                          <div className="flex flex-col min-w-0">
+                            <span
+                              className={`text-sm font-medium truncate ${
+                                isDone
+                                  ? "line-through text-[#958ea0]"
+                                  : "text-[#e2e2eb]"
+                              }`}
+                            >
+                              {ev.title}
+                            </span>
+                            {ev.description && (
+                              <span className="text-xs text-[#958ea0] truncate">
+                                {ev.description}
+                              </span>
+                            )}
+                          </div>
+                        </div>
+
+                        {/* Actions */}
+                        <div className="flex items-center gap-2 shrink-0">
+                          <span
+                            className={`font-mono text-[10px] px-2 py-0.5 rounded-full ${cat.text} bg-black/30 border border-white/[0.06] hidden sm:inline-block`}
+                          >
+                            {cat.label}
+                          </span>
+
+                          <div className="opacity-0 group-hover:opacity-100 flex items-center gap-1 transition-opacity">
+                            <button
+                              type="button"
+                              onClick={() => onSelectEvent(ev)}
+                              className="p-1.5 hover:bg-white/[0.08] rounded text-[#958ea0] hover:text-[#e2e2eb] transition-colors"
+                              title="Edit / Detail"
+                            >
+                              <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                <path d="M12 20h9" />
+                                <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z" />
+                              </svg>
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => onDeleteEvent(ev.id)}
+                              className="p-1.5 hover:bg-red-500/20 rounded text-[#958ea0] hover:text-red-400 transition-colors"
+                              title="Hapus"
+                            >
+                              <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                <polyline points="3 6 5 6 21 6" />
+                                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+                              </svg>
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  })}
+              </div>
+            </div>
+          )}
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ── DAILY FLOW VIEW ──────────────────────────────────────────────────
+const TIMELINE_START = 4;
+const TIMELINE_END = 23;
+const PX_PER_HOUR = 72;
+
+function DailyFlowView({
+  events,
+  now,
+  targetDay,
+  onAddAtHour,
+  onSelectEvent,
+  onToggleComplete,
+}: {
+  events: EventItem[];
+  now: Date;
+  targetDay: Date;
+  onAddAtHour: (h: number) => void;
+  onSelectEvent: (ev: EventItem) => void;
+  onToggleComplete: (id: string, currentCompleted: boolean) => Promise<void>;
+}) {
+  const dayEvents = useMemo(
+    () => projectRecurringEvents(events, targetDay),
+    [events, targetDay]
+  );
+  const isToday = sameDay(targetDay, now);
+
+  const nowMinutes = now.getHours() * 60 + now.getMinutes();
+  const nowTopPx = ((nowMinutes - TIMELINE_START * 60) / 60) * PX_PER_HOUR;
+
+  const done = dayEvents.filter((e) => e.isCompleted || new Date(e.endTime) <= now).length;
+  const active = dayEvents.find(
+    (e) => !e.isCompleted && new Date(e.startTime) <= now && now <= new Date(e.endTime)
+  );
+  const upcoming = dayEvents.filter((e) => !e.isCompleted && new Date(e.startTime) > now).length;
+
+  const productiveMs = dayEvents.reduce((sum, e) => {
+    const s = new Date(e.startTime);
+    const en = new Date(e.endTime);
+    if (en <= now) return sum + Math.max(0, en.getTime() - s.getTime());
+    if (s <= now && now <= en) return sum + Math.max(0, now.getTime() - s.getTime());
+    return sum;
+  }, 0);
+  const productiveMin = Math.round(productiveMs / 60000);
+  const productiveHStr =
+    productiveMin >= 60
+      ? `${Math.floor(productiveMin / 60)}j ${productiveMin % 60}m`
+      : `${productiveMin}m`;
+
+  const hours = Array.from(
+    { length: TIMELINE_END - TIMELINE_START + 1 },
+    (_, i) => TIMELINE_START + i
+  );
+
+  return (
+    <div className="flex flex-col w-full">
+      {/* Summary strip */}
+      <div className="bg-[#191b22] px-4 py-3 border-b border-white/[0.06] flex flex-wrap items-center justify-between gap-3">
+        <div className="flex items-center gap-3">
+          {active ? (
+            <div className="flex items-center gap-2">
+              <span className="w-2 h-2 rounded-full bg-[#4edea3] animate-ping" />
+              <span className="font-mono text-xs text-[#958ea0]">SEKARANG:</span>
+              <span className="font-semibold text-xs text-[#e2e2eb]">
+                {active.title}
+              </span>
+              <span className="font-mono text-[10px] text-[#4edea3] bg-[#4edea3]/10 border border-[#4edea3]/30 px-1.5 py-0.2 rounded">
+                {formatTimeStr(new Date(active.startTime))}–{formatTimeStr(new Date(active.endTime))}
+              </span>
+            </div>
+          ) : (
+            <div className="flex items-center gap-2">
+              <span className="w-2 h-2 rounded-full bg-[#958ea0]" />
+              <span className="font-mono text-xs text-[#958ea0]">
+                Tidak ada aktivitas terjadwal saat ini
+              </span>
+            </div>
+          )}
+        </div>
+
+        <div className="flex items-center gap-4 font-mono text-xs">
+          <span className="text-[#4edea3]">✓ {done} Selesai</span>
+          <span className="text-[#cbc3d7]">⏳ {upcoming} Mendatang</span>
+          <span className="text-[#d0bcff]">⚡ {productiveHStr} Produktif</span>
+        </div>
+      </div>
+
+      {/* Timeline container */}
+      <div className="relative overflow-y-auto max-h-[75vh] bg-[#0c0e14]/40 select-none">
+        <div
+          className="relative"
+          style={{ height: `${hours.length * PX_PER_HOUR}px` }}
+        >
+          {/* Real-time red indicator line */}
+          {isToday &&
+            now.getHours() >= TIMELINE_START &&
+            now.getHours() <= TIMELINE_END && (
+              <div
+                className="absolute left-0 right-0 z-30 pointer-events-none flex items-center transition-all duration-1000"
+                style={{ top: `${nowTopPx}px` }}
+              >
+                <div className="w-16 pr-2 flex items-center justify-end">
+                  <span className="font-mono text-[10px] text-[#F43F5E] font-bold bg-[#131825] px-1 rounded shadow-sm border border-[#F43F5E]/30">
+                    {formatTimeStr(now)}
+                  </span>
+                </div>
+                <div className="flex-1 relative flex items-center">
+                  <div className="h-[2px] w-full bg-[#F43F5E] shadow-[0_0_10px_rgba(244,63,94,0.8)]" />
+                  <div className="absolute left-3 -top-2 flex items-center gap-1 bg-[#F43F5E] text-white text-[9px] font-mono px-1.5 py-0.5 rounded-full shadow-[0_0_8px_rgba(244,63,94,0.9)]">
+                    <span className="w-1.5 h-1.5 rounded-full bg-white animate-ping" />
+                    <span>SEKARANG</span>
+                  </div>
+                </div>
+              </div>
+            )}
+
+          {/* Hour grid lines */}
+          {hours.map((h, i) => {
+            const isCurrent = isToday && now.getHours() === h;
+            return (
+              <div
+                key={h}
+                className={`absolute left-0 right-0 border-b border-white/[0.04] flex items-start ${
+                  isCurrent ? "bg-[#340080]/10" : ""
+                }`}
+                style={{
+                  top: `${i * PX_PER_HOUR}px`,
+                  height: `${PX_PER_HOUR}px`,
+                }}
+              >
+                <div className="w-16 pt-1 pr-3 text-right font-mono text-[11px] text-[#958ea0] select-none border-r border-white/[0.04] shrink-0">
+                  {String(h).padStart(2, "0")}:00
+                </div>
+
+                {/* Quick add click area */}
+                <button
+                  type="button"
+                  onClick={() => onAddAtHour(h)}
+                  className="absolute left-16 right-0 top-0 bottom-0 group flex items-center hover:bg-white/[0.02] transition-colors"
+                  title={`Tambah jadwal pukul ${String(h).padStart(2, "0")}:00`}
+                >
+                  <span className="opacity-0 group-hover:opacity-100 ml-3 text-[10px] text-[#494454] font-mono transition-opacity flex items-center gap-1">
+                    <span className="text-[#d0bcff]/60">+</span> Tambah di{" "}
+                    {String(h).padStart(2, "0")}:00
+                  </span>
+                </button>
+              </div>
+            );
+          })}
+
+          {/* Event cards */}
+          <div className="absolute left-16 right-2 top-0 bottom-0 pointer-events-none">
+            {dayEvents.map((ev) => {
+              const evStart = new Date(ev.startTime);
+              const evEnd = new Date(ev.endTime);
+              const startH = evStart.getHours();
+              const startM = evStart.getMinutes();
+              const endH = evEnd.getHours();
+              const endM = evEnd.getMinutes();
+
+              const topPx = Math.max(
+                0,
+                (startH - TIMELINE_START) * PX_PER_HOUR + (startM / 60) * PX_PER_HOUR
+              );
+              const durationMin = Math.max(
+                20,
+                endH * 60 + endM - (startH * 60 + startM)
+              );
+              const heightPx = Math.max(34, (durationMin / 60) * PX_PER_HOUR);
+
+              const isOngoing = !ev.isCompleted && evStart <= now && now <= evEnd;
+              const isDone = !!ev.isCompleted;
+              const cat = CATEGORY_MAP[ev.eventType] ?? CATEGORY_MAP["BLOCKED"];
+              const hasRecurrence = ev.recurrence && ev.recurrence !== "NONE";
+
+              return (
+                <div
+                  key={ev.id}
+                  onClick={() => onSelectEvent(ev)}
+                  className={`pointer-events-auto absolute left-0 right-0 rounded-lg px-3 py-1.5 cursor-pointer transition-all hover:scale-[1.01] hover:z-20 flex flex-col justify-between overflow-hidden border ${cat.bg} ${cat.border} ${isOngoing ? cat.glow : ""} ${isDone ? "opacity-50" : ""}`}
+                  style={{ top: `${topPx}px`, height: `${heightPx}px` }}
+                >
+                  <div className="flex items-center justify-between gap-2">
+                    <div className="flex items-center gap-2 min-w-0">
+                      {/* Direct checklist button on card */}
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          onToggleComplete(ev.id, isDone);
+                        }}
+                        className={`w-4 h-4 rounded border flex items-center justify-center transition-all shrink-0 cursor-pointer ${
+                          isDone
+                            ? "bg-[#4edea3] border-[#4edea3] text-[#00311f]"
+                            : "border-white/30 bg-[#0c0e14] hover:border-[#4edea3] text-transparent hover:text-[#4edea3]"
+                        }`}
+                        title={isDone ? "Tandai belum selesai" : "Tandai selesai"}
+                      >
+                        ✓
+                      </button>
+
+                      {isOngoing && (
+                        <span className="shrink-0 flex items-center gap-1 font-mono text-[9px] font-bold text-[#4edea3]">
+                          <span className="w-1.5 h-1.5 rounded-full bg-[#4edea3] animate-pulse" />
+                          BERJALAN
+                        </span>
+                      )}
+                      <span className={`text-xs font-semibold truncate ${cat.text} ${isDone ? "line-through text-[#958ea0]" : ""}`}>
+                        {ev.title}
+                      </span>
+                    </div>
+
+                    <div className="flex items-center gap-1.5 shrink-0">
+                      {hasRecurrence && (
+                        <span
+                          className="font-mono text-[9px] bg-white/[0.08] text-[#cbc3d7] px-1 rounded"
+                          title={recurrenceLabel[ev.recurrence!]}
+                        >
+                          🔁
+                        </span>
+                      )}
+                      <span className={`font-mono text-[9px] ${cat.text} opacity-70`}>
+                        {formatTimeStr(evStart)}
+                        {evEnd.getTime() !== evStart.getTime() && `–${formatTimeStr(evEnd)}`}
+                      </span>
+                    </div>
+                  </div>
+
+                  {isOngoing && heightPx >= 60 && (
+                    <div className="flex items-center gap-2 mt-1">
+                      <Link
+                        href="/focus"
+                        onClick={(e) => e.stopPropagation()}
+                        className="px-2 py-0.5 rounded bg-[#d0bcff] text-[#23005c] font-mono text-[9px] font-bold hover:bg-[#b098f0] transition-colors"
+                      >
+                        Fokus 🍅
+                      </Link>
+                    </div>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ── MAIN COMPONENT ──────────────────────────────────────────────────
 export function CalendarManager({
   initialEvents,
   projects = [],
   tasks = [],
+  defaultReminderMinutes = 15,
 }: Props) {
   const router = useRouter();
   const { toast } = useToast();
 
   const [events, setEvents] = useState<EventItem[]>(initialEvents);
-  const [viewMode, setViewMode] = useState<"WEEKLY" | "MONTHLY" | "AGENDA">("WEEKLY");
+  const [viewMode, setViewMode] = useState<"TODO" | "DAILY" | "WEEKLY" | "AGENDA">("TODO");
   const [typeFilter, setTypeFilter] = useState<string>("ALL");
   const [weekOffset, setWeekOffset] = useState(0);
+  const [selectedDay, setSelectedDay] = useState<Date>(() => {
+    const d = new Date();
+    d.setHours(0, 0, 0, 0);
+    return d;
+  });
 
-  // Modal & Selected Event state
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedEvent, setSelectedEvent] = useState<EventItem | null>(null);
 
-  // Form state
+  // Form states
+  const [formTimeMode, setFormTimeMode] = useState<"START_ONLY" | "RANGE" | "ALL_DAY">("START_ONLY");
   const [formTitle, setFormTitle] = useState("");
-  const [formCategory, setFormCategory] = useState("BLOCKED");
-  const [formStartTime, setFormStartTime] = useState("");
-  const [formEndTime, setFormEndTime] = useState("");
+  const [formCategory, setFormCategory] = useState("PERSONAL");
+  const [formDate, setFormDate] = useState("");
+  const [formStartTime, setFormStartTime] = useState("05:00");
+  const [formEndTime, setFormEndTime] = useState("06:30");
   const [formLocation, setFormLocation] = useState("");
   const [formProjectId, setFormProjectId] = useState("");
   const [formTaskId, setFormTaskId] = useState("");
   const [formDescription, setFormDescription] = useState("");
+  const [formRecurrence, setFormRecurrence] = useState("NONE");
+  const [formReminderMinutes, setFormReminderMinutes] = useState<number | "">("");
+  const [formIgnoreQuietHours, setFormIgnoreQuietHours] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  // Real-time clock for the red timeline indicator
   const [currentTime, setCurrentTime] = useState<Date>(new Date());
   useEffect(() => {
     const interval = setInterval(() => setCurrentTime(new Date()), 30000);
     return () => clearInterval(interval);
   }, []);
 
-  // Open create modal with optional default start time
-  const openCreateModal = useCallback((prefillDate?: Date, hour = 9) => {
-    const baseDate = prefillDate || new Date();
-    const start = new Date(baseDate);
-    start.setHours(hour, 0, 0, 0);
-    const end = new Date(start);
-    end.setHours(hour + 2, 0, 0, 0);
+  const openCreateModal = useCallback(
+    (prefillDate?: Date, hour = 5) => {
+      const baseDate = prefillDate || selectedDay || new Date();
+      setFormTitle("");
+      setFormCategory("PERSONAL");
+      setFormTimeMode("START_ONLY");
+      setFormDate(formatLocalDateOnly(baseDate));
+      setFormStartTime(`${String(hour).padStart(2, "0")}:00`);
+      setFormEndTime(`${String(hour + 1).padStart(2, "0")}:00`);
+      setFormLocation("");
+      setFormProjectId("");
+      setFormTaskId("");
+      setFormDescription("");
+      setFormRecurrence("NONE");
+      setFormReminderMinutes("");
+      setFormIgnoreQuietHours(false);
+      setSelectedEvent(null);
+      setIsModalOpen(true);
+    },
+    [selectedDay]
+  );
 
-    // Format to datetime-local string (YYYY-MM-DDTHH:mm)
-    const formatLocal = (d: Date) => {
-      const pad = (n: number) => String(n).padStart(2, "0");
-      return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
-    };
-
-    setFormTitle("");
-    setFormCategory("BLOCKED");
-    setFormStartTime(formatLocal(start));
-    setFormEndTime(formatLocal(end));
-    setFormLocation("");
-    setFormProjectId("");
-    setFormTaskId("");
-    setFormDescription("");
-    setSelectedEvent(null);
-    setIsModalOpen(true);
-  }, []);
-
-  // Keyboard shortcut listeners (N to create, T for today, Esc to close)
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       const tag = (document.activeElement?.tagName || "").toLowerCase();
       if (tag === "input" || tag === "textarea" || tag === "select") return;
-
       if (e.key === "n" || e.key === "N") {
         e.preventDefault();
         openCreateModal();
       } else if (e.key === "t" || e.key === "T") {
         e.preventDefault();
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        setSelectedDay(today);
         setWeekOffset(0);
-        toast("Kembali ke pekan hari ini.", "info");
+        toast("Kembali ke hari ini.", "info");
       } else if (e.key === "Escape") {
         setIsModalOpen(false);
         setSelectedEvent(null);
@@ -145,7 +971,6 @@ export function CalendarManager({
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [openCreateModal, toast]);
 
-  // Calculate 7 Days of the currently selected week (Monday to Sunday)
   const weekDays = useMemo(() => {
     const now = new Date();
     const currentDay = now.getDay();
@@ -153,7 +978,6 @@ export function CalendarManager({
     const monday = new Date(now);
     monday.setDate(now.getDate() + diffToMonday + weekOffset * 7);
     monday.setHours(0, 0, 0, 0);
-
     const days: Date[] = [];
     for (let i = 0; i < 7; i++) {
       const d = new Date(monday);
@@ -165,26 +989,112 @@ export function CalendarManager({
 
   const weekNumber = useMemo(() => getWeekNumber(weekDays[0]), [weekDays]);
 
-  // Compute duration in hours/minutes from form inputs
-  const formDurationLabel = useMemo(() => {
-    if (!formStartTime || !formEndTime) return "DURASI 1 JAM";
-    const s = new Date(formStartTime).getTime();
-    const e = new Date(formEndTime).getTime();
-    if (isNaN(s) || isNaN(e) || e <= s) return "WAKTU TIDAK VALID";
-    const diffMin = Math.round((e - s) / 60000);
-    const h = Math.floor(diffMin / 60);
-    const m = diffMin % 60;
-    if (h > 0 && m > 0) return `DURASI ${h} JAM ${m} MENIT`;
-    if (h > 0) return `DURASI ${h} JAM`;
-    return `DURASI ${m} MENIT`;
-  }, [formStartTime, formEndTime]);
+  // Handle Toggle Complete
+  async function handleToggleComplete(eventId: string, currentCompleted: boolean) {
+    const nextCompleted = !currentCompleted;
+    // Optimistic update
+    setEvents((prev) =>
+      prev.map((ev) =>
+        ev.id === eventId
+          ? {
+              ...ev,
+              isCompleted: nextCompleted,
+              completedAt: nextCompleted ? new Date().toISOString() : null,
+            }
+          : ev
+      )
+    );
 
-  // Create Event Submit Handler
+    try {
+      const res = await fetch(`/api/calendar-events/${eventId}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ isCompleted: nextCompleted }),
+      });
+      if (!res.ok) throw new Error();
+      toast(
+        nextCompleted ? "To-do selesai! Mantap 🎉" : "To-do dikembalikan ke belum selesai.",
+        "success"
+      );
+    } catch {
+      // Revert
+      setEvents((prev) =>
+        prev.map((ev) =>
+          ev.id === eventId
+            ? { ...ev, isCompleted: currentCompleted }
+            : ev
+        )
+      );
+      toast("Gagal memperbarui status to-do.", "error");
+    }
+  }
+
+  // Handle Quick Add from To-Do tab
+  async function handleQuickAdd(
+    title: string,
+    timeMode: "START_ONLY" | "ALL_DAY",
+    timeStr: string,
+    category: string
+  ) {
+    const dateStr = formatLocalDateOnly(selectedDay);
+    let startIso: string;
+    let endIso: string;
+    let isAllDay = false;
+
+    if (timeMode === "ALL_DAY") {
+      isAllDay = true;
+      startIso = new Date(`${dateStr}T00:00:00`).toISOString();
+      endIso = new Date(`${dateStr}T23:59:59`).toISOString();
+    } else {
+      startIso = new Date(`${dateStr}T${timeStr}:00`).toISOString();
+      endIso = new Date(`${dateStr}T${timeStr}:00`).toISOString();
+    }
+
+    try {
+      const res = await fetch("/api/calendar-events", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          title,
+          startTime: startIso,
+          endTime: endIso,
+          isAllDay,
+          eventType: category,
+          recurrence: "NONE",
+        }),
+      });
+      const json = await res.json();
+      if (!res.ok) throw new Error(json.error?.message || "Gagal membuat to-do.");
+      setEvents((prev) => [json.data, ...prev]);
+      toast(`To-do "${title}" berhasil ditambahkan! 📋`, "success");
+      router.refresh();
+    } catch (err: unknown) {
+      toast(err instanceof Error ? err.message : "Terjadi kesalahan.", "error");
+    }
+  }
+
+  // Handle Create Event from Modal
   async function handleCreateEvent(e: React.FormEvent) {
     e.preventDefault();
-    if (!formTitle.trim() || !formStartTime || !formEndTime) {
-      toast("Isi judul kegiatan dan rentang waktu.", "error");
+    if (!formTitle.trim()) {
+      toast("Isi judul to-do atau kegiatan.", "error");
       return;
+    }
+
+    let startIso: string;
+    let endIso: string;
+    let isAllDay = false;
+
+    if (formTimeMode === "ALL_DAY") {
+      isAllDay = true;
+      startIso = new Date(`${formDate}T00:00:00`).toISOString();
+      endIso = new Date(`${formDate}T23:59:59`).toISOString();
+    } else if (formTimeMode === "START_ONLY") {
+      startIso = new Date(`${formDate}T${formStartTime}:00`).toISOString();
+      endIso = new Date(`${formDate}T${formStartTime}:00`).toISOString();
+    } else {
+      startIso = new Date(`${formDate}T${formStartTime}:00`).toISOString();
+      endIso = new Date(`${formDate}T${formEndTime}:00`).toISOString();
     }
 
     setLoading(true);
@@ -195,224 +1105,151 @@ export function CalendarManager({
         body: JSON.stringify({
           title: formTitle.trim(),
           description: formDescription.trim() || null,
-          startTime: new Date(formStartTime).toISOString(),
-          endTime: new Date(formEndTime).toISOString(),
+          startTime: startIso,
+          endTime: endIso,
+          isAllDay,
           eventType: formCategory,
+          recurrence: formRecurrence,
+          reminderMinutes:
+            formReminderMinutes === "" ? null : Number(formReminderMinutes),
+          ignoreQuietHours: formIgnoreQuietHours,
           location: formLocation.trim() || null,
           projectId: formProjectId || null,
           taskId: formTaskId || null,
         }),
       });
-
       const json = await res.json();
-      if (!res.ok) throw new Error(json.error?.message || "Gagal menyimpan jadwal event.");
-
+      if (!res.ok) throw new Error(json.error?.message || "Gagal menyimpan jadwal.");
       setEvents((prev) => [json.data, ...prev]);
       setIsModalOpen(false);
-      toast("Event berhasil dijadwalkan ke kalender! 📅", "success");
+      toast(
+        formRecurrence !== "NONE"
+          ? `Rutinitas "${formTitle.trim()}" berhasil dibuat! 🔁`
+          : "Jadwal/To-do berhasil disimpan! 📋",
+        "success"
+      );
       router.refresh();
     } catch (err: unknown) {
-      const msg = err instanceof Error ? err.message : "Terjadi kesalahan.";
-      toast(msg, "error");
+      toast(err instanceof Error ? err.message : "Terjadi kesalahan.", "error");
     } finally {
       setLoading(false);
     }
   }
 
-  // Delete Event Handler
   async function handleDeleteEvent(id: string) {
     try {
       const res = await fetch(`/api/calendar-events/${id}`, { method: "DELETE" });
       if (!res.ok) throw new Error();
       setEvents((prev) => prev.filter((item) => item.id !== id));
       setSelectedEvent(null);
-      toast("Event berhasil dihapus dari jadwal.", "info");
+      toast("Berhasil dihapus.", "info");
       router.refresh();
     } catch {
-      toast("Gagal menghapus event.", "error");
+      toast("Gagal menghapus.", "error");
     }
   }
 
-  // Filter events
   const filteredEvents = useMemo(() => {
     if (typeFilter === "ALL") return events;
     return events.filter((e) => e.eventType === typeFilter);
   }, [events, typeFilter]);
 
-  // Real-time timeline indicator calculation
-  // Grid hours: 08:00 to 18:00 (10 hours, each hour = 64px, total height = 640px)
+  const WEEK_START_HOUR = 5;
+  const WEEK_END_HOUR = 23;
+  const WEEK_PX_PER_HOUR = 60;
   const isCurrentWeek = weekOffset === 0;
   const currentHour = currentTime.getHours();
   const currentMinute = currentTime.getMinutes();
-  const currentMinutesFrom8 = (currentHour - 8) * 60 + currentMinute;
-  const redLineTopPx = Math.max(0, Math.min(640, (currentMinutesFrom8 / 60) * 64));
+  const currentMinutesFromStart = (currentHour - WEEK_START_HOUR) * 60 + currentMinute;
+  const redLineTopPx = Math.max(
+    0,
+    Math.min(
+      (WEEK_END_HOUR - WEEK_START_HOUR) * WEEK_PX_PER_HOUR,
+      (currentMinutesFromStart / 60) * WEEK_PX_PER_HOUR
+    )
+  );
 
-  // Today's agenda events
-  const todayEvents = useMemo(() => {
+  const selectedDayLabel = useMemo(() => {
     const now = new Date();
-    const startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 0, 0, 0);
-    const endOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 23, 59, 59);
-
-    return events
-      .filter((e) => {
-        const st = new Date(e.startTime);
-        const et = new Date(e.endTime);
-        return st <= endOfToday && et >= startOfToday;
-      })
-      .sort((a, b) => new Date(a.startTime).getTime() - new Date(b.startTime).getTime());
-  }, [events]);
-
-  // Critical deadlines this week
-  const criticalDeadlines = useMemo(() => {
-    const startOfWeek = weekDays[0];
-    const endOfWeek = new Date(weekDays[6]);
-    endOfWeek.setHours(23, 59, 59, 999);
-    const nowMs = currentTime.getTime();
-
-    // From tasks with dueDate
-    const taskDeadlines = tasks
-      .filter((t) => t.dueDate && t.status !== "COMPLETED")
-      .map((t) => {
-        const dDate = new Date(t.dueDate!);
-        const isThisWeek = dDate >= startOfWeek && dDate <= endOfWeek;
-        const isUrgent = dDate.getTime() - nowMs <= 86400000;
-        return {
-          id: `task-${t.id}`,
-          taskId: t.id,
-          title: t.title,
-          date: dDate,
-          isUrgent,
-          source: "Tugas",
-          isThisWeek,
-          href: `/tasks/${t.id}`,
-          focusHref: `/focus?taskId=${t.id}`,
-          event: null as EventItem | null,
-        };
-      })
-      .filter((item) => item.isThisWeek);
-
-    // From calendar events with type TASK_DEADLINE
-    const eventDeadlines = events
-      .filter((e) => e.eventType === "TASK_DEADLINE")
-      .map((e) => {
-        const dDate = new Date(e.startTime);
-        const isThisWeek = dDate >= startOfWeek && dDate <= endOfWeek;
-        const isUrgent = dDate.getTime() - nowMs <= 86400000;
-        return {
-          id: `event-${e.id}`,
-          taskId: e.taskId || undefined,
-          title: e.title,
-          date: dDate,
-          isUrgent,
-          source: "Kalender",
-          isThisWeek,
-          href: e.taskId ? `/tasks/${e.taskId}` : null,
-          focusHref: e.taskId ? `/focus?taskId=${e.taskId}` : null,
-          event: e,
-        };
-      })
-      .filter((item) => item.isThisWeek);
-
-    return [...taskDeadlines, ...eventDeadlines].sort((a, b) => a.date.getTime() - b.date.getTime());
-  }, [weekDays, tasks, events, currentTime]);
-
-  // Allocation metrics this week
-  const allocationMetrics = useMemo(() => {
-    let focusMinutes = 0;
-    let workMinutes = 0;
-    let personalMinutes = 0;
-
-    const startOfWeek = weekDays[0];
-    const endOfWeek = new Date(weekDays[6]);
-    endOfWeek.setHours(23, 59, 59, 999);
-
-    events.forEach((e) => {
-      const st = new Date(e.startTime);
-      const et = new Date(e.endTime);
-      if (st >= startOfWeek && et <= endOfWeek) {
-        const dur = Math.max(0, Math.round((et.getTime() - st.getTime()) / 60000));
-        if (e.eventType === "BLOCKED") focusMinutes += dur;
-        else if (e.eventType === "WORK") workMinutes += dur;
-        else if (e.eventType === "PERSONAL") personalMinutes += dur;
-      }
+    now.setHours(0, 0, 0, 0);
+    if (sameDay(selectedDay, now)) return "Hari Ini";
+    const tmr = new Date(now);
+    tmr.setDate(now.getDate() + 1);
+    if (sameDay(selectedDay, tmr)) return "Besok";
+    const yest = new Date(now);
+    yest.setDate(now.getDate() - 1);
+    if (sameDay(selectedDay, yest)) return "Kemarin";
+    return selectedDay.toLocaleDateString("id-ID", {
+      weekday: "long",
+      day: "numeric",
+      month: "long",
     });
+  }, [selectedDay]);
 
-    const totalHours = Math.round((focusMinutes + workMinutes + personalMinutes) / 60);
-    const focusHours = Math.round(focusMinutes / 60);
-    const workHours = Math.round(workMinutes / 60);
-    const personalHours = Math.round(personalMinutes / 60);
-
-    const efficiency = totalHours > 0 ? Math.min(100, Math.round((focusHours / 25) * 100)) : 0;
-    return {
-      totalHours,
-      focusHours,
-      focusTargetHours: 25,
-      workHours,
-      personalHours,
-      efficiencyPercent: efficiency,
-    };
-  }, [events, weekDays]);
-
-  const dayLabels = ["SENIN", "SELASA", "RABU", "KAMIS", "JUMAT", "SABTU", "MINGGU"];
+  function shiftDay(delta: number) {
+    setSelectedDay((prev) => {
+      const d = new Date(prev);
+      d.setDate(d.getDate() + delta);
+      return d;
+    });
+  }
 
   return (
     <div className="flex flex-col w-full pb-16 gap-6 selection:bg-[#d0bcff] selection:text-[#340080]">
-      {/* ── HEADER HALAMAN & KONTROL WAKTU ────────────────────────── */}
+      {/* ── HEADER ── */}
       <header className="flex flex-col xl:flex-row xl:items-end justify-between gap-4 pb-2 border-b border-white/[0.06]">
         <div className="flex flex-col gap-1">
           <div className="flex items-center gap-2 font-mono text-xs text-[#d0bcff] tracking-widest uppercase font-bold">
             <span className="inline-block w-2 h-2 rounded-full bg-[#d0bcff] animate-ping" />
-            <span>ALOKASI WAKTU &amp; TIME-BLOCKING // MESIN JADWAL PRESISI</span>
+            <span>JADWAL &amp; TO-DO HARIAN</span>
             <span className="text-[#494454]">•</span>
-            <span className="text-[#4edea3]">SYNC: CLOUD OK</span>
+            <span className="text-[#4edea3]">AKTIF</span>
           </div>
           <h1 className="text-2xl sm:text-3xl text-[#e2e2eb] font-semibold tracking-tight flex items-center gap-3">
-            Kalender Fokus
-            <span className="font-mono text-xs text-[#4edea3] bg-[#4edea3]/10 border border-[#4edea3]/30 px-2 py-0.5 rounded">
-              PEKAN {weekNumber}
-            </span>
+            To-Do &amp; Jadwal
+            {(viewMode === "TODO" || viewMode === "DAILY") && (
+              <span className="font-mono text-xs text-[#4edea3] bg-[#4edea3]/10 border border-[#4edea3]/30 px-2 py-0.5 rounded">
+                {selectedDayLabel.toUpperCase()}
+              </span>
+            )}
+            {viewMode === "WEEKLY" && (
+              <span className="font-mono text-xs text-[#4edea3] bg-[#4edea3]/10 border border-[#4edea3]/30 px-2 py-0.5 rounded">
+                PEKAN {weekNumber}
+              </span>
+            )}
           </h1>
           <p className="text-sm text-[#958ea0] max-w-2xl">
-            Jadwalkan blok waktu fokus mendalam, tenggat waktu tugas, dan komitmen pribadi secara terstruktur dalam ekosistem komando MyLife OS.
+            {viewMode === "TODO"
+              ? "Daftar to-do harian interaktif — ceklis aktivitas saat selesai, input praktis tanpa wajib jam selesai."
+              : viewMode === "DAILY"
+              ? "Timeline alur waktu harian — lihat urutan jadwal visual dari subuh hingga malam."
+              : "Gambaran besar kalender mingguan — klik hari mana saja untuk melihat detail to-do."}
           </p>
         </div>
 
-        {/* Kanan: Segmented Switcher & Quick CTA */}
         <div className="flex flex-wrap items-center gap-3 shrink-0">
           <div className="flex items-center bg-[#0c0e14] p-1 rounded-lg border border-white/[0.06] shadow-inner">
-            <button
-              type="button"
-              onClick={() => setViewMode("WEEKLY")}
-              className={`px-3 py-1.5 rounded font-mono text-xs font-semibold transition-all ${
-                viewMode === "WEEKLY"
-                  ? "bg-[#340080] text-[#d0bcff] border border-[#d0bcff]/30 shadow-md"
-                  : "text-[#958ea0] hover:text-[#e2e2eb]"
-              }`}
-            >
-              Mingguan
-            </button>
-            <button
-              type="button"
-              onClick={() => setViewMode("MONTHLY")}
-              className={`px-3 py-1.5 rounded font-mono text-xs font-semibold transition-all ${
-                viewMode === "MONTHLY"
-                  ? "bg-[#340080] text-[#d0bcff] border border-[#d0bcff]/30 shadow-md"
-                  : "text-[#958ea0] hover:text-[#e2e2eb]"
-              }`}
-            >
-              Bulanan
-            </button>
-            <button
-              type="button"
-              onClick={() => setViewMode("AGENDA")}
-              className={`px-3 py-1.5 rounded font-mono text-xs font-semibold transition-all ${
-                viewMode === "AGENDA"
-                  ? "bg-[#340080] text-[#d0bcff] border border-[#d0bcff]/30 shadow-md"
-                  : "text-[#958ea0] hover:text-[#e2e2eb]"
-              }`}
-            >
-              Daftar Agenda
-            </button>
+            {(
+              [
+                { id: "TODO", label: "📋 To-Do Hari Ini" },
+                { id: "DAILY", label: "⏱️ Timeline Jam" },
+                { id: "WEEKLY", label: "📅 Mingguan" },
+                { id: "AGENDA", label: "≡ Semua" },
+              ] as const
+            ).map((v) => (
+              <button
+                key={v.id}
+                type="button"
+                onClick={() => setViewMode(v.id)}
+                className={`px-3 py-1.5 rounded font-mono text-xs font-semibold transition-all ${
+                  viewMode === v.id
+                    ? "bg-[#340080] text-[#d0bcff] border border-[#d0bcff]/30 shadow-md"
+                    : "text-[#958ea0] hover:text-[#e2e2eb]"
+                }`}
+              >
+                {v.label}
+              </button>
+            ))}
           </div>
 
           <button
@@ -423,7 +1260,7 @@ export function CalendarManager({
             <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
               <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm5 11h-4v4h-2v-4H7v-2h4V7h2v4h4v2z" />
             </svg>
-            <span>+ Jadwalkan Event</span>
+            <span>+ Buat Baru</span>
             <kbd className="font-mono text-[10px] bg-white/20 text-white px-1.5 py-0.5 rounded group-hover:bg-white/30">
               N
             </kbd>
@@ -431,57 +1268,96 @@ export function CalendarManager({
         </div>
       </header>
 
-      {/* ── NAVIGASI TANGGAL & FILTER KATEGORI ─────────────────────── */}
+      {/* ── NAV BAR (day nav for TODO/DAILY, week nav for WEEKLY) ── */}
       <section className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 bg-[#131825]/70 backdrop-blur-md p-2.5 sm:p-3 rounded-xl border border-white/[0.07] shadow-sm">
-        {/* Navigasi Tanggal */}
-        <div className="flex items-center gap-3">
-          <div className="flex items-center bg-[#0c0e14] rounded-lg p-1 border border-white/[0.06]">
-            <button
-              type="button"
-              onClick={() => setWeekOffset((o) => o - 1)}
-              className="p-1 hover:bg-[#1A2133] rounded text-[#958ea0] hover:text-[#e2e2eb] transition-colors"
-              title="Pekan Sebelumnya"
-            >
-              <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <path d="M15 18l-6-6 6-6" />
-              </svg>
-            </button>
-            <button
-              type="button"
-              onClick={() => setWeekOffset((o) => o + 1)}
-              className="p-1 hover:bg-[#1A2133] rounded text-[#958ea0] hover:text-[#e2e2eb] transition-colors"
-              title="Pekan Berikutnya"
-            >
-              <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <path d="M9 18l6-6-6-6" />
-              </svg>
-            </button>
-          </div>
-
-          <div className="flex items-center gap-2">
-            <svg className="w-5 h-5 text-[#d0bcff]" viewBox="0 0 24 24" fill="currentColor">
-              <path d="M19 4h-1V2h-2v2H8V2H6v2H5c-1.11 0-1.99.9-1.99 2L3 20a2 2 0 0 0 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 16H5V10h14v10z" />
-            </svg>
-            <span className="text-sm sm:text-base font-semibold text-[#e2e2eb]">
-              {weekDays[0].toLocaleDateString("id-ID", { month: "long", year: "numeric" })}
+        {viewMode === "TODO" || viewMode === "DAILY" ? (
+          <div className="flex items-center gap-3">
+            <div className="flex items-center bg-[#0c0e14] rounded-lg p-1 border border-white/[0.06]">
+              <button
+                type="button"
+                onClick={() => shiftDay(-1)}
+                className="p-1 hover:bg-[#1A2133] rounded text-[#958ea0] hover:text-[#e2e2eb] transition-colors"
+                title="Hari Sebelumnya"
+              >
+                <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <path d="M15 18l-6-6 6-6" />
+                </svg>
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  const t = new Date();
+                  t.setHours(0, 0, 0, 0);
+                  setSelectedDay(t);
+                }}
+                className="px-2.5 py-1 font-mono text-xs text-[#958ea0] hover:text-[#e2e2eb] hover:bg-[#1A2133] rounded transition-colors"
+              >
+                Hari Ini <kbd className="text-[9px] bg-[#0c0e14] px-1 rounded">T</kbd>
+              </button>
+              <button
+                type="button"
+                onClick={() => shiftDay(1)}
+                className="p-1 hover:bg-[#1A2133] rounded text-[#958ea0] hover:text-[#e2e2eb] transition-colors"
+                title="Hari Berikutnya"
+              >
+                <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <path d="M9 18l6-6-6-6" />
+                </svg>
+              </button>
+            </div>
+            <span className="text-sm font-semibold text-[#e2e2eb]">
+              {selectedDay.toLocaleDateString("id-ID", {
+                weekday: "long",
+                day: "numeric",
+                month: "long",
+                year: "numeric",
+              })}
             </span>
-            <span className="font-mono text-xs text-[#958ea0]">
-              ({String(weekDays[0].getDate()).padStart(2, "0")} - {String(weekDays[6].getDate()).padStart(2, "0")}{" "}
-              {weekDays[6].toLocaleDateString("id-ID", { month: "short" })})
+          </div>
+        ) : (
+          <div className="flex items-center gap-3">
+            <div className="flex items-center bg-[#0c0e14] rounded-lg p-1 border border-white/[0.06]">
+              <button
+                type="button"
+                onClick={() => setWeekOffset((o) => o - 1)}
+                className="p-1 hover:bg-[#1A2133] rounded text-[#958ea0] hover:text-[#e2e2eb] transition-colors"
+              >
+                <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <path d="M15 18l-6-6 6-6" />
+                </svg>
+              </button>
+              <button
+                type="button"
+                onClick={() => setWeekOffset(0)}
+                className="px-2.5 py-1 font-mono text-xs text-[#958ea0] hover:text-[#e2e2eb] hover:bg-[#1A2133] rounded transition-colors"
+              >
+                Pekan Ini <kbd className="text-[9px] bg-[#0c0e14] px-1 rounded">T</kbd>
+              </button>
+              <button
+                type="button"
+                onClick={() => setWeekOffset((o) => o + 1)}
+                className="p-1 hover:bg-[#1A2133] rounded text-[#958ea0] hover:text-[#e2e2eb] transition-colors"
+              >
+                <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <path d="M9 18l6-6-6-6" />
+                </svg>
+              </button>
+            </div>
+            <span className="text-sm font-semibold text-[#e2e2eb]">
+              {weekDays[0].toLocaleDateString("id-ID", {
+                month: "long",
+                year: "numeric",
+              })}
+              <span className="font-mono text-xs text-[#958ea0] ml-2">
+                ({String(weekDays[0].getDate()).padStart(2, "0")} –{" "}
+                {String(weekDays[6].getDate()).padStart(2, "0")}{" "}
+                {weekDays[6].toLocaleDateString("id-ID", { month: "short" })})
+              </span>
             </span>
           </div>
+        )}
 
-          <button
-            type="button"
-            onClick={() => setWeekOffset(0)}
-            className="flex items-center gap-1 px-2.5 py-1 bg-[#282a30] hover:bg-[#33343b] text-[#e2e2eb] border border-white/[0.06] rounded-md font-mono text-xs font-medium transition-colors"
-          >
-            <span>Hari Ini</span>
-            <kbd className="font-mono text-[10px] text-[#958ea0] bg-[#0c0e14] px-1 rounded">T</kbd>
-          </button>
-        </div>
-
-        {/* Filter Pills & Legend */}
+        {/* Filter pills */}
         <div className="flex items-center gap-1.5 overflow-x-auto pb-1 lg:pb-0 scrollbar-none">
           {CATEGORIES.map((cat) => (
             <button
@@ -494,10 +1370,10 @@ export function CalendarManager({
                   : "bg-[#191b22] text-[#958ea0] hover:text-[#e2e2eb] border-transparent hover:bg-[#282a30]"
               }`}
             >
-              {cat.dot && (
+              {cat.id !== "ALL" && CATEGORY_MAP[cat.id] && (
                 <span
                   className="w-2 h-2 rounded-full"
-                  style={{ backgroundColor: cat.dot }}
+                  style={{ backgroundColor: CATEGORY_MAP[cat.id].dot }}
                 />
               )}
               <span>{cat.label}</span>
@@ -506,42 +1382,65 @@ export function CalendarManager({
         </div>
       </section>
 
-      {/* ── KONTEN DUA KOLOM: KALENDER GRID UTAMA (KIRI) + BENTO WIDGETS (KANAN) ── */}
+      {/* ── MAIN CONTENT ── */}
       <div className="grid grid-cols-1 xl:grid-cols-12 gap-6 items-start">
-        {/* AREA UTAMA KALENDER (8 Cols) */}
+        {/* Main Area */}
         <main className="xl:col-span-8 bg-[#131825] rounded-xl border border-white/[0.07] shadow-xl overflow-hidden flex flex-col">
-          {viewMode === "WEEKLY" ? (
+          {/* TAB 1: TO-DO VIEW */}
+          {viewMode === "TODO" && (
+            <ToDoListView
+              events={filteredEvents}
+              targetDay={selectedDay}
+              onToggleComplete={handleToggleComplete}
+              onQuickAdd={handleQuickAdd}
+              onSelectEvent={setSelectedEvent}
+              onDeleteEvent={handleDeleteEvent}
+              onOpenModal={() => openCreateModal(selectedDay)}
+            />
+          )}
+
+          {/* TAB 2: DAILY FLOW VIEW */}
+          {viewMode === "DAILY" && (
+            <DailyFlowView
+              events={filteredEvents}
+              now={currentTime}
+              targetDay={selectedDay}
+              onAddAtHour={(h) => openCreateModal(selectedDay, h)}
+              onSelectEvent={setSelectedEvent}
+              onToggleComplete={handleToggleComplete}
+            />
+          )}
+
+          {/* TAB 3: WEEKLY VIEW */}
+          {viewMode === "WEEKLY" && (
             <>
-              {/* Header 7 Hari Kalender */}
+              {/* Day headers */}
               <div className="grid grid-cols-8 bg-[#191b22]/90 backdrop-blur border-b border-white/[0.06] sticky top-0 z-20 text-center">
-                {/* Sudut Kolom Jam */}
                 <div className="p-3 flex flex-col items-center justify-center font-mono text-xs text-[#958ea0] border-r border-white/[0.04]">
                   <svg className="w-4 h-4 mb-0.5" viewBox="0 0 24 24" fill="currentColor">
                     <path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z" />
                   </svg>
                   <span>WIB</span>
                 </div>
-
-                {/* Kolom 7 Hari */}
                 {weekDays.map((day, idx) => {
                   const now = new Date();
-                  const isToday =
-                    day.getDate() === now.getDate() &&
-                    day.getMonth() === now.getMonth() &&
-                    day.getFullYear() === now.getFullYear();
-
+                  const isToday = sameDay(day, now);
                   const isWeekend = idx >= 5;
-
                   return (
                     <div
                       key={idx}
-                      className={`p-2.5 sm:p-3 flex flex-col items-center justify-center gap-1 border-r border-white/[0.04] last:border-r-0 ${
+                      className={`p-2.5 sm:p-3 flex flex-col items-center justify-center gap-1 border-r border-white/[0.04] last:border-r-0 cursor-pointer hover:bg-white/[0.02] transition-colors relative ${
                         isToday
-                          ? "bg-[#340080]/15 relative"
+                          ? "bg-[#340080]/15"
                           : isWeekend
                           ? "bg-[#0c0e14]/40"
                           : ""
                       }`}
+                      onClick={() => {
+                        setSelectedDay(day);
+                        setViewMode("TODO");
+                      }}
+                      title={`Buka To-Do: ${day.toLocaleDateString("id-ID", { weekday: "long", day: "numeric", month: "short" })}`}
                     >
                       {isToday && (
                         <div className="absolute top-0 left-0 right-0 h-0.5 bg-[#4edea3] shadow-[0_0_8px_rgba(78,222,163,0.8)]" />
@@ -556,7 +1455,7 @@ export function CalendarManager({
                           isToday ? "text-[#4edea3] font-bold" : "text-[#958ea0]"
                         }`}
                       >
-                        {dayLabels[idx]}
+                        {["SENIN", "SELASA", "RABU", "KAMIS", "JUMAT", "SABTU", "MINGGU"][idx]}
                       </span>
                       <span
                         className={`text-base font-semibold ${
@@ -566,757 +1465,452 @@ export function CalendarManager({
                         {String(day.getDate()).padStart(2, "0")}
                       </span>
                       <span className="font-mono text-[10px] text-[#958ea0]">
-                        {isWeekend ? "Pekan" : day.toLocaleDateString("id-ID", { month: "short" })}
+                        {day.toLocaleDateString("id-ID", { month: "short" })}
                       </span>
                     </div>
                   );
                 })}
               </div>
 
-              {/* GRID BODY (Hourly rows + event blocks + real-time line) */}
+              {/* Grid Body */}
               <div className="relative overflow-x-auto select-none min-w-[720px] bg-[#0c0e14]/30">
-                {/* Garis Penanda Real-Time Jam WIB */}
-                {isCurrentWeek && currentHour >= 8 && currentHour <= 18 && (
-                  <div
-                    className="absolute left-0 right-0 z-30 pointer-events-none flex items-center transition-all duration-1000"
-                    style={{ top: `${redLineTopPx}px` }}
-                  >
-                    <div className="w-[12.5%] pl-2 flex items-center justify-end pr-2">
-                      <span className="font-mono text-[10px] text-[#F43F5E] bg-[#131825] px-1 rounded shadow-sm border border-[#F43F5E]/30">
-                        {String(currentHour).padStart(2, "0")}:{String(currentMinute).padStart(2, "0")}
-                      </span>
-                    </div>
-                    <div className="flex-1 relative flex items-center">
-                      <div className="h-[2px] w-full bg-[#F43F5E] shadow-[0_0_10px_rgba(244,63,94,0.8)]" />
-                      <div className="absolute left-[38%] -top-2 flex items-center gap-1 bg-[#F43F5E] text-white text-[9px] font-mono px-1.5 py-0.5 rounded-full shadow-[0_0_8px_rgba(244,63,94,0.9)]">
-                        <span className="w-1.5 h-1.5 rounded-full bg-white animate-ping" />
-                        <span>
-                          {String(currentHour).padStart(2, "0")}:{String(currentMinute).padStart(2, "0")} WIB • SEKARANG
+                {/* Real-time line */}
+                {isCurrentWeek &&
+                  currentHour >= WEEK_START_HOUR &&
+                  currentHour <= WEEK_END_HOUR && (
+                    <div
+                      className="absolute left-0 right-0 z-30 pointer-events-none flex items-center transition-all duration-1000"
+                      style={{ top: `${redLineTopPx}px` }}
+                    >
+                      <div className="w-[12.5%] pl-2 flex items-center justify-end pr-2">
+                        <span className="font-mono text-[10px] text-[#F43F5E] bg-[#131825] px-1 rounded shadow-sm border border-[#F43F5E]/30">
+                          {String(currentHour).padStart(2, "0")}:
+                          {String(currentMinute).padStart(2, "0")}
                         </span>
                       </div>
+                      <div className="flex-1 relative flex items-center">
+                        <div className="h-[2px] w-full bg-[#F43F5E] shadow-[0_0_10px_rgba(244,63,94,0.8)]" />
+                      </div>
                     </div>
+                  )}
+
+                <div className="relative grid grid-cols-8 divide-x divide-white/[0.04]">
+                  {/* Time labels */}
+                  <div className="flex flex-col select-none">
+                    {Array.from(
+                      { length: WEEK_END_HOUR - WEEK_START_HOUR + 1 },
+                      (_, i) => WEEK_START_HOUR + i
+                    ).map((hour) => (
+                      <div
+                        key={hour}
+                        className="h-[60px] border-b border-white/[0.04] p-1 text-right font-mono text-[10px] text-[#958ea0]"
+                      >
+                        {String(hour).padStart(2, "0")}:00
+                      </div>
+                    ))}
                   </div>
-                )}
 
-                {/* Jam Rows (08:00 - 18:00 = 10 jam slot, masing-masing 64px) */}
-                <div className="divide-y divide-white/[0.04]">
-                  {Array.from({ length: 11 }).map((_, hIdx) => {
-                    const hour = 8 + hIdx;
+                  {/* Day columns */}
+                  {weekDays.map((day, dIdx) => {
+                    const dayEvts = projectRecurringEvents(filteredEvents, day);
+
                     return (
-                      <div key={hour} className="grid grid-cols-8 h-16 relative">
-                        {/* Waktu Kolom Kiri */}
-                        <div className="p-2 text-right pr-3 font-mono text-xs text-[#958ea0] border-r border-white/[0.04]">
-                          {String(hour).padStart(2, "0")}:00
-                        </div>
-
-                        {/* 7 Kolom Hari untuk Slot Jam ini */}
-                        {weekDays.map((day, dIdx) => (
+                      <div
+                        key={dIdx}
+                        className="relative flex flex-col hover:bg-white/[0.01] transition-colors"
+                      >
+                        {Array.from(
+                          { length: WEEK_END_HOUR - WEEK_START_HOUR + 1 },
+                          (_, i) => WEEK_START_HOUR + i
+                        ).map((h) => (
                           <div
-                            key={dIdx}
-                            onClick={() => openCreateModal(day, hour)}
-                            className="border-r border-white/[0.03] last:border-r-0 hover:bg-white/[0.02] cursor-pointer transition-colors"
-                            title={`Klik untuk menjadwalkan pada ${dayLabels[dIdx]}, ${String(hour).padStart(2, "0")}:00`}
+                            key={h}
+                            onClick={() => openCreateModal(day, h)}
+                            className="h-[60px] border-b border-white/[0.04] hover:bg-white/[0.02] cursor-pointer"
+                            title={`+ Buat di ${day.toLocaleDateString("id-ID", { weekday: "short" })} jam ${String(h).padStart(2, "0")}:00`}
                           />
                         ))}
-                      </div>
-                    );
-                  })}
-                </div>
 
-                {/* Event Overlays Container */}
-                <div className="absolute inset-0 pointer-events-none grid grid-cols-8">
-                  {/* Kolom 1 adalah jam (kosong) */}
-                  <div />
+                        {/* Events overlay */}
+                        <div className="absolute inset-0 pointer-events-none p-1">
+                          {dayEvts.map((ev) => {
+                            const evStart = new Date(ev.startTime);
+                            const evEnd = new Date(ev.endTime);
+                            const sH = evStart.getHours();
+                            const sM = evStart.getMinutes();
+                            const eH = evEnd.getHours();
+                            const eM = evEnd.getMinutes();
 
-                  {/* 7 Kolom Hari untuk meletakkan kartu Event secara presisi */}
-                  {weekDays.map((day, dIdx) => {
-                    const dayEvents = filteredEvents.filter((e) => {
-                      const st = new Date(e.startTime);
-                      return (
-                        st.getDate() === day.getDate() &&
-                        st.getMonth() === day.getMonth() &&
-                        st.getFullYear() === day.getFullYear()
-                      );
-                    });
+                            const startOffsetMin = (sH - WEEK_START_HOUR) * 60 + sM;
+                            if (startOffsetMin < 0) return null;
+                            const topPx = (startOffsetMin / 60) * WEEK_PX_PER_HOUR;
+                            const durationMin = Math.max(
+                              20,
+                              eH * 60 + eM - (sH * 60 + sM)
+                            );
+                            const heightPx = Math.max(
+                              22,
+                              (durationMin / 60) * WEEK_PX_PER_HOUR - 2
+                            );
+                            const cat =
+                              CATEGORY_MAP[ev.eventType] ||
+                              CATEGORY_MAP["BLOCKED"];
+                            const isDone = !!ev.isCompleted;
 
-                    return (
-                      <div key={dIdx} className="relative h-[704px] border-r border-transparent">
-                        {dayEvents.map((evt) => {
-                          const sDate = new Date(evt.startTime);
-                          const eDate = new Date(evt.endTime);
-                          const startHour = sDate.getHours();
-                          const startMin = sDate.getMinutes();
-                          const endHour = eDate.getHours();
-                          const endMin = eDate.getMinutes();
-
-                          // Hitung top dan height relatif terhadap 08:00
-                          const topMinutes = Math.max(0, (startHour - 8) * 60 + startMin);
-                          const durationMinutes = Math.max(30, (endHour - startHour) * 60 + (endMin - startMin));
-                          const topPx = (topMinutes / 60) * 64;
-                          const heightPx = Math.max(36, (durationMinutes / 60) * 64);
-
-                          const now = new Date();
-                          const isOngoing = sDate <= now && now <= eDate;
-
-                          const sTimeStr = `${String(startHour).padStart(2, "0")}:${String(startMin).padStart(2, "0")}`;
-                          const eTimeStr = `${String(endHour).padStart(2, "0")}:${String(endMin).padStart(2, "0")}`;
-
-                          return (
-                            <div
-                              key={evt.id}
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                setSelectedEvent(evt);
-                              }}
-                              className={`pointer-events-auto absolute inset-x-1 rounded-lg p-2 shadow-md cursor-pointer transition-all hover:scale-[1.02] hover:z-30 overflow-hidden flex flex-col justify-between border ${
-                                evt.eventType === "BLOCKED"
-                                  ? isOngoing
-                                    ? "bg-gradient-to-b from-[#a078ff]/30 to-[#131825]/95 border-[#d0bcff]/50 shadow-[0_0_20px_rgba(160,120,255,0.3)]"
-                                    : "bg-[#340080]/20 hover:bg-[#340080]/30 border-[#d0bcff]/30 text-[#d0bcff]"
-                                  : evt.eventType === "WORK"
-                                  ? "bg-[#3131c0]/25 hover:bg-[#3131c0]/35 border-[#c0c1ff]/30 text-[#c0c1ff]"
-                                  : evt.eventType === "TASK_DEADLINE"
-                                  ? "bg-[#93000a]/40 hover:bg-[#93000a]/50 border-[#F43F5E]/40 text-[#F43F5E]"
-                                  : evt.eventType === "PERSONAL"
-                                  ? "bg-[#00311f]/40 hover:bg-[#00311f]/50 border-[#4edea3]/40 text-[#4edea3]"
-                                  : "bg-[#F59E0B]/20 hover:bg-[#F59E0B]/30 border-[#F59E0B]/30 text-[#F59E0B]"
-                              }`}
-                              style={{
-                                top: `${topPx}px`,
-                                height: `${heightPx}px`,
-                              }}
-                            >
-                              <div className="flex flex-col gap-0.5">
-                                <div className="flex items-center justify-between">
-                                  {isOngoing ? (
-                                    <span className="flex items-center gap-1 font-mono text-[9px] text-[#4edea3] bg-[#0c0e14]/80 px-1 py-0.2 rounded font-bold">
-                                      <span className="w-1.5 h-1.5 rounded-full bg-[#4edea3] animate-pulse" />
-                                      BERJALAN
-                                    </span>
-                                  ) : (
-                                    <span className="font-mono text-[9px] uppercase px-1 py-0.2 rounded bg-[#0c0e14]/60">
-                                      {evt.eventType}
-                                    </span>
-                                  )}
-                                  {evt.eventType === "BLOCKED" && (
-                                    <span className="text-[13px] text-[#d0bcff]" title="Deep Work">
-                                      🎧
-                                    </span>
-                                  )}
-                                </div>
-                                <h4 className="text-xs font-semibold text-[#e2e2eb] line-clamp-2 leading-tight mt-0.5">
-                                  {evt.title}
-                                </h4>
-                                {evt.project && (
-                                  <span className="font-mono text-[10px] text-[#958ea0] truncate">
-                                    📁 {evt.project.title}
+                            return (
+                              <div
+                                key={ev.id}
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  setSelectedEvent(ev);
+                                }}
+                                className={`pointer-events-auto absolute left-1 right-1 rounded p-1 border cursor-pointer hover:z-20 transition-all ${cat.bg} ${cat.border} ${isDone ? "opacity-40" : ""}`}
+                                style={{
+                                  top: `${topPx}px`,
+                                  height: `${heightPx}px`,
+                                }}
+                                title={`${ev.title} (${formatTimeStr(evStart)})`}
+                              >
+                                <div className="flex items-center gap-1">
+                                  {isDone && <span className="text-[#4edea3] text-[9px]">✓</span>}
+                                  <span
+                                    className={`text-[10px] font-semibold truncate ${cat.text} ${isDone ? "line-through" : ""}`}
+                                  >
+                                    {ev.title}
                                   </span>
-                                )}
+                                </div>
                               </div>
-
-                              <div className="pt-1 flex items-center justify-between font-mono text-[10px] text-[#958ea0] border-t border-white/[0.06]">
-                                <span>
-                                  {sTimeStr} - {eTimeStr}
-                                </span>
-                              </div>
-                            </div>
-                          );
-                        })}
+                            );
+                          })}
+                        </div>
                       </div>
                     );
                   })}
                 </div>
               </div>
             </>
-          ) : viewMode === "AGENDA" ? (
-            /* DAFTAR AGENDA VIEW */
-            <div className="p-6 flex flex-col gap-4">
-              <h3 className="text-base font-semibold text-[#e2e2eb] border-b border-white/[0.06] pb-2">
-                Daftar Agenda &amp; Alokasi Terjadwal ({filteredEvents.length} Jadwal)
-              </h3>
-              {filteredEvents.length === 0 ? (
-                <div className="p-8 text-center text-xs text-[#958ea0]">
-                  Tidak ada agenda yang cocok dengan filter.
-                </div>
-              ) : (
-                <div className="flex flex-col gap-3">
-                  {filteredEvents.map((evt) => {
-                    const st = new Date(evt.startTime);
-                    const et = new Date(evt.endTime);
-                    const dateStr = st.toLocaleDateString("id-ID", {
-                      weekday: "long",
-                      day: "numeric",
-                      month: "long",
-                      year: "numeric",
-                    });
-                    const timeStr = `${st.toLocaleTimeString("id-ID", { hour: "2-digit", minute: "2-digit" })} – ${et.toLocaleTimeString("id-ID", { hour: "2-digit", minute: "2-digit" })}`;
-
-                    return (
-                      <div
-                        key={evt.id}
-                        className="p-3.5 rounded-lg bg-[#191b22] border border-white/[0.06] flex items-center justify-between gap-3 hover:bg-[#1A2133] transition-colors"
-                      >
-                        <div className="flex items-center gap-3 min-w-0">
-                          <span className="w-2.5 h-2.5 rounded-full shrink-0 bg-[#d0bcff]" />
-                          <div className="flex flex-col min-w-0">
-                            <span className="text-sm font-semibold text-[#e2e2eb] truncate">{evt.title}</span>
-                            <div className="flex items-center gap-2 text-xs text-[#958ea0] font-mono mt-0.5">
-                              <span>📅 {dateStr}</span>
-                              <span>•</span>
-                              <span>🕒 {timeStr}</span>
-                              {evt.location && <span>• 📍 {evt.location}</span>}
-                            </div>
-                          </div>
-                        </div>
-
-                        <div className="flex items-center gap-2 shrink-0">
-                          <button
-                            type="button"
-                            onClick={() => setSelectedEvent(evt)}
-                            className="px-2.5 py-1 rounded bg-[#282a30] text-[#e2e2eb] text-xs font-mono hover:bg-[#33343b]"
-                          >
-                            Rincian
-                          </button>
-                        </div>
-                      </div>
-                    );
-                  })}
-                </div>
-              )}
-            </div>
-          ) : (
-            /* BULANAN VIEW (Kalender Bulanan Fungsional) */
-            <div className="p-4 flex flex-col gap-4">
-              <div className="flex items-center justify-between px-2 pb-2 border-b border-white/[0.06]">
-                <div className="flex items-center gap-2">
-                  <span className="font-mono text-xs uppercase tracking-wider text-[#d0bcff] font-bold">
-                    {weekDays[0].toLocaleString("id-ID", { month: "long", year: "numeric" }).toUpperCase()}
-                  </span>
-                  <span className="text-xs text-[#958ea0]">({events.length} total event tercatat)</span>
-                </div>
-              </div>
-
-              {/* 7 Columns Header */}
-              <div className="grid grid-cols-7 gap-1 text-center font-mono text-[11px] font-bold text-[#958ea0] py-1 border-b border-white/[0.04]">
-                {["SEN", "SEL", "RAB", "KAM", "JUM", "SAB", "MIN"].map((d) => (
-                  <div key={d}>{d}</div>
-                ))}
-              </div>
-
-              {/* Grid Days */}
-              <div className="grid grid-cols-7 gap-1.5 auto-rows-fr">
-                {(() => {
-                  const activeY = weekDays[0].getFullYear();
-                  const activeM = weekDays[0].getMonth();
-                  const daysCount = new Date(activeY, activeM + 1, 0).getDate();
-                  const firstDay = new Date(activeY, activeM, 1).getDay();
-                  const offset = (firstDay + 6) % 7; // 0 for Monday
-                  const cells = [];
-
-                  // Empty previous month cells
-                  for (let i = 0; i < offset; i++) {
-                    cells.push(
-                      <div key={`empty-${i}`} className="min-h-[85px] rounded-lg bg-white/[0.01] border border-white/[0.03] p-1.5 opacity-30" />
-                    );
-                  }
-
-                  // Active month days
-                  const todayStr = new Date().toDateString();
-                  for (let d = 1; d <= daysCount; d++) {
-                    const thisDate = new Date(activeY, activeM, d);
-                    const isToday = thisDate.toDateString() === todayStr;
-                    const dayEvents = filteredEvents.filter((ev) => {
-                      const evDate = new Date(ev.startTime);
-                      return evDate.getFullYear() === activeY && evDate.getMonth() === activeM && evDate.getDate() === d;
-                    });
-
-                    cells.push(
-                      <div
-                        key={`day-${d}`}
-                        className={`min-h-[85px] rounded-lg border p-1.5 flex flex-col justify-between transition-colors ${
-                          isToday
-                            ? "bg-[#340080]/20 border-[#d0bcff]/40 shadow-sm"
-                            : "bg-[#131825]/60 border-white/[0.06] hover:border-white/[0.12]"
-                        }`}
-                      >
-                        <div className="flex items-center justify-between mb-1">
-                          <span
-                            className={`font-mono text-xs font-bold ${
-                              isToday ? "text-[#d0bcff] bg-[#d0bcff]/20 px-1.5 py-0.5 rounded" : "text-[#e2e2eb]"
-                            }`}
-                          >
-                            {d}
-                          </span>
-                          {dayEvents.length > 0 && (
-                            <span className="text-[10px] font-mono text-[#4edea3]">
-                              {dayEvents.length} ev
-                            </span>
-                          )}
-                        </div>
-
-                        <div className="flex flex-col gap-1 overflow-y-auto max-h-[55px]">
-                          {dayEvents.slice(0, 3).map((ev) => (
-                            <button
-                              key={ev.id}
-                              type="button"
-                              onClick={() => setSelectedEvent(ev)}
-                              className="text-left text-[10px] px-1.5 py-0.5 rounded truncate bg-[#282a30] hover:bg-[#340080]/50 text-[#e2e2eb] transition-colors border border-white/[0.05]"
-                              title={ev.title}
-                            >
-                              {ev.title}
-                            </button>
-                          ))}
-                          {dayEvents.length > 3 && (
-                            <span className="text-[9px] text-[#958ea0] font-mono">
-                              +{dayEvents.length - 3} lainnya
-                            </span>
-                          )}
-                        </div>
-                      </div>
-                    );
-                  }
-
-                  return cells;
-                })()}
-              </div>
-            </div>
           )}
-        </main>
 
-        {/* PANEL SAMPING KANAN (BENTO WIDGETS) (4 Cols) */}
-        <aside className="xl:col-span-4 flex flex-col gap-6">
-          {/* Bento 1: Agenda Hari Ini */}
-          <div className="bg-[#131825] rounded-xl border border-white/[0.07] p-5 shadow-xl flex flex-col gap-3">
-            <div className="flex items-center justify-between pb-2 border-b border-white/[0.06]">
-              <div className="flex items-center gap-2">
-                <svg className="w-5 h-5 text-[#d0bcff]" viewBox="0 0 24 24" fill="currentColor">
-                  <path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19a2 2 0 0 0 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11z" />
-                </svg>
-                <h2 className="text-sm font-semibold text-[#e2e2eb]">Agenda Hari Ini</h2>
-              </div>
-              <span className="font-mono text-xs text-[#d0bcff] bg-[#340080]/30 border border-[#d0bcff]/20 px-2 py-0.5 rounded">
-                {todayEvents.length} JADWAL
-              </span>
-            </div>
-
-            {todayEvents.length === 0 ? (
-              <div className="p-4 text-center text-xs text-[#958ea0] rounded-lg bg-[#191b22] border border-dashed border-white/[0.06]">
-                Belum ada blok waktu terjadwal hari ini. Tekan &quot;+ Jadwalkan Event&quot; untuk mengalokasikan waktu fokus!
-              </div>
-            ) : (
-              <div className="flex flex-col gap-2.5">
-                {todayEvents.map((item, idx) => {
-                  const sTime = new Date(item.startTime);
-                  const eTime = new Date(item.endTime);
-                  const now = new Date();
-                  const isOngoing = sTime <= now && now <= eTime;
-                  const timeRangeStr = `${sTime.toLocaleTimeString("id-ID", { hour: "2-digit", minute: "2-digit" })} - ${eTime.toLocaleTimeString("id-ID", { hour: "2-digit", minute: "2-digit" })} WIB`;
+          {/* TAB 4: AGENDA VIEW */}
+          {viewMode === "AGENDA" && (
+            <div className="p-6 flex flex-col gap-3">
+              <h3 className="text-base font-semibold text-[#e2e2eb]">
+                Semua Jadwal &amp; To-Do
+              </h3>
+              <div className="flex flex-col gap-2">
+                {events.map((ev) => {
+                  const cat = CATEGORY_MAP[ev.eventType] || CATEGORY_MAP["PERSONAL"];
+                  const st = new Date(ev.startTime);
+                  const isDone = !!ev.isCompleted;
 
                   return (
                     <div
-                      key={item.id}
-                      onClick={() => setSelectedEvent(item)}
-                      className={`p-3 rounded-lg flex flex-col gap-1 cursor-pointer transition-all ${
-                        isOngoing
-                          ? "bg-[#340080]/25 border border-[#d0bcff]/40 shadow-[0_0_16px_rgba(160,120,255,0.15)]"
-                          : "bg-[#191b22] hover:bg-[#1A2133] border border-white/[0.05]"
-                      }`}
+                      key={ev.id}
+                      className="flex items-center justify-between p-3 rounded-lg bg-[#191b22] border border-white/[0.06]"
                     >
-                      <div className="flex items-center justify-between">
-                        {isOngoing ? (
-                          <span className="font-mono text-[10px] text-[#4edea3] flex items-center gap-1 font-bold">
-                            <span className="w-2 h-2 rounded-full bg-[#4edea3] animate-ping" />
-                            SEDANG BERJALAN
+                      <div className="flex items-center gap-3">
+                        <button
+                          type="button"
+                          onClick={() => handleToggleComplete(ev.id, isDone)}
+                          className={`w-5 h-5 rounded border flex items-center justify-center text-xs ${
+                            isDone
+                              ? "bg-[#4edea3] border-[#4edea3] text-[#00311f]"
+                              : "border-white/30 bg-[#0c0e14] text-transparent hover:text-[#4edea3]"
+                          }`}
+                        >
+                          ✓
+                        </button>
+                        <div className="flex flex-col">
+                          <span
+                            className={`text-sm font-semibold ${cat.text} ${isDone ? "line-through text-[#958ea0]" : ""}`}
+                          >
+                            {ev.title}
                           </span>
-                        ) : (
-                          <span className="font-mono text-[10px] text-[#c0c1ff]">
-                            {idx === 0 ? "SELANJUTNYA" : "NANTI SIANG / MALAM"}
+                          <span className="font-mono text-[11px] text-[#958ea0]">
+                            {st.toLocaleDateString("id-ID", {
+                              weekday: "short",
+                              day: "numeric",
+                              month: "short",
+                            })}{" "}
+                            • {formatTimeStr(st)}
+                            {ev.recurrence && ev.recurrence !== "NONE" && ` • 🔁 ${recurrenceLabel[ev.recurrence]}`}
                           </span>
-                        )}
-                        <span className="font-mono text-[10px] text-[#958ea0]">
-                          🕒 {timeRangeStr}
-                        </span>
+                        </div>
                       </div>
-
-                      <h3 className="text-xs font-semibold text-[#e2e2eb] line-clamp-1 mt-0.5">
-                        {item.title}
-                      </h3>
-
-                      <div className="flex items-center justify-between text-[#958ea0] font-mono text-[10px] pt-1">
-                        <span>{item.location || "Ruang Eksekusi"}</span>
-                        <span className="text-[#d0bcff]">{item.eventType}</span>
+                      <div className="flex items-center gap-2">
+                        <button
+                          type="button"
+                          onClick={() => setSelectedEvent(ev)}
+                          className="px-2.5 py-1 rounded bg-[#282a30] text-xs text-[#e2e2eb] hover:bg-[#340080]"
+                        >
+                          Detail
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => handleDeleteEvent(ev.id)}
+                          className="p-1 rounded text-[#958ea0] hover:text-red-400"
+                        >
+                          ✕
+                        </button>
                       </div>
                     </div>
                   );
                 })}
               </div>
-            )}
-          </div>
+            </div>
+          )}
+        </main>
 
-          {/* Bento 2: Tenggat Waktu Pekan Ini */}
+        {/* Sidebar */}
+        <aside className="xl:col-span-4 flex flex-col gap-6">
+          {/* Quick info card */}
           <div className="bg-[#131825] rounded-xl border border-white/[0.07] p-5 shadow-xl flex flex-col gap-3">
-            <div className="flex items-center justify-between pb-2 border-b border-white/[0.06]">
-              <div className="flex items-center gap-2">
-                <svg className="w-5 h-5 text-[#F43F5E]" viewBox="0 0 24 24" fill="currentColor">
-                  <path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-6v-5c0-3.07-1.63-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.64 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z" />
-                </svg>
-                <h2 className="text-sm font-semibold text-[#e2e2eb]">Tenggat Waktu</h2>
-              </div>
-              <span className="font-mono text-xs text-[#F43F5E] bg-[#93000a]/30 border border-[#F43F5E]/20 px-2 py-0.5 rounded">
-                {criticalDeadlines.length} TENGGAT
-              </span>
+            <div className="flex items-center gap-2 text-sm font-semibold text-[#e2e2eb]">
+              <span>💡 Panduan To-Do &amp; Jadwal</span>
             </div>
-
-            <div className="flex flex-col gap-2">
-              {criticalDeadlines.length === 0 ? (
-                <div className="p-4 text-center text-xs text-[#958ea0] rounded-lg bg-[#191b22]">
-                  Tidak ada tenggat waktu mendesak untuk pekan ini.
-                </div>
-              ) : (
-                criticalDeadlines.slice(0, 5).map((dl) => (
-                  <div
-                    key={dl.id}
-                    onClick={() => {
-                      if (dl.href) {
-                        router.push(dl.href);
-                      } else if (dl.event) {
-                        setSelectedEvent(dl.event);
-                      }
-                    }}
-                    className="p-3 rounded-lg bg-[#191b22] hover:bg-[#1A2133] border border-white/[0.05] hover:border-[#d0bcff]/40 flex items-start justify-between gap-2 transition-all cursor-pointer group shadow-sm"
-                    title={dl.href ? "Buka rincian tugas" : "Lihat detail agenda kalender"}
-                  >
-                    <div className="flex flex-col gap-0.5 min-w-0 flex-1">
-                      <div className="flex items-center gap-2">
-                        <span className="text-xs font-semibold text-[#e2e2eb] group-hover:text-[#d0bcff] group-hover:underline truncate">
-                          {dl.title}
-                        </span>
-                        <span className="font-mono text-[9px] px-1.5 py-0.2 rounded bg-white/[0.06] text-[#d0bcff] shrink-0">
-                          {dl.source}
-                        </span>
-                      </div>
-                      <span className="font-mono text-[10px] text-[#958ea0]">
-                        {dl.date.toLocaleDateString("id-ID", {
-                          weekday: "short",
-                          day: "numeric",
-                          month: "short",
-                        })}{" "}
-                        • {dl.date.toLocaleTimeString("id-ID", { hour: "2-digit", minute: "2-digit" })} WIB
-                      </span>
-                    </div>
-
-                    <div className="flex items-center gap-1.5 shrink-0">
-                      {dl.focusHref && (
-                        <button
-                          type="button"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            router.push(dl.focusHref!);
-                          }}
-                          className="px-2 py-0.5 rounded bg-[#340080]/60 hover:bg-[#d0bcff] hover:text-[#23005c] text-[#d0bcff] font-mono text-[10px] font-semibold border border-[#d0bcff]/30 transition-all flex items-center gap-0.5 cursor-pointer"
-                          title="Fokuskan tugas ini di Mode Pomodoro"
-                        >
-                          <span>Fokus</span>
-                          <span>🍅</span>
-                        </button>
-                      )}
-                      <span
-                        className={`font-mono text-[9px] px-2 py-0.5 rounded-full font-bold ${
-                          dl.isUrgent
-                            ? "bg-[#F43F5E] text-white animate-pulse"
-                            : "bg-[#282a30] text-[#958ea0]"
-                        }`}
-                      >
-                        {dl.isUrgent ? "MENDESAK" : "RUTIN"}
-                      </span>
-                    </div>
-                  </div>
-                ))
-              )}
-            </div>
-          </div>
-
-          {/* Bento 3: Metrik Alokasi Pekan Ini */}
-          <div className="bg-[#131825] rounded-xl border border-white/[0.07] p-5 shadow-xl flex flex-col gap-3">
-            <div className="flex items-center justify-between pb-2 border-b border-white/[0.06]">
-              <div className="flex items-center gap-2">
-                <svg className="w-5 h-5 text-[#4edea3]" viewBox="0 0 24 24" fill="currentColor">
-                  <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z" />
-                </svg>
-                <h2 className="text-sm font-semibold text-[#e2e2eb]">Metrik Alokasi Waktu</h2>
-              </div>
-              <span className="font-mono text-xs text-[#958ea0]">
-                TOTAL: {allocationMetrics.totalHours} JAM
-              </span>
-            </div>
-
-            {/* Progress Bars Telemetri */}
-            <div className="flex flex-col gap-3">
-              {/* Deep Work */}
-              <div className="flex flex-col gap-1">
-                <div className="flex items-center justify-between font-mono text-xs">
-                  <span className="text-[#d0bcff] font-medium flex items-center gap-1.5">
-                    <span className="w-2 h-2 rounded-full bg-[#d0bcff]" /> Sesi Fokus (Deep Work)
-                  </span>
-                  <span className="text-[#e2e2eb] font-bold">
-                    {allocationMetrics.focusHours}j / {allocationMetrics.focusTargetHours}j (
-                    {Math.round((allocationMetrics.focusHours / allocationMetrics.focusTargetHours) * 100)}%)
-                  </span>
-                </div>
-                <div className="w-full h-2 bg-[#0c0e14] rounded-full overflow-hidden border border-white/[0.04]">
-                  <div
-                    className="h-full bg-gradient-to-r from-[#a078ff] to-[#d0bcff] rounded-full transition-all duration-500"
-                    style={{
-                      width: `${Math.min(
-                        100,
-                        (allocationMetrics.focusHours / allocationMetrics.focusTargetHours) * 100
-                      )}%`,
-                    }}
-                  />
-                </div>
-              </div>
-
-              {/* Rapat & Kolaborasi */}
-              <div className="flex flex-col gap-1">
-                <div className="flex items-center justify-between font-mono text-xs">
-                  <span className="text-[#c0c1ff] font-medium flex items-center gap-1.5">
-                    <span className="w-2 h-2 rounded-full bg-[#c0c1ff]" /> Pekerjaan &amp; Kolaborasi
-                  </span>
-                  <span className="text-[#e2e2eb] font-bold">{allocationMetrics.workHours} Jam</span>
-                </div>
-                <div className="w-full h-2 bg-[#0c0e14] rounded-full overflow-hidden border border-white/[0.04]">
-                  <div
-                    className="h-full bg-[#3131c0] rounded-full transition-all duration-500"
-                    style={{ width: `${Math.min(100, (allocationMetrics.workHours / 15) * 100)}%` }}
-                  />
-                </div>
-              </div>
-
-              {/* Olahraga & Pemulihan */}
-              <div className="flex flex-col gap-1">
-                <div className="flex items-center justify-between font-mono text-xs">
-                  <span className="text-[#4edea3] font-medium flex items-center gap-1.5">
-                    <span className="w-2 h-2 rounded-full bg-[#4edea3]" /> Olahraga &amp; Pemulihan
-                  </span>
-                  <span className="text-[#e2e2eb] font-bold">{allocationMetrics.personalHours} Jam</span>
-                </div>
-                <div className="w-full h-2 bg-[#0c0e14] rounded-full overflow-hidden border border-white/[0.04]">
-                  <div
-                    className="h-full bg-[#4edea3] rounded-full transition-all duration-500"
-                    style={{ width: `${Math.min(100, (allocationMetrics.personalHours / 10) * 100)}%` }}
-                  />
-                </div>
-              </div>
-            </div>
-
-            {/* Inline SVG Ring Metric Visualization */}
-            <div className="mt-2 p-3 bg-[#191b22]/70 rounded-lg flex items-center justify-between border border-white/[0.04]">
-              <div className="flex items-center gap-3">
-                <div className="relative w-11 h-11 flex items-center justify-center">
-                  <svg className="w-full h-full transform -rotate-90" viewBox="0 0 36 36">
-                    <path
-                      className="text-[#33343b]"
-                      d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="3.5"
-                    />
-                    <path
-                      className="text-[#d0bcff]"
-                      d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeDasharray={`${allocationMetrics.efficiencyPercent}, 100`}
-                      strokeLinecap="round"
-                      strokeWidth="3.5"
-                    />
-                  </svg>
-                  <span className="absolute font-mono text-[9px] text-[#d0bcff] font-bold">
-                    {allocationMetrics.efficiencyPercent}%
-                  </span>
-                </div>
-                <div className="flex flex-col">
-                  <span className="text-sm font-bold text-[#e2e2eb]">
-                    Efisiensi {allocationMetrics.efficiencyPercent}%
-                  </span>
-                  <span className="text-[11px] text-[#958ea0]">Bebas interupsi di jam fokus</span>
-                </div>
-              </div>
-            </div>
+            <ul className="flex flex-col gap-2 font-mono text-xs text-[#958ea0]">
+              <li className="flex items-start gap-2">
+                <span className="text-[#4edea3]">✓</span>
+                <span>Ceklis to-do langsung dari daftar ataupun timeline jam.</span>
+              </li>
+              <li className="flex items-start gap-2">
+                <span className="text-[#4edea3]">⏰</span>
+                <span>To-do dengan jam tidak wajib punya jam selesai. Praktis untuk bangun subuh, minum obat, atau jadwal kelas.</span>
+              </li>
+              <li className="flex items-start gap-2">
+                <span className="text-[#4edea3]">🔁</span>
+                <span>Gunakan pengulangan <strong>Setiap Hari</strong> untuk rutinitas yang ingin Anda lakukan konsisten.</span>
+              </li>
+            </ul>
           </div>
         </aside>
       </div>
 
-      {/* ── MODAL INTERAKTIF FLOATING: "Jadwalkan Event Baru" ──────── */}
+      {/* ── MODAL BUAT JADWAL / TO-DO BARU ── */}
       {isModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#0B0D13]/80 backdrop-blur-md animate-in fade-in duration-150">
-          <div className="w-full max-w-xl bg-[#131825] rounded-xl shadow-2xl p-6 flex flex-col gap-4 border border-white/[0.08] relative animate-in zoom-in-95 duration-150 max-h-[90vh] overflow-y-auto">
-            {/* Modal Header */}
+          <div className="w-full max-w-xl bg-[#131825] rounded-xl shadow-2xl p-6 flex flex-col gap-4 border border-white/[0.08] relative animate-in zoom-in-95 duration-150 max-h-[92vh] overflow-y-auto">
             <div className="flex items-center justify-between pb-2 border-b border-white/[0.08]">
               <div className="flex items-center gap-2">
-                <svg className="w-5 h-5 text-[#d0bcff]" viewBox="0 0 24 24" fill="currentColor">
+                <svg className="w-5 h-5 text-[#4edea3]" viewBox="0 0 24 24" fill="currentColor">
                   <path d="M19 4h-1V2h-2v2H8V2H6v2H5c-1.11 0-1.99.9-1.99 2L3 20a2 2 0 0 0 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 16H5V10h14v10z" />
                 </svg>
-                <h2 className="text-base font-semibold text-[#e2e2eb]">Jadwalkan Event Baru</h2>
+                <h2 className="text-base font-semibold text-[#e2e2eb]">
+                  Tambah To-Do / Jadwal Baru
+                </h2>
               </div>
               <button
                 type="button"
                 onClick={() => setIsModalOpen(false)}
                 className="text-[#958ea0] hover:text-[#e2e2eb] p-1 rounded-lg hover:bg-[#1A2133] transition-colors"
               >
-                <span className="font-mono text-xs px-1.5 py-0.5 rounded bg-[#282a30]">ESC</span>
+                <span className="font-mono text-xs px-1.5 py-0.5 rounded bg-[#282a30]">
+                  ESC
+                </span>
               </button>
             </div>
 
             <form onSubmit={handleCreateEvent} className="flex flex-col gap-4">
-              {/* Field Judul */}
+              {/* Title */}
               <div className="flex flex-col gap-1">
                 <label className="font-mono text-[10px] uppercase text-[#958ea0] font-semibold">
-                  JUDUL KEGIATAN
+                  JUDUL TO-DO / AKTIVITAS
                 </label>
                 <input
                   type="text"
                   required
                   value={formTitle}
                   onChange={(e) => setFormTitle(e.target.value)}
-                  placeholder="mis. Sesi Deep Work: Optimasi Query Database"
-                  className="w-full bg-[#0c0e14] px-3.5 py-2 rounded-lg font-mono text-xs text-[#e2e2eb] border border-white/[0.06] placeholder-[#494454] focus:outline-none focus:border-[#d0bcff]/50 shadow-inner"
+                  placeholder="cth: Bangun Pagi Jam 5, Kuliah Basis Data, Beli vitamin..."
+                  autoFocus
+                  className="w-full bg-[#0c0e14] px-3.5 py-2.5 rounded-lg font-mono text-xs text-[#e2e2eb] border border-white/[0.06] placeholder-[#494454] focus:outline-none focus:border-[#4edea3]/50 shadow-inner"
                 />
               </div>
 
-              {/* Dropdown Kategori */}
+              {/* Time Mode Selection */}
+              <div className="flex flex-col gap-1.5">
+                <label className="font-mono text-[10px] uppercase text-[#958ea0] font-semibold">
+                  PILIHAN WAKTU
+                </label>
+                <div className="grid grid-cols-3 gap-2">
+                  <button
+                    type="button"
+                    onClick={() => setFormTimeMode("START_ONLY")}
+                    className={`p-2.5 rounded-lg border font-mono text-xs flex flex-col items-center gap-1 transition-all ${
+                      formTimeMode === "START_ONLY"
+                        ? "bg-[#340080] text-[#d0bcff] border-[#d0bcff]/50 shadow-md font-semibold"
+                        : "bg-[#0c0e14] text-[#958ea0] border-white/[0.06] hover:text-[#e2e2eb]"
+                    }`}
+                  >
+                    <span>⏰ Jam Mulai Saja</span>
+                    <span className="text-[9px] opacity-70">Tanpa jam selesai</span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setFormTimeMode("RANGE")}
+                    className={`p-2.5 rounded-lg border font-mono text-xs flex flex-col items-center gap-1 transition-all ${
+                      formTimeMode === "RANGE"
+                        ? "bg-[#340080] text-[#d0bcff] border-[#d0bcff]/50 shadow-md font-semibold"
+                        : "bg-[#0c0e14] text-[#958ea0] border-white/[0.06] hover:text-[#e2e2eb]"
+                    }`}
+                  >
+                    <span>⏳ Rentang Waktu</span>
+                    <span className="text-[9px] opacity-70">Ada jam selesai</span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setFormTimeMode("ALL_DAY")}
+                    className={`p-2.5 rounded-lg border font-mono text-xs flex flex-col items-center gap-1 transition-all ${
+                      formTimeMode === "ALL_DAY"
+                        ? "bg-[#340080] text-[#d0bcff] border-[#d0bcff]/50 shadow-md font-semibold"
+                        : "bg-[#0c0e14] text-[#958ea0] border-white/[0.06] hover:text-[#e2e2eb]"
+                    }`}
+                  >
+                    <span>📝 Bebas Jam</span>
+                    <span className="text-[9px] opacity-70">Kapan saja hari ini</span>
+                  </button>
+                </div>
+              </div>
+
+              {/* Date & Time inputs */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                <div className="flex flex-col gap-1">
+                  <label className="font-mono text-[10px] uppercase text-[#958ea0] font-semibold">
+                    TANGGAL
+                  </label>
+                  <input
+                    type="date"
+                    required
+                    value={formDate}
+                    onChange={(e) => setFormDate(e.target.value)}
+                    className="w-full bg-[#0c0e14] px-3 py-2.5 rounded-lg font-mono text-xs text-[#e2e2eb] border border-white/[0.06] focus:outline-none focus:border-[#4edea3]/50"
+                  />
+                </div>
+
+                {formTimeMode !== "ALL_DAY" && (
+                  <div className="flex flex-col gap-1">
+                    <label className="font-mono text-[10px] uppercase text-[#958ea0] font-semibold">
+                      {formTimeMode === "START_ONLY" ? "JAM TO-DO" : "JAM MULAI"}
+                    </label>
+                    <input
+                      type="time"
+                      required
+                      value={formStartTime}
+                      onChange={(e) => setFormStartTime(e.target.value)}
+                      className="w-full bg-[#0c0e14] px-3 py-2.5 rounded-lg font-mono text-xs text-[#4edea3] border border-white/[0.06] focus:outline-none focus:border-[#4edea3]/50"
+                    />
+                  </div>
+                )}
+
+                {formTimeMode === "RANGE" && (
+                  <div className="flex flex-col gap-1 md:col-span-2">
+                    <label className="font-mono text-[10px] uppercase text-[#958ea0] font-semibold">
+                      JAM SELESAI
+                    </label>
+                    <input
+                      type="time"
+                      required
+                      value={formEndTime}
+                      onChange={(e) => setFormEndTime(e.target.value)}
+                      className="w-full bg-[#0c0e14] px-3 py-2.5 rounded-lg font-mono text-xs text-[#4edea3] border border-white/[0.06] focus:outline-none focus:border-[#4edea3]/50"
+                    />
+                  </div>
+                )}
+              </div>
+
+              {/* Category */}
               <div className="flex flex-col gap-1">
                 <label className="font-mono text-[10px] uppercase text-[#958ea0] font-semibold">
-                  KATEGORI JADWAL
+                  KATEGORI
                 </label>
                 <select
                   value={formCategory}
                   onChange={(e) => setFormCategory(e.target.value)}
-                  className="w-full bg-[#0c0e14] px-3.5 py-2 rounded-lg font-mono text-xs text-[#d0bcff] border border-white/[0.06] focus:outline-none focus:border-[#d0bcff]/50 cursor-pointer"
+                  className="w-full bg-[#0c0e14] px-3.5 py-2.5 rounded-lg font-mono text-xs text-[#d0bcff] border border-white/[0.06] focus:outline-none focus:border-[#d0bcff]/50 cursor-pointer"
                 >
-                  <option value="BLOCKED">🟣 Sesi Fokus (Deep Work)</option>
-                  <option value="WORK">🔵 Pekerjaan &amp; Kolaborasi</option>
-                  <option value="TASK_DEADLINE">🔴 Tenggat Waktu &amp; Milestone</option>
-                  <option value="PERSONAL">🟢 Pribadi &amp; Kesehatan</option>
-                  <option value="REMINDER">🟡 Pengingat &amp; Tugas Ringan</option>
+                  <option value="PERSONAL">🌱 Pribadi &amp; Kebiasaan (Bangun tidur, Sarapan, Ibadah, Olahraga)</option>
+                  <option value="BLOCKED">🎯 Sesi Fokus / Deep Work (Belajar, Skripsi, Tugas Penting)</option>
+                  <option value="WORK">💼 Pekerjaan &amp; Kuliah (Kelas, Meeting, Kerja)</option>
+                  <option value="REMINDER">🔔 Pengingat &amp; Tugas Ringan (Beli barang, Telepon)</option>
+                  <option value="TASK_DEADLINE">🔴 Tenggat Waktu</option>
                 </select>
               </div>
 
-              {/* Row Waktu Mulai & Selesai */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                <div className="flex flex-col gap-1">
-                  <label className="font-mono text-[10px] uppercase text-[#958ea0] font-semibold">
-                    WAKTU MULAI
-                  </label>
-                  <input
-                    type="datetime-local"
-                    required
-                    value={formStartTime}
-                    onChange={(e) => setFormStartTime(e.target.value)}
-                    className="w-full bg-[#0c0e14] px-3 py-2 rounded-lg font-mono text-xs text-[#e2e2eb] border border-white/[0.06] focus:outline-none focus:border-[#d0bcff]/50"
-                  />
-                </div>
-                <div className="flex flex-col gap-1">
-                  <div className="flex items-center justify-between">
-                    <label className="font-mono text-[10px] uppercase text-[#958ea0] font-semibold">
-                      WAKTU SELESAI
-                    </label>
-                    <span className="font-mono text-[9px] text-[#4edea3] font-bold">
-                      {formDurationLabel}
-                    </span>
-                  </div>
-                  <input
-                    type="datetime-local"
-                    required
-                    value={formEndTime}
-                    onChange={(e) => setFormEndTime(e.target.value)}
-                    className="w-full bg-[#0c0e14] px-3 py-2 rounded-lg font-mono text-xs text-[#e2e2eb] border border-white/[0.06] focus:outline-none focus:border-[#d0bcff]/50"
-                  />
-                </div>
-              </div>
-
-              {/* Lokasi / Tautan Virtual */}
-              <div className="flex flex-col gap-1">
-                <label className="font-mono text-[10px] uppercase text-[#958ea0] font-semibold">
-                  LOKASI ATAU TAUTAN VIRTUAL
+              {/* Recurrence */}
+              <div className="flex flex-col gap-1 bg-[#0c0e14]/60 p-3 rounded-lg border border-white/[0.04]">
+                <label className="font-mono text-[10px] uppercase text-[#d0bcff] font-semibold flex items-center gap-1.5">
+                  <span>🔁 PENGULANGAN RUTINITAS</span>
                 </label>
-                <input
-                  type="text"
-                  value={formLocation}
-                  onChange={(e) => setFormLocation(e.target.value)}
-                  placeholder="mis. Ruang Kerja, Google Meet, Perpustakaan"
-                  className="w-full bg-[#0c0e14] px-3.5 py-2 rounded-lg font-mono text-xs text-[#e2e2eb] border border-white/[0.06] placeholder-[#494454] focus:outline-none focus:border-[#d0bcff]/50"
-                />
+                <select
+                  value={formRecurrence}
+                  onChange={(e) => setFormRecurrence(e.target.value)}
+                  className="w-full bg-[#191b22] px-3 py-2 rounded-lg font-mono text-xs text-[#e2e2eb] border border-white/[0.06] focus:outline-none focus:border-[#d0bcff]/50 cursor-pointer mt-1"
+                >
+                  <option value="NONE">Hanya sekali (hari ini saja)</option>
+                  <option value="DAILY">Setiap hari (Rutinitas Harian)</option>
+                  <option value="WEEKLY">Setiap minggu di hari yang sama</option>
+                  <option value="MONTHLY">Setiap bulan di tanggal yang sama</option>
+                </select>
               </div>
 
-              {/* Kaitkan Struktural (Proyek & Tugas) */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                <div className="flex flex-col gap-1">
-                  <label className="font-mono text-[10px] uppercase text-[#958ea0] font-semibold">
-                    KAITKAN PROYEK
+              {/* Reminders */}
+              <div className="flex flex-col gap-2 bg-[#0c0e14]/40 p-3 rounded-lg border border-white/[0.04]">
+                <div className="flex items-center justify-between">
+                  <label className="font-mono text-[10px] uppercase text-[#F59E0B] font-semibold">
+                    🔔 NOTIFIKASI TELEGRAM
                   </label>
-                  <select
-                    value={formProjectId}
-                    onChange={(e) => setFormProjectId(e.target.value)}
-                    className="w-full bg-[#0c0e14] px-3 py-2 rounded-lg font-mono text-xs text-[#e2e2eb] border border-white/[0.06] focus:outline-none cursor-pointer"
-                  >
-                    <option value="">-- Tanpa Proyek --</option>
-                    {projects.map((p) => (
-                      <option key={p.id} value={p.id}>
-                        📁 {p.title}
-                      </option>
-                    ))}
-                  </select>
+                  <span className="font-mono text-[10px] text-[#958ea0]">
+                    Default: {defaultReminderMinutes} menit
+                  </span>
                 </div>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                  <select
+                    value={formReminderMinutes}
+                    onChange={(e) =>
+                      setFormReminderMinutes(
+                        e.target.value === "" ? "" : Number(e.target.value)
+                      )
+                    }
+                    className="w-full bg-[#191b22] px-3 py-2 rounded-lg font-mono text-xs text-[#e2e2eb] border border-white/[0.06] focus:outline-none focus:border-[#F59E0B]/50 cursor-pointer"
+                  >
+                    <option value="">Ikuti Preferensi ({defaultReminderMinutes} mnt)</option>
+                    <option value="5">5 menit sebelum</option>
+                    <option value="15">15 menit sebelum</option>
+                    <option value="30">30 menit sebelum</option>
+                    <option value="60">1 jam sebelum</option>
+                  </select>
 
-                <div className="flex flex-col gap-1">
-                  <label className="font-mono text-[10px] uppercase text-[#958ea0] font-semibold">
-                    KAITKAN TUGAS
+                  <label className="flex items-center gap-2 font-mono text-xs text-[#e2e2eb] cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={formIgnoreQuietHours}
+                      onChange={(e) => setFormIgnoreQuietHours(e.target.checked)}
+                      className="w-4 h-4 accent-[#4edea3] rounded"
+                    />
+                    <span>Alarm Bangun (Abaikan Jam Hening)</span>
                   </label>
-                  <select
-                    value={formTaskId}
-                    onChange={(e) => setFormTaskId(e.target.value)}
-                    className="w-full bg-[#0c0e14] px-3 py-2 rounded-lg font-mono text-xs text-[#e2e2eb] border border-white/[0.06] focus:outline-none cursor-pointer"
-                  >
-                    <option value="">-- Tanpa Tugas --</option>
-                    {tasks.map((t) => (
-                      <option key={t.id} value={t.id}>
-                        ✓ {t.title}
-                      </option>
-                    ))}
-                  </select>
                 </div>
               </div>
 
-              {/* Catatan Strategis */}
-              <div className="flex flex-col gap-1">
-                <label className="font-mono text-[10px] uppercase text-[#958ea0] font-semibold">
-                  CATATAN STRATEGIS
-                </label>
-                <textarea
-                  rows={2}
-                  value={formDescription}
-                  onChange={(e) => setFormDescription(e.target.value)}
-                  placeholder="Target keluaran sesi ini..."
-                  className="w-full bg-[#0c0e14] p-3 rounded-lg font-mono text-xs text-[#e2e2eb] border border-white/[0.06] placeholder-[#494454] focus:outline-none focus:border-[#d0bcff]/50 resize-none"
-                />
-              </div>
-
-              {/* Tombol Aksi Bawah */}
-              <div className="flex items-center justify-end gap-3 pt-2 border-t border-white/[0.08]">
+              {/* Submit */}
+              <div className="flex items-center justify-end gap-3 pt-2 border-t border-white/[0.06]">
                 <button
                   type="button"
                   onClick={() => setIsModalOpen(false)}
-                  className="px-4 py-2 rounded-lg text-[#958ea0] hover:text-[#e2e2eb] hover:bg-[#282a30] font-mono text-xs transition-colors"
+                  className="px-4 py-2 font-mono text-xs text-[#958ea0] hover:text-[#e2e2eb] transition-colors"
                 >
-                  Batal [Esc]
+                  Batal
                 </button>
                 <button
                   type="submit"
                   disabled={loading}
-                  className="px-5 py-2 rounded-lg bg-[#d0bcff] hover:bg-[#b098f0] text-[#23005c] font-mono text-xs font-bold shadow-lg transition-all disabled:opacity-50"
+                  className="px-5 py-2.5 rounded-lg bg-[#4edea3] hover:bg-[#3ec48e] text-[#00311f] font-mono text-xs font-bold transition-all shadow-[0_0_16px_rgba(78,222,163,0.3)] disabled:opacity-50 active:scale-98 cursor-pointer"
                 >
-                  {loading ? "Menyimpan..." : "Simpan Jadwal Event"}
+                  {loading
+                    ? "Menyimpan..."
+                    : formRecurrence !== "NONE"
+                    ? "Simpan Rutinitas 🔁"
+                    : "Simpan To-Do 📋"}
                 </button>
               </div>
             </form>
@@ -1324,85 +1918,90 @@ export function CalendarManager({
         </div>
       )}
 
-      {/* ── MODAL RINCIAN EVENT SAAT DIKLIK ────────────────────────── */}
+      {/* ── MODAL DETAIL / EDIT EVENT ── */}
       {selectedEvent && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#0B0D13]/80 backdrop-blur-md animate-in fade-in duration-150">
-          <div className="w-full max-w-md bg-[#131825] rounded-xl shadow-2xl p-5 flex flex-col gap-4 border border-white/[0.08] relative">
-            <div className="flex items-start justify-between">
-              <div className="flex flex-col gap-1">
-                <span className="font-mono text-[10px] uppercase px-2 py-0.5 rounded bg-[#340080]/30 text-[#d0bcff] border border-[#d0bcff]/20 w-fit">
-                  {selectedEvent.eventType}
-                </span>
-                <h3 className="text-base font-bold text-[#e2e2eb] mt-1">{selectedEvent.title}</h3>
-              </div>
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#0B0D13]/80 backdrop-blur-md">
+          <div className="w-full max-w-md bg-[#131825] rounded-xl shadow-2xl p-6 flex flex-col gap-4 border border-white/[0.08]">
+            <div className="flex items-center justify-between pb-2 border-b border-white/[0.08]">
+              <span className="font-mono text-xs text-[#4edea3] font-bold">DETAIL TO-DO</span>
               <button
                 type="button"
                 onClick={() => setSelectedEvent(null)}
-                className="text-[#958ea0] hover:text-[#e2e2eb]"
+                className="text-[#958ea0] hover:text-[#e2e2eb] text-sm"
               >
                 ✕
               </button>
             </div>
 
-            <div className="flex flex-col gap-2 font-mono text-xs text-[#958ea0] bg-[#0c0e14] p-3 rounded-lg border border-white/[0.04]">
-              <div className="flex items-center gap-2">
-                <span>🕒</span>
-                <span>
-                  {new Date(selectedEvent.startTime).toLocaleString("id-ID", {
-                    weekday: "short",
-                    day: "numeric",
-                    month: "short",
-                    hour: "2-digit",
-                    minute: "2-digit",
-                  })}{" "}
-                  –{" "}
-                  {new Date(selectedEvent.endTime).toLocaleTimeString("id-ID", {
-                    hour: "2-digit",
-                    minute: "2-digit",
-                  })}
-                </span>
+            <div className="flex flex-col gap-3">
+              <div className="flex items-center gap-3">
+                <button
+                  type="button"
+                  onClick={() => {
+                    handleToggleComplete(selectedEvent.id, !!selectedEvent.isCompleted);
+                    setSelectedEvent((prev) =>
+                      prev ? { ...prev, isCompleted: !prev.isCompleted } : null
+                    );
+                  }}
+                  className={`w-6 h-6 rounded-md border flex items-center justify-center ${
+                    selectedEvent.isCompleted
+                      ? "bg-[#4edea3] border-[#4edea3] text-[#00311f]"
+                      : "border-white/30 bg-[#0c0e14] text-transparent hover:text-[#4edea3]"
+                  }`}
+                >
+                  ✓
+                </button>
+                <h3
+                  className={`text-lg font-bold text-[#e2e2eb] ${
+                    selectedEvent.isCompleted ? "line-through text-[#958ea0]" : ""
+                  }`}
+                >
+                  {selectedEvent.title}
+                </h3>
               </div>
-              {selectedEvent.location && (
-                <div className="flex items-center gap-2">
-                  <span>📍</span>
-                  <span>{selectedEvent.location}</span>
+
+              <div className="font-mono text-xs text-[#958ea0] flex flex-col gap-1 bg-[#0c0e14] p-3 rounded-lg border border-white/[0.04]">
+                <div>
+                  📅 {new Date(selectedEvent.startTime).toLocaleDateString("id-ID", {
+                    weekday: "long",
+                    day: "numeric",
+                    month: "long",
+                    year: "numeric",
+                  })}
                 </div>
-              )}
-              {selectedEvent.project && (
-                <div className="flex items-center gap-2">
-                  <span>📁</span>
-                  <span>Proyek: {selectedEvent.project.title}</span>
+                <div>
+                  ⏰ {formatTimeStr(new Date(selectedEvent.startTime))}
+                  {new Date(selectedEvent.endTime).getTime() !== new Date(selectedEvent.startTime).getTime() &&
+                    ` – ${formatTimeStr(new Date(selectedEvent.endTime))}`}
                 </div>
-              )}
+                {selectedEvent.recurrence && selectedEvent.recurrence !== "NONE" && (
+                  <div>🔁 {recurrenceLabel[selectedEvent.recurrence]}</div>
+                )}
+                {selectedEvent.completedAt && (
+                  <div className="text-[#4edea3]">
+                    ✓ Selesai pada: {new Date(selectedEvent.completedAt).toLocaleTimeString("id-ID", { hour: "2-digit", minute: "2-digit" })}
+                  </div>
+                )}
+              </div>
+
               {selectedEvent.description && (
-                <p className="mt-1 pt-2 border-t border-white/[0.06] text-[#cbc3d7] text-[11px] leading-relaxed">
+                <p className="text-xs text-[#cbc3d7] bg-[#191b22] p-3 rounded-lg border border-white/[0.04]">
                   {selectedEvent.description}
                 </p>
               )}
-            </div>
 
-            <div className="flex items-center justify-between pt-1">
-              <button
-                type="button"
-                onClick={() => handleDeleteEvent(selectedEvent.id)}
-                className="px-3 py-1.5 rounded bg-[#93000a]/30 hover:bg-[#93000a]/50 text-[#F43F5E] text-xs font-mono border border-[#F43F5E]/30 transition-colors"
-              >
-                Hapus Event
-              </button>
-
-              <div className="flex items-center gap-2">
-                {selectedEvent.eventType === "BLOCKED" && (
-                  <Link
-                    href="/focus"
-                    className="px-3 py-1.5 rounded bg-[#d0bcff] hover:bg-[#b098f0] text-[#23005c] font-mono text-xs font-bold transition-all"
-                  >
-                    Buka Ruang Fokus 🍅
-                  </Link>
-                )}
+              <div className="flex items-center justify-end gap-2 pt-3 border-t border-white/[0.06]">
+                <button
+                  type="button"
+                  onClick={() => handleDeleteEvent(selectedEvent.id)}
+                  className="px-3 py-1.5 rounded bg-red-500/10 text-red-400 hover:bg-red-500/20 font-mono text-xs transition-colors"
+                >
+                  Hapus To-Do
+                </button>
                 <button
                   type="button"
                   onClick={() => setSelectedEvent(null)}
-                  className="px-3 py-1.5 rounded bg-[#282a30] text-[#e2e2eb] font-mono text-xs hover:bg-[#33343b]"
+                  className="px-4 py-1.5 rounded bg-[#282a30] text-[#e2e2eb] hover:bg-[#340080] font-mono text-xs transition-colors"
                 >
                   Tutup
                 </button>

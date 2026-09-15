@@ -8,7 +8,7 @@ export const createCalendarEventSchema = z
     title: z.string().trim().min(1, "Judul event wajib diisi").max(200, "Judul event maksimal 200 karakter"),
     description: z.string().trim().max(2000, "Deskripsi maksimal 2000 karakter").optional().nullable(),
     startTime: z.string().datetime({ offset: true }),
-    endTime: z.string().datetime({ offset: true }),
+    endTime: z.string().datetime({ offset: true }).optional().nullable(),
     isAllDay: z.boolean().default(false),
     eventType: eventTypeEnum.default("PERSONAL"),
     recurrence: recurrenceTypeEnum.default("NONE"),
@@ -17,12 +17,17 @@ export const createCalendarEventSchema = z
     projectId: z.string().trim().cuid().optional().nullable(),
     reminderMinutes: z.number().int().min(1).max(120).optional().nullable(),
     ignoreQuietHours: z.boolean().default(false),
+    isCompleted: z.boolean().default(false),
+    completedAt: z.string().datetime({ offset: true }).optional().nullable(),
   })
   .refine(
     (data) => {
-      const start = new Date(data.startTime).getTime();
-      const end = new Date(data.endTime).getTime();
-      return end >= start;
+      if (data.startTime && data.endTime) {
+        const start = new Date(data.startTime).getTime();
+        const end = new Date(data.endTime).getTime();
+        return end >= start;
+      }
+      return true;
     },
     {
       message: "Waktu selesai (endTime) tidak boleh mendahului waktu mulai (startTime)",
@@ -35,7 +40,7 @@ export const updateCalendarEventSchema = z
     title: z.string().trim().min(1, "Judul event wajib diisi").max(200).optional(),
     description: z.string().trim().max(2000).optional().nullable(),
     startTime: z.string().datetime({ offset: true }).optional(),
-    endTime: z.string().datetime({ offset: true }).optional(),
+    endTime: z.string().datetime({ offset: true }).optional().nullable(),
     isAllDay: z.boolean().optional(),
     eventType: eventTypeEnum.optional(),
     recurrence: recurrenceTypeEnum.optional(),
@@ -44,6 +49,8 @@ export const updateCalendarEventSchema = z
     projectId: z.string().trim().cuid().optional().nullable(),
     reminderMinutes: z.number().int().min(1).max(120).optional().nullable(),
     ignoreQuietHours: z.boolean().optional(),
+    isCompleted: z.boolean().optional(),
+    completedAt: z.string().datetime({ offset: true }).optional().nullable(),
   })
   .refine(
     (data) => {

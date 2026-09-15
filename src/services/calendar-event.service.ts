@@ -30,7 +30,7 @@ export async function createCalendarEvent(input: CreateCalendarEventInput, userI
   const parsed = createCalendarEventSchema.parse(input);
 
   const start = new Date(parsed.startTime);
-  const end = new Date(parsed.endTime);
+  const end = parsed.endTime ? new Date(parsed.endTime) : new Date(start.getTime());
   if (end.getTime() < start.getTime()) {
     throw new CalendarEventServiceError("Waktu selesai tidak boleh mendahului waktu mulai.", "INVALID_TIME_RANGE");
   }
@@ -64,6 +64,8 @@ export async function createCalendarEvent(input: CreateCalendarEventInput, userI
     projectId: parsed.projectId,
     reminderMinutes: parsed.reminderMinutes,
     ignoreQuietHours: parsed.ignoreQuietHours,
+    isCompleted: parsed.isCompleted ?? false,
+    completedAt: parsed.isCompleted ? (parsed.completedAt ? new Date(parsed.completedAt) : new Date()) : null,
   });
 }
 
@@ -106,7 +108,9 @@ export async function updateCalendarEvent(id: string, input: UpdateCalendarEvent
   const parsed = updateCalendarEventSchema.parse(input);
 
   const start = parsed.startTime ? new Date(parsed.startTime) : existing.startTime;
-  const end = parsed.endTime ? new Date(parsed.endTime) : existing.endTime;
+  const end = parsed.endTime !== undefined
+    ? (parsed.endTime ? new Date(parsed.endTime) : new Date(start.getTime()))
+    : existing.endTime;
   if (end.getTime() < start.getTime()) {
     throw new CalendarEventServiceError("Waktu selesai tidak boleh mendahului waktu mulai.", "INVALID_TIME_RANGE");
   }
@@ -125,6 +129,17 @@ export async function updateCalendarEvent(id: string, input: UpdateCalendarEvent
     }
   }
 
+  let completedAtUpdate: Date | null | undefined = undefined;
+  if (parsed.isCompleted !== undefined) {
+    if (parsed.isCompleted) {
+      completedAtUpdate = parsed.completedAt ? new Date(parsed.completedAt) : new Date();
+    } else {
+      completedAtUpdate = null;
+    }
+  } else if (parsed.completedAt !== undefined) {
+    completedAtUpdate = parsed.completedAt ? new Date(parsed.completedAt) : null;
+  }
+
   await updateCalendarEventRecord(owner, id, {
     ...(parsed.title !== undefined && { title: parsed.title }),
     ...(parsed.description !== undefined && { description: parsed.description }),
@@ -138,6 +153,8 @@ export async function updateCalendarEvent(id: string, input: UpdateCalendarEvent
     ...(parsed.projectId !== undefined && { projectId: parsed.projectId }),
     ...(parsed.reminderMinutes !== undefined && { reminderMinutes: parsed.reminderMinutes }),
     ...(parsed.ignoreQuietHours !== undefined && { ignoreQuietHours: parsed.ignoreQuietHours }),
+    ...(parsed.isCompleted !== undefined && { isCompleted: parsed.isCompleted }),
+    ...(completedAtUpdate !== undefined && { completedAt: completedAtUpdate }),
   });
 
   return findCalendarEventRecord(owner, id);

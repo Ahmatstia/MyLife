@@ -2,16 +2,18 @@ import { requirePageUser } from "@/lib/auth";
 import { getCalendarEvents } from "@/services/calendar-event.service";
 import { getProjects } from "@/services/project.service";
 import { findTodayTasks } from "@/repositories/today.repository";
+import { getUserPreference } from "@/services/user-preference.service";
 import { CalendarManager } from "./CalendarManager";
 
 export const dynamic = "force-dynamic";
 
 export default async function CalendarPage() {
   const user = await requirePageUser();
-  const [events, projects, tasks] = await Promise.all([
+  const [events, projects, tasks, pref] = await Promise.all([
     getCalendarEvents(user.id),
     getProjects(user.id),
     findTodayTasks(user.id),
+    getUserPreference(user.id).catch(() => null),
   ]);
 
   const formattedProjects = projects.map((p) => ({ id: p.id, title: p.title }));
@@ -29,6 +31,7 @@ export default async function CalendarPage() {
         initialEvents={events}
         projects={formattedProjects}
         tasks={formattedTasks}
+        defaultReminderMinutes={pref?.defaultReminderMinutes ?? 15}
       />
     </div>
   );

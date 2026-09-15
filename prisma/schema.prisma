@@ -463,6 +463,8 @@ model CalendarEvent {
   projectId   String?
   reminderMinutes   Int?      // per-event override; null = pakai UserPreference.defaultReminderMinutes
   ignoreQuietHours  Boolean  @default(false) // true = kirim reminder meski quiet hours (untuk alarm pagi)
+  isCompleted       Boolean  @default(false)
+  completedAt       DateTime?
   createdAt   DateTime       @default(now())
   updatedAt   DateTime       @updatedAt
 

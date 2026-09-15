@@ -255,6 +255,8 @@ describe("Phase 6: Insights & Life Intelligence Layer Verification", () => {
         recurrenceEnd: null,
         reminderMinutes: null,
         ignoreQuietHours: false,
+        isCompleted: false,
+        completedAt: null,
         createdAt: base,
         updatedAt: base,
       };
@@ -275,6 +277,8 @@ describe("Phase 6: Insights & Life Intelligence Layer Verification", () => {
         recurrenceEnd: null,
         reminderMinutes: null,
         ignoreQuietHours: false,
+        isCompleted: false,
+        completedAt: null,
         createdAt: base,
         updatedAt: base,
       };
@@ -295,6 +299,8 @@ describe("Phase 6: Insights & Life Intelligence Layer Verification", () => {
         recurrenceEnd: null,
         reminderMinutes: null,
         ignoreQuietHours: false,
+        isCompleted: false,
+        completedAt: null,
         createdAt: base,
         updatedAt: base,
       };

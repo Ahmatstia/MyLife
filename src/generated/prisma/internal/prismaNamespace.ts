@@ -1879,6 +1879,8 @@ export const CalendarEventScalarFieldEnum = {
   projectId: 'projectId',
   reminderMinutes: 'reminderMinutes',
   ignoreQuietHours: 'ignoreQuietHours',
+  isCompleted: 'isCompleted',
+  completedAt: 'completedAt',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
