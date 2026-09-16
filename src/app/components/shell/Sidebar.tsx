@@ -132,10 +132,10 @@ export function Sidebar({
                 : "opacity-0 max-w-0 -translate-x-2 pointer-events-none"
             }`}
           >
-            <span className="text-[15px] font-bold tracking-tight text-white">
+            <span className="text-[15px] font-bold tracking-tight text-slate-900 dark:text-white">
               My<span className="gradient-text">Life</span>
             </span>
-            <span className="text-[9.5px] font-semibold uppercase tracking-[0.18em] text-[#94a3b8]">
+            <span className="text-[9.5px] font-semibold uppercase tracking-[0.18em] text-slate-500 dark:text-[#94a3b8]">
               Personal Life OS
             </span>
           </div>
@@ -154,11 +154,11 @@ export function Sidebar({
             } ${
               isPinned
                 ? "bg-[#8B5CF6]/20 text-[#d0bcff] hover:bg-[#8B5CF6]/30 border border-[#8B5CF6]/30 shadow-[0_0_8px_rgba(139,92,246,0.2)]"
-                : "text-[#94a3b8] hover:bg-white/10 hover:text-white"
+                : "text-slate-500 dark:text-[#94a3b8] hover:bg-slate-100 dark:hover:bg-white/10 hover:text-slate-900 dark:hover:text-white"
             }`}
           >
             <svg
-              className={`w-3.5 h-3.5 transition-transform duration-300 ${isPinned ? "text-[#d0bcff] rotate-45" : "text-[#94a3b8]"}`}
+              className={`w-3.5 h-3.5 transition-transform duration-300 ${isPinned ? "text-[#d0bcff] rotate-45" : "text-slate-500 dark:text-[#94a3b8]"}`}
               viewBox="0 0 24 24"
               fill={isPinned ? "currentColor" : "none"}
               stroke="currentColor"
@@ -183,12 +183,12 @@ export function Sidebar({
                     : "opacity-0 max-h-0 pointer-events-none py-0"
                 }`}
               >
-                <p className="px-3 text-[9.5px] font-bold uppercase tracking-[0.16em] text-[#64748b] whitespace-nowrap">
+                <p className="px-3 text-[9.5px] font-bold uppercase tracking-[0.16em] text-slate-400 dark:text-[#64748b] whitespace-nowrap">
                   {group.title}
                 </p>
               </div>
               <div
-                className={`mx-auto w-6 bg-white/[0.08] transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] ${
+                className={`mx-auto w-6 bg-slate-200/80 dark:bg-white/[0.08] transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] ${
                   isExpanded ? "h-0 my-0 opacity-0 pointer-events-none" : "h-px my-2 opacity-100"
                 }`}
               />
@@ -210,8 +210,8 @@ export function Sidebar({
                     isExpanded ? "px-2.5 gap-2.5 w-full" : "w-10 justify-center mx-auto px-0"
                   } ${
                     active
-                      ? "bg-[#8B5CF6]/15 text-white border border-[#8B5CF6]/35 shadow-[0_0_12px_rgba(139,92,246,0.15)]"
-                      : "text-[#94a3b8] hover:bg-white/[0.06] hover:text-white border border-transparent"
+                      ? "bg-[#8B5CF6]/15 text-[#6d28d9] dark:text-white border border-[#8B5CF6]/35 shadow-sm"
+                      : "text-slate-600 dark:text-[#94a3b8] hover:bg-slate-100 dark:hover:bg-white/[0.06] hover:text-slate-900 dark:hover:text-white border border-transparent"
                   }`}
                 >
                   {active && (
@@ -222,7 +222,7 @@ export function Sidebar({
                   )}
                   <span
                     className={`flex h-5 w-5 shrink-0 items-center justify-center transition-colors ${
-                      active ? item.color : "text-[#94a3b8] group-hover:text-white"
+                      active ? item.color : "text-slate-400 dark:text-[#94a3b8] group-hover:text-slate-700 dark:group-hover:text-white"
                     }`}
                   >
                     <Icon name={item.icon} size={17} />
@@ -243,8 +243,8 @@ export function Sidebar({
                       <span
                         className={`text-[9.5px] font-semibold px-1.5 py-0.5 rounded transition-all shrink-0 ${
                           active
-                            ? "bg-white/10 text-white"
-                            : "bg-white/[0.04] text-[#64748b] group-hover:bg-white/[0.08] group-hover:text-[#94a3b8]"
+                            ? "bg-white/40 dark:bg-white/10 text-[#6d28d9] dark:text-white"
+                            : "bg-slate-100 dark:bg-white/[0.04] text-slate-500 dark:text-[#64748b] group-hover:bg-slate-200 dark:group-hover:bg-white/[0.08] group-hover:text-slate-700 dark:group-hover:text-[#94a3b8]"
                         }`}
                       >
                         {item.verb}
@@ -255,7 +255,7 @@ export function Sidebar({
                   {/* Collapsed unread dot indicator */}
                   {item.href === "/notifications" && unreadCount > 0 && (
                     <span
-                      className={`absolute top-1.5 right-1.5 h-2 w-2 rounded-full bg-[#F43F5E] ring-2 ring-[#0c0e14] animate-pulse transition-opacity duration-300 ${
+                      className={`absolute top-1.5 right-1.5 h-2 w-2 rounded-full bg-[#F43F5E] ring-2 ring-white dark:ring-[#0c0e14] animate-pulse transition-opacity duration-300 ${
                         isExpanded ? "opacity-0 pointer-events-none" : "opacity-100"
                       }`}
                     />
@@ -268,7 +268,7 @@ export function Sidebar({
       </nav>
 
       {/* Bottom section */}
-      <div className="mt-4 space-y-1 border-t border-white/[0.08] pt-3 overflow-hidden shrink-0">
+      <div className="mt-4 space-y-1 border-t border-slate-200/80 dark:border-white/[0.08] pt-3 overflow-hidden shrink-0">
         {/* Tutorial */}
         <Link
           href="/tutorial"
@@ -280,8 +280,8 @@ export function Sidebar({
             isExpanded ? "px-2.5 gap-2.5 w-full" : "w-10 justify-center mx-auto px-0"
           } ${
             isActive("/tutorial", pathname)
-              ? "bg-[#8B5CF6]/15 border-[#8B5CF6]/35 text-white"
-              : "text-[#94a3b8] hover:bg-white/[0.06] hover:text-white border-transparent"
+              ? "bg-[#8B5CF6]/15 border-[#8B5CF6]/35 text-[#6d28d9] dark:text-white"
+              : "text-slate-600 dark:text-[#94a3b8] hover:bg-slate-100 dark:hover:bg-white/[0.06] hover:text-slate-900 dark:hover:text-white border-transparent"
           }`}
         >
           <span className="flex h-5 w-5 shrink-0 items-center justify-center text-[#F59E0B]">
@@ -295,7 +295,7 @@ export function Sidebar({
             }`}
           >
             <span className="text-[13px] font-medium truncate mr-1.5">Panduan Tutorial</span>
-            <span className="text-[9.5px] font-semibold px-1.5 py-0.5 rounded bg-white/[0.04] text-[#64748b] shrink-0">
+            <span className="text-[9.5px] font-semibold px-1.5 py-0.5 rounded bg-slate-100 dark:bg-white/[0.04] text-slate-500 dark:text-[#64748b] shrink-0">
               Bantuan
             </span>
           </div>
@@ -312,11 +312,11 @@ export function Sidebar({
             isExpanded ? "px-2.5 gap-2.5 w-full" : "w-10 justify-center mx-auto px-0"
           } ${
             isActive("/settings", pathname)
-              ? "bg-[#8B5CF6]/15 border-[#8B5CF6]/35 text-white"
-              : "text-[#94a3b8] hover:bg-white/[0.06] hover:text-white border-transparent"
+              ? "bg-[#8B5CF6]/15 border-[#8B5CF6]/35 text-[#6d28d9] dark:text-white"
+              : "text-slate-600 dark:text-[#94a3b8] hover:bg-slate-100 dark:hover:bg-white/[0.06] hover:text-slate-900 dark:hover:text-white border-transparent"
           }`}
         >
-          <span className="flex h-5 w-5 shrink-0 items-center justify-center text-[#94a3b8] group-hover:text-white transition-colors">
+          <span className="flex h-5 w-5 shrink-0 items-center justify-center text-slate-400 dark:text-[#94a3b8] group-hover:text-slate-700 dark:group-hover:text-white transition-colors">
             <Icon name="settings" size={16} />
           </span>
           <div
@@ -327,7 +327,7 @@ export function Sidebar({
             }`}
           >
             <span className="text-[13px] font-medium truncate mr-1.5">Pengaturan</span>
-            <span className="text-[9.5px] font-semibold px-1.5 py-0.5 rounded bg-white/[0.04] text-[#64748b] shrink-0">
+            <span className="text-[9.5px] font-semibold px-1.5 py-0.5 rounded bg-slate-100 dark:bg-white/[0.04] text-slate-500 dark:text-[#64748b] shrink-0">
               Sistem
             </span>
           </div>
@@ -335,7 +335,7 @@ export function Sidebar({
 
         {/* User Card */}
         <div
-          className={`flex items-center h-10 rounded-xl bg-white/[0.03] border border-white/[0.06] transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] ${
+          className={`flex items-center h-10 rounded-xl bg-slate-100/70 dark:bg-white/[0.03] border border-slate-200/80 dark:border-white/[0.06] transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] ${
             isExpanded ? "px-2.5 gap-2.5 w-full" : "w-10 justify-center mx-auto px-0"
           }`}
           title={!isExpanded ? user.name || "Akun" : undefined}
@@ -350,14 +350,14 @@ export function Sidebar({
                 : "opacity-0 max-w-0 -translate-x-2 pointer-events-none"
             }`}
           >
-            <span className="min-w-0 flex-1 truncate text-[12.5px] font-medium text-[#e2e2eb] mr-1">
+            <span className="min-w-0 flex-1 truncate text-[12.5px] font-medium text-slate-800 dark:text-[#e2e2eb] mr-1">
               {user.name || "Akun"}
             </span>
             <button
               onClick={logout}
               aria-label="Keluar"
               title="Keluar / Logout"
-              className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg text-[#94a3b8] transition-all hover:bg-[#F43F5E]/20 hover:text-[#F43F5E] cursor-pointer"
+              className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg text-slate-500 dark:text-[#94a3b8] transition-all hover:bg-[#F43F5E]/20 hover:text-[#F43F5E] cursor-pointer"
             >
               <Icon name="logout" size={14} />
             </button>

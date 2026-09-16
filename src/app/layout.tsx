@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Inter, Hanken_Grotesk, JetBrains_Mono } from "next/font/google";
 import { Suspense } from "react";
 import { NavigationProgressBar } from "@/app/components/core/NavigationProgressBar";
+import { ThemeProvider } from "@/app/components/theme/ThemeProvider";
 import "./globals.css";
 
 const inter = Inter({
@@ -33,10 +34,16 @@ export default function RootLayout({
   return (
     <html
       lang="id"
+      suppressHydrationWarning
       data-scroll-behavior="smooth"
       className={`${inter.variable} ${hanken.variable} ${jetbrains.variable}`}
     >
       <head>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `(function(){try{var t=localStorage.getItem('mylife_theme')||'LIGHT';var isDark=t==='DARK'||(t==='SYSTEM'&&window.matchMedia('(prefers-color-scheme: dark)').matches);if(isDark){document.documentElement.classList.add('dark');}else{document.documentElement.classList.remove('dark');}}catch(e){}})();`,
+          }}
+        />
         {/* eslint-disable-next-line @next/next/no-page-custom-font */}
         <link
           rel="stylesheet"
@@ -44,10 +51,12 @@ export default function RootLayout({
         />
       </head>
       <body className="font-sans antialiased">
-        <Suspense fallback={null}>
-          <NavigationProgressBar />
-        </Suspense>
-        {children}
+        <ThemeProvider>
+          <Suspense fallback={null}>
+            <NavigationProgressBar />
+          </Suspense>
+          {children}
+        </ThemeProvider>
       </body>
     </html>
   );

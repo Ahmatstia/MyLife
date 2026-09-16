@@ -146,41 +146,41 @@ const CATEGORY_MAP: Record<
   BLOCKED: {
     label: "Fokus",
     dot: "#d0bcff",
-    bg: "bg-[#340080]/25",
-    border: "border-[#d0bcff]/40",
-    text: "text-[#d0bcff]",
+    bg: "bg-purple-50 dark:bg-[#340080]/25",
+    border: "border-purple-200 dark:border-[#d0bcff]/40",
+    text: "text-purple-700 dark:text-[#d0bcff]",
     glow: "shadow-[0_0_20px_rgba(208,188,255,0.25)]",
   },
   WORK: {
     label: "Pekerjaan",
     dot: "#c0c1ff",
-    bg: "bg-[#3131c0]/25",
-    border: "border-[#c0c1ff]/40",
-    text: "text-[#c0c1ff]",
+    bg: "bg-indigo-50 dark:bg-[#3131c0]/25",
+    border: "border-indigo-200 dark:border-[#c0c1ff]/40",
+    text: "text-indigo-700 dark:text-[#c0c1ff]",
     glow: "",
   },
   PERSONAL: {
     label: "Pribadi",
     dot: "#4edea3",
-    bg: "bg-[#00311f]/40",
-    border: "border-[#4edea3]/40",
-    text: "text-[#4edea3]",
+    bg: "bg-emerald-50 dark:bg-[#00311f]/40",
+    border: "border-emerald-200 dark:border-[#4edea3]/40",
+    text: "text-emerald-700 dark:text-[#4edea3]",
     glow: "",
   },
   TASK_DEADLINE: {
     label: "Tenggat",
     dot: "#F43F5E",
-    bg: "bg-[#93000a]/35",
-    border: "border-[#F43F5E]/40",
-    text: "text-[#F43F5E]",
+    bg: "bg-rose-50 dark:bg-[#93000a]/35",
+    border: "border-rose-200 dark:border-[#F43F5E]/40",
+    text: "text-rose-700 dark:text-[#F43F5E]",
     glow: "",
   },
   REMINDER: {
     label: "Pengingat",
     dot: "#F59E0B",
-    bg: "bg-[#F59E0B]/15",
-    border: "border-[#F59E0B]/40",
-    text: "text-[#F59E0B]",
+    bg: "bg-amber-50 dark:bg-[#F59E0B]/15",
+    border: "border-amber-200 dark:border-[#F59E0B]/40",
+    text: "text-amber-700 dark:text-[#F59E0B]",
     glow: "",
   },
 };
@@ -260,10 +260,10 @@ function ToDoListView({
   return (
     <div className="flex flex-col gap-6 p-4 sm:p-6">
       {/* ── QUICK ADD BAR ── */}
-      <div className="bg-[#191b22] p-4 rounded-xl border border-white/[0.08] shadow-lg flex flex-col gap-3">
+      <div className="bg-white dark:bg-[#191b22] p-4 rounded-xl border border-slate-200 dark:border-white/[0.08] shadow-sm flex flex-col gap-3">
         <form onSubmit={handleFormSubmit} className="flex flex-col md:flex-row items-stretch md:items-center gap-2.5">
           <div className="relative flex-1">
-            <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#4edea3] font-bold text-sm">
+            <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-emerald-600 dark:text-[#4edea3] font-bold text-sm">
               +
             </span>
             <input
@@ -271,20 +271,20 @@ function ToDoListView({
               value={quickTitle}
               onChange={(e) => setQuickTitle(e.target.value)}
               placeholder="Tulis to-do baru... (cth: Bangun subuh, Sarapan, Beli buku)"
-              className="w-full bg-[#0c0e14] pl-8 pr-3.5 py-2.5 rounded-lg font-mono text-xs text-[#e2e2eb] border border-white/[0.06] placeholder-[#6b6675] focus:outline-none focus:border-[#4edea3]/60 shadow-inner"
+              className="w-full bg-slate-50 dark:bg-[#0c0e14] pl-8 pr-3.5 py-2.5 rounded-lg font-mono text-xs text-slate-900 dark:text-[#e2e2eb] border border-slate-200 dark:border-white/[0.06] placeholder:text-slate-400 dark:placeholder-[#6b6675] focus:outline-none focus:border-emerald-500 dark:focus:border-[#4edea3]/60 shadow-inner"
             />
           </div>
 
           {/* Quick time picker */}
           <div className="flex items-center gap-2 shrink-0">
-            <div className="flex items-center bg-[#0c0e14] rounded-lg border border-white/[0.06] p-0.5">
+            <div className="flex items-center bg-slate-100 dark:bg-[#0c0e14] rounded-lg border border-slate-200 dark:border-white/[0.06] p-0.5">
               <button
                 type="button"
                 onClick={() => setQuickMode("START_ONLY")}
                 className={`px-2.5 py-1.5 rounded font-mono text-xs transition-all ${
                   quickMode === "START_ONLY"
-                    ? "bg-[#340080] text-[#d0bcff] font-semibold"
-                    : "text-[#958ea0] hover:text-[#e2e2eb]"
+                    ? "bg-purple-100 text-purple-700 dark:bg-[#340080] dark:text-[#d0bcff] font-semibold"
+                    : "text-slate-500 dark:text-[#958ea0] hover:text-slate-900 dark:hover:text-[#e2e2eb]"
                 }`}
               >
                 ⏰ Jam
@@ -294,8 +294,8 @@ function ToDoListView({
                 onClick={() => setQuickMode("ALL_DAY")}
                 className={`px-2.5 py-1.5 rounded font-mono text-xs transition-all ${
                   quickMode === "ALL_DAY"
-                    ? "bg-[#340080] text-[#d0bcff] font-semibold"
-                    : "text-[#958ea0] hover:text-[#e2e2eb]"
+                    ? "bg-purple-100 text-purple-700 dark:bg-[#340080] dark:text-[#d0bcff] font-semibold"
+                    : "text-slate-500 dark:text-[#958ea0] hover:text-slate-900 dark:hover:text-[#e2e2eb]"
                 }`}
               >
                 📝 Bebas
@@ -307,14 +307,14 @@ function ToDoListView({
                 type="time"
                 value={quickTime}
                 onChange={(e) => setQuickTime(e.target.value)}
-                className="bg-[#0c0e14] px-2.5 py-2 rounded-lg font-mono text-xs text-[#4edea3] border border-white/[0.06] focus:outline-none focus:border-[#4edea3]/60 cursor-pointer"
+                className="bg-slate-50 dark:bg-[#0c0e14] px-2.5 py-2 rounded-lg font-mono text-xs text-emerald-600 dark:text-[#4edea3] border border-slate-200 dark:border-white/[0.06] focus:outline-none focus:border-emerald-500 dark:focus:border-[#4edea3]/60 cursor-pointer"
               />
             )}
 
             <select
               value={quickCategory}
               onChange={(e) => setQuickCategory(e.target.value)}
-              className="bg-[#0c0e14] px-2.5 py-2 rounded-lg font-mono text-xs text-[#d0bcff] border border-white/[0.06] focus:outline-none focus:border-[#d0bcff]/60 cursor-pointer"
+              className="bg-slate-50 dark:bg-[#0c0e14] px-2.5 py-2 rounded-lg font-mono text-xs text-purple-700 dark:text-[#d0bcff] border border-slate-200 dark:border-white/[0.06] focus:outline-none focus:border-purple-500 dark:focus:border-[#d0bcff]/60 cursor-pointer"
             >
               <option value="PERSONAL">🌱 Pribadi</option>
               <option value="BLOCKED">🎯 Fokus</option>
@@ -325,21 +325,21 @@ function ToDoListView({
             <button
               type="submit"
               disabled={submitting || !quickTitle.trim()}
-              className="px-4 py-2 bg-[#4edea3] hover:bg-[#3ec48e] disabled:opacity-40 text-[#00311f] font-mono text-xs font-bold rounded-lg transition-all shadow-[0_2px_12px_rgba(78,222,163,0.3)] active:scale-95 shrink-0"
+              className="px-4 py-2 bg-emerald-500 hover:bg-emerald-600 dark:bg-[#4edea3] dark:hover:bg-[#3ec48e] disabled:opacity-40 text-white dark:text-[#00311f] font-mono text-xs font-bold rounded-lg transition-all shadow-sm dark:shadow-[0_2px_12px_rgba(78,222,163,0.3)] active:scale-95 shrink-0"
             >
               {submitting ? "..." : "+ Tambah"}
             </button>
           </div>
         </form>
 
-        <div className="flex items-center justify-between text-[11px] text-[#958ea0] pt-1">
+        <div className="flex items-center justify-between text-[11px] text-slate-500 dark:text-[#958ea0] pt-1">
           <span>
             💡 <strong>Tips:</strong> To-do jam tidak mewajibkan jam selesai. Cukup tentukan jam mulai lalu ceklis saat selesai!
           </span>
           <button
             type="button"
             onClick={onOpenModal}
-            className="text-[#d0bcff] hover:underline font-mono text-xs"
+            className="text-purple-600 dark:text-[#d0bcff] hover:underline font-mono text-xs"
           >
             Form Lengkap &amp; Rutinitas ↗
           </button>
@@ -347,20 +347,20 @@ function ToDoListView({
       </div>
 
       {/* ── PROGRESS BAR & STATS ── */}
-      <div className="bg-[#191b22]/70 p-4 rounded-xl border border-white/[0.06] flex flex-col gap-2.5">
+      <div className="bg-white dark:bg-[#191b22]/70 p-4 rounded-xl border border-slate-200 dark:border-white/[0.06] flex flex-col gap-2.5 shadow-sm">
         <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2 font-mono text-xs text-[#e2e2eb]">
-            <span className="font-bold text-sm text-[#4edea3]">{completedCount}</span>
-            <span className="text-[#958ea0]">dari {totalCount} To-Do Selesai</span>
+          <div className="flex items-center gap-2 font-mono text-xs text-slate-800 dark:text-[#e2e2eb]">
+            <span className="font-bold text-sm text-emerald-600 dark:text-[#4edea3]">{completedCount}</span>
+            <span className="text-slate-500 dark:text-[#958ea0]">dari {totalCount} To-Do Selesai</span>
             {totalCount > 0 && progressPct === 100 && (
-              <span className="px-2 py-0.5 bg-[#4edea3]/20 text-[#4edea3] rounded-full text-[10px] font-bold animate-pulse">
+              <span className="px-2 py-0.5 bg-emerald-100 text-emerald-700 dark:bg-[#4edea3]/20 dark:text-[#4edea3] rounded-full text-[10px] font-bold animate-pulse">
                 Semua Beres! 🎉
               </span>
             )}
           </div>
 
           {/* Filter status */}
-          <div className="flex items-center gap-1 bg-[#0c0e14] p-0.5 rounded-lg border border-white/[0.06]">
+          <div className="flex items-center gap-1 bg-slate-100 dark:bg-[#0c0e14] p-0.5 rounded-lg border border-slate-200 dark:border-white/[0.06]">
             {(
               [
                 { id: "ALL", label: `Semua (${totalCount})` },
@@ -374,8 +374,8 @@ function ToDoListView({
                 onClick={() => setStatusFilter(s.id)}
                 className={`px-2.5 py-1 rounded font-mono text-[11px] transition-all ${
                   statusFilter === s.id
-                    ? "bg-[#340080] text-[#d0bcff] font-semibold"
-                    : "text-[#958ea0] hover:text-[#e2e2eb]"
+                    ? "bg-purple-100 text-purple-700 dark:bg-[#340080] dark:text-[#d0bcff] font-semibold shadow-xs"
+                    : "text-slate-500 dark:text-[#958ea0] hover:text-slate-900 dark:hover:text-[#e2e2eb]"
                 }`}
               >
                 {s.label}
@@ -384,9 +384,9 @@ function ToDoListView({
           </div>
         </div>
 
-        <div className="w-full h-2 bg-[#0c0e14] rounded-full overflow-hidden border border-white/[0.04]">
+        <div className="w-full h-2 bg-slate-100 dark:bg-[#0c0e14] rounded-full overflow-hidden border border-slate-200 dark:border-white/[0.04]">
           <div
-            className="h-full bg-gradient-to-r from-[#4edea3] to-[#a078ff] rounded-full transition-all duration-500"
+            className="h-full bg-gradient-to-r from-emerald-400 to-purple-500 dark:from-[#4edea3] dark:to-[#a078ff] rounded-full transition-all duration-500"
             style={{ width: `${progressPct}%` }}
           />
         </div>
@@ -394,14 +394,14 @@ function ToDoListView({
 
       {/* ── TO-DO LIST CONTENT ── */}
       {totalCount === 0 ? (
-        <div className="p-12 text-center flex flex-col items-center justify-center gap-3 bg-[#191b22]/30 rounded-xl border border-dashed border-white/[0.08]">
-          <div className="w-12 h-12 rounded-full bg-[#340080]/30 border border-[#d0bcff]/20 flex items-center justify-center text-xl">
+        <div className="p-12 text-center flex flex-col items-center justify-center gap-3 bg-slate-50 dark:bg-[#191b22]/30 rounded-xl border border-dashed border-slate-300 dark:border-white/[0.08]">
+          <div className="w-12 h-12 rounded-full bg-purple-100 dark:bg-[#340080]/30 border border-purple-200 dark:border-[#d0bcff]/20 flex items-center justify-center text-xl">
             📋
           </div>
-          <h3 className="text-base font-semibold text-[#e2e2eb]">
+          <h3 className="text-base font-semibold text-slate-900 dark:text-[#e2e2eb]">
             Belum ada to-do untuk hari ini
           </h3>
-          <p className="text-xs text-[#958ea0] max-w-sm">
+          <p className="text-xs text-slate-500 dark:text-[#958ea0] max-w-sm">
             Mulai susun harimu dari bangun pagi, sarapan, belajar, hingga tidur malam. Tulis di kotak tambah to-do di atas!
           </p>
         </div>
@@ -410,9 +410,9 @@ function ToDoListView({
           {/* 1. SCHEDULED TO-DOS */}
           {scheduledEvents.length > 0 && (
             <div className="flex flex-col gap-2.5">
-              <div className="flex items-center gap-2 font-mono text-xs font-bold text-[#d0bcff] tracking-wider uppercase">
+              <div className="flex items-center gap-2 font-mono text-xs font-bold text-purple-700 dark:text-[#d0bcff] tracking-wider uppercase">
                 <span>⏰ TO-DO BERJADWAL</span>
-                <span className="text-[#958ea0]">({scheduledEvents.length})</span>
+                <span className="text-slate-500 dark:text-[#958ea0]">({scheduledEvents.length})</span>
               </div>
 
               <div className="flex flex-col gap-2">
@@ -437,8 +437,8 @@ function ToDoListView({
                         key={ev.id}
                         className={`group flex items-center justify-between gap-3 p-3 sm:p-3.5 rounded-xl border transition-all ${
                           isDone
-                            ? "bg-[#0c0e14]/60 border-white/[0.04] opacity-60"
-                            : `${cat.bg} ${cat.border} hover:border-[#4edea3]/50 shadow-sm`
+                            ? "bg-slate-50 dark:bg-[#0c0e14]/60 border-slate-200 dark:border-white/[0.04] opacity-60"
+                            : `${cat.bg} ${cat.border} hover:border-emerald-500/50 dark:hover:border-[#4edea3]/50 shadow-xs`
                         }`}
                       >
                         <div className="flex items-center gap-3 min-w-0 flex-1">
@@ -448,8 +448,8 @@ function ToDoListView({
                             onClick={() => onToggleComplete(ev.id, isDone)}
                             className={`w-6 h-6 rounded-md border flex items-center justify-center transition-all shrink-0 cursor-pointer ${
                               isDone
-                                ? "bg-[#4edea3] border-[#4edea3] text-[#00311f] shadow-[0_0_10px_rgba(78,222,163,0.5)]"
-                                : "border-white/30 bg-[#0c0e14] hover:border-[#4edea3] text-transparent hover:text-[#4edea3]/50"
+                                ? "bg-emerald-500 border-emerald-500 text-white dark:bg-[#4edea3] dark:border-[#4edea3] dark:text-[#00311f] shadow-[0_0_10px_rgba(78,222,163,0.5)]"
+                                : "border-slate-300 dark:border-white/30 bg-white dark:bg-[#0c0e14] hover:border-emerald-500 dark:hover:border-[#4edea3] text-transparent hover:text-emerald-500/50"
                             }`}
                             title={isDone ? "Klik untuk tandai belum selesai" : "Klik untuk tandai selesai"}
                           >
@@ -459,10 +459,10 @@ function ToDoListView({
                           </button>
 
                           {/* Time badge */}
-                          <div className="flex items-center gap-1 font-mono text-xs px-2 py-0.5 rounded bg-black/40 border border-white/[0.06] text-[#4edea3] font-semibold shrink-0">
+                          <div className="flex items-center gap-1 font-mono text-xs px-2 py-0.5 rounded bg-white dark:bg-black/40 border border-slate-200 dark:border-white/[0.06] text-emerald-700 dark:text-[#4edea3] font-semibold shrink-0 shadow-xs">
                             <span>{formatTimeStr(evStart)}</span>
                             {isRange && (
-                              <span className="text-[#958ea0] font-normal">
+                              <span className="text-slate-400 dark:text-[#958ea0] font-normal">
                                 –{formatTimeStr(evEnd)}
                               </span>
                             )}
@@ -474,20 +474,20 @@ function ToDoListView({
                               <span
                                 className={`text-sm font-medium truncate ${
                                   isDone
-                                    ? "line-through text-[#958ea0]"
-                                    : "text-[#e2e2eb]"
+                                    ? "line-through text-slate-400 dark:text-[#958ea0]"
+                                    : "text-slate-900 dark:text-[#e2e2eb]"
                                 }`}
                               >
                                 {ev.title}
                               </span>
                               {ev.recurrence && ev.recurrence !== "NONE" && (
-                                <span className="font-mono text-[9px] bg-white/[0.08] text-[#cbc3d7] px-1 rounded shrink-0" title={recurrenceLabel[ev.recurrence]}>
+                                <span className="font-mono text-[9px] bg-slate-100 dark:bg-white/[0.08] text-slate-600 dark:text-[#cbc3d7] px-1 rounded shrink-0 border border-slate-200 dark:border-transparent" title={recurrenceLabel[ev.recurrence]}>
                                   🔁 {ev.recurrence === "DAILY" ? "Harian" : ev.recurrence === "WEEKLY" ? "Mingguan" : "Bulanan"}
                                 </span>
                               )}
                             </div>
                             {ev.description && (
-                              <span className="text-xs text-[#958ea0] truncate">
+                              <span className="text-xs text-slate-500 dark:text-[#958ea0] truncate">
                                 {ev.description}
                               </span>
                             )}
@@ -497,7 +497,7 @@ function ToDoListView({
                         {/* Right side actions */}
                         <div className="flex items-center gap-2 shrink-0">
                           <span
-                            className={`font-mono text-[10px] px-2 py-0.5 rounded-full ${cat.text} bg-black/30 border border-white/[0.06] hidden sm:inline-block`}
+                            className={`font-mono text-[10px] px-2 py-0.5 rounded-full ${cat.text} bg-white dark:bg-black/30 border border-slate-200 dark:border-white/[0.06] hidden sm:inline-block shadow-xs`}
                           >
                             {cat.label}
                           </span>
@@ -506,7 +506,7 @@ function ToDoListView({
                             <button
                               type="button"
                               onClick={() => onSelectEvent(ev)}
-                              className="p-1.5 hover:bg-white/[0.08] rounded text-[#958ea0] hover:text-[#e2e2eb] transition-colors"
+                              className="p-1.5 hover:bg-slate-100 dark:hover:bg-white/[0.08] rounded text-slate-500 dark:text-[#958ea0] hover:text-slate-900 dark:hover:text-[#e2e2eb] transition-colors"
                               title="Edit / Detail"
                             >
                               <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -517,7 +517,7 @@ function ToDoListView({
                             <button
                               type="button"
                               onClick={() => onDeleteEvent(ev.id)}
-                              className="p-1.5 hover:bg-red-500/20 rounded text-[#958ea0] hover:text-red-400 transition-colors"
+                              className="p-1.5 hover:bg-red-500/20 rounded text-slate-500 dark:text-[#958ea0] hover:text-red-500 transition-colors"
                               title="Hapus"
                             >
                               <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -537,9 +537,9 @@ function ToDoListView({
           {/* 2. ANYTIME / ALL-DAY TO-DOS */}
           {allDayEvents.length > 0 && (
             <div className="flex flex-col gap-2.5">
-              <div className="flex items-center gap-2 font-mono text-xs font-bold text-[#4edea3] tracking-wider uppercase">
+              <div className="flex items-center gap-2 font-mono text-xs font-bold text-emerald-600 dark:text-[#4edea3] tracking-wider uppercase">
                 <span>📌 TO-DO FLEKSIBEL (KAPAN SAJA HARI INI)</span>
-                <span className="text-[#958ea0]">({allDayEvents.length})</span>
+                <span className="text-slate-500 dark:text-[#958ea0]">({allDayEvents.length})</span>
               </div>
 
               <div className="flex flex-col gap-2">
@@ -558,8 +558,8 @@ function ToDoListView({
                         key={ev.id}
                         className={`group flex items-center justify-between gap-3 p-3 sm:p-3.5 rounded-xl border transition-all ${
                           isDone
-                            ? "bg-[#0c0e14]/60 border-white/[0.04] opacity-60"
-                            : "bg-[#191b22] border-white/[0.08] hover:border-[#4edea3]/50 shadow-sm"
+                            ? "bg-slate-50 dark:bg-[#0c0e14]/60 border-slate-200 dark:border-white/[0.04] opacity-60"
+                            : "bg-white dark:bg-[#191b22] border-slate-200 dark:border-white/[0.08] hover:border-emerald-500/50 dark:hover:border-[#4edea3]/50 shadow-xs"
                         }`}
                       >
                         <div className="flex items-center gap-3 min-w-0 flex-1">
@@ -569,8 +569,8 @@ function ToDoListView({
                             onClick={() => onToggleComplete(ev.id, isDone)}
                             className={`w-6 h-6 rounded-md border flex items-center justify-center transition-all shrink-0 cursor-pointer ${
                               isDone
-                                ? "bg-[#4edea3] border-[#4edea3] text-[#00311f] shadow-[0_0_10px_rgba(78,222,163,0.5)]"
-                                : "border-white/30 bg-[#0c0e14] hover:border-[#4edea3] text-transparent hover:text-[#4edea3]/50"
+                                ? "bg-emerald-500 border-emerald-500 text-white dark:bg-[#4edea3] dark:border-[#4edea3] dark:text-[#00311f] shadow-[0_0_10px_rgba(78,222,163,0.5)]"
+                                : "border-slate-300 dark:border-white/30 bg-white dark:bg-[#0c0e14] hover:border-emerald-500 dark:hover:border-[#4edea3] text-transparent hover:text-emerald-500/50"
                             }`}
                             title={isDone ? "Klik untuk tandai belum selesai" : "Klik untuk tandai selesai"}
                           >
@@ -579,7 +579,7 @@ function ToDoListView({
                             </svg>
                           </button>
 
-                          <span className="font-mono text-xs px-2 py-0.5 rounded bg-white/[0.06] text-[#cbc3d7] shrink-0">
+                          <span className="font-mono text-xs px-2 py-0.5 rounded bg-slate-100 dark:bg-white/[0.06] text-slate-600 dark:text-[#cbc3d7] shrink-0 border border-slate-200 dark:border-transparent">
                             Bebas Jam
                           </span>
 
@@ -587,14 +587,14 @@ function ToDoListView({
                             <span
                               className={`text-sm font-medium truncate ${
                                 isDone
-                                  ? "line-through text-[#958ea0]"
-                                  : "text-[#e2e2eb]"
+                                  ? "line-through text-slate-400 dark:text-[#958ea0]"
+                                  : "text-slate-900 dark:text-[#e2e2eb]"
                               }`}
                             >
                               {ev.title}
                             </span>
                             {ev.description && (
-                              <span className="text-xs text-[#958ea0] truncate">
+                              <span className="text-xs text-slate-500 dark:text-[#958ea0] truncate">
                                 {ev.description}
                               </span>
                             )}
@@ -604,7 +604,7 @@ function ToDoListView({
                         {/* Actions */}
                         <div className="flex items-center gap-2 shrink-0">
                           <span
-                            className={`font-mono text-[10px] px-2 py-0.5 rounded-full ${cat.text} bg-black/30 border border-white/[0.06] hidden sm:inline-block`}
+                            className={`font-mono text-[10px] px-2 py-0.5 rounded-full ${cat.text} bg-white dark:bg-black/30 border border-slate-200 dark:border-white/[0.06] hidden sm:inline-block shadow-xs`}
                           >
                             {cat.label}
                           </span>
@@ -613,7 +613,7 @@ function ToDoListView({
                             <button
                               type="button"
                               onClick={() => onSelectEvent(ev)}
-                              className="p-1.5 hover:bg-white/[0.08] rounded text-[#958ea0] hover:text-[#e2e2eb] transition-colors"
+                              className="p-1.5 hover:bg-slate-100 dark:hover:bg-white/[0.08] rounded text-slate-500 dark:text-[#958ea0] hover:text-slate-900 dark:hover:text-[#e2e2eb] transition-colors"
                               title="Edit / Detail"
                             >
                               <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -624,7 +624,7 @@ function ToDoListView({
                             <button
                               type="button"
                               onClick={() => onDeleteEvent(ev.id)}
-                              className="p-1.5 hover:bg-red-500/20 rounded text-[#958ea0] hover:text-red-400 transition-colors"
+                              className="p-1.5 hover:bg-red-500/20 rounded text-slate-500 dark:text-[#958ea0] hover:text-red-500 transition-colors"
                               title="Hapus"
                             >
                               <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -702,38 +702,38 @@ function DailyFlowView({
   return (
     <div className="flex flex-col w-full">
       {/* Summary strip */}
-      <div className="bg-[#191b22] px-4 py-3 border-b border-white/[0.06] flex flex-wrap items-center justify-between gap-3">
+      <div className="bg-white dark:bg-[#191b22] px-4 py-3 border-b border-slate-200 dark:border-white/[0.06] flex flex-wrap items-center justify-between gap-3">
         <div className="flex items-center gap-3">
           {active ? (
             <div className="flex items-center gap-2">
-              <span className="w-2 h-2 rounded-full bg-[#4edea3] animate-ping" />
-              <span className="font-mono text-xs text-[#958ea0]">SEKARANG:</span>
-              <span className="font-semibold text-xs text-[#e2e2eb]">
+              <span className="w-2 h-2 rounded-full bg-emerald-500 dark:bg-[#4edea3] animate-ping" />
+              <span className="font-mono text-xs text-slate-500 dark:text-[#958ea0]">SEKARANG:</span>
+              <span className="font-semibold text-xs text-slate-900 dark:text-[#e2e2eb]">
                 {active.title}
               </span>
-              <span className="font-mono text-[10px] text-[#4edea3] bg-[#4edea3]/10 border border-[#4edea3]/30 px-1.5 py-0.2 rounded">
+              <span className="font-mono text-[10px] text-emerald-700 dark:text-[#4edea3] bg-emerald-50 dark:bg-[#4edea3]/10 border border-emerald-200 dark:border-[#4edea3]/30 px-1.5 py-0.2 rounded font-semibold">
                 {formatTimeStr(new Date(active.startTime))}–{formatTimeStr(new Date(active.endTime))}
               </span>
             </div>
           ) : (
             <div className="flex items-center gap-2">
-              <span className="w-2 h-2 rounded-full bg-[#958ea0]" />
-              <span className="font-mono text-xs text-[#958ea0]">
+              <span className="w-2 h-2 rounded-full bg-slate-400 dark:bg-[#958ea0]" />
+              <span className="font-mono text-xs text-slate-500 dark:text-[#958ea0]">
                 Tidak ada aktivitas terjadwal saat ini
               </span>
             </div>
           )}
         </div>
 
-        <div className="flex items-center gap-4 font-mono text-xs">
-          <span className="text-[#4edea3]">✓ {done} Selesai</span>
-          <span className="text-[#cbc3d7]">⏳ {upcoming} Mendatang</span>
-          <span className="text-[#d0bcff]">⚡ {productiveHStr} Produktif</span>
+        <div className="flex items-center gap-4 font-mono text-xs font-semibold">
+          <span className="text-emerald-700 dark:text-[#4edea3]">✓ {done} Selesai</span>
+          <span className="text-slate-600 dark:text-[#cbc3d7]">⏳ {upcoming} Mendatang</span>
+          <span className="text-purple-700 dark:text-[#d0bcff]">⚡ {productiveHStr} Produktif</span>
         </div>
       </div>
 
       {/* Timeline container */}
-      <div className="relative overflow-y-auto max-h-[75vh] bg-[#0c0e14]/40 select-none">
+      <div className="relative overflow-y-auto max-h-[75vh] bg-slate-50/50 dark:bg-[#0c0e14]/40 select-none">
         <div
           className="relative"
           style={{ height: `${hours.length * PX_PER_HOUR}px` }}
@@ -747,13 +747,13 @@ function DailyFlowView({
                 style={{ top: `${nowTopPx}px` }}
               >
                 <div className="w-16 pr-2 flex items-center justify-end">
-                  <span className="font-mono text-[10px] text-[#F43F5E] font-bold bg-[#131825] px-1 rounded shadow-sm border border-[#F43F5E]/30">
+                  <span className="font-mono text-[10px] text-rose-600 dark:text-[#F43F5E] font-bold bg-white dark:bg-[#131825] px-1 rounded shadow-sm border border-rose-200 dark:border-[#F43F5E]/30">
                     {formatTimeStr(now)}
                   </span>
                 </div>
                 <div className="flex-1 relative flex items-center">
-                  <div className="h-[2px] w-full bg-[#F43F5E] shadow-[0_0_10px_rgba(244,63,94,0.8)]" />
-                  <div className="absolute left-3 -top-2 flex items-center gap-1 bg-[#F43F5E] text-white text-[9px] font-mono px-1.5 py-0.5 rounded-full shadow-[0_0_8px_rgba(244,63,94,0.9)]">
+                  <div className="h-[2px] w-full bg-rose-500 dark:bg-[#F43F5E] shadow-[0_0_10px_rgba(244,63,94,0.8)]" />
+                  <div className="absolute left-3 -top-2 flex items-center gap-1 bg-rose-500 dark:bg-[#F43F5E] text-white text-[9px] font-mono px-1.5 py-0.5 rounded-full shadow-sm">
                     <span className="w-1.5 h-1.5 rounded-full bg-white animate-ping" />
                     <span>SEKARANG</span>
                   </div>
@@ -767,15 +767,15 @@ function DailyFlowView({
             return (
               <div
                 key={h}
-                className={`absolute left-0 right-0 border-b border-white/[0.04] flex items-start ${
-                  isCurrent ? "bg-[#340080]/10" : ""
+                className={`absolute left-0 right-0 border-b border-slate-200/60 dark:border-white/[0.04] flex items-start ${
+                  isCurrent ? "bg-purple-50/70 dark:bg-[#340080]/10" : ""
                 }`}
                 style={{
                   top: `${i * PX_PER_HOUR}px`,
                   height: `${PX_PER_HOUR}px`,
                 }}
               >
-                <div className="w-16 pt-1 pr-3 text-right font-mono text-[11px] text-[#958ea0] select-none border-r border-white/[0.04] shrink-0">
+                <div className="w-16 pt-1 pr-3 text-right font-mono text-[11px] text-slate-500 dark:text-[#958ea0] select-none border-r border-slate-200/60 dark:border-white/[0.04] shrink-0">
                   {String(h).padStart(2, "0")}:00
                 </div>
 
@@ -783,11 +783,11 @@ function DailyFlowView({
                 <button
                   type="button"
                   onClick={() => onAddAtHour(h)}
-                  className="absolute left-16 right-0 top-0 bottom-0 group flex items-center hover:bg-white/[0.02] transition-colors"
+                  className="absolute left-16 right-0 top-0 bottom-0 group flex items-center hover:bg-slate-100/60 dark:hover:bg-white/[0.02] transition-colors"
                   title={`Tambah jadwal pukul ${String(h).padStart(2, "0")}:00`}
                 >
-                  <span className="opacity-0 group-hover:opacity-100 ml-3 text-[10px] text-[#494454] font-mono transition-opacity flex items-center gap-1">
-                    <span className="text-[#d0bcff]/60">+</span> Tambah di{" "}
+                  <span className="opacity-0 group-hover:opacity-100 ml-3 text-[10px] text-slate-400 dark:text-[#494454] font-mono transition-opacity flex items-center gap-1">
+                    <span className="text-purple-600 dark:text-[#d0bcff]/60 font-bold">+</span> Tambah di{" "}
                     {String(h).padStart(2, "0")}:00
                   </span>
                 </button>
@@ -838,8 +838,8 @@ function DailyFlowView({
                         }}
                         className={`w-4 h-4 rounded border flex items-center justify-center transition-all shrink-0 cursor-pointer ${
                           isDone
-                            ? "bg-[#4edea3] border-[#4edea3] text-[#00311f]"
-                            : "border-white/30 bg-[#0c0e14] hover:border-[#4edea3] text-transparent hover:text-[#4edea3]"
+                            ? "bg-emerald-500 border-emerald-500 text-white dark:bg-[#4edea3] dark:border-[#4edea3] dark:text-[#00311f] shadow-xs"
+                            : "border-slate-300 dark:border-white/30 bg-white dark:bg-[#0c0e14] hover:border-emerald-500 dark:hover:border-[#4edea3] text-transparent hover:text-emerald-500"
                         }`}
                         title={isDone ? "Tandai belum selesai" : "Tandai selesai"}
                       >
@@ -847,12 +847,12 @@ function DailyFlowView({
                       </button>
 
                       {isOngoing && (
-                        <span className="shrink-0 flex items-center gap-1 font-mono text-[9px] font-bold text-[#4edea3]">
-                          <span className="w-1.5 h-1.5 rounded-full bg-[#4edea3] animate-pulse" />
+                        <span className="shrink-0 flex items-center gap-1 font-mono text-[9px] font-bold text-emerald-600 dark:text-[#4edea3]">
+                          <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 dark:bg-[#4edea3] animate-pulse" />
                           BERJALAN
                         </span>
                       )}
-                      <span className={`text-xs font-semibold truncate ${cat.text} ${isDone ? "line-through text-[#958ea0]" : ""}`}>
+                      <span className={`text-xs font-semibold truncate ${cat.text} ${isDone ? "line-through text-slate-400 dark:text-[#958ea0]" : ""}`}>
                         {ev.title}
                       </span>
                     </div>
@@ -860,7 +860,7 @@ function DailyFlowView({
                     <div className="flex items-center gap-1.5 shrink-0">
                       {hasRecurrence && (
                         <span
-                          className="font-mono text-[9px] bg-white/[0.08] text-[#cbc3d7] px-1 rounded"
+                          className="font-mono text-[9px] bg-white/60 dark:bg-white/[0.08] text-slate-600 dark:text-[#cbc3d7] px-1 rounded border border-slate-200/50 dark:border-transparent"
                           title={recurrenceLabel[ev.recurrence!]}
                         >
                           🔁
@@ -878,7 +878,7 @@ function DailyFlowView({
                       <Link
                         href="/focus"
                         onClick={(e) => e.stopPropagation()}
-                        className="px-2 py-0.5 rounded bg-[#d0bcff] text-[#23005c] font-mono text-[9px] font-bold hover:bg-[#b098f0] transition-colors"
+                        className="px-2 py-0.5 rounded bg-purple-100 text-purple-700 hover:bg-purple-200 dark:bg-[#d0bcff] dark:text-[#23005c] font-mono text-[9px] font-bold dark:hover:bg-[#b098f0] transition-colors shadow-xs"
                       >
                         Fokus 🍅
                       </Link>
@@ -1253,28 +1253,28 @@ export function CalendarManager({
   return (
     <div className="flex flex-col w-full pb-16 gap-6 selection:bg-[#d0bcff] selection:text-[#340080]">
       {/* ── HEADER ── */}
-      <header className="flex flex-col xl:flex-row xl:items-end justify-between gap-4 pb-2 border-b border-white/[0.06]">
+      <header className="flex flex-col xl:flex-row xl:items-end justify-between gap-4 pb-2 border-b border-slate-200 dark:border-white/[0.06]">
         <div className="flex flex-col gap-1">
-          <div className="flex items-center gap-2 font-mono text-xs text-[#d0bcff] tracking-widest uppercase font-bold">
-            <span className="inline-block w-2 h-2 rounded-full bg-[#d0bcff] animate-ping" />
+          <div className="flex items-center gap-2 font-mono text-xs text-purple-600 dark:text-[#d0bcff] tracking-widest uppercase font-bold">
+            <span className="inline-block w-2 h-2 rounded-full bg-purple-500 dark:bg-[#d0bcff] animate-ping" />
             <span>JADWAL &amp; TO-DO HARIAN</span>
-            <span className="text-[#494454]">•</span>
-            <span className="text-[#4edea3]">AKTIF</span>
+            <span className="text-slate-400 dark:text-[#494454]">•</span>
+            <span className="text-emerald-600 dark:text-[#4edea3]">AKTIF</span>
           </div>
-          <h1 className="text-2xl sm:text-3xl text-[#e2e2eb] font-semibold tracking-tight flex items-center gap-3">
+          <h1 className="text-2xl sm:text-3xl text-slate-900 dark:text-[#e2e2eb] font-semibold tracking-tight flex items-center gap-3">
             To-Do &amp; Jadwal
             {(viewMode === "TODO" || viewMode === "DAILY") && (
-              <span className="font-mono text-xs text-[#4edea3] bg-[#4edea3]/10 border border-[#4edea3]/30 px-2 py-0.5 rounded">
+              <span className="font-mono text-xs text-emerald-700 dark:text-[#4edea3] bg-emerald-50 dark:bg-[#4edea3]/10 border border-emerald-200 dark:border-[#4edea3]/30 px-2 py-0.5 rounded">
                 {selectedDayLabel.toUpperCase()}
               </span>
             )}
             {viewMode === "WEEKLY" && (
-              <span className="font-mono text-xs text-[#4edea3] bg-[#4edea3]/10 border border-[#4edea3]/30 px-2 py-0.5 rounded">
+              <span className="font-mono text-xs text-emerald-700 dark:text-[#4edea3] bg-emerald-50 dark:bg-[#4edea3]/10 border border-emerald-200 dark:border-[#4edea3]/30 px-2 py-0.5 rounded">
                 PEKAN {weekNumber}
               </span>
             )}
           </h1>
-          <p className="text-sm text-[#958ea0] max-w-2xl">
+          <p className="text-sm text-slate-500 dark:text-[#958ea0] max-w-2xl">
             {viewMode === "TODO"
               ? "Daftar to-do harian interaktif — ceklis aktivitas saat selesai, input praktis tanpa wajib jam selesai."
               : viewMode === "DAILY"
@@ -1284,7 +1284,7 @@ export function CalendarManager({
         </div>
 
         <div className="flex flex-wrap items-center gap-3 shrink-0">
-          <div className="flex items-center bg-[#0c0e14] p-1 rounded-lg border border-white/[0.06] shadow-inner">
+          <div className="flex items-center bg-slate-100 dark:bg-[#0c0e14] p-1 rounded-lg border border-slate-200 dark:border-white/[0.06] shadow-inner">
             {(
               [
                 { id: "TODO", label: "📋 To-Do Hari Ini" },
@@ -1299,8 +1299,8 @@ export function CalendarManager({
                 onClick={() => setViewMode(v.id)}
                 className={`px-3 py-1.5 rounded font-mono text-xs font-semibold transition-all ${
                   viewMode === v.id
-                    ? "bg-[#340080] text-[#d0bcff] border border-[#d0bcff]/30 shadow-md"
-                    : "text-[#958ea0] hover:text-[#e2e2eb]"
+                    ? "bg-purple-100 text-purple-700 dark:bg-[#340080] dark:text-[#d0bcff] border border-purple-200 dark:border-[#d0bcff]/30 shadow-xs"
+                    : "text-slate-500 dark:text-[#958ea0] hover:text-slate-900 dark:hover:text-[#e2e2eb]"
                 }`}
               >
                 {v.label}
@@ -1325,14 +1325,14 @@ export function CalendarManager({
       </header>
 
       {/* ── NAV BAR (day nav for TODO/DAILY, week nav for WEEKLY) ── */}
-      <section className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 bg-[#131825]/70 backdrop-blur-md p-2.5 sm:p-3 rounded-xl border border-white/[0.07] shadow-sm">
+      <section className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 bg-white dark:bg-[#131825]/70 backdrop-blur-md p-2.5 sm:p-3 rounded-xl border border-slate-200 dark:border-white/[0.07] shadow-sm">
         {viewMode === "TODO" || viewMode === "DAILY" ? (
           <div className="flex items-center gap-3">
-            <div className="flex items-center bg-[#0c0e14] rounded-lg p-1 border border-white/[0.06]">
+            <div className="flex items-center bg-slate-100 dark:bg-[#0c0e14] rounded-lg p-1 border border-slate-200 dark:border-white/[0.06]">
               <button
                 type="button"
                 onClick={() => shiftDay(-1)}
-                className="p-1 hover:bg-[#1A2133] rounded text-[#958ea0] hover:text-[#e2e2eb] transition-colors"
+                className="p-1 hover:bg-slate-200 dark:hover:bg-[#1A2133] rounded text-slate-500 dark:text-[#958ea0] hover:text-slate-900 dark:hover:text-[#e2e2eb] transition-colors"
                 title="Hari Sebelumnya"
               >
                 <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -1346,14 +1346,14 @@ export function CalendarManager({
                   t.setHours(0, 0, 0, 0);
                   setSelectedDay(t);
                 }}
-                className="px-2.5 py-1 font-mono text-xs text-[#958ea0] hover:text-[#e2e2eb] hover:bg-[#1A2133] rounded transition-colors"
+                className="px-2.5 py-1 font-mono text-xs text-slate-600 dark:text-[#958ea0] hover:text-slate-900 dark:hover:text-[#e2e2eb] hover:bg-slate-200 dark:hover:bg-[#1A2133] rounded transition-colors"
               >
-                Hari Ini <kbd className="text-[9px] bg-[#0c0e14] px-1 rounded">T</kbd>
+                Hari Ini <kbd className="text-[9px] bg-slate-200 dark:bg-[#0c0e14] text-slate-600 dark:text-[#cbc3d7] px-1 rounded">T</kbd>
               </button>
               <button
                 type="button"
                 onClick={() => shiftDay(1)}
-                className="p-1 hover:bg-[#1A2133] rounded text-[#958ea0] hover:text-[#e2e2eb] transition-colors"
+                className="p-1 hover:bg-slate-200 dark:hover:bg-[#1A2133] rounded text-slate-500 dark:text-[#958ea0] hover:text-slate-900 dark:hover:text-[#e2e2eb] transition-colors"
                 title="Hari Berikutnya"
               >
                 <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -1361,7 +1361,7 @@ export function CalendarManager({
                 </svg>
               </button>
             </div>
-            <span className="text-sm font-semibold text-[#e2e2eb]">
+            <span className="text-sm font-semibold text-slate-900 dark:text-[#e2e2eb]">
               {selectedDay.toLocaleDateString("id-ID", {
                 weekday: "long",
                 day: "numeric",
@@ -1372,11 +1372,11 @@ export function CalendarManager({
           </div>
         ) : (
           <div className="flex items-center gap-3">
-            <div className="flex items-center bg-[#0c0e14] rounded-lg p-1 border border-white/[0.06]">
+            <div className="flex items-center bg-slate-100 dark:bg-[#0c0e14] rounded-lg p-1 border border-slate-200 dark:border-white/[0.06]">
               <button
                 type="button"
                 onClick={() => setWeekOffset((o) => o - 1)}
-                className="p-1 hover:bg-[#1A2133] rounded text-[#958ea0] hover:text-[#e2e2eb] transition-colors"
+                className="p-1 hover:bg-slate-200 dark:hover:bg-[#1A2133] rounded text-slate-500 dark:text-[#958ea0] hover:text-slate-900 dark:hover:text-[#e2e2eb] transition-colors"
               >
                 <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                   <path d="M15 18l-6-6 6-6" />
@@ -1385,26 +1385,26 @@ export function CalendarManager({
               <button
                 type="button"
                 onClick={() => setWeekOffset(0)}
-                className="px-2.5 py-1 font-mono text-xs text-[#958ea0] hover:text-[#e2e2eb] hover:bg-[#1A2133] rounded transition-colors"
+                className="px-2.5 py-1 font-mono text-xs text-slate-600 dark:text-[#958ea0] hover:text-slate-900 dark:hover:text-[#e2e2eb] hover:bg-slate-200 dark:hover:bg-[#1A2133] rounded transition-colors"
               >
-                Pekan Ini <kbd className="text-[9px] bg-[#0c0e14] px-1 rounded">T</kbd>
+                Pekan Ini <kbd className="text-[9px] bg-slate-200 dark:bg-[#0c0e14] text-slate-600 dark:text-[#cbc3d7] px-1 rounded">T</kbd>
               </button>
               <button
                 type="button"
                 onClick={() => setWeekOffset((o) => o + 1)}
-                className="p-1 hover:bg-[#1A2133] rounded text-[#958ea0] hover:text-[#e2e2eb] transition-colors"
+                className="p-1 hover:bg-slate-200 dark:hover:bg-[#1A2133] rounded text-slate-500 dark:text-[#958ea0] hover:text-slate-900 dark:hover:text-[#e2e2eb] transition-colors"
               >
                 <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                   <path d="M9 18l6-6-6-6" />
                 </svg>
               </button>
             </div>
-            <span className="text-sm font-semibold text-[#e2e2eb]">
+            <span className="text-sm font-semibold text-slate-900 dark:text-[#e2e2eb]">
               {weekDays[0].toLocaleDateString("id-ID", {
                 month: "long",
                 year: "numeric",
               })}
-              <span className="font-mono text-xs text-[#958ea0] ml-2">
+              <span className="font-mono text-xs text-slate-500 dark:text-[#958ea0] ml-2">
                 ({String(weekDays[0].getDate()).padStart(2, "0")} –{" "}
                 {String(weekDays[6].getDate()).padStart(2, "0")}{" "}
                 {weekDays[6].toLocaleDateString("id-ID", { month: "short" })})
@@ -1422,8 +1422,8 @@ export function CalendarManager({
               onClick={() => setTypeFilter(cat.id)}
               className={`flex items-center gap-1.5 px-3 py-1 rounded-full font-mono text-xs whitespace-nowrap transition-all border ${
                 typeFilter === cat.id
-                  ? "bg-[#340080] text-[#d0bcff] border-[#d0bcff]/40 shadow-sm"
-                  : "bg-[#191b22] text-[#958ea0] hover:text-[#e2e2eb] border-transparent hover:bg-[#282a30]"
+                  ? "bg-purple-100 text-purple-700 border-purple-200 dark:bg-[#340080] dark:text-[#d0bcff] dark:border-[#d0bcff]/40 shadow-xs"
+                  : "bg-slate-100 dark:bg-[#191b22] text-slate-600 dark:text-[#958ea0] hover:text-slate-900 dark:hover:text-[#e2e2eb] border-slate-200/60 dark:border-transparent hover:bg-slate-200 dark:hover:bg-[#282a30]"
               }`}
             >
               {cat.id !== "ALL" && CATEGORY_MAP[cat.id] && (
@@ -1441,7 +1441,7 @@ export function CalendarManager({
       {/* ── MAIN CONTENT ── */}
       <div className="grid grid-cols-1 xl:grid-cols-12 gap-6 items-start">
         {/* Main Area */}
-        <main className="xl:col-span-8 bg-[#131825] rounded-xl border border-white/[0.07] shadow-xl overflow-hidden flex flex-col">
+        <main className="xl:col-span-8 bg-white dark:bg-[#131825] rounded-xl border border-slate-200 dark:border-white/[0.07] shadow-sm dark:shadow-xl overflow-hidden flex flex-col">
           {/* TAB 1: TO-DO VIEW */}
           {viewMode === "TODO" && (
             <ToDoListView
@@ -1471,8 +1471,8 @@ export function CalendarManager({
           {viewMode === "WEEKLY" && (
             <>
               {/* Day headers */}
-              <div className="grid grid-cols-8 bg-[#191b22]/90 backdrop-blur border-b border-white/[0.06] sticky top-0 z-20 text-center">
-                <div className="p-3 flex flex-col items-center justify-center font-mono text-xs text-[#958ea0] border-r border-white/[0.04]">
+              <div className="grid grid-cols-8 bg-white/95 dark:bg-[#191b22]/90 backdrop-blur border-b border-slate-200 dark:border-white/[0.06] sticky top-0 z-20 text-center">
+                <div className="p-3 flex flex-col items-center justify-center font-mono text-xs text-slate-500 dark:text-[#958ea0] border-r border-slate-200/80 dark:border-white/[0.04]">
                   <svg className="w-4 h-4 mb-0.5" viewBox="0 0 24 24" fill="currentColor">
                     <path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z" />
                   </svg>
@@ -1485,11 +1485,11 @@ export function CalendarManager({
                   return (
                     <div
                       key={idx}
-                      className={`p-2.5 sm:p-3 flex flex-col items-center justify-center gap-1 border-r border-white/[0.04] last:border-r-0 cursor-pointer hover:bg-white/[0.02] transition-colors relative ${
+                      className={`p-2.5 sm:p-3 flex flex-col items-center justify-center gap-1 border-r border-slate-200/80 dark:border-white/[0.04] last:border-r-0 cursor-pointer hover:bg-slate-50 dark:hover:bg-white/[0.02] transition-colors relative ${
                         isToday
-                          ? "bg-[#340080]/15"
+                          ? "bg-purple-50/80 dark:bg-[#340080]/15"
                           : isWeekend
-                          ? "bg-[#0c0e14]/40"
+                          ? "bg-slate-50/50 dark:bg-[#0c0e14]/40"
                           : ""
                       }`}
                       onClick={() => {
@@ -1499,28 +1499,28 @@ export function CalendarManager({
                       title={`Buka To-Do: ${day.toLocaleDateString("id-ID", { weekday: "long", day: "numeric", month: "short" })}`}
                     >
                       {isToday && (
-                        <div className="absolute top-0 left-0 right-0 h-0.5 bg-[#4edea3] shadow-[0_0_8px_rgba(78,222,163,0.8)]" />
+                        <div className="absolute top-0 left-0 right-0 h-0.5 bg-purple-500 dark:bg-[#4edea3] shadow-sm" />
                       )}
                       {isToday ? (
-                        <span className="font-mono text-[9px] bg-[#4edea3] text-[#003824] px-1.5 py-0.2 rounded-full font-bold shadow-[0_0_8px_rgba(78,222,163,0.5)] animate-pulse">
+                        <span className="font-mono text-[9px] bg-purple-100 text-purple-700 dark:bg-[#4edea3] dark:text-[#003824] px-1.5 py-0.2 rounded-full font-bold shadow-xs">
                           HARI INI
                         </span>
                       ) : null}
                       <span
                         className={`font-mono text-[10px] tracking-wider uppercase ${
-                          isToday ? "text-[#4edea3] font-bold" : "text-[#958ea0]"
+                          isToday ? "text-purple-700 dark:text-[#4edea3] font-bold" : "text-slate-500 dark:text-[#958ea0]"
                         }`}
                       >
                         {["SENIN", "SELASA", "RABU", "KAMIS", "JUMAT", "SABTU", "MINGGU"][idx]}
                       </span>
                       <span
                         className={`text-base font-semibold ${
-                          isToday ? "text-white font-bold" : "text-[#e2e2eb]"
+                          isToday ? "text-purple-700 dark:text-white font-bold" : "text-slate-800 dark:text-[#e2e2eb]"
                         }`}
                       >
                         {String(day.getDate()).padStart(2, "0")}
                       </span>
-                      <span className="font-mono text-[10px] text-[#958ea0]">
+                      <span className="font-mono text-[10px] text-slate-400 dark:text-[#958ea0]">
                         {day.toLocaleDateString("id-ID", { month: "short" })}
                       </span>
                     </div>
@@ -1529,7 +1529,7 @@ export function CalendarManager({
               </div>
 
               {/* Grid Body */}
-              <div className="relative overflow-x-auto select-none min-w-[720px] bg-[#0c0e14]/30">
+              <div className="relative overflow-x-auto select-none min-w-[720px] bg-white dark:bg-[#0c0e14]/30">
                 {/* Real-time line */}
                 {isCurrentWeek &&
                   currentHour >= WEEK_START_HOUR &&
@@ -1539,18 +1539,18 @@ export function CalendarManager({
                       style={{ top: `${redLineTopPx}px` }}
                     >
                       <div className="w-[12.5%] pl-2 flex items-center justify-end pr-2">
-                        <span className="font-mono text-[10px] text-[#F43F5E] bg-[#131825] px-1 rounded shadow-sm border border-[#F43F5E]/30">
+                        <span className="font-mono text-[10px] text-rose-600 dark:text-[#F43F5E] bg-white dark:bg-[#131825] px-1 rounded shadow-sm border border-rose-200 dark:border-[#F43F5E]/30">
                           {String(currentHour).padStart(2, "0")}:
                           {String(currentMinute).padStart(2, "0")}
                         </span>
                       </div>
                       <div className="flex-1 relative flex items-center">
-                        <div className="h-[2px] w-full bg-[#F43F5E] shadow-[0_0_10px_rgba(244,63,94,0.8)]" />
+                        <div className="h-[2px] w-full bg-rose-500 dark:bg-[#F43F5E] shadow-sm" />
                       </div>
                     </div>
                   )}
 
-                <div className="relative grid grid-cols-8 divide-x divide-white/[0.04]">
+                <div className="relative grid grid-cols-8 divide-x divide-slate-200/60 dark:divide-white/[0.04]">
                   {/* Time labels */}
                   <div className="flex flex-col select-none">
                     {Array.from(
@@ -1559,7 +1559,7 @@ export function CalendarManager({
                     ).map((hour) => (
                       <div
                         key={hour}
-                        className="h-[60px] border-b border-white/[0.04] p-1 text-right font-mono text-[10px] text-[#958ea0]"
+                        className="h-[60px] border-b border-slate-200/60 dark:border-white/[0.04] p-1 text-right font-mono text-[10px] text-slate-400 dark:text-[#958ea0]"
                       >
                         {String(hour).padStart(2, "0")}:00
                       </div>
@@ -1573,7 +1573,7 @@ export function CalendarManager({
                     return (
                       <div
                         key={dIdx}
-                        className="relative flex flex-col hover:bg-white/[0.01] transition-colors"
+                        className="relative flex flex-col hover:bg-slate-50/50 dark:hover:bg-white/[0.01] transition-colors"
                       >
                         {Array.from(
                           { length: WEEK_END_HOUR - WEEK_START_HOUR + 1 },
@@ -1582,7 +1582,7 @@ export function CalendarManager({
                           <div
                             key={h}
                             onClick={() => openCreateModal(day, h)}
-                            className="h-[60px] border-b border-white/[0.04] hover:bg-white/[0.02] cursor-pointer"
+                            className="h-[60px] border-b border-slate-200/60 dark:border-white/[0.04] hover:bg-slate-100/60 dark:hover:bg-white/[0.02] cursor-pointer"
                             title={`+ Buat di ${day.toLocaleDateString("id-ID", { weekday: "short" })} jam ${String(h).padStart(2, "0")}:00`}
                           />
                         ))}
@@ -1650,7 +1650,7 @@ export function CalendarManager({
           {/* TAB 4: AGENDA VIEW */}
           {viewMode === "AGENDA" && (
             <div className="p-6 flex flex-col gap-3">
-              <h3 className="text-base font-semibold text-[#e2e2eb]">
+              <h3 className="text-base font-semibold text-slate-900 dark:text-[#e2e2eb]">
                 Semua Jadwal &amp; To-Do
               </h3>
               <div className="flex flex-col gap-2">
@@ -1662,7 +1662,7 @@ export function CalendarManager({
                   return (
                     <div
                       key={ev.id}
-                      className="flex items-center justify-between p-3 rounded-lg bg-[#191b22] border border-white/[0.06]"
+                      className="flex items-center justify-between p-3 rounded-lg bg-slate-50 dark:bg-[#191b22] border border-slate-200 dark:border-white/[0.06]"
                     >
                       <div className="flex items-center gap-3">
                         <button
@@ -1670,19 +1670,19 @@ export function CalendarManager({
                           onClick={() => handleToggleComplete(ev.id, isDone)}
                           className={`w-5 h-5 rounded border flex items-center justify-center text-xs ${
                             isDone
-                              ? "bg-[#4edea3] border-[#4edea3] text-[#00311f]"
-                              : "border-white/30 bg-[#0c0e14] text-transparent hover:text-[#4edea3]"
+                              ? "bg-emerald-500 border-emerald-500 text-white dark:bg-[#4edea3] dark:border-[#4edea3] dark:text-[#00311f] shadow-xs"
+                              : "border-slate-300 dark:border-white/30 bg-white dark:bg-[#0c0e14] text-transparent hover:text-emerald-500"
                           }`}
                         >
                           ✓
                         </button>
                         <div className="flex flex-col">
                           <span
-                            className={`text-sm font-semibold ${cat.text} ${isDone ? "line-through text-[#958ea0]" : ""}`}
+                            className={`text-sm font-semibold ${cat.text} ${isDone ? "line-through text-slate-400 dark:text-[#958ea0]" : ""}`}
                           >
                             {ev.title}
                           </span>
-                          <span className="font-mono text-[11px] text-[#958ea0]">
+                          <span className="font-mono text-[11px] text-slate-500 dark:text-[#958ea0]">
                             {st.toLocaleDateString("id-ID", {
                               weekday: "short",
                               day: "numeric",
@@ -1697,14 +1697,14 @@ export function CalendarManager({
                         <button
                           type="button"
                           onClick={() => openEditModal(ev)}
-                          className="px-2.5 py-1 rounded bg-[#282a30] text-xs text-[#e2e2eb] hover:bg-[#340080]"
+                          className="px-2.5 py-1 rounded bg-slate-100 dark:bg-[#282a30] text-xs text-slate-700 dark:text-[#e2e2eb] hover:bg-purple-100 dark:hover:bg-[#340080] border border-slate-200/60 dark:border-transparent transition-colors"
                         >
                           Edit
                         </button>
                         <button
                           type="button"
                           onClick={() => handleDeleteEvent(ev.id)}
-                          className="p-1 rounded text-[#958ea0] hover:text-red-400"
+                          className="p-1 rounded text-slate-400 dark:text-[#958ea0] hover:text-rose-600 transition-colors"
                         >
                           ✕
                         </button>
@@ -1720,21 +1720,21 @@ export function CalendarManager({
         {/* Sidebar */}
         <aside className="xl:col-span-4 flex flex-col gap-6">
           {/* Quick info card */}
-          <div className="bg-[#131825] rounded-xl border border-white/[0.07] p-5 shadow-xl flex flex-col gap-3">
-            <div className="flex items-center gap-2 text-sm font-semibold text-[#e2e2eb]">
+          <div className="bg-white dark:bg-[#131825] rounded-xl border border-slate-200 dark:border-white/[0.07] p-5 shadow-sm dark:shadow-xl flex flex-col gap-3">
+            <div className="flex items-center gap-2 text-sm font-semibold text-slate-900 dark:text-[#e2e2eb]">
               <span>💡 Panduan To-Do &amp; Jadwal</span>
             </div>
-            <ul className="flex flex-col gap-2 font-mono text-xs text-[#958ea0]">
+            <ul className="flex flex-col gap-2 font-mono text-xs text-slate-600 dark:text-[#958ea0]">
               <li className="flex items-start gap-2">
-                <span className="text-[#4edea3]">✓</span>
+                <span className="text-emerald-600 dark:text-[#4edea3]">✓</span>
                 <span>Ceklis to-do langsung dari daftar ataupun timeline jam.</span>
               </li>
               <li className="flex items-start gap-2">
-                <span className="text-[#4edea3]">⏰</span>
+                <span className="text-emerald-600 dark:text-[#4edea3]">⏰</span>
                 <span>To-do dengan jam tidak wajib punya jam selesai. Praktis untuk bangun subuh, minum obat, atau jadwal kelas.</span>
               </li>
               <li className="flex items-start gap-2">
-                <span className="text-[#4edea3]">🔁</span>
+                <span className="text-emerald-600 dark:text-[#4edea3]">🔁</span>
                 <span>Gunakan pengulangan <strong>Setiap Hari</strong> untuk rutinitas yang ingin Anda lakukan konsisten.</span>
               </li>
             </ul>
@@ -1744,14 +1744,14 @@ export function CalendarManager({
 
       {/* ── MODAL BUAT JADWAL / TO-DO BARU ── */}
       {isModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#0B0D13]/80 backdrop-blur-md animate-in fade-in duration-150">
-          <div className="w-full max-w-xl bg-[#131825] rounded-xl shadow-2xl p-6 flex flex-col gap-4 border border-white/[0.08] relative animate-in zoom-in-95 duration-150 max-h-[92vh] overflow-y-auto">
-            <div className="flex items-center justify-between pb-2 border-b border-white/[0.08]">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 dark:bg-[#0B0D13]/80 backdrop-blur-sm animate-in fade-in duration-150">
+          <div className="w-full max-w-xl bg-white dark:bg-[#131825] rounded-xl shadow-2xl p-6 flex flex-col gap-4 border border-slate-200 dark:border-white/[0.08] relative animate-in zoom-in-95 duration-150 max-h-[92vh] overflow-y-auto">
+            <div className="flex items-center justify-between pb-2 border-b border-slate-200 dark:border-white/[0.08]">
               <div className="flex items-center gap-2">
-                <svg className="w-5 h-5 text-[#4edea3]" viewBox="0 0 24 24" fill="currentColor">
+                <svg className="w-5 h-5 text-emerald-600 dark:text-[#4edea3]" viewBox="0 0 24 24" fill="currentColor">
                   <path d="M19 4h-1V2h-2v2H8V2H6v2H5c-1.11 0-1.99.9-1.99 2L3 20a2 2 0 0 0 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 16H5V10h14v10z" />
                 </svg>
-                <h2 className="text-base font-semibold text-[#e2e2eb]">
+                <h2 className="text-base font-semibold text-slate-900 dark:text-[#e2e2eb]">
                   {editingEventId ? "Edit To-Do / Jadwal ✏️" : "Tambah To-Do / Jadwal Baru"}
                 </h2>
               </div>
@@ -1761,9 +1761,9 @@ export function CalendarManager({
                   setIsModalOpen(false);
                   setEditingEventId(null);
                 }}
-                className="text-[#958ea0] hover:text-[#e2e2eb] p-1 rounded-lg hover:bg-[#1A2133] transition-colors"
+                className="text-slate-400 dark:text-[#958ea0] hover:text-slate-900 dark:hover:text-[#e2e2eb] p-1 rounded-lg hover:bg-slate-100 dark:hover:bg-[#1A2133] transition-colors"
               >
-                <span className="font-mono text-xs px-1.5 py-0.5 rounded bg-[#282a30]">
+                <span className="font-mono text-xs px-1.5 py-0.5 rounded bg-slate-100 dark:bg-[#282a30] text-slate-600 dark:text-[#cbc3d7]">
                   ESC
                 </span>
               </button>
@@ -1772,7 +1772,7 @@ export function CalendarManager({
             <form onSubmit={handleSaveEvent} className="flex flex-col gap-4">
               {/* Title */}
               <div className="flex flex-col gap-1">
-                <label className="font-mono text-[10px] uppercase text-[#958ea0] font-semibold">
+                <label className="font-mono text-[10px] uppercase text-slate-700 dark:text-[#958ea0] font-semibold">
                   JUDUL TO-DO / AKTIVITAS
                 </label>
                 <input
@@ -1782,13 +1782,13 @@ export function CalendarManager({
                   onChange={(e) => setFormTitle(e.target.value)}
                   placeholder="cth: Bangun Pagi Jam 5, Kuliah Basis Data, Beli vitamin..."
                   autoFocus
-                  className="w-full bg-[#0c0e14] px-3.5 py-2.5 rounded-lg font-mono text-xs text-[#e2e2eb] border border-white/[0.06] placeholder-[#494454] focus:outline-none focus:border-[#4edea3]/50 shadow-inner"
+                  className="w-full bg-slate-50 dark:bg-[#0c0e14] px-3.5 py-2.5 rounded-lg font-mono text-xs text-slate-900 dark:text-[#e2e2eb] border border-slate-200 dark:border-white/[0.06] placeholder:text-slate-400 dark:placeholder-[#494454] focus:outline-none focus:border-emerald-500 dark:focus:border-[#4edea3]/50 shadow-inner"
                 />
               </div>
 
               {/* Time Mode Selection */}
               <div className="flex flex-col gap-1.5">
-                <label className="font-mono text-[10px] uppercase text-[#958ea0] font-semibold">
+                <label className="font-mono text-[10px] uppercase text-slate-700 dark:text-[#958ea0] font-semibold">
                   PILIHAN WAKTU
                 </label>
                 <div className="grid grid-cols-3 gap-2">
@@ -1797,8 +1797,8 @@ export function CalendarManager({
                     onClick={() => setFormTimeMode("START_ONLY")}
                     className={`p-2.5 rounded-lg border font-mono text-xs flex flex-col items-center gap-1 transition-all ${
                       formTimeMode === "START_ONLY"
-                        ? "bg-[#340080] text-[#d0bcff] border-[#d0bcff]/50 shadow-md font-semibold"
-                        : "bg-[#0c0e14] text-[#958ea0] border-white/[0.06] hover:text-[#e2e2eb]"
+                        ? "bg-purple-100 text-purple-700 border-purple-200 dark:bg-[#340080] dark:text-[#d0bcff] dark:border-[#d0bcff]/50 shadow-xs font-semibold"
+                        : "bg-slate-50 dark:bg-[#0c0e14] text-slate-600 dark:text-[#958ea0] border-slate-200 dark:border-white/[0.06] hover:bg-slate-100 hover:text-slate-900 dark:hover:text-[#e2e2eb]"
                     }`}
                   >
                     <span>⏰ Jam Mulai Saja</span>
@@ -1809,8 +1809,8 @@ export function CalendarManager({
                     onClick={() => setFormTimeMode("RANGE")}
                     className={`p-2.5 rounded-lg border font-mono text-xs flex flex-col items-center gap-1 transition-all ${
                       formTimeMode === "RANGE"
-                        ? "bg-[#340080] text-[#d0bcff] border-[#d0bcff]/50 shadow-md font-semibold"
-                        : "bg-[#0c0e14] text-[#958ea0] border-white/[0.06] hover:text-[#e2e2eb]"
+                        ? "bg-purple-100 text-purple-700 border-purple-200 dark:bg-[#340080] dark:text-[#d0bcff] dark:border-[#d0bcff]/50 shadow-xs font-semibold"
+                        : "bg-slate-50 dark:bg-[#0c0e14] text-slate-600 dark:text-[#958ea0] border-slate-200 dark:border-white/[0.06] hover:bg-slate-100 hover:text-slate-900 dark:hover:text-[#e2e2eb]"
                     }`}
                   >
                     <span>⏳ Rentang Waktu</span>
@@ -1821,8 +1821,8 @@ export function CalendarManager({
                     onClick={() => setFormTimeMode("ALL_DAY")}
                     className={`p-2.5 rounded-lg border font-mono text-xs flex flex-col items-center gap-1 transition-all ${
                       formTimeMode === "ALL_DAY"
-                        ? "bg-[#340080] text-[#d0bcff] border-[#d0bcff]/50 shadow-md font-semibold"
-                        : "bg-[#0c0e14] text-[#958ea0] border-white/[0.06] hover:text-[#e2e2eb]"
+                        ? "bg-purple-100 text-purple-700 border-purple-200 dark:bg-[#340080] dark:text-[#d0bcff] dark:border-[#d0bcff]/50 shadow-xs font-semibold"
+                        : "bg-slate-50 dark:bg-[#0c0e14] text-slate-600 dark:text-[#958ea0] border-slate-200 dark:border-white/[0.06] hover:bg-slate-100 hover:text-slate-900 dark:hover:text-[#e2e2eb]"
                     }`}
                   >
                     <span>📝 Bebas Jam</span>
@@ -1834,7 +1834,7 @@ export function CalendarManager({
               {/* Date & Time inputs */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                 <div className="flex flex-col gap-1">
-                  <label className="font-mono text-[10px] uppercase text-[#958ea0] font-semibold">
+                  <label className="font-mono text-[10px] uppercase text-slate-700 dark:text-[#958ea0] font-semibold">
                     TANGGAL
                   </label>
                   <input
@@ -1842,13 +1842,13 @@ export function CalendarManager({
                     required
                     value={formDate}
                     onChange={(e) => setFormDate(e.target.value)}
-                    className="w-full bg-[#0c0e14] px-3 py-2.5 rounded-lg font-mono text-xs text-[#e2e2eb] border border-white/[0.06] focus:outline-none focus:border-[#4edea3]/50"
+                    className="w-full bg-slate-50 dark:bg-[#0c0e14] px-3 py-2.5 rounded-lg font-mono text-xs text-slate-900 dark:text-[#e2e2eb] border border-slate-200 dark:border-white/[0.06] focus:outline-none focus:border-emerald-500 dark:focus:border-[#4edea3]/50"
                   />
                 </div>
 
                 {formTimeMode !== "ALL_DAY" && (
                   <div className="flex flex-col gap-1">
-                    <label className="font-mono text-[10px] uppercase text-[#958ea0] font-semibold">
+                    <label className="font-mono text-[10px] uppercase text-slate-700 dark:text-[#958ea0] font-semibold">
                       {formTimeMode === "START_ONLY" ? "JAM TO-DO" : "JAM MULAI"}
                     </label>
                     <input
@@ -1856,14 +1856,14 @@ export function CalendarManager({
                       required
                       value={formStartTime}
                       onChange={(e) => setFormStartTime(e.target.value)}
-                      className="w-full bg-[#0c0e14] px-3 py-2.5 rounded-lg font-mono text-xs text-[#4edea3] border border-white/[0.06] focus:outline-none focus:border-[#4edea3]/50"
+                      className="w-full bg-slate-50 dark:bg-[#0c0e14] px-3 py-2.5 rounded-lg font-mono text-xs text-emerald-700 dark:text-[#4edea3] border border-slate-200 dark:border-white/[0.06] focus:outline-none focus:border-emerald-500 dark:focus:border-[#4edea3]/50"
                     />
                   </div>
                 )}
 
                 {formTimeMode === "RANGE" && (
                   <div className="flex flex-col gap-1 md:col-span-2">
-                    <label className="font-mono text-[10px] uppercase text-[#958ea0] font-semibold">
+                    <label className="font-mono text-[10px] uppercase text-slate-700 dark:text-[#958ea0] font-semibold">
                       JAM SELESAI
                     </label>
                     <input
@@ -1871,7 +1871,7 @@ export function CalendarManager({
                       required
                       value={formEndTime}
                       onChange={(e) => setFormEndTime(e.target.value)}
-                      className="w-full bg-[#0c0e14] px-3 py-2.5 rounded-lg font-mono text-xs text-[#4edea3] border border-white/[0.06] focus:outline-none focus:border-[#4edea3]/50"
+                      className="w-full bg-slate-50 dark:bg-[#0c0e14] px-3 py-2.5 rounded-lg font-mono text-xs text-emerald-700 dark:text-[#4edea3] border border-slate-200 dark:border-white/[0.06] focus:outline-none focus:border-emerald-500 dark:focus:border-[#4edea3]/50"
                     />
                   </div>
                 )}
@@ -1879,13 +1879,13 @@ export function CalendarManager({
 
               {/* Category */}
               <div className="flex flex-col gap-1">
-                <label className="font-mono text-[10px] uppercase text-[#958ea0] font-semibold">
+                <label className="font-mono text-[10px] uppercase text-slate-700 dark:text-[#958ea0] font-semibold">
                   KATEGORI
                 </label>
                 <select
                   value={formCategory}
                   onChange={(e) => setFormCategory(e.target.value)}
-                  className="w-full bg-[#0c0e14] px-3.5 py-2.5 rounded-lg font-mono text-xs text-[#d0bcff] border border-white/[0.06] focus:outline-none focus:border-[#d0bcff]/50 cursor-pointer"
+                  className="w-full bg-slate-50 dark:bg-[#0c0e14] px-3.5 py-2.5 rounded-lg font-mono text-xs text-purple-700 dark:text-[#d0bcff] border border-slate-200 dark:border-white/[0.06] focus:outline-none focus:border-purple-500 dark:focus:border-[#d0bcff]/50 cursor-pointer"
                 >
                   <option value="PERSONAL">🌱 Pribadi &amp; Kebiasaan (Bangun tidur, Sarapan, Ibadah, Olahraga)</option>
                   <option value="BLOCKED">🎯 Sesi Fokus / Deep Work (Belajar, Skripsi, Tugas Penting)</option>
@@ -1896,14 +1896,14 @@ export function CalendarManager({
               </div>
 
               {/* Recurrence */}
-              <div className="flex flex-col gap-1 bg-[#0c0e14]/60 p-3 rounded-lg border border-white/[0.04]">
-                <label className="font-mono text-[10px] uppercase text-[#d0bcff] font-semibold flex items-center gap-1.5">
+              <div className="flex flex-col gap-1 bg-purple-50/50 dark:bg-[#0c0e14]/60 p-3 rounded-lg border border-purple-100 dark:border-white/[0.04]">
+                <label className="font-mono text-[10px] uppercase text-purple-700 dark:text-[#d0bcff] font-semibold flex items-center gap-1.5">
                   <span>🔁 PENGULANGAN RUTINITAS</span>
                 </label>
                 <select
                   value={formRecurrence}
                   onChange={(e) => setFormRecurrence(e.target.value)}
-                  className="w-full bg-[#191b22] px-3 py-2 rounded-lg font-mono text-xs text-[#e2e2eb] border border-white/[0.06] focus:outline-none focus:border-[#d0bcff]/50 cursor-pointer mt-1"
+                  className="w-full bg-white dark:bg-[#191b22] px-3 py-2 rounded-lg font-mono text-xs text-slate-900 dark:text-[#e2e2eb] border border-slate-200 dark:border-white/[0.06] focus:outline-none focus:border-purple-500 dark:focus:border-[#d0bcff]/50 cursor-pointer mt-1"
                 >
                   <option value="NONE">Hanya sekali (hari ini saja)</option>
                   <option value="DAILY">Setiap hari (Rutinitas Harian)</option>
@@ -1913,12 +1913,12 @@ export function CalendarManager({
               </div>
 
               {/* Reminders */}
-              <div className="flex flex-col gap-2 bg-[#0c0e14]/40 p-3 rounded-lg border border-white/[0.04]">
+              <div className="flex flex-col gap-2 bg-amber-50/50 dark:bg-[#0c0e14]/40 p-3 rounded-lg border border-amber-100 dark:border-white/[0.04]">
                 <div className="flex items-center justify-between">
-                  <label className="font-mono text-[10px] uppercase text-[#F59E0B] font-semibold">
+                  <label className="font-mono text-[10px] uppercase text-amber-700 dark:text-[#F59E0B] font-semibold">
                     🔔 NOTIFIKASI TELEGRAM
                   </label>
-                  <span className="font-mono text-[10px] text-[#958ea0]">
+                  <span className="font-mono text-[10px] text-slate-500 dark:text-[#958ea0]">
                     Default: {defaultReminderMinutes} menit
                   </span>
                 </div>
@@ -1930,7 +1930,7 @@ export function CalendarManager({
                         e.target.value === "" ? "" : Number(e.target.value)
                       )
                     }
-                    className="w-full bg-[#191b22] px-3 py-2 rounded-lg font-mono text-xs text-[#e2e2eb] border border-white/[0.06] focus:outline-none focus:border-[#F59E0B]/50 cursor-pointer"
+                    className="w-full bg-white dark:bg-[#191b22] px-3 py-2 rounded-lg font-mono text-xs text-slate-900 dark:text-[#e2e2eb] border border-slate-200 dark:border-white/[0.06] focus:outline-none focus:border-amber-500 dark:focus:border-[#F59E0B]/50 cursor-pointer"
                   >
                     <option value="">Ikuti Preferensi ({defaultReminderMinutes} mnt)</option>
                     <option value="5">5 menit sebelum</option>
@@ -1939,12 +1939,12 @@ export function CalendarManager({
                     <option value="60">1 jam sebelum</option>
                   </select>
 
-                  <label className="flex items-center gap-2 font-mono text-xs text-[#e2e2eb] cursor-pointer">
+                  <label className="flex items-center gap-2 font-mono text-xs text-slate-800 dark:text-[#e2e2eb] cursor-pointer">
                     <input
                       type="checkbox"
                       checked={formIgnoreQuietHours}
                       onChange={(e) => setFormIgnoreQuietHours(e.target.checked)}
-                      className="w-4 h-4 accent-[#4edea3] rounded"
+                      className="w-4 h-4 accent-emerald-600 dark:accent-[#4edea3] rounded"
                     />
                     <span>Alarm Bangun (Abaikan Jam Hening)</span>
                   </label>
@@ -1952,12 +1952,12 @@ export function CalendarManager({
               </div>
 
               {/* Submit & Delete */}
-              <div className="flex items-center justify-between pt-2 border-t border-white/[0.06]">
+              <div className="flex items-center justify-between pt-2 border-t border-slate-200 dark:border-white/[0.06]">
                 {editingEventId ? (
                   <button
                     type="button"
                     onClick={() => handleDeleteEvent(editingEventId)}
-                    className="px-3 py-2 rounded-lg bg-red-500/15 hover:bg-red-500/25 text-red-400 font-mono text-xs transition-colors cursor-pointer flex items-center gap-1.5"
+                    className="px-3 py-2 rounded-lg bg-rose-50 hover:bg-rose-100 text-rose-700 dark:bg-red-500/15 dark:hover:bg-red-500/25 dark:text-red-400 font-mono text-xs transition-colors cursor-pointer flex items-center gap-1.5 border border-rose-200 dark:border-transparent"
                   >
                     <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                       <polyline points="3 6 5 6 21 6" />
@@ -1976,14 +1976,14 @@ export function CalendarManager({
                       setIsModalOpen(false);
                       setEditingEventId(null);
                     }}
-                    className="px-4 py-2 font-mono text-xs text-[#958ea0] hover:text-[#e2e2eb] transition-colors"
+                    className="px-4 py-2 font-mono text-xs text-slate-600 dark:text-[#958ea0] hover:text-slate-900 dark:hover:text-[#e2e2eb] hover:bg-slate-100 dark:hover:bg-transparent rounded-lg transition-colors"
                   >
                     Batal
                   </button>
                   <button
                     type="submit"
                     disabled={loading}
-                    className="px-5 py-2.5 rounded-lg bg-[#4edea3] hover:bg-[#3ec48e] text-[#00311f] font-mono text-xs font-bold transition-all shadow-[0_0_16px_rgba(78,222,163,0.3)] disabled:opacity-50 active:scale-98 cursor-pointer"
+                    className="px-5 py-2.5 rounded-lg bg-emerald-500 hover:bg-emerald-600 text-white dark:bg-[#4edea3] dark:hover:bg-[#3ec48e] dark:text-[#00311f] font-mono text-xs font-bold transition-all shadow-sm dark:shadow-[0_0_16px_rgba(78,222,163,0.3)] disabled:opacity-50 active:scale-98 cursor-pointer"
                   >
                     {loading
                       ? "Menyimpan..."
