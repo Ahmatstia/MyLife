@@ -412,7 +412,12 @@ export const ModelName = {
   CalendarEvent: 'CalendarEvent',
   Activity: 'Activity',
   Capture: 'Capture',
-  Notification: 'Notification'
+  Notification: 'Notification',
+  LifeIdentity: 'LifeIdentity',
+  LifeVision: 'LifeVision',
+  LifeChapter: 'LifeChapter',
+  ChapterFocusArea: 'ChapterFocusArea',
+  LifeReflection: 'LifeReflection'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -428,7 +433,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "userPreference" | "area" | "goal" | "objective" | "project" | "stage" | "milestone" | "task" | "session" | "dailyFocus" | "review" | "calendarEvent" | "activity" | "capture" | "notification"
+    modelProps: "user" | "userPreference" | "area" | "goal" | "objective" | "project" | "stage" | "milestone" | "task" | "session" | "dailyFocus" | "review" | "calendarEvent" | "activity" | "capture" | "notification" | "lifeIdentity" | "lifeVision" | "lifeChapter" | "chapterFocusArea" | "lifeReflection"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -1616,6 +1621,376 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    LifeIdentity: {
+      payload: Prisma.$LifeIdentityPayload<ExtArgs>
+      fields: Prisma.LifeIdentityFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.LifeIdentityFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LifeIdentityPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.LifeIdentityFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LifeIdentityPayload>
+        }
+        findFirst: {
+          args: Prisma.LifeIdentityFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LifeIdentityPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.LifeIdentityFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LifeIdentityPayload>
+        }
+        findMany: {
+          args: Prisma.LifeIdentityFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LifeIdentityPayload>[]
+        }
+        create: {
+          args: Prisma.LifeIdentityCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LifeIdentityPayload>
+        }
+        createMany: {
+          args: Prisma.LifeIdentityCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.LifeIdentityCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LifeIdentityPayload>[]
+        }
+        delete: {
+          args: Prisma.LifeIdentityDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LifeIdentityPayload>
+        }
+        update: {
+          args: Prisma.LifeIdentityUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LifeIdentityPayload>
+        }
+        deleteMany: {
+          args: Prisma.LifeIdentityDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.LifeIdentityUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.LifeIdentityUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LifeIdentityPayload>[]
+        }
+        upsert: {
+          args: Prisma.LifeIdentityUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LifeIdentityPayload>
+        }
+        aggregate: {
+          args: Prisma.LifeIdentityAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateLifeIdentity>
+        }
+        groupBy: {
+          args: Prisma.LifeIdentityGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.LifeIdentityGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.LifeIdentityCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.LifeIdentityCountAggregateOutputType> | number
+        }
+      }
+    }
+    LifeVision: {
+      payload: Prisma.$LifeVisionPayload<ExtArgs>
+      fields: Prisma.LifeVisionFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.LifeVisionFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LifeVisionPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.LifeVisionFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LifeVisionPayload>
+        }
+        findFirst: {
+          args: Prisma.LifeVisionFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LifeVisionPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.LifeVisionFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LifeVisionPayload>
+        }
+        findMany: {
+          args: Prisma.LifeVisionFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LifeVisionPayload>[]
+        }
+        create: {
+          args: Prisma.LifeVisionCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LifeVisionPayload>
+        }
+        createMany: {
+          args: Prisma.LifeVisionCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.LifeVisionCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LifeVisionPayload>[]
+        }
+        delete: {
+          args: Prisma.LifeVisionDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LifeVisionPayload>
+        }
+        update: {
+          args: Prisma.LifeVisionUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LifeVisionPayload>
+        }
+        deleteMany: {
+          args: Prisma.LifeVisionDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.LifeVisionUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.LifeVisionUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LifeVisionPayload>[]
+        }
+        upsert: {
+          args: Prisma.LifeVisionUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LifeVisionPayload>
+        }
+        aggregate: {
+          args: Prisma.LifeVisionAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateLifeVision>
+        }
+        groupBy: {
+          args: Prisma.LifeVisionGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.LifeVisionGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.LifeVisionCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.LifeVisionCountAggregateOutputType> | number
+        }
+      }
+    }
+    LifeChapter: {
+      payload: Prisma.$LifeChapterPayload<ExtArgs>
+      fields: Prisma.LifeChapterFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.LifeChapterFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LifeChapterPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.LifeChapterFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LifeChapterPayload>
+        }
+        findFirst: {
+          args: Prisma.LifeChapterFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LifeChapterPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.LifeChapterFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LifeChapterPayload>
+        }
+        findMany: {
+          args: Prisma.LifeChapterFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LifeChapterPayload>[]
+        }
+        create: {
+          args: Prisma.LifeChapterCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LifeChapterPayload>
+        }
+        createMany: {
+          args: Prisma.LifeChapterCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.LifeChapterCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LifeChapterPayload>[]
+        }
+        delete: {
+          args: Prisma.LifeChapterDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LifeChapterPayload>
+        }
+        update: {
+          args: Prisma.LifeChapterUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LifeChapterPayload>
+        }
+        deleteMany: {
+          args: Prisma.LifeChapterDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.LifeChapterUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.LifeChapterUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LifeChapterPayload>[]
+        }
+        upsert: {
+          args: Prisma.LifeChapterUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LifeChapterPayload>
+        }
+        aggregate: {
+          args: Prisma.LifeChapterAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateLifeChapter>
+        }
+        groupBy: {
+          args: Prisma.LifeChapterGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.LifeChapterGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.LifeChapterCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.LifeChapterCountAggregateOutputType> | number
+        }
+      }
+    }
+    ChapterFocusArea: {
+      payload: Prisma.$ChapterFocusAreaPayload<ExtArgs>
+      fields: Prisma.ChapterFocusAreaFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.ChapterFocusAreaFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChapterFocusAreaPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.ChapterFocusAreaFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChapterFocusAreaPayload>
+        }
+        findFirst: {
+          args: Prisma.ChapterFocusAreaFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChapterFocusAreaPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.ChapterFocusAreaFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChapterFocusAreaPayload>
+        }
+        findMany: {
+          args: Prisma.ChapterFocusAreaFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChapterFocusAreaPayload>[]
+        }
+        create: {
+          args: Prisma.ChapterFocusAreaCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChapterFocusAreaPayload>
+        }
+        createMany: {
+          args: Prisma.ChapterFocusAreaCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.ChapterFocusAreaCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChapterFocusAreaPayload>[]
+        }
+        delete: {
+          args: Prisma.ChapterFocusAreaDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChapterFocusAreaPayload>
+        }
+        update: {
+          args: Prisma.ChapterFocusAreaUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChapterFocusAreaPayload>
+        }
+        deleteMany: {
+          args: Prisma.ChapterFocusAreaDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.ChapterFocusAreaUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.ChapterFocusAreaUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChapterFocusAreaPayload>[]
+        }
+        upsert: {
+          args: Prisma.ChapterFocusAreaUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChapterFocusAreaPayload>
+        }
+        aggregate: {
+          args: Prisma.ChapterFocusAreaAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateChapterFocusArea>
+        }
+        groupBy: {
+          args: Prisma.ChapterFocusAreaGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ChapterFocusAreaGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.ChapterFocusAreaCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ChapterFocusAreaCountAggregateOutputType> | number
+        }
+      }
+    }
+    LifeReflection: {
+      payload: Prisma.$LifeReflectionPayload<ExtArgs>
+      fields: Prisma.LifeReflectionFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.LifeReflectionFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LifeReflectionPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.LifeReflectionFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LifeReflectionPayload>
+        }
+        findFirst: {
+          args: Prisma.LifeReflectionFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LifeReflectionPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.LifeReflectionFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LifeReflectionPayload>
+        }
+        findMany: {
+          args: Prisma.LifeReflectionFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LifeReflectionPayload>[]
+        }
+        create: {
+          args: Prisma.LifeReflectionCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LifeReflectionPayload>
+        }
+        createMany: {
+          args: Prisma.LifeReflectionCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.LifeReflectionCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LifeReflectionPayload>[]
+        }
+        delete: {
+          args: Prisma.LifeReflectionDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LifeReflectionPayload>
+        }
+        update: {
+          args: Prisma.LifeReflectionUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LifeReflectionPayload>
+        }
+        deleteMany: {
+          args: Prisma.LifeReflectionDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.LifeReflectionUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.LifeReflectionUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LifeReflectionPayload>[]
+        }
+        upsert: {
+          args: Prisma.LifeReflectionUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LifeReflectionPayload>
+        }
+        aggregate: {
+          args: Prisma.LifeReflectionAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateLifeReflection>
+        }
+        groupBy: {
+          args: Prisma.LifeReflectionGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.LifeReflectionGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.LifeReflectionCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.LifeReflectionCountAggregateOutputType> | number
+        }
+      }
+    }
   }
 } & {
   other: {
@@ -1705,6 +2080,7 @@ export const GoalScalarFieldEnum = {
   id: 'id',
   userId: 'userId',
   areaId: 'areaId',
+  chapterId: 'chapterId',
   title: 'title',
   description: 'description',
   type: 'type',
@@ -1943,12 +2319,109 @@ export const NotificationScalarFieldEnum = {
 export type NotificationScalarFieldEnum = (typeof NotificationScalarFieldEnum)[keyof typeof NotificationScalarFieldEnum]
 
 
+export const LifeIdentityScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  bio: 'bio',
+  currentSituation: 'currentSituation',
+  coreValues: 'coreValues',
+  principles: 'principles',
+  strengths: 'strengths',
+  growthAreas: 'growthAreas',
+  importantRoles: 'importantRoles',
+  aspirations: 'aspirations',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type LifeIdentityScalarFieldEnum = (typeof LifeIdentityScalarFieldEnum)[keyof typeof LifeIdentityScalarFieldEnum]
+
+
+export const LifeVisionScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  statement: 'statement',
+  desiredIdentity: 'desiredIdentity',
+  desiredLifestyle: 'desiredLifestyle',
+  targetSkills: 'targetSkills',
+  purposeReason: 'purposeReason',
+  timeHorizonYears: 'timeHorizonYears',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type LifeVisionScalarFieldEnum = (typeof LifeVisionScalarFieldEnum)[keyof typeof LifeVisionScalarFieldEnum]
+
+
+export const LifeChapterScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  title: 'title',
+  description: 'description',
+  themeColor: 'themeColor',
+  icon: 'icon',
+  startDate: 'startDate',
+  targetEndDate: 'targetEndDate',
+  actualEndDate: 'actualEndDate',
+  isActive: 'isActive',
+  mainIntent: 'mainIntent',
+  reflectionNotes: 'reflectionNotes',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type LifeChapterScalarFieldEnum = (typeof LifeChapterScalarFieldEnum)[keyof typeof LifeChapterScalarFieldEnum]
+
+
+export const ChapterFocusAreaScalarFieldEnum = {
+  id: 'id',
+  chapterId: 'chapterId',
+  areaId: 'areaId',
+  title: 'title',
+  intention: 'intention',
+  order: 'order',
+  isActive: 'isActive',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type ChapterFocusAreaScalarFieldEnum = (typeof ChapterFocusAreaScalarFieldEnum)[keyof typeof ChapterFocusAreaScalarFieldEnum]
+
+
+export const LifeReflectionScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  chapterId: 'chapterId',
+  title: 'title',
+  date: 'date',
+  recentFocusNotes: 'recentFocusNotes',
+  meaningfulActivities: 'meaningfulActivities',
+  progressNotes: 'progressNotes',
+  lifeChanges: 'lifeChanges',
+  alignmentAssessment: 'alignmentAssessment',
+  adjustmentsNeeded: 'adjustmentsNeeded',
+  nextFocus: 'nextFocus',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type LifeReflectionScalarFieldEnum = (typeof LifeReflectionScalarFieldEnum)[keyof typeof LifeReflectionScalarFieldEnum]
+
+
 export const SortOrder = {
   asc: 'asc',
   desc: 'desc'
 } as const
 
 export type SortOrder = (typeof SortOrder)[keyof typeof SortOrder]
+
+
+export const NullableJsonNullValueInput = {
+  DbNull: DbNull,
+  JsonNull: JsonNull
+} as const
+
+export type NullableJsonNullValueInput = (typeof NullableJsonNullValueInput)[keyof typeof NullableJsonNullValueInput]
 
 
 export const QueryMode = {
@@ -1965,6 +2438,15 @@ export const NullsOrder = {
 } as const
 
 export type NullsOrder = (typeof NullsOrder)[keyof typeof NullsOrder]
+
+
+export const JsonNullValueFilter = {
+  DbNull: DbNull,
+  JsonNull: JsonNull,
+  AnyNull: AnyNull
+} as const
+
+export type JsonNullValueFilter = (typeof JsonNullValueFilter)[keyof typeof JsonNullValueFilter]
 
 
 
@@ -2273,6 +2755,20 @@ export type EnumNotificationSeverityFieldRefInput<$PrismaModel> = FieldRefInputT
 export type ListEnumNotificationSeverityFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'NotificationSeverity[]'>
     
 
+
+/**
+ * Reference to a field of type 'Json'
+ */
+export type JsonFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Json'>
+    
+
+
+/**
+ * Reference to a field of type 'QueryMode'
+ */
+export type EnumQueryModeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'QueryMode'>
+    
+
 /**
  * Batch Payload for updateMany & deleteMany & createMany
  */
@@ -2440,6 +2936,11 @@ export type GlobalOmitConfig = {
   activity?: Prisma.ActivityOmit
   capture?: Prisma.CaptureOmit
   notification?: Prisma.NotificationOmit
+  lifeIdentity?: Prisma.LifeIdentityOmit
+  lifeVision?: Prisma.LifeVisionOmit
+  lifeChapter?: Prisma.LifeChapterOmit
+  chapterFocusArea?: Prisma.ChapterFocusAreaOmit
+  lifeReflection?: Prisma.LifeReflectionOmit
 }
 
 /* Types for Logging */

@@ -261,6 +261,7 @@ export type AreaWhereInput = {
   projects?: Prisma.ProjectListRelationFilter
   tasks?: Prisma.TaskListRelationFilter
   activities?: Prisma.ActivityListRelationFilter
+  chapterFocuses?: Prisma.ChapterFocusAreaListRelationFilter
 }
 
 export type AreaOrderByWithRelationInput = {
@@ -279,6 +280,7 @@ export type AreaOrderByWithRelationInput = {
   projects?: Prisma.ProjectOrderByRelationAggregateInput
   tasks?: Prisma.TaskOrderByRelationAggregateInput
   activities?: Prisma.ActivityOrderByRelationAggregateInput
+  chapterFocuses?: Prisma.ChapterFocusAreaOrderByRelationAggregateInput
 }
 
 export type AreaWhereUniqueInput = Prisma.AtLeast<{
@@ -301,6 +303,7 @@ export type AreaWhereUniqueInput = Prisma.AtLeast<{
   projects?: Prisma.ProjectListRelationFilter
   tasks?: Prisma.TaskListRelationFilter
   activities?: Prisma.ActivityListRelationFilter
+  chapterFocuses?: Prisma.ChapterFocusAreaListRelationFilter
 }, "id" | "userId_name">
 
 export type AreaOrderByWithAggregationInput = {
@@ -352,6 +355,7 @@ export type AreaCreateInput = {
   projects?: Prisma.ProjectCreateNestedManyWithoutAreaInput
   tasks?: Prisma.TaskCreateNestedManyWithoutAreaInput
   activities?: Prisma.ActivityCreateNestedManyWithoutAreaInput
+  chapterFocuses?: Prisma.ChapterFocusAreaCreateNestedManyWithoutAreaInput
 }
 
 export type AreaUncheckedCreateInput = {
@@ -369,6 +373,7 @@ export type AreaUncheckedCreateInput = {
   projects?: Prisma.ProjectUncheckedCreateNestedManyWithoutAreaInput
   tasks?: Prisma.TaskUncheckedCreateNestedManyWithoutAreaInput
   activities?: Prisma.ActivityUncheckedCreateNestedManyWithoutAreaInput
+  chapterFocuses?: Prisma.ChapterFocusAreaUncheckedCreateNestedManyWithoutAreaInput
 }
 
 export type AreaUpdateInput = {
@@ -386,6 +391,7 @@ export type AreaUpdateInput = {
   projects?: Prisma.ProjectUpdateManyWithoutAreaNestedInput
   tasks?: Prisma.TaskUpdateManyWithoutAreaNestedInput
   activities?: Prisma.ActivityUpdateManyWithoutAreaNestedInput
+  chapterFocuses?: Prisma.ChapterFocusAreaUpdateManyWithoutAreaNestedInput
 }
 
 export type AreaUncheckedUpdateInput = {
@@ -403,6 +409,7 @@ export type AreaUncheckedUpdateInput = {
   projects?: Prisma.ProjectUncheckedUpdateManyWithoutAreaNestedInput
   tasks?: Prisma.TaskUncheckedUpdateManyWithoutAreaNestedInput
   activities?: Prisma.ActivityUncheckedUpdateManyWithoutAreaNestedInput
+  chapterFocuses?: Prisma.ChapterFocusAreaUncheckedUpdateManyWithoutAreaNestedInput
 }
 
 export type AreaCreateManyInput = {
@@ -616,6 +623,22 @@ export type AreaUpdateOneWithoutActivitiesNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.AreaUpdateToOneWithWhereWithoutActivitiesInput, Prisma.AreaUpdateWithoutActivitiesInput>, Prisma.AreaUncheckedUpdateWithoutActivitiesInput>
 }
 
+export type AreaCreateNestedOneWithoutChapterFocusesInput = {
+  create?: Prisma.XOR<Prisma.AreaCreateWithoutChapterFocusesInput, Prisma.AreaUncheckedCreateWithoutChapterFocusesInput>
+  connectOrCreate?: Prisma.AreaCreateOrConnectWithoutChapterFocusesInput
+  connect?: Prisma.AreaWhereUniqueInput
+}
+
+export type AreaUpdateOneWithoutChapterFocusesNestedInput = {
+  create?: Prisma.XOR<Prisma.AreaCreateWithoutChapterFocusesInput, Prisma.AreaUncheckedCreateWithoutChapterFocusesInput>
+  connectOrCreate?: Prisma.AreaCreateOrConnectWithoutChapterFocusesInput
+  upsert?: Prisma.AreaUpsertWithoutChapterFocusesInput
+  disconnect?: Prisma.AreaWhereInput | boolean
+  delete?: Prisma.AreaWhereInput | boolean
+  connect?: Prisma.AreaWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.AreaUpdateToOneWithWhereWithoutChapterFocusesInput, Prisma.AreaUpdateWithoutChapterFocusesInput>, Prisma.AreaUncheckedUpdateWithoutChapterFocusesInput>
+}
+
 export type AreaCreateWithoutUserInput = {
   id?: string
   name: string
@@ -630,6 +653,7 @@ export type AreaCreateWithoutUserInput = {
   projects?: Prisma.ProjectCreateNestedManyWithoutAreaInput
   tasks?: Prisma.TaskCreateNestedManyWithoutAreaInput
   activities?: Prisma.ActivityCreateNestedManyWithoutAreaInput
+  chapterFocuses?: Prisma.ChapterFocusAreaCreateNestedManyWithoutAreaInput
 }
 
 export type AreaUncheckedCreateWithoutUserInput = {
@@ -646,6 +670,7 @@ export type AreaUncheckedCreateWithoutUserInput = {
   projects?: Prisma.ProjectUncheckedCreateNestedManyWithoutAreaInput
   tasks?: Prisma.TaskUncheckedCreateNestedManyWithoutAreaInput
   activities?: Prisma.ActivityUncheckedCreateNestedManyWithoutAreaInput
+  chapterFocuses?: Prisma.ChapterFocusAreaUncheckedCreateNestedManyWithoutAreaInput
 }
 
 export type AreaCreateOrConnectWithoutUserInput = {
@@ -704,6 +729,7 @@ export type AreaCreateWithoutGoalsInput = {
   projects?: Prisma.ProjectCreateNestedManyWithoutAreaInput
   tasks?: Prisma.TaskCreateNestedManyWithoutAreaInput
   activities?: Prisma.ActivityCreateNestedManyWithoutAreaInput
+  chapterFocuses?: Prisma.ChapterFocusAreaCreateNestedManyWithoutAreaInput
 }
 
 export type AreaUncheckedCreateWithoutGoalsInput = {
@@ -720,6 +746,7 @@ export type AreaUncheckedCreateWithoutGoalsInput = {
   projects?: Prisma.ProjectUncheckedCreateNestedManyWithoutAreaInput
   tasks?: Prisma.TaskUncheckedCreateNestedManyWithoutAreaInput
   activities?: Prisma.ActivityUncheckedCreateNestedManyWithoutAreaInput
+  chapterFocuses?: Prisma.ChapterFocusAreaUncheckedCreateNestedManyWithoutAreaInput
 }
 
 export type AreaCreateOrConnectWithoutGoalsInput = {
@@ -752,6 +779,7 @@ export type AreaUpdateWithoutGoalsInput = {
   projects?: Prisma.ProjectUpdateManyWithoutAreaNestedInput
   tasks?: Prisma.TaskUpdateManyWithoutAreaNestedInput
   activities?: Prisma.ActivityUpdateManyWithoutAreaNestedInput
+  chapterFocuses?: Prisma.ChapterFocusAreaUpdateManyWithoutAreaNestedInput
 }
 
 export type AreaUncheckedUpdateWithoutGoalsInput = {
@@ -768,6 +796,7 @@ export type AreaUncheckedUpdateWithoutGoalsInput = {
   projects?: Prisma.ProjectUncheckedUpdateManyWithoutAreaNestedInput
   tasks?: Prisma.TaskUncheckedUpdateManyWithoutAreaNestedInput
   activities?: Prisma.ActivityUncheckedUpdateManyWithoutAreaNestedInput
+  chapterFocuses?: Prisma.ChapterFocusAreaUncheckedUpdateManyWithoutAreaNestedInput
 }
 
 export type AreaCreateWithoutProjectsInput = {
@@ -784,6 +813,7 @@ export type AreaCreateWithoutProjectsInput = {
   goals?: Prisma.GoalCreateNestedManyWithoutAreaInput
   tasks?: Prisma.TaskCreateNestedManyWithoutAreaInput
   activities?: Prisma.ActivityCreateNestedManyWithoutAreaInput
+  chapterFocuses?: Prisma.ChapterFocusAreaCreateNestedManyWithoutAreaInput
 }
 
 export type AreaUncheckedCreateWithoutProjectsInput = {
@@ -800,6 +830,7 @@ export type AreaUncheckedCreateWithoutProjectsInput = {
   goals?: Prisma.GoalUncheckedCreateNestedManyWithoutAreaInput
   tasks?: Prisma.TaskUncheckedCreateNestedManyWithoutAreaInput
   activities?: Prisma.ActivityUncheckedCreateNestedManyWithoutAreaInput
+  chapterFocuses?: Prisma.ChapterFocusAreaUncheckedCreateNestedManyWithoutAreaInput
 }
 
 export type AreaCreateOrConnectWithoutProjectsInput = {
@@ -832,6 +863,7 @@ export type AreaUpdateWithoutProjectsInput = {
   goals?: Prisma.GoalUpdateManyWithoutAreaNestedInput
   tasks?: Prisma.TaskUpdateManyWithoutAreaNestedInput
   activities?: Prisma.ActivityUpdateManyWithoutAreaNestedInput
+  chapterFocuses?: Prisma.ChapterFocusAreaUpdateManyWithoutAreaNestedInput
 }
 
 export type AreaUncheckedUpdateWithoutProjectsInput = {
@@ -848,6 +880,7 @@ export type AreaUncheckedUpdateWithoutProjectsInput = {
   goals?: Prisma.GoalUncheckedUpdateManyWithoutAreaNestedInput
   tasks?: Prisma.TaskUncheckedUpdateManyWithoutAreaNestedInput
   activities?: Prisma.ActivityUncheckedUpdateManyWithoutAreaNestedInput
+  chapterFocuses?: Prisma.ChapterFocusAreaUncheckedUpdateManyWithoutAreaNestedInput
 }
 
 export type AreaCreateWithoutTasksInput = {
@@ -864,6 +897,7 @@ export type AreaCreateWithoutTasksInput = {
   goals?: Prisma.GoalCreateNestedManyWithoutAreaInput
   projects?: Prisma.ProjectCreateNestedManyWithoutAreaInput
   activities?: Prisma.ActivityCreateNestedManyWithoutAreaInput
+  chapterFocuses?: Prisma.ChapterFocusAreaCreateNestedManyWithoutAreaInput
 }
 
 export type AreaUncheckedCreateWithoutTasksInput = {
@@ -880,6 +914,7 @@ export type AreaUncheckedCreateWithoutTasksInput = {
   goals?: Prisma.GoalUncheckedCreateNestedManyWithoutAreaInput
   projects?: Prisma.ProjectUncheckedCreateNestedManyWithoutAreaInput
   activities?: Prisma.ActivityUncheckedCreateNestedManyWithoutAreaInput
+  chapterFocuses?: Prisma.ChapterFocusAreaUncheckedCreateNestedManyWithoutAreaInput
 }
 
 export type AreaCreateOrConnectWithoutTasksInput = {
@@ -912,6 +947,7 @@ export type AreaUpdateWithoutTasksInput = {
   goals?: Prisma.GoalUpdateManyWithoutAreaNestedInput
   projects?: Prisma.ProjectUpdateManyWithoutAreaNestedInput
   activities?: Prisma.ActivityUpdateManyWithoutAreaNestedInput
+  chapterFocuses?: Prisma.ChapterFocusAreaUpdateManyWithoutAreaNestedInput
 }
 
 export type AreaUncheckedUpdateWithoutTasksInput = {
@@ -928,6 +964,7 @@ export type AreaUncheckedUpdateWithoutTasksInput = {
   goals?: Prisma.GoalUncheckedUpdateManyWithoutAreaNestedInput
   projects?: Prisma.ProjectUncheckedUpdateManyWithoutAreaNestedInput
   activities?: Prisma.ActivityUncheckedUpdateManyWithoutAreaNestedInput
+  chapterFocuses?: Prisma.ChapterFocusAreaUncheckedUpdateManyWithoutAreaNestedInput
 }
 
 export type AreaCreateWithoutActivitiesInput = {
@@ -944,6 +981,7 @@ export type AreaCreateWithoutActivitiesInput = {
   goals?: Prisma.GoalCreateNestedManyWithoutAreaInput
   projects?: Prisma.ProjectCreateNestedManyWithoutAreaInput
   tasks?: Prisma.TaskCreateNestedManyWithoutAreaInput
+  chapterFocuses?: Prisma.ChapterFocusAreaCreateNestedManyWithoutAreaInput
 }
 
 export type AreaUncheckedCreateWithoutActivitiesInput = {
@@ -960,6 +998,7 @@ export type AreaUncheckedCreateWithoutActivitiesInput = {
   goals?: Prisma.GoalUncheckedCreateNestedManyWithoutAreaInput
   projects?: Prisma.ProjectUncheckedCreateNestedManyWithoutAreaInput
   tasks?: Prisma.TaskUncheckedCreateNestedManyWithoutAreaInput
+  chapterFocuses?: Prisma.ChapterFocusAreaUncheckedCreateNestedManyWithoutAreaInput
 }
 
 export type AreaCreateOrConnectWithoutActivitiesInput = {
@@ -992,6 +1031,7 @@ export type AreaUpdateWithoutActivitiesInput = {
   goals?: Prisma.GoalUpdateManyWithoutAreaNestedInput
   projects?: Prisma.ProjectUpdateManyWithoutAreaNestedInput
   tasks?: Prisma.TaskUpdateManyWithoutAreaNestedInput
+  chapterFocuses?: Prisma.ChapterFocusAreaUpdateManyWithoutAreaNestedInput
 }
 
 export type AreaUncheckedUpdateWithoutActivitiesInput = {
@@ -1008,6 +1048,91 @@ export type AreaUncheckedUpdateWithoutActivitiesInput = {
   goals?: Prisma.GoalUncheckedUpdateManyWithoutAreaNestedInput
   projects?: Prisma.ProjectUncheckedUpdateManyWithoutAreaNestedInput
   tasks?: Prisma.TaskUncheckedUpdateManyWithoutAreaNestedInput
+  chapterFocuses?: Prisma.ChapterFocusAreaUncheckedUpdateManyWithoutAreaNestedInput
+}
+
+export type AreaCreateWithoutChapterFocusesInput = {
+  id?: string
+  name: string
+  description?: string | null
+  color?: string
+  icon?: string
+  order?: number
+  isActive?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  user: Prisma.UserCreateNestedOneWithoutAreasInput
+  goals?: Prisma.GoalCreateNestedManyWithoutAreaInput
+  projects?: Prisma.ProjectCreateNestedManyWithoutAreaInput
+  tasks?: Prisma.TaskCreateNestedManyWithoutAreaInput
+  activities?: Prisma.ActivityCreateNestedManyWithoutAreaInput
+}
+
+export type AreaUncheckedCreateWithoutChapterFocusesInput = {
+  id?: string
+  userId: string
+  name: string
+  description?: string | null
+  color?: string
+  icon?: string
+  order?: number
+  isActive?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  goals?: Prisma.GoalUncheckedCreateNestedManyWithoutAreaInput
+  projects?: Prisma.ProjectUncheckedCreateNestedManyWithoutAreaInput
+  tasks?: Prisma.TaskUncheckedCreateNestedManyWithoutAreaInput
+  activities?: Prisma.ActivityUncheckedCreateNestedManyWithoutAreaInput
+}
+
+export type AreaCreateOrConnectWithoutChapterFocusesInput = {
+  where: Prisma.AreaWhereUniqueInput
+  create: Prisma.XOR<Prisma.AreaCreateWithoutChapterFocusesInput, Prisma.AreaUncheckedCreateWithoutChapterFocusesInput>
+}
+
+export type AreaUpsertWithoutChapterFocusesInput = {
+  update: Prisma.XOR<Prisma.AreaUpdateWithoutChapterFocusesInput, Prisma.AreaUncheckedUpdateWithoutChapterFocusesInput>
+  create: Prisma.XOR<Prisma.AreaCreateWithoutChapterFocusesInput, Prisma.AreaUncheckedCreateWithoutChapterFocusesInput>
+  where?: Prisma.AreaWhereInput
+}
+
+export type AreaUpdateToOneWithWhereWithoutChapterFocusesInput = {
+  where?: Prisma.AreaWhereInput
+  data: Prisma.XOR<Prisma.AreaUpdateWithoutChapterFocusesInput, Prisma.AreaUncheckedUpdateWithoutChapterFocusesInput>
+}
+
+export type AreaUpdateWithoutChapterFocusesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  color?: Prisma.StringFieldUpdateOperationsInput | string
+  icon?: Prisma.StringFieldUpdateOperationsInput | string
+  order?: Prisma.IntFieldUpdateOperationsInput | number
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  user?: Prisma.UserUpdateOneRequiredWithoutAreasNestedInput
+  goals?: Prisma.GoalUpdateManyWithoutAreaNestedInput
+  projects?: Prisma.ProjectUpdateManyWithoutAreaNestedInput
+  tasks?: Prisma.TaskUpdateManyWithoutAreaNestedInput
+  activities?: Prisma.ActivityUpdateManyWithoutAreaNestedInput
+}
+
+export type AreaUncheckedUpdateWithoutChapterFocusesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  userId?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  color?: Prisma.StringFieldUpdateOperationsInput | string
+  icon?: Prisma.StringFieldUpdateOperationsInput | string
+  order?: Prisma.IntFieldUpdateOperationsInput | number
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  goals?: Prisma.GoalUncheckedUpdateManyWithoutAreaNestedInput
+  projects?: Prisma.ProjectUncheckedUpdateManyWithoutAreaNestedInput
+  tasks?: Prisma.TaskUncheckedUpdateManyWithoutAreaNestedInput
+  activities?: Prisma.ActivityUncheckedUpdateManyWithoutAreaNestedInput
 }
 
 export type AreaCreateManyUserInput = {
@@ -1036,6 +1161,7 @@ export type AreaUpdateWithoutUserInput = {
   projects?: Prisma.ProjectUpdateManyWithoutAreaNestedInput
   tasks?: Prisma.TaskUpdateManyWithoutAreaNestedInput
   activities?: Prisma.ActivityUpdateManyWithoutAreaNestedInput
+  chapterFocuses?: Prisma.ChapterFocusAreaUpdateManyWithoutAreaNestedInput
 }
 
 export type AreaUncheckedUpdateWithoutUserInput = {
@@ -1052,6 +1178,7 @@ export type AreaUncheckedUpdateWithoutUserInput = {
   projects?: Prisma.ProjectUncheckedUpdateManyWithoutAreaNestedInput
   tasks?: Prisma.TaskUncheckedUpdateManyWithoutAreaNestedInput
   activities?: Prisma.ActivityUncheckedUpdateManyWithoutAreaNestedInput
+  chapterFocuses?: Prisma.ChapterFocusAreaUncheckedUpdateManyWithoutAreaNestedInput
 }
 
 export type AreaUncheckedUpdateManyWithoutUserInput = {
@@ -1076,6 +1203,7 @@ export type AreaCountOutputType = {
   projects: number
   tasks: number
   activities: number
+  chapterFocuses: number
 }
 
 export type AreaCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1083,6 +1211,7 @@ export type AreaCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.I
   projects?: boolean | AreaCountOutputTypeCountProjectsArgs
   tasks?: boolean | AreaCountOutputTypeCountTasksArgs
   activities?: boolean | AreaCountOutputTypeCountActivitiesArgs
+  chapterFocuses?: boolean | AreaCountOutputTypeCountChapterFocusesArgs
 }
 
 /**
@@ -1123,6 +1252,13 @@ export type AreaCountOutputTypeCountActivitiesArgs<ExtArgs extends runtime.Types
   where?: Prisma.ActivityWhereInput
 }
 
+/**
+ * AreaCountOutputType without action
+ */
+export type AreaCountOutputTypeCountChapterFocusesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.ChapterFocusAreaWhereInput
+}
+
 
 export type AreaSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -1140,6 +1276,7 @@ export type AreaSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   projects?: boolean | Prisma.Area$projectsArgs<ExtArgs>
   tasks?: boolean | Prisma.Area$tasksArgs<ExtArgs>
   activities?: boolean | Prisma.Area$activitiesArgs<ExtArgs>
+  chapterFocuses?: boolean | Prisma.Area$chapterFocusesArgs<ExtArgs>
   _count?: boolean | Prisma.AreaCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["area"]>
 
@@ -1191,6 +1328,7 @@ export type AreaInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   projects?: boolean | Prisma.Area$projectsArgs<ExtArgs>
   tasks?: boolean | Prisma.Area$tasksArgs<ExtArgs>
   activities?: boolean | Prisma.Area$activitiesArgs<ExtArgs>
+  chapterFocuses?: boolean | Prisma.Area$chapterFocusesArgs<ExtArgs>
   _count?: boolean | Prisma.AreaCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type AreaIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1208,6 +1346,7 @@ export type $AreaPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     projects: Prisma.$ProjectPayload<ExtArgs>[]
     tasks: Prisma.$TaskPayload<ExtArgs>[]
     activities: Prisma.$ActivityPayload<ExtArgs>[]
+    chapterFocuses: Prisma.$ChapterFocusAreaPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1619,6 +1758,7 @@ export interface Prisma__AreaClient<T, Null = never, ExtArgs extends runtime.Typ
   projects<T extends Prisma.Area$projectsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Area$projectsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ProjectPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   tasks<T extends Prisma.Area$tasksArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Area$tasksArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$TaskPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   activities<T extends Prisma.Area$activitiesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Area$activitiesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ActivityPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  chapterFocuses<T extends Prisma.Area$chapterFocusesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Area$chapterFocusesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ChapterFocusAreaPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -2152,6 +2292,30 @@ export type Area$activitiesArgs<ExtArgs extends runtime.Types.Extensions.Interna
   take?: number
   skip?: number
   distinct?: Prisma.ActivityScalarFieldEnum | Prisma.ActivityScalarFieldEnum[]
+}
+
+/**
+ * Area.chapterFocuses
+ */
+export type Area$chapterFocusesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the ChapterFocusArea
+   */
+  select?: Prisma.ChapterFocusAreaSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the ChapterFocusArea
+   */
+  omit?: Prisma.ChapterFocusAreaOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ChapterFocusAreaInclude<ExtArgs> | null
+  where?: Prisma.ChapterFocusAreaWhereInput
+  orderBy?: Prisma.ChapterFocusAreaOrderByWithRelationInput | Prisma.ChapterFocusAreaOrderByWithRelationInput[]
+  cursor?: Prisma.ChapterFocusAreaWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.ChapterFocusAreaScalarFieldEnum | Prisma.ChapterFocusAreaScalarFieldEnum[]
 }
 
 /**

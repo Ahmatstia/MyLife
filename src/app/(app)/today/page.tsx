@@ -3,7 +3,9 @@ import { requirePageUser } from "@/lib/auth";
 import { getAreas } from "@/services/area.service";
 import { getProjects } from "@/services/project.service";
 import { getCaptures } from "@/services/capture.service";
+import { getActiveChapter } from "@/services/direction.service";
 import { TodayDashboardClient } from "./TodayDashboardClient";
+import { DirectionCompassCard } from "@/app/components/direction/DirectionCompassCard";
 
 export const dynamic = "force-dynamic";
 
@@ -18,11 +20,12 @@ function formatDate(value: Date) {
 
 export default async function TodayPage() {
   const user = await requirePageUser();
-  const [today, areas, allProjects, dbCaptures] = await Promise.all([
+  const [today, areas, allProjects, dbCaptures, activeChapter] = await Promise.all([
     getToday(new Date(), user.id),
     getAreas(user.id, { isActive: true }),
     getProjects(user.id),
     getCaptures({ status: "PENDING", limit: 10 }, user.id).catch(() => []),
+    getActiveChapter(user.id).catch(() => null),
   ]);
 
   const projects = allProjects
@@ -135,7 +138,8 @@ export default async function TodayPage() {
   }));
 
   return (
-    <div className="w-full pb-16">
+    <div className="w-full pb-16 space-y-5">
+      <DirectionCompassCard chapter={activeChapter} />
       <TodayDashboardClient
         initialDateStr={dateStr}
         areas={areas.map((a) => ({ id: a.id, name: a.name, color: a.color }))}

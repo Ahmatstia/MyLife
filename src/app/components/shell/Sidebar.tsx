@@ -30,9 +30,10 @@ const navigationGroups: NavGroup[] = [
   {
     title: "Strategi & Target",
     items: [
+      { href: "/direction", label: "Arah & Identitas", verb: "Kompas", icon: "compass", color: "text-[#38bdf8]" },
       { href: "/goals", label: "Target (Goals)", verb: "Sasaran", icon: "flag", color: "text-[#a078ff]" },
       { href: "/projects", label: "Proyek (Projects)", verb: "Eksekusi", icon: "layers", color: "text-[#8B5CF6]" },
-      { href: "/areas", label: "Pilar Hidup (Areas)", verb: "Fondasi", icon: "compass", color: "text-[#4edea3]" },
+      { href: "/areas", label: "Pilar Hidup (Areas)", verb: "Fondasi", icon: "tree", color: "text-[#4edea3]" },
     ],
   },
   {

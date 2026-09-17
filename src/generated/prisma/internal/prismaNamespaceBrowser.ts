@@ -66,7 +66,12 @@ export const ModelName = {
   CalendarEvent: 'CalendarEvent',
   Activity: 'Activity',
   Capture: 'Capture',
-  Notification: 'Notification'
+  Notification: 'Notification',
+  LifeIdentity: 'LifeIdentity',
+  LifeVision: 'LifeVision',
+  LifeChapter: 'LifeChapter',
+  ChapterFocusArea: 'ChapterFocusArea',
+  LifeReflection: 'LifeReflection'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -135,6 +140,7 @@ export const GoalScalarFieldEnum = {
   id: 'id',
   userId: 'userId',
   areaId: 'areaId',
+  chapterId: 'chapterId',
   title: 'title',
   description: 'description',
   type: 'type',
@@ -373,12 +379,109 @@ export const NotificationScalarFieldEnum = {
 export type NotificationScalarFieldEnum = (typeof NotificationScalarFieldEnum)[keyof typeof NotificationScalarFieldEnum]
 
 
+export const LifeIdentityScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  bio: 'bio',
+  currentSituation: 'currentSituation',
+  coreValues: 'coreValues',
+  principles: 'principles',
+  strengths: 'strengths',
+  growthAreas: 'growthAreas',
+  importantRoles: 'importantRoles',
+  aspirations: 'aspirations',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type LifeIdentityScalarFieldEnum = (typeof LifeIdentityScalarFieldEnum)[keyof typeof LifeIdentityScalarFieldEnum]
+
+
+export const LifeVisionScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  statement: 'statement',
+  desiredIdentity: 'desiredIdentity',
+  desiredLifestyle: 'desiredLifestyle',
+  targetSkills: 'targetSkills',
+  purposeReason: 'purposeReason',
+  timeHorizonYears: 'timeHorizonYears',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type LifeVisionScalarFieldEnum = (typeof LifeVisionScalarFieldEnum)[keyof typeof LifeVisionScalarFieldEnum]
+
+
+export const LifeChapterScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  title: 'title',
+  description: 'description',
+  themeColor: 'themeColor',
+  icon: 'icon',
+  startDate: 'startDate',
+  targetEndDate: 'targetEndDate',
+  actualEndDate: 'actualEndDate',
+  isActive: 'isActive',
+  mainIntent: 'mainIntent',
+  reflectionNotes: 'reflectionNotes',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type LifeChapterScalarFieldEnum = (typeof LifeChapterScalarFieldEnum)[keyof typeof LifeChapterScalarFieldEnum]
+
+
+export const ChapterFocusAreaScalarFieldEnum = {
+  id: 'id',
+  chapterId: 'chapterId',
+  areaId: 'areaId',
+  title: 'title',
+  intention: 'intention',
+  order: 'order',
+  isActive: 'isActive',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type ChapterFocusAreaScalarFieldEnum = (typeof ChapterFocusAreaScalarFieldEnum)[keyof typeof ChapterFocusAreaScalarFieldEnum]
+
+
+export const LifeReflectionScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  chapterId: 'chapterId',
+  title: 'title',
+  date: 'date',
+  recentFocusNotes: 'recentFocusNotes',
+  meaningfulActivities: 'meaningfulActivities',
+  progressNotes: 'progressNotes',
+  lifeChanges: 'lifeChanges',
+  alignmentAssessment: 'alignmentAssessment',
+  adjustmentsNeeded: 'adjustmentsNeeded',
+  nextFocus: 'nextFocus',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type LifeReflectionScalarFieldEnum = (typeof LifeReflectionScalarFieldEnum)[keyof typeof LifeReflectionScalarFieldEnum]
+
+
 export const SortOrder = {
   asc: 'asc',
   desc: 'desc'
 } as const
 
 export type SortOrder = (typeof SortOrder)[keyof typeof SortOrder]
+
+
+export const NullableJsonNullValueInput = {
+  DbNull: DbNull,
+  JsonNull: JsonNull
+} as const
+
+export type NullableJsonNullValueInput = (typeof NullableJsonNullValueInput)[keyof typeof NullableJsonNullValueInput]
 
 
 export const QueryMode = {
@@ -395,4 +498,13 @@ export const NullsOrder = {
 } as const
 
 export type NullsOrder = (typeof NullsOrder)[keyof typeof NullsOrder]
+
+
+export const JsonNullValueFilter = {
+  DbNull: DbNull,
+  JsonNull: JsonNull,
+  AnyNull: AnyNull
+} as const
+
+export type JsonNullValueFilter = (typeof JsonNullValueFilter)[keyof typeof JsonNullValueFilter]
 

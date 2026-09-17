@@ -121,3 +121,28 @@ export type Capture = Prisma.CaptureModel
  * 
  */
 export type Notification = Prisma.NotificationModel
+/**
+ * Model LifeIdentity
+ * 
+ */
+export type LifeIdentity = Prisma.LifeIdentityModel
+/**
+ * Model LifeVision
+ * 
+ */
+export type LifeVision = Prisma.LifeVisionModel
+/**
+ * Model LifeChapter
+ * 
+ */
+export type LifeChapter = Prisma.LifeChapterModel
+/**
+ * Model ChapterFocusArea
+ * 
+ */
+export type ChapterFocusArea = Prisma.ChapterFocusAreaModel
+/**
+ * Model LifeReflection
+ * 
+ */
+export type LifeReflection = Prisma.LifeReflectionModel

@@ -213,6 +213,10 @@ export type UserWhereInput = {
   activities?: Prisma.ActivityListRelationFilter
   captures?: Prisma.CaptureListRelationFilter
   notifications?: Prisma.NotificationListRelationFilter
+  lifeIdentity?: Prisma.XOR<Prisma.LifeIdentityNullableScalarRelationFilter, Prisma.LifeIdentityWhereInput> | null
+  lifeVision?: Prisma.XOR<Prisma.LifeVisionNullableScalarRelationFilter, Prisma.LifeVisionWhereInput> | null
+  lifeChapters?: Prisma.LifeChapterListRelationFilter
+  lifeReflections?: Prisma.LifeReflectionListRelationFilter
 }
 
 export type UserOrderByWithRelationInput = {
@@ -238,6 +242,10 @@ export type UserOrderByWithRelationInput = {
   activities?: Prisma.ActivityOrderByRelationAggregateInput
   captures?: Prisma.CaptureOrderByRelationAggregateInput
   notifications?: Prisma.NotificationOrderByRelationAggregateInput
+  lifeIdentity?: Prisma.LifeIdentityOrderByWithRelationInput
+  lifeVision?: Prisma.LifeVisionOrderByWithRelationInput
+  lifeChapters?: Prisma.LifeChapterOrderByRelationAggregateInput
+  lifeReflections?: Prisma.LifeReflectionOrderByRelationAggregateInput
 }
 
 export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -266,6 +274,10 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   activities?: Prisma.ActivityListRelationFilter
   captures?: Prisma.CaptureListRelationFilter
   notifications?: Prisma.NotificationListRelationFilter
+  lifeIdentity?: Prisma.XOR<Prisma.LifeIdentityNullableScalarRelationFilter, Prisma.LifeIdentityWhereInput> | null
+  lifeVision?: Prisma.XOR<Prisma.LifeVisionNullableScalarRelationFilter, Prisma.LifeVisionWhereInput> | null
+  lifeChapters?: Prisma.LifeChapterListRelationFilter
+  lifeReflections?: Prisma.LifeReflectionListRelationFilter
 }, "id" | "email">
 
 export type UserOrderByWithAggregationInput = {
@@ -317,6 +329,10 @@ export type UserCreateInput = {
   activities?: Prisma.ActivityCreateNestedManyWithoutUserInput
   captures?: Prisma.CaptureCreateNestedManyWithoutUserInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
+  lifeIdentity?: Prisma.LifeIdentityCreateNestedOneWithoutUserInput
+  lifeVision?: Prisma.LifeVisionCreateNestedOneWithoutUserInput
+  lifeChapters?: Prisma.LifeChapterCreateNestedManyWithoutUserInput
+  lifeReflections?: Prisma.LifeReflectionCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateInput = {
@@ -342,6 +358,10 @@ export type UserUncheckedCreateInput = {
   activities?: Prisma.ActivityUncheckedCreateNestedManyWithoutUserInput
   captures?: Prisma.CaptureUncheckedCreateNestedManyWithoutUserInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
+  lifeIdentity?: Prisma.LifeIdentityUncheckedCreateNestedOneWithoutUserInput
+  lifeVision?: Prisma.LifeVisionUncheckedCreateNestedOneWithoutUserInput
+  lifeChapters?: Prisma.LifeChapterUncheckedCreateNestedManyWithoutUserInput
+  lifeReflections?: Prisma.LifeReflectionUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserUpdateInput = {
@@ -367,6 +387,10 @@ export type UserUpdateInput = {
   activities?: Prisma.ActivityUpdateManyWithoutUserNestedInput
   captures?: Prisma.CaptureUpdateManyWithoutUserNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
+  lifeIdentity?: Prisma.LifeIdentityUpdateOneWithoutUserNestedInput
+  lifeVision?: Prisma.LifeVisionUpdateOneWithoutUserNestedInput
+  lifeChapters?: Prisma.LifeChapterUpdateManyWithoutUserNestedInput
+  lifeReflections?: Prisma.LifeReflectionUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateInput = {
@@ -392,6 +416,10 @@ export type UserUncheckedUpdateInput = {
   activities?: Prisma.ActivityUncheckedUpdateManyWithoutUserNestedInput
   captures?: Prisma.CaptureUncheckedUpdateManyWithoutUserNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
+  lifeIdentity?: Prisma.LifeIdentityUncheckedUpdateOneWithoutUserNestedInput
+  lifeVision?: Prisma.LifeVisionUncheckedUpdateOneWithoutUserNestedInput
+  lifeChapters?: Prisma.LifeChapterUncheckedUpdateManyWithoutUserNestedInput
+  lifeReflections?: Prisma.LifeReflectionUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateManyInput = {
@@ -681,6 +709,62 @@ export type UserUpdateOneRequiredWithoutNotificationsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutNotificationsInput, Prisma.UserUpdateWithoutNotificationsInput>, Prisma.UserUncheckedUpdateWithoutNotificationsInput>
 }
 
+export type UserCreateNestedOneWithoutLifeIdentityInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutLifeIdentityInput, Prisma.UserUncheckedCreateWithoutLifeIdentityInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutLifeIdentityInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutLifeIdentityNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutLifeIdentityInput, Prisma.UserUncheckedCreateWithoutLifeIdentityInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutLifeIdentityInput
+  upsert?: Prisma.UserUpsertWithoutLifeIdentityInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutLifeIdentityInput, Prisma.UserUpdateWithoutLifeIdentityInput>, Prisma.UserUncheckedUpdateWithoutLifeIdentityInput>
+}
+
+export type UserCreateNestedOneWithoutLifeVisionInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutLifeVisionInput, Prisma.UserUncheckedCreateWithoutLifeVisionInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutLifeVisionInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutLifeVisionNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutLifeVisionInput, Prisma.UserUncheckedCreateWithoutLifeVisionInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutLifeVisionInput
+  upsert?: Prisma.UserUpsertWithoutLifeVisionInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutLifeVisionInput, Prisma.UserUpdateWithoutLifeVisionInput>, Prisma.UserUncheckedUpdateWithoutLifeVisionInput>
+}
+
+export type UserCreateNestedOneWithoutLifeChaptersInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutLifeChaptersInput, Prisma.UserUncheckedCreateWithoutLifeChaptersInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutLifeChaptersInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutLifeChaptersNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutLifeChaptersInput, Prisma.UserUncheckedCreateWithoutLifeChaptersInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutLifeChaptersInput
+  upsert?: Prisma.UserUpsertWithoutLifeChaptersInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutLifeChaptersInput, Prisma.UserUpdateWithoutLifeChaptersInput>, Prisma.UserUncheckedUpdateWithoutLifeChaptersInput>
+}
+
+export type UserCreateNestedOneWithoutLifeReflectionsInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutLifeReflectionsInput, Prisma.UserUncheckedCreateWithoutLifeReflectionsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutLifeReflectionsInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutLifeReflectionsNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutLifeReflectionsInput, Prisma.UserUncheckedCreateWithoutLifeReflectionsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutLifeReflectionsInput
+  upsert?: Prisma.UserUpsertWithoutLifeReflectionsInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutLifeReflectionsInput, Prisma.UserUpdateWithoutLifeReflectionsInput>, Prisma.UserUncheckedUpdateWithoutLifeReflectionsInput>
+}
+
 export type UserCreateWithoutPreferenceInput = {
   id?: string
   email: string
@@ -703,6 +787,10 @@ export type UserCreateWithoutPreferenceInput = {
   activities?: Prisma.ActivityCreateNestedManyWithoutUserInput
   captures?: Prisma.CaptureCreateNestedManyWithoutUserInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
+  lifeIdentity?: Prisma.LifeIdentityCreateNestedOneWithoutUserInput
+  lifeVision?: Prisma.LifeVisionCreateNestedOneWithoutUserInput
+  lifeChapters?: Prisma.LifeChapterCreateNestedManyWithoutUserInput
+  lifeReflections?: Prisma.LifeReflectionCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutPreferenceInput = {
@@ -727,6 +815,10 @@ export type UserUncheckedCreateWithoutPreferenceInput = {
   activities?: Prisma.ActivityUncheckedCreateNestedManyWithoutUserInput
   captures?: Prisma.CaptureUncheckedCreateNestedManyWithoutUserInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
+  lifeIdentity?: Prisma.LifeIdentityUncheckedCreateNestedOneWithoutUserInput
+  lifeVision?: Prisma.LifeVisionUncheckedCreateNestedOneWithoutUserInput
+  lifeChapters?: Prisma.LifeChapterUncheckedCreateNestedManyWithoutUserInput
+  lifeReflections?: Prisma.LifeReflectionUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutPreferenceInput = {
@@ -767,6 +859,10 @@ export type UserUpdateWithoutPreferenceInput = {
   activities?: Prisma.ActivityUpdateManyWithoutUserNestedInput
   captures?: Prisma.CaptureUpdateManyWithoutUserNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
+  lifeIdentity?: Prisma.LifeIdentityUpdateOneWithoutUserNestedInput
+  lifeVision?: Prisma.LifeVisionUpdateOneWithoutUserNestedInput
+  lifeChapters?: Prisma.LifeChapterUpdateManyWithoutUserNestedInput
+  lifeReflections?: Prisma.LifeReflectionUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutPreferenceInput = {
@@ -791,6 +887,10 @@ export type UserUncheckedUpdateWithoutPreferenceInput = {
   activities?: Prisma.ActivityUncheckedUpdateManyWithoutUserNestedInput
   captures?: Prisma.CaptureUncheckedUpdateManyWithoutUserNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
+  lifeIdentity?: Prisma.LifeIdentityUncheckedUpdateOneWithoutUserNestedInput
+  lifeVision?: Prisma.LifeVisionUncheckedUpdateOneWithoutUserNestedInput
+  lifeChapters?: Prisma.LifeChapterUncheckedUpdateManyWithoutUserNestedInput
+  lifeReflections?: Prisma.LifeReflectionUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutAreasInput = {
@@ -815,6 +915,10 @@ export type UserCreateWithoutAreasInput = {
   activities?: Prisma.ActivityCreateNestedManyWithoutUserInput
   captures?: Prisma.CaptureCreateNestedManyWithoutUserInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
+  lifeIdentity?: Prisma.LifeIdentityCreateNestedOneWithoutUserInput
+  lifeVision?: Prisma.LifeVisionCreateNestedOneWithoutUserInput
+  lifeChapters?: Prisma.LifeChapterCreateNestedManyWithoutUserInput
+  lifeReflections?: Prisma.LifeReflectionCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutAreasInput = {
@@ -839,6 +943,10 @@ export type UserUncheckedCreateWithoutAreasInput = {
   activities?: Prisma.ActivityUncheckedCreateNestedManyWithoutUserInput
   captures?: Prisma.CaptureUncheckedCreateNestedManyWithoutUserInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
+  lifeIdentity?: Prisma.LifeIdentityUncheckedCreateNestedOneWithoutUserInput
+  lifeVision?: Prisma.LifeVisionUncheckedCreateNestedOneWithoutUserInput
+  lifeChapters?: Prisma.LifeChapterUncheckedCreateNestedManyWithoutUserInput
+  lifeReflections?: Prisma.LifeReflectionUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutAreasInput = {
@@ -879,6 +987,10 @@ export type UserUpdateWithoutAreasInput = {
   activities?: Prisma.ActivityUpdateManyWithoutUserNestedInput
   captures?: Prisma.CaptureUpdateManyWithoutUserNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
+  lifeIdentity?: Prisma.LifeIdentityUpdateOneWithoutUserNestedInput
+  lifeVision?: Prisma.LifeVisionUpdateOneWithoutUserNestedInput
+  lifeChapters?: Prisma.LifeChapterUpdateManyWithoutUserNestedInput
+  lifeReflections?: Prisma.LifeReflectionUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutAreasInput = {
@@ -903,6 +1015,10 @@ export type UserUncheckedUpdateWithoutAreasInput = {
   activities?: Prisma.ActivityUncheckedUpdateManyWithoutUserNestedInput
   captures?: Prisma.CaptureUncheckedUpdateManyWithoutUserNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
+  lifeIdentity?: Prisma.LifeIdentityUncheckedUpdateOneWithoutUserNestedInput
+  lifeVision?: Prisma.LifeVisionUncheckedUpdateOneWithoutUserNestedInput
+  lifeChapters?: Prisma.LifeChapterUncheckedUpdateManyWithoutUserNestedInput
+  lifeReflections?: Prisma.LifeReflectionUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutGoalsInput = {
@@ -927,6 +1043,10 @@ export type UserCreateWithoutGoalsInput = {
   activities?: Prisma.ActivityCreateNestedManyWithoutUserInput
   captures?: Prisma.CaptureCreateNestedManyWithoutUserInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
+  lifeIdentity?: Prisma.LifeIdentityCreateNestedOneWithoutUserInput
+  lifeVision?: Prisma.LifeVisionCreateNestedOneWithoutUserInput
+  lifeChapters?: Prisma.LifeChapterCreateNestedManyWithoutUserInput
+  lifeReflections?: Prisma.LifeReflectionCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutGoalsInput = {
@@ -951,6 +1071,10 @@ export type UserUncheckedCreateWithoutGoalsInput = {
   activities?: Prisma.ActivityUncheckedCreateNestedManyWithoutUserInput
   captures?: Prisma.CaptureUncheckedCreateNestedManyWithoutUserInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
+  lifeIdentity?: Prisma.LifeIdentityUncheckedCreateNestedOneWithoutUserInput
+  lifeVision?: Prisma.LifeVisionUncheckedCreateNestedOneWithoutUserInput
+  lifeChapters?: Prisma.LifeChapterUncheckedCreateNestedManyWithoutUserInput
+  lifeReflections?: Prisma.LifeReflectionUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutGoalsInput = {
@@ -991,6 +1115,10 @@ export type UserUpdateWithoutGoalsInput = {
   activities?: Prisma.ActivityUpdateManyWithoutUserNestedInput
   captures?: Prisma.CaptureUpdateManyWithoutUserNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
+  lifeIdentity?: Prisma.LifeIdentityUpdateOneWithoutUserNestedInput
+  lifeVision?: Prisma.LifeVisionUpdateOneWithoutUserNestedInput
+  lifeChapters?: Prisma.LifeChapterUpdateManyWithoutUserNestedInput
+  lifeReflections?: Prisma.LifeReflectionUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutGoalsInput = {
@@ -1015,6 +1143,10 @@ export type UserUncheckedUpdateWithoutGoalsInput = {
   activities?: Prisma.ActivityUncheckedUpdateManyWithoutUserNestedInput
   captures?: Prisma.CaptureUncheckedUpdateManyWithoutUserNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
+  lifeIdentity?: Prisma.LifeIdentityUncheckedUpdateOneWithoutUserNestedInput
+  lifeVision?: Prisma.LifeVisionUncheckedUpdateOneWithoutUserNestedInput
+  lifeChapters?: Prisma.LifeChapterUncheckedUpdateManyWithoutUserNestedInput
+  lifeReflections?: Prisma.LifeReflectionUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutObjectivesInput = {
@@ -1039,6 +1171,10 @@ export type UserCreateWithoutObjectivesInput = {
   activities?: Prisma.ActivityCreateNestedManyWithoutUserInput
   captures?: Prisma.CaptureCreateNestedManyWithoutUserInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
+  lifeIdentity?: Prisma.LifeIdentityCreateNestedOneWithoutUserInput
+  lifeVision?: Prisma.LifeVisionCreateNestedOneWithoutUserInput
+  lifeChapters?: Prisma.LifeChapterCreateNestedManyWithoutUserInput
+  lifeReflections?: Prisma.LifeReflectionCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutObjectivesInput = {
@@ -1063,6 +1199,10 @@ export type UserUncheckedCreateWithoutObjectivesInput = {
   activities?: Prisma.ActivityUncheckedCreateNestedManyWithoutUserInput
   captures?: Prisma.CaptureUncheckedCreateNestedManyWithoutUserInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
+  lifeIdentity?: Prisma.LifeIdentityUncheckedCreateNestedOneWithoutUserInput
+  lifeVision?: Prisma.LifeVisionUncheckedCreateNestedOneWithoutUserInput
+  lifeChapters?: Prisma.LifeChapterUncheckedCreateNestedManyWithoutUserInput
+  lifeReflections?: Prisma.LifeReflectionUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutObjectivesInput = {
@@ -1103,6 +1243,10 @@ export type UserUpdateWithoutObjectivesInput = {
   activities?: Prisma.ActivityUpdateManyWithoutUserNestedInput
   captures?: Prisma.CaptureUpdateManyWithoutUserNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
+  lifeIdentity?: Prisma.LifeIdentityUpdateOneWithoutUserNestedInput
+  lifeVision?: Prisma.LifeVisionUpdateOneWithoutUserNestedInput
+  lifeChapters?: Prisma.LifeChapterUpdateManyWithoutUserNestedInput
+  lifeReflections?: Prisma.LifeReflectionUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutObjectivesInput = {
@@ -1127,6 +1271,10 @@ export type UserUncheckedUpdateWithoutObjectivesInput = {
   activities?: Prisma.ActivityUncheckedUpdateManyWithoutUserNestedInput
   captures?: Prisma.CaptureUncheckedUpdateManyWithoutUserNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
+  lifeIdentity?: Prisma.LifeIdentityUncheckedUpdateOneWithoutUserNestedInput
+  lifeVision?: Prisma.LifeVisionUncheckedUpdateOneWithoutUserNestedInput
+  lifeChapters?: Prisma.LifeChapterUncheckedUpdateManyWithoutUserNestedInput
+  lifeReflections?: Prisma.LifeReflectionUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutProjectsInput = {
@@ -1151,6 +1299,10 @@ export type UserCreateWithoutProjectsInput = {
   activities?: Prisma.ActivityCreateNestedManyWithoutUserInput
   captures?: Prisma.CaptureCreateNestedManyWithoutUserInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
+  lifeIdentity?: Prisma.LifeIdentityCreateNestedOneWithoutUserInput
+  lifeVision?: Prisma.LifeVisionCreateNestedOneWithoutUserInput
+  lifeChapters?: Prisma.LifeChapterCreateNestedManyWithoutUserInput
+  lifeReflections?: Prisma.LifeReflectionCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutProjectsInput = {
@@ -1175,6 +1327,10 @@ export type UserUncheckedCreateWithoutProjectsInput = {
   activities?: Prisma.ActivityUncheckedCreateNestedManyWithoutUserInput
   captures?: Prisma.CaptureUncheckedCreateNestedManyWithoutUserInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
+  lifeIdentity?: Prisma.LifeIdentityUncheckedCreateNestedOneWithoutUserInput
+  lifeVision?: Prisma.LifeVisionUncheckedCreateNestedOneWithoutUserInput
+  lifeChapters?: Prisma.LifeChapterUncheckedCreateNestedManyWithoutUserInput
+  lifeReflections?: Prisma.LifeReflectionUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutProjectsInput = {
@@ -1215,6 +1371,10 @@ export type UserUpdateWithoutProjectsInput = {
   activities?: Prisma.ActivityUpdateManyWithoutUserNestedInput
   captures?: Prisma.CaptureUpdateManyWithoutUserNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
+  lifeIdentity?: Prisma.LifeIdentityUpdateOneWithoutUserNestedInput
+  lifeVision?: Prisma.LifeVisionUpdateOneWithoutUserNestedInput
+  lifeChapters?: Prisma.LifeChapterUpdateManyWithoutUserNestedInput
+  lifeReflections?: Prisma.LifeReflectionUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutProjectsInput = {
@@ -1239,6 +1399,10 @@ export type UserUncheckedUpdateWithoutProjectsInput = {
   activities?: Prisma.ActivityUncheckedUpdateManyWithoutUserNestedInput
   captures?: Prisma.CaptureUncheckedUpdateManyWithoutUserNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
+  lifeIdentity?: Prisma.LifeIdentityUncheckedUpdateOneWithoutUserNestedInput
+  lifeVision?: Prisma.LifeVisionUncheckedUpdateOneWithoutUserNestedInput
+  lifeChapters?: Prisma.LifeChapterUncheckedUpdateManyWithoutUserNestedInput
+  lifeReflections?: Prisma.LifeReflectionUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutStagesInput = {
@@ -1263,6 +1427,10 @@ export type UserCreateWithoutStagesInput = {
   activities?: Prisma.ActivityCreateNestedManyWithoutUserInput
   captures?: Prisma.CaptureCreateNestedManyWithoutUserInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
+  lifeIdentity?: Prisma.LifeIdentityCreateNestedOneWithoutUserInput
+  lifeVision?: Prisma.LifeVisionCreateNestedOneWithoutUserInput
+  lifeChapters?: Prisma.LifeChapterCreateNestedManyWithoutUserInput
+  lifeReflections?: Prisma.LifeReflectionCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutStagesInput = {
@@ -1287,6 +1455,10 @@ export type UserUncheckedCreateWithoutStagesInput = {
   activities?: Prisma.ActivityUncheckedCreateNestedManyWithoutUserInput
   captures?: Prisma.CaptureUncheckedCreateNestedManyWithoutUserInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
+  lifeIdentity?: Prisma.LifeIdentityUncheckedCreateNestedOneWithoutUserInput
+  lifeVision?: Prisma.LifeVisionUncheckedCreateNestedOneWithoutUserInput
+  lifeChapters?: Prisma.LifeChapterUncheckedCreateNestedManyWithoutUserInput
+  lifeReflections?: Prisma.LifeReflectionUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutStagesInput = {
@@ -1327,6 +1499,10 @@ export type UserUpdateWithoutStagesInput = {
   activities?: Prisma.ActivityUpdateManyWithoutUserNestedInput
   captures?: Prisma.CaptureUpdateManyWithoutUserNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
+  lifeIdentity?: Prisma.LifeIdentityUpdateOneWithoutUserNestedInput
+  lifeVision?: Prisma.LifeVisionUpdateOneWithoutUserNestedInput
+  lifeChapters?: Prisma.LifeChapterUpdateManyWithoutUserNestedInput
+  lifeReflections?: Prisma.LifeReflectionUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutStagesInput = {
@@ -1351,6 +1527,10 @@ export type UserUncheckedUpdateWithoutStagesInput = {
   activities?: Prisma.ActivityUncheckedUpdateManyWithoutUserNestedInput
   captures?: Prisma.CaptureUncheckedUpdateManyWithoutUserNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
+  lifeIdentity?: Prisma.LifeIdentityUncheckedUpdateOneWithoutUserNestedInput
+  lifeVision?: Prisma.LifeVisionUncheckedUpdateOneWithoutUserNestedInput
+  lifeChapters?: Prisma.LifeChapterUncheckedUpdateManyWithoutUserNestedInput
+  lifeReflections?: Prisma.LifeReflectionUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutMilestonesInput = {
@@ -1375,6 +1555,10 @@ export type UserCreateWithoutMilestonesInput = {
   activities?: Prisma.ActivityCreateNestedManyWithoutUserInput
   captures?: Prisma.CaptureCreateNestedManyWithoutUserInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
+  lifeIdentity?: Prisma.LifeIdentityCreateNestedOneWithoutUserInput
+  lifeVision?: Prisma.LifeVisionCreateNestedOneWithoutUserInput
+  lifeChapters?: Prisma.LifeChapterCreateNestedManyWithoutUserInput
+  lifeReflections?: Prisma.LifeReflectionCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutMilestonesInput = {
@@ -1399,6 +1583,10 @@ export type UserUncheckedCreateWithoutMilestonesInput = {
   activities?: Prisma.ActivityUncheckedCreateNestedManyWithoutUserInput
   captures?: Prisma.CaptureUncheckedCreateNestedManyWithoutUserInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
+  lifeIdentity?: Prisma.LifeIdentityUncheckedCreateNestedOneWithoutUserInput
+  lifeVision?: Prisma.LifeVisionUncheckedCreateNestedOneWithoutUserInput
+  lifeChapters?: Prisma.LifeChapterUncheckedCreateNestedManyWithoutUserInput
+  lifeReflections?: Prisma.LifeReflectionUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutMilestonesInput = {
@@ -1439,6 +1627,10 @@ export type UserUpdateWithoutMilestonesInput = {
   activities?: Prisma.ActivityUpdateManyWithoutUserNestedInput
   captures?: Prisma.CaptureUpdateManyWithoutUserNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
+  lifeIdentity?: Prisma.LifeIdentityUpdateOneWithoutUserNestedInput
+  lifeVision?: Prisma.LifeVisionUpdateOneWithoutUserNestedInput
+  lifeChapters?: Prisma.LifeChapterUpdateManyWithoutUserNestedInput
+  lifeReflections?: Prisma.LifeReflectionUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutMilestonesInput = {
@@ -1463,6 +1655,10 @@ export type UserUncheckedUpdateWithoutMilestonesInput = {
   activities?: Prisma.ActivityUncheckedUpdateManyWithoutUserNestedInput
   captures?: Prisma.CaptureUncheckedUpdateManyWithoutUserNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
+  lifeIdentity?: Prisma.LifeIdentityUncheckedUpdateOneWithoutUserNestedInput
+  lifeVision?: Prisma.LifeVisionUncheckedUpdateOneWithoutUserNestedInput
+  lifeChapters?: Prisma.LifeChapterUncheckedUpdateManyWithoutUserNestedInput
+  lifeReflections?: Prisma.LifeReflectionUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutTasksInput = {
@@ -1487,6 +1683,10 @@ export type UserCreateWithoutTasksInput = {
   activities?: Prisma.ActivityCreateNestedManyWithoutUserInput
   captures?: Prisma.CaptureCreateNestedManyWithoutUserInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
+  lifeIdentity?: Prisma.LifeIdentityCreateNestedOneWithoutUserInput
+  lifeVision?: Prisma.LifeVisionCreateNestedOneWithoutUserInput
+  lifeChapters?: Prisma.LifeChapterCreateNestedManyWithoutUserInput
+  lifeReflections?: Prisma.LifeReflectionCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutTasksInput = {
@@ -1511,6 +1711,10 @@ export type UserUncheckedCreateWithoutTasksInput = {
   activities?: Prisma.ActivityUncheckedCreateNestedManyWithoutUserInput
   captures?: Prisma.CaptureUncheckedCreateNestedManyWithoutUserInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
+  lifeIdentity?: Prisma.LifeIdentityUncheckedCreateNestedOneWithoutUserInput
+  lifeVision?: Prisma.LifeVisionUncheckedCreateNestedOneWithoutUserInput
+  lifeChapters?: Prisma.LifeChapterUncheckedCreateNestedManyWithoutUserInput
+  lifeReflections?: Prisma.LifeReflectionUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutTasksInput = {
@@ -1551,6 +1755,10 @@ export type UserUpdateWithoutTasksInput = {
   activities?: Prisma.ActivityUpdateManyWithoutUserNestedInput
   captures?: Prisma.CaptureUpdateManyWithoutUserNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
+  lifeIdentity?: Prisma.LifeIdentityUpdateOneWithoutUserNestedInput
+  lifeVision?: Prisma.LifeVisionUpdateOneWithoutUserNestedInput
+  lifeChapters?: Prisma.LifeChapterUpdateManyWithoutUserNestedInput
+  lifeReflections?: Prisma.LifeReflectionUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutTasksInput = {
@@ -1575,6 +1783,10 @@ export type UserUncheckedUpdateWithoutTasksInput = {
   activities?: Prisma.ActivityUncheckedUpdateManyWithoutUserNestedInput
   captures?: Prisma.CaptureUncheckedUpdateManyWithoutUserNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
+  lifeIdentity?: Prisma.LifeIdentityUncheckedUpdateOneWithoutUserNestedInput
+  lifeVision?: Prisma.LifeVisionUncheckedUpdateOneWithoutUserNestedInput
+  lifeChapters?: Prisma.LifeChapterUncheckedUpdateManyWithoutUserNestedInput
+  lifeReflections?: Prisma.LifeReflectionUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutSessionsInput = {
@@ -1599,6 +1811,10 @@ export type UserCreateWithoutSessionsInput = {
   activities?: Prisma.ActivityCreateNestedManyWithoutUserInput
   captures?: Prisma.CaptureCreateNestedManyWithoutUserInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
+  lifeIdentity?: Prisma.LifeIdentityCreateNestedOneWithoutUserInput
+  lifeVision?: Prisma.LifeVisionCreateNestedOneWithoutUserInput
+  lifeChapters?: Prisma.LifeChapterCreateNestedManyWithoutUserInput
+  lifeReflections?: Prisma.LifeReflectionCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutSessionsInput = {
@@ -1623,6 +1839,10 @@ export type UserUncheckedCreateWithoutSessionsInput = {
   activities?: Prisma.ActivityUncheckedCreateNestedManyWithoutUserInput
   captures?: Prisma.CaptureUncheckedCreateNestedManyWithoutUserInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
+  lifeIdentity?: Prisma.LifeIdentityUncheckedCreateNestedOneWithoutUserInput
+  lifeVision?: Prisma.LifeVisionUncheckedCreateNestedOneWithoutUserInput
+  lifeChapters?: Prisma.LifeChapterUncheckedCreateNestedManyWithoutUserInput
+  lifeReflections?: Prisma.LifeReflectionUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutSessionsInput = {
@@ -1663,6 +1883,10 @@ export type UserUpdateWithoutSessionsInput = {
   activities?: Prisma.ActivityUpdateManyWithoutUserNestedInput
   captures?: Prisma.CaptureUpdateManyWithoutUserNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
+  lifeIdentity?: Prisma.LifeIdentityUpdateOneWithoutUserNestedInput
+  lifeVision?: Prisma.LifeVisionUpdateOneWithoutUserNestedInput
+  lifeChapters?: Prisma.LifeChapterUpdateManyWithoutUserNestedInput
+  lifeReflections?: Prisma.LifeReflectionUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutSessionsInput = {
@@ -1687,6 +1911,10 @@ export type UserUncheckedUpdateWithoutSessionsInput = {
   activities?: Prisma.ActivityUncheckedUpdateManyWithoutUserNestedInput
   captures?: Prisma.CaptureUncheckedUpdateManyWithoutUserNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
+  lifeIdentity?: Prisma.LifeIdentityUncheckedUpdateOneWithoutUserNestedInput
+  lifeVision?: Prisma.LifeVisionUncheckedUpdateOneWithoutUserNestedInput
+  lifeChapters?: Prisma.LifeChapterUncheckedUpdateManyWithoutUserNestedInput
+  lifeReflections?: Prisma.LifeReflectionUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutDailyFocusesInput = {
@@ -1711,6 +1939,10 @@ export type UserCreateWithoutDailyFocusesInput = {
   activities?: Prisma.ActivityCreateNestedManyWithoutUserInput
   captures?: Prisma.CaptureCreateNestedManyWithoutUserInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
+  lifeIdentity?: Prisma.LifeIdentityCreateNestedOneWithoutUserInput
+  lifeVision?: Prisma.LifeVisionCreateNestedOneWithoutUserInput
+  lifeChapters?: Prisma.LifeChapterCreateNestedManyWithoutUserInput
+  lifeReflections?: Prisma.LifeReflectionCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutDailyFocusesInput = {
@@ -1735,6 +1967,10 @@ export type UserUncheckedCreateWithoutDailyFocusesInput = {
   activities?: Prisma.ActivityUncheckedCreateNestedManyWithoutUserInput
   captures?: Prisma.CaptureUncheckedCreateNestedManyWithoutUserInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
+  lifeIdentity?: Prisma.LifeIdentityUncheckedCreateNestedOneWithoutUserInput
+  lifeVision?: Prisma.LifeVisionUncheckedCreateNestedOneWithoutUserInput
+  lifeChapters?: Prisma.LifeChapterUncheckedCreateNestedManyWithoutUserInput
+  lifeReflections?: Prisma.LifeReflectionUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutDailyFocusesInput = {
@@ -1775,6 +2011,10 @@ export type UserUpdateWithoutDailyFocusesInput = {
   activities?: Prisma.ActivityUpdateManyWithoutUserNestedInput
   captures?: Prisma.CaptureUpdateManyWithoutUserNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
+  lifeIdentity?: Prisma.LifeIdentityUpdateOneWithoutUserNestedInput
+  lifeVision?: Prisma.LifeVisionUpdateOneWithoutUserNestedInput
+  lifeChapters?: Prisma.LifeChapterUpdateManyWithoutUserNestedInput
+  lifeReflections?: Prisma.LifeReflectionUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutDailyFocusesInput = {
@@ -1799,6 +2039,10 @@ export type UserUncheckedUpdateWithoutDailyFocusesInput = {
   activities?: Prisma.ActivityUncheckedUpdateManyWithoutUserNestedInput
   captures?: Prisma.CaptureUncheckedUpdateManyWithoutUserNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
+  lifeIdentity?: Prisma.LifeIdentityUncheckedUpdateOneWithoutUserNestedInput
+  lifeVision?: Prisma.LifeVisionUncheckedUpdateOneWithoutUserNestedInput
+  lifeChapters?: Prisma.LifeChapterUncheckedUpdateManyWithoutUserNestedInput
+  lifeReflections?: Prisma.LifeReflectionUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutReviewsInput = {
@@ -1823,6 +2067,10 @@ export type UserCreateWithoutReviewsInput = {
   activities?: Prisma.ActivityCreateNestedManyWithoutUserInput
   captures?: Prisma.CaptureCreateNestedManyWithoutUserInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
+  lifeIdentity?: Prisma.LifeIdentityCreateNestedOneWithoutUserInput
+  lifeVision?: Prisma.LifeVisionCreateNestedOneWithoutUserInput
+  lifeChapters?: Prisma.LifeChapterCreateNestedManyWithoutUserInput
+  lifeReflections?: Prisma.LifeReflectionCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutReviewsInput = {
@@ -1847,6 +2095,10 @@ export type UserUncheckedCreateWithoutReviewsInput = {
   activities?: Prisma.ActivityUncheckedCreateNestedManyWithoutUserInput
   captures?: Prisma.CaptureUncheckedCreateNestedManyWithoutUserInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
+  lifeIdentity?: Prisma.LifeIdentityUncheckedCreateNestedOneWithoutUserInput
+  lifeVision?: Prisma.LifeVisionUncheckedCreateNestedOneWithoutUserInput
+  lifeChapters?: Prisma.LifeChapterUncheckedCreateNestedManyWithoutUserInput
+  lifeReflections?: Prisma.LifeReflectionUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutReviewsInput = {
@@ -1887,6 +2139,10 @@ export type UserUpdateWithoutReviewsInput = {
   activities?: Prisma.ActivityUpdateManyWithoutUserNestedInput
   captures?: Prisma.CaptureUpdateManyWithoutUserNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
+  lifeIdentity?: Prisma.LifeIdentityUpdateOneWithoutUserNestedInput
+  lifeVision?: Prisma.LifeVisionUpdateOneWithoutUserNestedInput
+  lifeChapters?: Prisma.LifeChapterUpdateManyWithoutUserNestedInput
+  lifeReflections?: Prisma.LifeReflectionUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutReviewsInput = {
@@ -1911,6 +2167,10 @@ export type UserUncheckedUpdateWithoutReviewsInput = {
   activities?: Prisma.ActivityUncheckedUpdateManyWithoutUserNestedInput
   captures?: Prisma.CaptureUncheckedUpdateManyWithoutUserNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
+  lifeIdentity?: Prisma.LifeIdentityUncheckedUpdateOneWithoutUserNestedInput
+  lifeVision?: Prisma.LifeVisionUncheckedUpdateOneWithoutUserNestedInput
+  lifeChapters?: Prisma.LifeChapterUncheckedUpdateManyWithoutUserNestedInput
+  lifeReflections?: Prisma.LifeReflectionUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutCalendarEventsInput = {
@@ -1935,6 +2195,10 @@ export type UserCreateWithoutCalendarEventsInput = {
   activities?: Prisma.ActivityCreateNestedManyWithoutUserInput
   captures?: Prisma.CaptureCreateNestedManyWithoutUserInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
+  lifeIdentity?: Prisma.LifeIdentityCreateNestedOneWithoutUserInput
+  lifeVision?: Prisma.LifeVisionCreateNestedOneWithoutUserInput
+  lifeChapters?: Prisma.LifeChapterCreateNestedManyWithoutUserInput
+  lifeReflections?: Prisma.LifeReflectionCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutCalendarEventsInput = {
@@ -1959,6 +2223,10 @@ export type UserUncheckedCreateWithoutCalendarEventsInput = {
   activities?: Prisma.ActivityUncheckedCreateNestedManyWithoutUserInput
   captures?: Prisma.CaptureUncheckedCreateNestedManyWithoutUserInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
+  lifeIdentity?: Prisma.LifeIdentityUncheckedCreateNestedOneWithoutUserInput
+  lifeVision?: Prisma.LifeVisionUncheckedCreateNestedOneWithoutUserInput
+  lifeChapters?: Prisma.LifeChapterUncheckedCreateNestedManyWithoutUserInput
+  lifeReflections?: Prisma.LifeReflectionUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutCalendarEventsInput = {
@@ -1999,6 +2267,10 @@ export type UserUpdateWithoutCalendarEventsInput = {
   activities?: Prisma.ActivityUpdateManyWithoutUserNestedInput
   captures?: Prisma.CaptureUpdateManyWithoutUserNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
+  lifeIdentity?: Prisma.LifeIdentityUpdateOneWithoutUserNestedInput
+  lifeVision?: Prisma.LifeVisionUpdateOneWithoutUserNestedInput
+  lifeChapters?: Prisma.LifeChapterUpdateManyWithoutUserNestedInput
+  lifeReflections?: Prisma.LifeReflectionUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutCalendarEventsInput = {
@@ -2023,6 +2295,10 @@ export type UserUncheckedUpdateWithoutCalendarEventsInput = {
   activities?: Prisma.ActivityUncheckedUpdateManyWithoutUserNestedInput
   captures?: Prisma.CaptureUncheckedUpdateManyWithoutUserNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
+  lifeIdentity?: Prisma.LifeIdentityUncheckedUpdateOneWithoutUserNestedInput
+  lifeVision?: Prisma.LifeVisionUncheckedUpdateOneWithoutUserNestedInput
+  lifeChapters?: Prisma.LifeChapterUncheckedUpdateManyWithoutUserNestedInput
+  lifeReflections?: Prisma.LifeReflectionUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutActivitiesInput = {
@@ -2047,6 +2323,10 @@ export type UserCreateWithoutActivitiesInput = {
   calendarEvents?: Prisma.CalendarEventCreateNestedManyWithoutUserInput
   captures?: Prisma.CaptureCreateNestedManyWithoutUserInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
+  lifeIdentity?: Prisma.LifeIdentityCreateNestedOneWithoutUserInput
+  lifeVision?: Prisma.LifeVisionCreateNestedOneWithoutUserInput
+  lifeChapters?: Prisma.LifeChapterCreateNestedManyWithoutUserInput
+  lifeReflections?: Prisma.LifeReflectionCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutActivitiesInput = {
@@ -2071,6 +2351,10 @@ export type UserUncheckedCreateWithoutActivitiesInput = {
   calendarEvents?: Prisma.CalendarEventUncheckedCreateNestedManyWithoutUserInput
   captures?: Prisma.CaptureUncheckedCreateNestedManyWithoutUserInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
+  lifeIdentity?: Prisma.LifeIdentityUncheckedCreateNestedOneWithoutUserInput
+  lifeVision?: Prisma.LifeVisionUncheckedCreateNestedOneWithoutUserInput
+  lifeChapters?: Prisma.LifeChapterUncheckedCreateNestedManyWithoutUserInput
+  lifeReflections?: Prisma.LifeReflectionUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutActivitiesInput = {
@@ -2111,6 +2395,10 @@ export type UserUpdateWithoutActivitiesInput = {
   calendarEvents?: Prisma.CalendarEventUpdateManyWithoutUserNestedInput
   captures?: Prisma.CaptureUpdateManyWithoutUserNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
+  lifeIdentity?: Prisma.LifeIdentityUpdateOneWithoutUserNestedInput
+  lifeVision?: Prisma.LifeVisionUpdateOneWithoutUserNestedInput
+  lifeChapters?: Prisma.LifeChapterUpdateManyWithoutUserNestedInput
+  lifeReflections?: Prisma.LifeReflectionUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutActivitiesInput = {
@@ -2135,6 +2423,10 @@ export type UserUncheckedUpdateWithoutActivitiesInput = {
   calendarEvents?: Prisma.CalendarEventUncheckedUpdateManyWithoutUserNestedInput
   captures?: Prisma.CaptureUncheckedUpdateManyWithoutUserNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
+  lifeIdentity?: Prisma.LifeIdentityUncheckedUpdateOneWithoutUserNestedInput
+  lifeVision?: Prisma.LifeVisionUncheckedUpdateOneWithoutUserNestedInput
+  lifeChapters?: Prisma.LifeChapterUncheckedUpdateManyWithoutUserNestedInput
+  lifeReflections?: Prisma.LifeReflectionUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutCapturesInput = {
@@ -2159,6 +2451,10 @@ export type UserCreateWithoutCapturesInput = {
   calendarEvents?: Prisma.CalendarEventCreateNestedManyWithoutUserInput
   activities?: Prisma.ActivityCreateNestedManyWithoutUserInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
+  lifeIdentity?: Prisma.LifeIdentityCreateNestedOneWithoutUserInput
+  lifeVision?: Prisma.LifeVisionCreateNestedOneWithoutUserInput
+  lifeChapters?: Prisma.LifeChapterCreateNestedManyWithoutUserInput
+  lifeReflections?: Prisma.LifeReflectionCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutCapturesInput = {
@@ -2183,6 +2479,10 @@ export type UserUncheckedCreateWithoutCapturesInput = {
   calendarEvents?: Prisma.CalendarEventUncheckedCreateNestedManyWithoutUserInput
   activities?: Prisma.ActivityUncheckedCreateNestedManyWithoutUserInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
+  lifeIdentity?: Prisma.LifeIdentityUncheckedCreateNestedOneWithoutUserInput
+  lifeVision?: Prisma.LifeVisionUncheckedCreateNestedOneWithoutUserInput
+  lifeChapters?: Prisma.LifeChapterUncheckedCreateNestedManyWithoutUserInput
+  lifeReflections?: Prisma.LifeReflectionUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutCapturesInput = {
@@ -2223,6 +2523,10 @@ export type UserUpdateWithoutCapturesInput = {
   calendarEvents?: Prisma.CalendarEventUpdateManyWithoutUserNestedInput
   activities?: Prisma.ActivityUpdateManyWithoutUserNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
+  lifeIdentity?: Prisma.LifeIdentityUpdateOneWithoutUserNestedInput
+  lifeVision?: Prisma.LifeVisionUpdateOneWithoutUserNestedInput
+  lifeChapters?: Prisma.LifeChapterUpdateManyWithoutUserNestedInput
+  lifeReflections?: Prisma.LifeReflectionUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutCapturesInput = {
@@ -2247,6 +2551,10 @@ export type UserUncheckedUpdateWithoutCapturesInput = {
   calendarEvents?: Prisma.CalendarEventUncheckedUpdateManyWithoutUserNestedInput
   activities?: Prisma.ActivityUncheckedUpdateManyWithoutUserNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
+  lifeIdentity?: Prisma.LifeIdentityUncheckedUpdateOneWithoutUserNestedInput
+  lifeVision?: Prisma.LifeVisionUncheckedUpdateOneWithoutUserNestedInput
+  lifeChapters?: Prisma.LifeChapterUncheckedUpdateManyWithoutUserNestedInput
+  lifeReflections?: Prisma.LifeReflectionUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutNotificationsInput = {
@@ -2271,6 +2579,10 @@ export type UserCreateWithoutNotificationsInput = {
   calendarEvents?: Prisma.CalendarEventCreateNestedManyWithoutUserInput
   activities?: Prisma.ActivityCreateNestedManyWithoutUserInput
   captures?: Prisma.CaptureCreateNestedManyWithoutUserInput
+  lifeIdentity?: Prisma.LifeIdentityCreateNestedOneWithoutUserInput
+  lifeVision?: Prisma.LifeVisionCreateNestedOneWithoutUserInput
+  lifeChapters?: Prisma.LifeChapterCreateNestedManyWithoutUserInput
+  lifeReflections?: Prisma.LifeReflectionCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutNotificationsInput = {
@@ -2295,6 +2607,10 @@ export type UserUncheckedCreateWithoutNotificationsInput = {
   calendarEvents?: Prisma.CalendarEventUncheckedCreateNestedManyWithoutUserInput
   activities?: Prisma.ActivityUncheckedCreateNestedManyWithoutUserInput
   captures?: Prisma.CaptureUncheckedCreateNestedManyWithoutUserInput
+  lifeIdentity?: Prisma.LifeIdentityUncheckedCreateNestedOneWithoutUserInput
+  lifeVision?: Prisma.LifeVisionUncheckedCreateNestedOneWithoutUserInput
+  lifeChapters?: Prisma.LifeChapterUncheckedCreateNestedManyWithoutUserInput
+  lifeReflections?: Prisma.LifeReflectionUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutNotificationsInput = {
@@ -2335,6 +2651,10 @@ export type UserUpdateWithoutNotificationsInput = {
   calendarEvents?: Prisma.CalendarEventUpdateManyWithoutUserNestedInput
   activities?: Prisma.ActivityUpdateManyWithoutUserNestedInput
   captures?: Prisma.CaptureUpdateManyWithoutUserNestedInput
+  lifeIdentity?: Prisma.LifeIdentityUpdateOneWithoutUserNestedInput
+  lifeVision?: Prisma.LifeVisionUpdateOneWithoutUserNestedInput
+  lifeChapters?: Prisma.LifeChapterUpdateManyWithoutUserNestedInput
+  lifeReflections?: Prisma.LifeReflectionUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutNotificationsInput = {
@@ -2359,6 +2679,522 @@ export type UserUncheckedUpdateWithoutNotificationsInput = {
   calendarEvents?: Prisma.CalendarEventUncheckedUpdateManyWithoutUserNestedInput
   activities?: Prisma.ActivityUncheckedUpdateManyWithoutUserNestedInput
   captures?: Prisma.CaptureUncheckedUpdateManyWithoutUserNestedInput
+  lifeIdentity?: Prisma.LifeIdentityUncheckedUpdateOneWithoutUserNestedInput
+  lifeVision?: Prisma.LifeVisionUncheckedUpdateOneWithoutUserNestedInput
+  lifeChapters?: Prisma.LifeChapterUncheckedUpdateManyWithoutUserNestedInput
+  lifeReflections?: Prisma.LifeReflectionUncheckedUpdateManyWithoutUserNestedInput
+}
+
+export type UserCreateWithoutLifeIdentityInput = {
+  id?: string
+  email: string
+  passwordHash?: string | null
+  name?: string | null
+  avatarUrl?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  preference?: Prisma.UserPreferenceCreateNestedOneWithoutUserInput
+  areas?: Prisma.AreaCreateNestedManyWithoutUserInput
+  goals?: Prisma.GoalCreateNestedManyWithoutUserInput
+  objectives?: Prisma.ObjectiveCreateNestedManyWithoutUserInput
+  projects?: Prisma.ProjectCreateNestedManyWithoutUserInput
+  stages?: Prisma.StageCreateNestedManyWithoutUserInput
+  milestones?: Prisma.MilestoneCreateNestedManyWithoutUserInput
+  tasks?: Prisma.TaskCreateNestedManyWithoutUserInput
+  sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
+  dailyFocuses?: Prisma.DailyFocusCreateNestedManyWithoutUserInput
+  reviews?: Prisma.ReviewCreateNestedManyWithoutUserInput
+  calendarEvents?: Prisma.CalendarEventCreateNestedManyWithoutUserInput
+  activities?: Prisma.ActivityCreateNestedManyWithoutUserInput
+  captures?: Prisma.CaptureCreateNestedManyWithoutUserInput
+  notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
+  lifeVision?: Prisma.LifeVisionCreateNestedOneWithoutUserInput
+  lifeChapters?: Prisma.LifeChapterCreateNestedManyWithoutUserInput
+  lifeReflections?: Prisma.LifeReflectionCreateNestedManyWithoutUserInput
+}
+
+export type UserUncheckedCreateWithoutLifeIdentityInput = {
+  id?: string
+  email: string
+  passwordHash?: string | null
+  name?: string | null
+  avatarUrl?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  preference?: Prisma.UserPreferenceUncheckedCreateNestedOneWithoutUserInput
+  areas?: Prisma.AreaUncheckedCreateNestedManyWithoutUserInput
+  goals?: Prisma.GoalUncheckedCreateNestedManyWithoutUserInput
+  objectives?: Prisma.ObjectiveUncheckedCreateNestedManyWithoutUserInput
+  projects?: Prisma.ProjectUncheckedCreateNestedManyWithoutUserInput
+  stages?: Prisma.StageUncheckedCreateNestedManyWithoutUserInput
+  milestones?: Prisma.MilestoneUncheckedCreateNestedManyWithoutUserInput
+  tasks?: Prisma.TaskUncheckedCreateNestedManyWithoutUserInput
+  sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
+  dailyFocuses?: Prisma.DailyFocusUncheckedCreateNestedManyWithoutUserInput
+  reviews?: Prisma.ReviewUncheckedCreateNestedManyWithoutUserInput
+  calendarEvents?: Prisma.CalendarEventUncheckedCreateNestedManyWithoutUserInput
+  activities?: Prisma.ActivityUncheckedCreateNestedManyWithoutUserInput
+  captures?: Prisma.CaptureUncheckedCreateNestedManyWithoutUserInput
+  notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
+  lifeVision?: Prisma.LifeVisionUncheckedCreateNestedOneWithoutUserInput
+  lifeChapters?: Prisma.LifeChapterUncheckedCreateNestedManyWithoutUserInput
+  lifeReflections?: Prisma.LifeReflectionUncheckedCreateNestedManyWithoutUserInput
+}
+
+export type UserCreateOrConnectWithoutLifeIdentityInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutLifeIdentityInput, Prisma.UserUncheckedCreateWithoutLifeIdentityInput>
+}
+
+export type UserUpsertWithoutLifeIdentityInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutLifeIdentityInput, Prisma.UserUncheckedUpdateWithoutLifeIdentityInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutLifeIdentityInput, Prisma.UserUncheckedCreateWithoutLifeIdentityInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutLifeIdentityInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutLifeIdentityInput, Prisma.UserUncheckedUpdateWithoutLifeIdentityInput>
+}
+
+export type UserUpdateWithoutLifeIdentityInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  preference?: Prisma.UserPreferenceUpdateOneWithoutUserNestedInput
+  areas?: Prisma.AreaUpdateManyWithoutUserNestedInput
+  goals?: Prisma.GoalUpdateManyWithoutUserNestedInput
+  objectives?: Prisma.ObjectiveUpdateManyWithoutUserNestedInput
+  projects?: Prisma.ProjectUpdateManyWithoutUserNestedInput
+  stages?: Prisma.StageUpdateManyWithoutUserNestedInput
+  milestones?: Prisma.MilestoneUpdateManyWithoutUserNestedInput
+  tasks?: Prisma.TaskUpdateManyWithoutUserNestedInput
+  sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
+  dailyFocuses?: Prisma.DailyFocusUpdateManyWithoutUserNestedInput
+  reviews?: Prisma.ReviewUpdateManyWithoutUserNestedInput
+  calendarEvents?: Prisma.CalendarEventUpdateManyWithoutUserNestedInput
+  activities?: Prisma.ActivityUpdateManyWithoutUserNestedInput
+  captures?: Prisma.CaptureUpdateManyWithoutUserNestedInput
+  notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
+  lifeVision?: Prisma.LifeVisionUpdateOneWithoutUserNestedInput
+  lifeChapters?: Prisma.LifeChapterUpdateManyWithoutUserNestedInput
+  lifeReflections?: Prisma.LifeReflectionUpdateManyWithoutUserNestedInput
+}
+
+export type UserUncheckedUpdateWithoutLifeIdentityInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  preference?: Prisma.UserPreferenceUncheckedUpdateOneWithoutUserNestedInput
+  areas?: Prisma.AreaUncheckedUpdateManyWithoutUserNestedInput
+  goals?: Prisma.GoalUncheckedUpdateManyWithoutUserNestedInput
+  objectives?: Prisma.ObjectiveUncheckedUpdateManyWithoutUserNestedInput
+  projects?: Prisma.ProjectUncheckedUpdateManyWithoutUserNestedInput
+  stages?: Prisma.StageUncheckedUpdateManyWithoutUserNestedInput
+  milestones?: Prisma.MilestoneUncheckedUpdateManyWithoutUserNestedInput
+  tasks?: Prisma.TaskUncheckedUpdateManyWithoutUserNestedInput
+  sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
+  dailyFocuses?: Prisma.DailyFocusUncheckedUpdateManyWithoutUserNestedInput
+  reviews?: Prisma.ReviewUncheckedUpdateManyWithoutUserNestedInput
+  calendarEvents?: Prisma.CalendarEventUncheckedUpdateManyWithoutUserNestedInput
+  activities?: Prisma.ActivityUncheckedUpdateManyWithoutUserNestedInput
+  captures?: Prisma.CaptureUncheckedUpdateManyWithoutUserNestedInput
+  notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
+  lifeVision?: Prisma.LifeVisionUncheckedUpdateOneWithoutUserNestedInput
+  lifeChapters?: Prisma.LifeChapterUncheckedUpdateManyWithoutUserNestedInput
+  lifeReflections?: Prisma.LifeReflectionUncheckedUpdateManyWithoutUserNestedInput
+}
+
+export type UserCreateWithoutLifeVisionInput = {
+  id?: string
+  email: string
+  passwordHash?: string | null
+  name?: string | null
+  avatarUrl?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  preference?: Prisma.UserPreferenceCreateNestedOneWithoutUserInput
+  areas?: Prisma.AreaCreateNestedManyWithoutUserInput
+  goals?: Prisma.GoalCreateNestedManyWithoutUserInput
+  objectives?: Prisma.ObjectiveCreateNestedManyWithoutUserInput
+  projects?: Prisma.ProjectCreateNestedManyWithoutUserInput
+  stages?: Prisma.StageCreateNestedManyWithoutUserInput
+  milestones?: Prisma.MilestoneCreateNestedManyWithoutUserInput
+  tasks?: Prisma.TaskCreateNestedManyWithoutUserInput
+  sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
+  dailyFocuses?: Prisma.DailyFocusCreateNestedManyWithoutUserInput
+  reviews?: Prisma.ReviewCreateNestedManyWithoutUserInput
+  calendarEvents?: Prisma.CalendarEventCreateNestedManyWithoutUserInput
+  activities?: Prisma.ActivityCreateNestedManyWithoutUserInput
+  captures?: Prisma.CaptureCreateNestedManyWithoutUserInput
+  notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
+  lifeIdentity?: Prisma.LifeIdentityCreateNestedOneWithoutUserInput
+  lifeChapters?: Prisma.LifeChapterCreateNestedManyWithoutUserInput
+  lifeReflections?: Prisma.LifeReflectionCreateNestedManyWithoutUserInput
+}
+
+export type UserUncheckedCreateWithoutLifeVisionInput = {
+  id?: string
+  email: string
+  passwordHash?: string | null
+  name?: string | null
+  avatarUrl?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  preference?: Prisma.UserPreferenceUncheckedCreateNestedOneWithoutUserInput
+  areas?: Prisma.AreaUncheckedCreateNestedManyWithoutUserInput
+  goals?: Prisma.GoalUncheckedCreateNestedManyWithoutUserInput
+  objectives?: Prisma.ObjectiveUncheckedCreateNestedManyWithoutUserInput
+  projects?: Prisma.ProjectUncheckedCreateNestedManyWithoutUserInput
+  stages?: Prisma.StageUncheckedCreateNestedManyWithoutUserInput
+  milestones?: Prisma.MilestoneUncheckedCreateNestedManyWithoutUserInput
+  tasks?: Prisma.TaskUncheckedCreateNestedManyWithoutUserInput
+  sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
+  dailyFocuses?: Prisma.DailyFocusUncheckedCreateNestedManyWithoutUserInput
+  reviews?: Prisma.ReviewUncheckedCreateNestedManyWithoutUserInput
+  calendarEvents?: Prisma.CalendarEventUncheckedCreateNestedManyWithoutUserInput
+  activities?: Prisma.ActivityUncheckedCreateNestedManyWithoutUserInput
+  captures?: Prisma.CaptureUncheckedCreateNestedManyWithoutUserInput
+  notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
+  lifeIdentity?: Prisma.LifeIdentityUncheckedCreateNestedOneWithoutUserInput
+  lifeChapters?: Prisma.LifeChapterUncheckedCreateNestedManyWithoutUserInput
+  lifeReflections?: Prisma.LifeReflectionUncheckedCreateNestedManyWithoutUserInput
+}
+
+export type UserCreateOrConnectWithoutLifeVisionInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutLifeVisionInput, Prisma.UserUncheckedCreateWithoutLifeVisionInput>
+}
+
+export type UserUpsertWithoutLifeVisionInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutLifeVisionInput, Prisma.UserUncheckedUpdateWithoutLifeVisionInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutLifeVisionInput, Prisma.UserUncheckedCreateWithoutLifeVisionInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutLifeVisionInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutLifeVisionInput, Prisma.UserUncheckedUpdateWithoutLifeVisionInput>
+}
+
+export type UserUpdateWithoutLifeVisionInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  preference?: Prisma.UserPreferenceUpdateOneWithoutUserNestedInput
+  areas?: Prisma.AreaUpdateManyWithoutUserNestedInput
+  goals?: Prisma.GoalUpdateManyWithoutUserNestedInput
+  objectives?: Prisma.ObjectiveUpdateManyWithoutUserNestedInput
+  projects?: Prisma.ProjectUpdateManyWithoutUserNestedInput
+  stages?: Prisma.StageUpdateManyWithoutUserNestedInput
+  milestones?: Prisma.MilestoneUpdateManyWithoutUserNestedInput
+  tasks?: Prisma.TaskUpdateManyWithoutUserNestedInput
+  sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
+  dailyFocuses?: Prisma.DailyFocusUpdateManyWithoutUserNestedInput
+  reviews?: Prisma.ReviewUpdateManyWithoutUserNestedInput
+  calendarEvents?: Prisma.CalendarEventUpdateManyWithoutUserNestedInput
+  activities?: Prisma.ActivityUpdateManyWithoutUserNestedInput
+  captures?: Prisma.CaptureUpdateManyWithoutUserNestedInput
+  notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
+  lifeIdentity?: Prisma.LifeIdentityUpdateOneWithoutUserNestedInput
+  lifeChapters?: Prisma.LifeChapterUpdateManyWithoutUserNestedInput
+  lifeReflections?: Prisma.LifeReflectionUpdateManyWithoutUserNestedInput
+}
+
+export type UserUncheckedUpdateWithoutLifeVisionInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  preference?: Prisma.UserPreferenceUncheckedUpdateOneWithoutUserNestedInput
+  areas?: Prisma.AreaUncheckedUpdateManyWithoutUserNestedInput
+  goals?: Prisma.GoalUncheckedUpdateManyWithoutUserNestedInput
+  objectives?: Prisma.ObjectiveUncheckedUpdateManyWithoutUserNestedInput
+  projects?: Prisma.ProjectUncheckedUpdateManyWithoutUserNestedInput
+  stages?: Prisma.StageUncheckedUpdateManyWithoutUserNestedInput
+  milestones?: Prisma.MilestoneUncheckedUpdateManyWithoutUserNestedInput
+  tasks?: Prisma.TaskUncheckedUpdateManyWithoutUserNestedInput
+  sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
+  dailyFocuses?: Prisma.DailyFocusUncheckedUpdateManyWithoutUserNestedInput
+  reviews?: Prisma.ReviewUncheckedUpdateManyWithoutUserNestedInput
+  calendarEvents?: Prisma.CalendarEventUncheckedUpdateManyWithoutUserNestedInput
+  activities?: Prisma.ActivityUncheckedUpdateManyWithoutUserNestedInput
+  captures?: Prisma.CaptureUncheckedUpdateManyWithoutUserNestedInput
+  notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
+  lifeIdentity?: Prisma.LifeIdentityUncheckedUpdateOneWithoutUserNestedInput
+  lifeChapters?: Prisma.LifeChapterUncheckedUpdateManyWithoutUserNestedInput
+  lifeReflections?: Prisma.LifeReflectionUncheckedUpdateManyWithoutUserNestedInput
+}
+
+export type UserCreateWithoutLifeChaptersInput = {
+  id?: string
+  email: string
+  passwordHash?: string | null
+  name?: string | null
+  avatarUrl?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  preference?: Prisma.UserPreferenceCreateNestedOneWithoutUserInput
+  areas?: Prisma.AreaCreateNestedManyWithoutUserInput
+  goals?: Prisma.GoalCreateNestedManyWithoutUserInput
+  objectives?: Prisma.ObjectiveCreateNestedManyWithoutUserInput
+  projects?: Prisma.ProjectCreateNestedManyWithoutUserInput
+  stages?: Prisma.StageCreateNestedManyWithoutUserInput
+  milestones?: Prisma.MilestoneCreateNestedManyWithoutUserInput
+  tasks?: Prisma.TaskCreateNestedManyWithoutUserInput
+  sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
+  dailyFocuses?: Prisma.DailyFocusCreateNestedManyWithoutUserInput
+  reviews?: Prisma.ReviewCreateNestedManyWithoutUserInput
+  calendarEvents?: Prisma.CalendarEventCreateNestedManyWithoutUserInput
+  activities?: Prisma.ActivityCreateNestedManyWithoutUserInput
+  captures?: Prisma.CaptureCreateNestedManyWithoutUserInput
+  notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
+  lifeIdentity?: Prisma.LifeIdentityCreateNestedOneWithoutUserInput
+  lifeVision?: Prisma.LifeVisionCreateNestedOneWithoutUserInput
+  lifeReflections?: Prisma.LifeReflectionCreateNestedManyWithoutUserInput
+}
+
+export type UserUncheckedCreateWithoutLifeChaptersInput = {
+  id?: string
+  email: string
+  passwordHash?: string | null
+  name?: string | null
+  avatarUrl?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  preference?: Prisma.UserPreferenceUncheckedCreateNestedOneWithoutUserInput
+  areas?: Prisma.AreaUncheckedCreateNestedManyWithoutUserInput
+  goals?: Prisma.GoalUncheckedCreateNestedManyWithoutUserInput
+  objectives?: Prisma.ObjectiveUncheckedCreateNestedManyWithoutUserInput
+  projects?: Prisma.ProjectUncheckedCreateNestedManyWithoutUserInput
+  stages?: Prisma.StageUncheckedCreateNestedManyWithoutUserInput
+  milestones?: Prisma.MilestoneUncheckedCreateNestedManyWithoutUserInput
+  tasks?: Prisma.TaskUncheckedCreateNestedManyWithoutUserInput
+  sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
+  dailyFocuses?: Prisma.DailyFocusUncheckedCreateNestedManyWithoutUserInput
+  reviews?: Prisma.ReviewUncheckedCreateNestedManyWithoutUserInput
+  calendarEvents?: Prisma.CalendarEventUncheckedCreateNestedManyWithoutUserInput
+  activities?: Prisma.ActivityUncheckedCreateNestedManyWithoutUserInput
+  captures?: Prisma.CaptureUncheckedCreateNestedManyWithoutUserInput
+  notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
+  lifeIdentity?: Prisma.LifeIdentityUncheckedCreateNestedOneWithoutUserInput
+  lifeVision?: Prisma.LifeVisionUncheckedCreateNestedOneWithoutUserInput
+  lifeReflections?: Prisma.LifeReflectionUncheckedCreateNestedManyWithoutUserInput
+}
+
+export type UserCreateOrConnectWithoutLifeChaptersInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutLifeChaptersInput, Prisma.UserUncheckedCreateWithoutLifeChaptersInput>
+}
+
+export type UserUpsertWithoutLifeChaptersInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutLifeChaptersInput, Prisma.UserUncheckedUpdateWithoutLifeChaptersInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutLifeChaptersInput, Prisma.UserUncheckedCreateWithoutLifeChaptersInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutLifeChaptersInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutLifeChaptersInput, Prisma.UserUncheckedUpdateWithoutLifeChaptersInput>
+}
+
+export type UserUpdateWithoutLifeChaptersInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  preference?: Prisma.UserPreferenceUpdateOneWithoutUserNestedInput
+  areas?: Prisma.AreaUpdateManyWithoutUserNestedInput
+  goals?: Prisma.GoalUpdateManyWithoutUserNestedInput
+  objectives?: Prisma.ObjectiveUpdateManyWithoutUserNestedInput
+  projects?: Prisma.ProjectUpdateManyWithoutUserNestedInput
+  stages?: Prisma.StageUpdateManyWithoutUserNestedInput
+  milestones?: Prisma.MilestoneUpdateManyWithoutUserNestedInput
+  tasks?: Prisma.TaskUpdateManyWithoutUserNestedInput
+  sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
+  dailyFocuses?: Prisma.DailyFocusUpdateManyWithoutUserNestedInput
+  reviews?: Prisma.ReviewUpdateManyWithoutUserNestedInput
+  calendarEvents?: Prisma.CalendarEventUpdateManyWithoutUserNestedInput
+  activities?: Prisma.ActivityUpdateManyWithoutUserNestedInput
+  captures?: Prisma.CaptureUpdateManyWithoutUserNestedInput
+  notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
+  lifeIdentity?: Prisma.LifeIdentityUpdateOneWithoutUserNestedInput
+  lifeVision?: Prisma.LifeVisionUpdateOneWithoutUserNestedInput
+  lifeReflections?: Prisma.LifeReflectionUpdateManyWithoutUserNestedInput
+}
+
+export type UserUncheckedUpdateWithoutLifeChaptersInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  preference?: Prisma.UserPreferenceUncheckedUpdateOneWithoutUserNestedInput
+  areas?: Prisma.AreaUncheckedUpdateManyWithoutUserNestedInput
+  goals?: Prisma.GoalUncheckedUpdateManyWithoutUserNestedInput
+  objectives?: Prisma.ObjectiveUncheckedUpdateManyWithoutUserNestedInput
+  projects?: Prisma.ProjectUncheckedUpdateManyWithoutUserNestedInput
+  stages?: Prisma.StageUncheckedUpdateManyWithoutUserNestedInput
+  milestones?: Prisma.MilestoneUncheckedUpdateManyWithoutUserNestedInput
+  tasks?: Prisma.TaskUncheckedUpdateManyWithoutUserNestedInput
+  sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
+  dailyFocuses?: Prisma.DailyFocusUncheckedUpdateManyWithoutUserNestedInput
+  reviews?: Prisma.ReviewUncheckedUpdateManyWithoutUserNestedInput
+  calendarEvents?: Prisma.CalendarEventUncheckedUpdateManyWithoutUserNestedInput
+  activities?: Prisma.ActivityUncheckedUpdateManyWithoutUserNestedInput
+  captures?: Prisma.CaptureUncheckedUpdateManyWithoutUserNestedInput
+  notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
+  lifeIdentity?: Prisma.LifeIdentityUncheckedUpdateOneWithoutUserNestedInput
+  lifeVision?: Prisma.LifeVisionUncheckedUpdateOneWithoutUserNestedInput
+  lifeReflections?: Prisma.LifeReflectionUncheckedUpdateManyWithoutUserNestedInput
+}
+
+export type UserCreateWithoutLifeReflectionsInput = {
+  id?: string
+  email: string
+  passwordHash?: string | null
+  name?: string | null
+  avatarUrl?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  preference?: Prisma.UserPreferenceCreateNestedOneWithoutUserInput
+  areas?: Prisma.AreaCreateNestedManyWithoutUserInput
+  goals?: Prisma.GoalCreateNestedManyWithoutUserInput
+  objectives?: Prisma.ObjectiveCreateNestedManyWithoutUserInput
+  projects?: Prisma.ProjectCreateNestedManyWithoutUserInput
+  stages?: Prisma.StageCreateNestedManyWithoutUserInput
+  milestones?: Prisma.MilestoneCreateNestedManyWithoutUserInput
+  tasks?: Prisma.TaskCreateNestedManyWithoutUserInput
+  sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
+  dailyFocuses?: Prisma.DailyFocusCreateNestedManyWithoutUserInput
+  reviews?: Prisma.ReviewCreateNestedManyWithoutUserInput
+  calendarEvents?: Prisma.CalendarEventCreateNestedManyWithoutUserInput
+  activities?: Prisma.ActivityCreateNestedManyWithoutUserInput
+  captures?: Prisma.CaptureCreateNestedManyWithoutUserInput
+  notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
+  lifeIdentity?: Prisma.LifeIdentityCreateNestedOneWithoutUserInput
+  lifeVision?: Prisma.LifeVisionCreateNestedOneWithoutUserInput
+  lifeChapters?: Prisma.LifeChapterCreateNestedManyWithoutUserInput
+}
+
+export type UserUncheckedCreateWithoutLifeReflectionsInput = {
+  id?: string
+  email: string
+  passwordHash?: string | null
+  name?: string | null
+  avatarUrl?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  preference?: Prisma.UserPreferenceUncheckedCreateNestedOneWithoutUserInput
+  areas?: Prisma.AreaUncheckedCreateNestedManyWithoutUserInput
+  goals?: Prisma.GoalUncheckedCreateNestedManyWithoutUserInput
+  objectives?: Prisma.ObjectiveUncheckedCreateNestedManyWithoutUserInput
+  projects?: Prisma.ProjectUncheckedCreateNestedManyWithoutUserInput
+  stages?: Prisma.StageUncheckedCreateNestedManyWithoutUserInput
+  milestones?: Prisma.MilestoneUncheckedCreateNestedManyWithoutUserInput
+  tasks?: Prisma.TaskUncheckedCreateNestedManyWithoutUserInput
+  sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
+  dailyFocuses?: Prisma.DailyFocusUncheckedCreateNestedManyWithoutUserInput
+  reviews?: Prisma.ReviewUncheckedCreateNestedManyWithoutUserInput
+  calendarEvents?: Prisma.CalendarEventUncheckedCreateNestedManyWithoutUserInput
+  activities?: Prisma.ActivityUncheckedCreateNestedManyWithoutUserInput
+  captures?: Prisma.CaptureUncheckedCreateNestedManyWithoutUserInput
+  notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
+  lifeIdentity?: Prisma.LifeIdentityUncheckedCreateNestedOneWithoutUserInput
+  lifeVision?: Prisma.LifeVisionUncheckedCreateNestedOneWithoutUserInput
+  lifeChapters?: Prisma.LifeChapterUncheckedCreateNestedManyWithoutUserInput
+}
+
+export type UserCreateOrConnectWithoutLifeReflectionsInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutLifeReflectionsInput, Prisma.UserUncheckedCreateWithoutLifeReflectionsInput>
+}
+
+export type UserUpsertWithoutLifeReflectionsInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutLifeReflectionsInput, Prisma.UserUncheckedUpdateWithoutLifeReflectionsInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutLifeReflectionsInput, Prisma.UserUncheckedCreateWithoutLifeReflectionsInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutLifeReflectionsInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutLifeReflectionsInput, Prisma.UserUncheckedUpdateWithoutLifeReflectionsInput>
+}
+
+export type UserUpdateWithoutLifeReflectionsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  preference?: Prisma.UserPreferenceUpdateOneWithoutUserNestedInput
+  areas?: Prisma.AreaUpdateManyWithoutUserNestedInput
+  goals?: Prisma.GoalUpdateManyWithoutUserNestedInput
+  objectives?: Prisma.ObjectiveUpdateManyWithoutUserNestedInput
+  projects?: Prisma.ProjectUpdateManyWithoutUserNestedInput
+  stages?: Prisma.StageUpdateManyWithoutUserNestedInput
+  milestones?: Prisma.MilestoneUpdateManyWithoutUserNestedInput
+  tasks?: Prisma.TaskUpdateManyWithoutUserNestedInput
+  sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
+  dailyFocuses?: Prisma.DailyFocusUpdateManyWithoutUserNestedInput
+  reviews?: Prisma.ReviewUpdateManyWithoutUserNestedInput
+  calendarEvents?: Prisma.CalendarEventUpdateManyWithoutUserNestedInput
+  activities?: Prisma.ActivityUpdateManyWithoutUserNestedInput
+  captures?: Prisma.CaptureUpdateManyWithoutUserNestedInput
+  notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
+  lifeIdentity?: Prisma.LifeIdentityUpdateOneWithoutUserNestedInput
+  lifeVision?: Prisma.LifeVisionUpdateOneWithoutUserNestedInput
+  lifeChapters?: Prisma.LifeChapterUpdateManyWithoutUserNestedInput
+}
+
+export type UserUncheckedUpdateWithoutLifeReflectionsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  preference?: Prisma.UserPreferenceUncheckedUpdateOneWithoutUserNestedInput
+  areas?: Prisma.AreaUncheckedUpdateManyWithoutUserNestedInput
+  goals?: Prisma.GoalUncheckedUpdateManyWithoutUserNestedInput
+  objectives?: Prisma.ObjectiveUncheckedUpdateManyWithoutUserNestedInput
+  projects?: Prisma.ProjectUncheckedUpdateManyWithoutUserNestedInput
+  stages?: Prisma.StageUncheckedUpdateManyWithoutUserNestedInput
+  milestones?: Prisma.MilestoneUncheckedUpdateManyWithoutUserNestedInput
+  tasks?: Prisma.TaskUncheckedUpdateManyWithoutUserNestedInput
+  sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
+  dailyFocuses?: Prisma.DailyFocusUncheckedUpdateManyWithoutUserNestedInput
+  reviews?: Prisma.ReviewUncheckedUpdateManyWithoutUserNestedInput
+  calendarEvents?: Prisma.CalendarEventUncheckedUpdateManyWithoutUserNestedInput
+  activities?: Prisma.ActivityUncheckedUpdateManyWithoutUserNestedInput
+  captures?: Prisma.CaptureUncheckedUpdateManyWithoutUserNestedInput
+  notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
+  lifeIdentity?: Prisma.LifeIdentityUncheckedUpdateOneWithoutUserNestedInput
+  lifeVision?: Prisma.LifeVisionUncheckedUpdateOneWithoutUserNestedInput
+  lifeChapters?: Prisma.LifeChapterUncheckedUpdateManyWithoutUserNestedInput
 }
 
 
@@ -2381,6 +3217,8 @@ export type UserCountOutputType = {
   activities: number
   captures: number
   notifications: number
+  lifeChapters: number
+  lifeReflections: number
 }
 
 export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -2398,6 +3236,8 @@ export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.I
   activities?: boolean | UserCountOutputTypeCountActivitiesArgs
   captures?: boolean | UserCountOutputTypeCountCapturesArgs
   notifications?: boolean | UserCountOutputTypeCountNotificationsArgs
+  lifeChapters?: boolean | UserCountOutputTypeCountLifeChaptersArgs
+  lifeReflections?: boolean | UserCountOutputTypeCountLifeReflectionsArgs
 }
 
 /**
@@ -2508,6 +3348,20 @@ export type UserCountOutputTypeCountNotificationsArgs<ExtArgs extends runtime.Ty
   where?: Prisma.NotificationWhereInput
 }
 
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountLifeChaptersArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.LifeChapterWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountLifeReflectionsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.LifeReflectionWhereInput
+}
+
 
 export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -2532,6 +3386,10 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   activities?: boolean | Prisma.User$activitiesArgs<ExtArgs>
   captures?: boolean | Prisma.User$capturesArgs<ExtArgs>
   notifications?: boolean | Prisma.User$notificationsArgs<ExtArgs>
+  lifeIdentity?: boolean | Prisma.User$lifeIdentityArgs<ExtArgs>
+  lifeVision?: boolean | Prisma.User$lifeVisionArgs<ExtArgs>
+  lifeChapters?: boolean | Prisma.User$lifeChaptersArgs<ExtArgs>
+  lifeReflections?: boolean | Prisma.User$lifeReflectionsArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["user"]>
 
@@ -2582,6 +3440,10 @@ export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   activities?: boolean | Prisma.User$activitiesArgs<ExtArgs>
   captures?: boolean | Prisma.User$capturesArgs<ExtArgs>
   notifications?: boolean | Prisma.User$notificationsArgs<ExtArgs>
+  lifeIdentity?: boolean | Prisma.User$lifeIdentityArgs<ExtArgs>
+  lifeVision?: boolean | Prisma.User$lifeVisionArgs<ExtArgs>
+  lifeChapters?: boolean | Prisma.User$lifeChaptersArgs<ExtArgs>
+  lifeReflections?: boolean | Prisma.User$lifeReflectionsArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type UserIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
@@ -2605,6 +3467,10 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     activities: Prisma.$ActivityPayload<ExtArgs>[]
     captures: Prisma.$CapturePayload<ExtArgs>[]
     notifications: Prisma.$NotificationPayload<ExtArgs>[]
+    lifeIdentity: Prisma.$LifeIdentityPayload<ExtArgs> | null
+    lifeVision: Prisma.$LifeVisionPayload<ExtArgs> | null
+    lifeChapters: Prisma.$LifeChapterPayload<ExtArgs>[]
+    lifeReflections: Prisma.$LifeReflectionPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -3023,6 +3889,10 @@ export interface Prisma__UserClient<T, Null = never, ExtArgs extends runtime.Typ
   activities<T extends Prisma.User$activitiesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$activitiesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ActivityPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   captures<T extends Prisma.User$capturesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$capturesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$CapturePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   notifications<T extends Prisma.User$notificationsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$notificationsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$NotificationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  lifeIdentity<T extends Prisma.User$lifeIdentityArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$lifeIdentityArgs<ExtArgs>>): Prisma.Prisma__LifeIdentityClient<runtime.Types.Result.GetResult<Prisma.$LifeIdentityPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  lifeVision<T extends Prisma.User$lifeVisionArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$lifeVisionArgs<ExtArgs>>): Prisma.Prisma__LifeVisionClient<runtime.Types.Result.GetResult<Prisma.$LifeVisionPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  lifeChapters<T extends Prisma.User$lifeChaptersArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$lifeChaptersArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$LifeChapterPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  lifeReflections<T extends Prisma.User$lifeReflectionsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$lifeReflectionsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$LifeReflectionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -3804,6 +4674,92 @@ export type User$notificationsArgs<ExtArgs extends runtime.Types.Extensions.Inte
   take?: number
   skip?: number
   distinct?: Prisma.NotificationScalarFieldEnum | Prisma.NotificationScalarFieldEnum[]
+}
+
+/**
+ * User.lifeIdentity
+ */
+export type User$lifeIdentityArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the LifeIdentity
+   */
+  select?: Prisma.LifeIdentitySelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the LifeIdentity
+   */
+  omit?: Prisma.LifeIdentityOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.LifeIdentityInclude<ExtArgs> | null
+  where?: Prisma.LifeIdentityWhereInput
+}
+
+/**
+ * User.lifeVision
+ */
+export type User$lifeVisionArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the LifeVision
+   */
+  select?: Prisma.LifeVisionSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the LifeVision
+   */
+  omit?: Prisma.LifeVisionOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.LifeVisionInclude<ExtArgs> | null
+  where?: Prisma.LifeVisionWhereInput
+}
+
+/**
+ * User.lifeChapters
+ */
+export type User$lifeChaptersArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the LifeChapter
+   */
+  select?: Prisma.LifeChapterSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the LifeChapter
+   */
+  omit?: Prisma.LifeChapterOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.LifeChapterInclude<ExtArgs> | null
+  where?: Prisma.LifeChapterWhereInput
+  orderBy?: Prisma.LifeChapterOrderByWithRelationInput | Prisma.LifeChapterOrderByWithRelationInput[]
+  cursor?: Prisma.LifeChapterWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.LifeChapterScalarFieldEnum | Prisma.LifeChapterScalarFieldEnum[]
+}
+
+/**
+ * User.lifeReflections
+ */
+export type User$lifeReflectionsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the LifeReflection
+   */
+  select?: Prisma.LifeReflectionSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the LifeReflection
+   */
+  omit?: Prisma.LifeReflectionOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.LifeReflectionInclude<ExtArgs> | null
+  where?: Prisma.LifeReflectionWhereInput
+  orderBy?: Prisma.LifeReflectionOrderByWithRelationInput | Prisma.LifeReflectionOrderByWithRelationInput[]
+  cursor?: Prisma.LifeReflectionWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.LifeReflectionScalarFieldEnum | Prisma.LifeReflectionScalarFieldEnum[]
 }
 
 /**

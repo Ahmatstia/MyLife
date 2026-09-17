@@ -164,6 +164,10 @@ model User {
   activities     Activity[]
   captures       Capture[]
   notifications  Notification[]
+  lifeIdentity   LifeIdentity?
+  lifeVision     LifeVision?
+  lifeChapters   LifeChapter[]
+  lifeReflections LifeReflection[]
 }
 
 model UserPreference {
@@ -203,6 +207,7 @@ model Area {
   projects    Project[]
   tasks       Task[]
   activities  Activity[]
+  chapterFocuses ChapterFocusArea[]
 
   @@unique([userId, name])
   @@index([userId, order])
@@ -213,6 +218,7 @@ model Goal {
   id          String      @id @default(cuid())
   userId      String
   areaId      String?
+  chapterId   String?
   title       String
   description String?
   type        GoalType    @default(LEARNING)
@@ -225,6 +231,7 @@ model Goal {
 
   user        User        @relation(fields: [userId], references: [id], onDelete: Cascade)
   area        Area?       @relation(fields: [areaId], references: [id], onDelete: Restrict)
+  chapter     LifeChapter? @relation(fields: [chapterId], references: [id], onDelete: SetNull)
   stages      Stage[]
   projects    Project[]
   objectives  Objective[]
@@ -233,6 +240,7 @@ model Goal {
 
   @@index([userId, status])
   @@index([userId, areaId])
+  @@index([userId, chapterId])
   @@index([userId, targetDate])
 }
 
@@ -550,3 +558,106 @@ model Notification {
   @@index([userId, isRead, createdAt])
   @@index([userId, createdAt])
 }
+
+// ------------------------------------------------------------------------------
+// IDENTITY & DIRECTION DOMAIN
+// ------------------------------------------------------------------------------
+
+model LifeIdentity {
+  id               String   @id @default(cuid())
+  userId           String   @unique
+  bio              String?
+  currentSituation String?
+  coreValues       Json?
+  principles       Json?
+  strengths        String[]
+  growthAreas      String[]
+  importantRoles   Json?
+  aspirations      String?
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  user             User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model LifeVision {
+  id               String   @id @default(cuid())
+  userId           String   @unique
+  statement        String
+  desiredIdentity  String?
+  desiredLifestyle String?
+  targetSkills     String[]
+  purposeReason    String?
+  timeHorizonYears Int?     @default(5)
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  user             User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model LifeChapter {
+  id              String             @id @default(cuid())
+  userId          String
+  title           String
+  description     String?
+  themeColor      String             @default("#8B5CF6")
+  icon            String             @default("compass")
+  startDate       DateTime           @default(now())
+  targetEndDate   DateTime?
+  actualEndDate   DateTime?
+  isActive        Boolean            @default(true)
+  mainIntent      String?
+  reflectionNotes String?
+  createdAt       DateTime           @default(now())
+  updatedAt       DateTime           @updatedAt
+
+  user            User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+  focusAreas      ChapterFocusArea[]
+  goals           Goal[]
+  reflections     LifeReflection[]
+
+  @@index([userId, isActive])
+  @@index([userId, startDate])
+}
+
+model ChapterFocusArea {
+  id        String      @id @default(cuid())
+  chapterId String
+  areaId    String?
+  title     String
+  intention String?
+  order     Int         @default(0)
+  isActive  Boolean     @default(true)
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+
+  chapter   LifeChapter @relation(fields: [chapterId], references: [id], onDelete: Cascade)
+  area      Area?       @relation(fields: [areaId], references: [id], onDelete: SetNull)
+
+  @@index([chapterId, order])
+  @@index([chapterId, areaId])
+}
+
+model LifeReflection {
+  id                   String       @id @default(cuid())
+  userId               String
+  chapterId            String?
+  title                String       @default("Refleksi Arah Hidup")
+  date                 DateTime     @default(now())
+  recentFocusNotes     String?
+  meaningfulActivities String?
+  progressNotes        String?
+  lifeChanges          String?
+  alignmentAssessment  String?
+  adjustmentsNeeded    String?
+  nextFocus            String?
+  createdAt            DateTime     @default(now())
+  updatedAt            DateTime     @updatedAt
+
+  user                 User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  chapter              LifeChapter? @relation(fields: [chapterId], references: [id], onDelete: SetNull)
+
+  @@index([userId, date])
+  @@index([userId, chapterId])
+}
+
