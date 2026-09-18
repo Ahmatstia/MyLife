@@ -102,26 +102,28 @@ export default async function ProgressPage({
         </div>
         <h1 className="text-3xl sm:text-4xl font-bold tracking-tight text-white">Progress & Refleksi</h1>
         <p className="text-sm text-[#94A3B8] leading-relaxed mt-2">
-          Satu tempat untuk semua — review mingguan, statistik performa, wawasan AI, dan log aktivitasmu.
+          Review mingguan, statistik performa, wawasan AI, dan log aktivitas dalam satu panel terpadu.
         </p>
       </section>
 
-      {/* TAB NAVIGATOR */}
-      <div className="flex items-center gap-1 p-1 rounded-xl bg-[#131825] border border-white/[0.08] w-fit font-mono text-xs flex-wrap">
-        {TABS.map((t) => (
-          <Link
-            key={t.id}
-            href={`/progress?tab=${t.id}`}
-            className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-colors whitespace-nowrap ${
-              activeTab === t.id
-                ? "bg-purple-600/20 text-purple-300 font-semibold border border-purple-500/30 shadow-sm"
-                : "text-[#94A3B8] hover:text-white hover:bg-white/[0.05]"
-            }`}
-          >
-            <span className="material-symbols-outlined text-[15px]">{t.icon}</span>
-            <span>{t.label}</span>
-          </Link>
-        ))}
+      {/* TAB NAVIGATOR – sticky */}
+      <div className="sticky top-0 z-20 -mx-4 px-4 py-2 bg-[#0B0D13]/80 backdrop-blur-md border-b border-white/[0.06]">
+        <div className="flex items-center gap-1 p-1 rounded-xl bg-[#131825] border border-white/[0.08] w-fit font-mono text-xs flex-wrap">
+          {TABS.map((t) => (
+            <Link
+              key={t.id}
+              href={`/progress?tab=${t.id}`}
+              className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-all whitespace-nowrap ${
+                activeTab === t.id
+                  ? "bg-gradient-to-br from-purple-600/30 to-indigo-600/20 text-purple-300 font-semibold border border-purple-500/40 shadow-sm shadow-purple-900/30"
+                  : "text-[#94A3B8] hover:text-white hover:bg-white/[0.05]"
+              }`}
+            >
+              <span className="material-symbols-outlined text-[15px]">{t.icon}</span>
+              <span>{t.label}</span>
+            </Link>
+          ))}
+        </div>
       </div>
 
       {/* ── TAB: REVIEW MINGGUAN ─────────────────────────────────────────── */}
@@ -148,6 +150,7 @@ export default async function ProgressPage({
           initialActivities={logData.activities}
           areas={logData.areas}
           projects={logData.projects}
+          compact={true}
         />
       )}
     </div>
@@ -203,7 +206,7 @@ async function buildReviewData(userId: string, now: Date) {
 
 async function buildStatistikData(userId: string) {
   const [analytics, dashboard] = await Promise.all([
-    getDashboardAnalytics({ days: 90 }, userId),
+    getDashboardAnalytics({ days: 365 }, userId),
     getDashboardData(userId),
   ]);
   return { analytics, dashboard, summary: analytics.summary, bottlenecks: analytics.bottlenecks };
@@ -398,9 +401,9 @@ function StatistikTab({ data }: { data: Awaited<ReturnType<typeof buildStatistik
           <section className="rounded-2xl border border-white/[0.08] bg-[#131825] p-6 shadow-xl">
             <div className="mb-5 pb-3 border-b border-white/[0.06]">
               <span className="font-mono text-[10px] text-[#c0c1ff] uppercase tracking-wider font-semibold">KONSISTENSI & RITME HARIAN</span>
-              <h2 className="text-base font-bold text-white mt-0.5">Matriks Aktivitas 90 Hari</h2>
+              <h2 className="text-base font-bold text-white mt-0.5">Matriks Aktivitas 1 Tahun</h2>
             </div>
-            <ActivityHeatmap trends={analytics.trends} days={90} />
+            <ActivityHeatmap trends={analytics.trends} days={365} />
           </section>
           <section className="rounded-2xl border border-white/[0.08] bg-[#131825] p-6 shadow-xl">
             <div className="mb-5 pb-3 border-b border-white/[0.06]">

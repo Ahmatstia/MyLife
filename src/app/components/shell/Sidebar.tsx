@@ -45,7 +45,7 @@ const navigationGroups: NavGroup[] = [
     title: "Evaluasi & AI",
     items: [
       { href: "/progress", label: "Progress & Refleksi", verb: "Evaluasi", icon: "chart", color: "text-[#4edea3]" },
-      { href: "/assistant", label: "Life Copilot AI", verb: "Asisten", icon: "sparkles", color: "text-[#a078ff]" },
+      { href: "/assistant", label: "LexaPie AI", verb: "Asisten", icon: "sparkles", color: "text-[#a078ff]" },
       { href: "/notifications", label: "Notifikasi", verb: "Info", icon: "bell", color: "text-[#F43F5E]" },
     ],
   },

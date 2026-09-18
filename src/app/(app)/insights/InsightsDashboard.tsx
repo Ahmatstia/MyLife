@@ -106,26 +106,19 @@ export default function InsightsDashboard({
 
   return (
     <div className="flex flex-col w-full pb-16 gap-6 text-gray-200">
-      {/* 1. Header & Navigation Command Strip */}
-      <section className="flex flex-col gap-4 pb-2 border-b border-white/[0.06]">
-        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
-          <div className="space-y-1">
-            <div className="flex items-center gap-2">
-              <span className="w-2 h-2 rounded-full bg-purple-400 animate-ping" />
-              <span className="font-mono text-xs text-purple-400 uppercase tracking-widest">
-                KECERDASAN &amp; DIAGNOSTIK OPERASIONAL {"//"} MESIN ANALISIS TERPADU
-              </span>
-            </div>
-            <h1 className="text-2xl md:text-3xl font-bold text-white tracking-tight leading-tight">
-              Wawasan &amp; Analitik Hidup
-            </h1>
-            <p className="text-sm text-gray-400 max-w-3xl leading-relaxed">
-              Analisis komprehensif atas eksekusi tugas, pembobotan prioritas cerdas, jadwal waktu, dan indeks kesehatan hidup Anda.
-            </p>
+      {/* 1. Command Strip – period selector + inner tab nav */}
+      <section className="flex flex-col gap-3 pb-2 border-b border-white/[0.06]">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          {/* Inner sub-tab label */}
+          <div className="flex items-center gap-2">
+            <span className="w-1.5 h-1.5 rounded-full bg-purple-400 animate-ping" />
+            <span className="font-mono text-xs text-purple-400 uppercase tracking-widest">
+              WAWASAN & ANALITIK HIDUP
+            </span>
           </div>
 
           {/* Period selector & Action Area */}
-          <div className="flex items-center gap-2.5 self-start lg:self-auto shrink-0 flex-wrap">
+          <div className="flex items-center gap-2.5 shrink-0 flex-wrap">
             <div className="relative">
               <select
                 value={period}

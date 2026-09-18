@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
@@ -8,6 +8,58 @@ import { Icon, type IconName } from "../ui/Icon";
 import { AICommandPanel } from "../AICommandPanel";
 import { Sidebar, isActive } from "./Sidebar";
 import { ThemeToggle } from "../theme/ThemeToggle";
+
+/** Thin top loading bar — shows instantly when pathname changes */
+function NavigationBar() {
+  const pathname = usePathname();
+  const [loading, setLoading] = useState(false);
+  const [width, setWidth] = useState(0);
+  const prevPath = useRef(pathname);
+  const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  useEffect(() => {
+    if (prevPath.current === pathname) return;
+    prevPath.current = pathname;
+    // Page arrived — complete the bar
+    setWidth(100);
+    timerRef.current = setTimeout(() => {
+      setLoading(false);
+      setWidth(0);
+    }, 400);
+    return () => { if (timerRef.current) clearTimeout(timerRef.current); };
+  }, [pathname]);
+
+  // Expose a way for Link clicks to trigger the bar
+  useEffect(() => {
+    function handleClick(e: MouseEvent) {
+      const anchor = (e.target as HTMLElement).closest("a[href]") as HTMLAnchorElement | null;
+      if (!anchor) return;
+      const href = anchor.getAttribute("href");
+      if (!href || href.startsWith("http") || href.startsWith("#") || href === pathname) return;
+      setLoading(true);
+      setWidth(30);
+      // Animate to 80% while waiting
+      timerRef.current = setTimeout(() => setWidth(75), 200);
+    }
+    document.addEventListener("click", handleClick);
+    return () => document.removeEventListener("click", handleClick);
+  }, [pathname]);
+
+  if (!loading && width === 0) return null;
+
+  return (
+    <div className="fixed top-0 left-0 right-0 z-[9999] h-[2px] pointer-events-none">
+      <div
+        className="h-full bg-gradient-to-r from-[#8B5CF6] via-[#a78bfa] to-[#d0bcff] transition-all ease-out shadow-[0_0_8px_rgba(139,92,246,0.8)]"
+        style={{
+          width: `${width}%`,
+          transitionDuration: width === 100 ? "300ms" : "800ms",
+          opacity: loading || width < 100 ? 1 : 0,
+        }}
+      />
+    </div>
+  );
+}
 
 type GlobalAIDrawerProps = {
   open: boolean;
@@ -129,6 +181,8 @@ export function AppShell({
 
   return (
     <div className="min-h-screen bg-[#f8fafc] text-slate-900 dark:bg-[#0B0D13] dark:text-[#e2e2eb] w-full max-w-full overflow-x-hidden transition-colors duration-200">
+      {/* Top navigation progress bar */}
+      <NavigationBar />
       {/* Desktop sidebar with minimize, auto-hover expand, and lock pin */}
       <aside
         onMouseEnter={() => {

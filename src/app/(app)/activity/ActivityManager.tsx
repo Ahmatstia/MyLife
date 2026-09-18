@@ -101,10 +101,12 @@ export function ActivityManager({
   initialActivities,
   areas = [],
   projects = [],
+  compact = false,
 }: {
   initialActivities: ActivityItem[];
   areas?: AreaItem[];
   projects?: ProjectItem[];
+  compact?: boolean;
 }) {
   const router = useRouter();
   const { toast } = useToast();
@@ -289,37 +291,55 @@ export function ActivityManager({
   return (
     <div className="flex flex-col w-full space-y-6 text-gray-200">
       {/* 1. Header & Telemetri Real-Time */}
-      <section className="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-white/[0.08] pb-6">
-        <div className="space-y-2 max-w-2xl">
-          <div className="flex flex-wrap items-center gap-2 font-mono text-[10px] uppercase tracking-widest text-[#94A3B8]">
-            <span>MODUL // RIWAYAT & TRACKING</span>
-            <span className="text-white/20">{"//"}</span>
-            <span className="text-[#d0bcff]">SISTEM MYLIFE OS v4.2</span>
-            <span className="text-white/20">{"//"}</span>
-            <div className="flex items-center gap-1.5 rounded-full bg-[#4edea3]/10 px-2 py-0.5 text-[#4edea3]">
-              <span className="h-1.5 w-1.5 rounded-full bg-[#4edea3] animate-pulse"></span>
-              <span className="font-semibold">LOG WAKTU REAL-TIME</span>
-            </div>
+      {compact ? (
+        /* Compact mode: minimal action bar (no redundant heading) */
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2 font-mono text-[10px] uppercase tracking-widest text-[#94A3B8]">
+            <span className="h-1.5 w-1.5 rounded-full bg-[#4edea3] animate-pulse" />
+            <span className="text-[#4edea3] font-semibold">LOG WAKTU REAL-TIME</span>
           </div>
-          <h1 className="text-3xl sm:text-4xl font-bold tracking-tight text-white">
-            Aktivitas & Log Waktu
-          </h1>
-          <p className="text-sm text-[#94A3B8] leading-relaxed">
-            Riwayat telemetri harian untuk merekam alokasi waktu, tingkat energi, dan produktivitas Anda secara real-time.
-          </p>
-        </div>
-
-        <div className="flex items-center gap-3 shrink-0">
           <button
             type="button"
             onClick={handleOpenLogForm}
-            className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-gradient-to-r from-[#d0bcff] via-[#a078ff] to-[#7c3aed] text-white font-mono text-xs font-semibold shadow-md shadow-purple-500/20 hover:opacity-95 transition-all cursor-pointer"
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-gradient-to-r from-[#d0bcff] via-[#a078ff] to-[#7c3aed] text-white font-mono text-xs font-semibold shadow-md shadow-purple-500/20 hover:opacity-95 transition-all cursor-pointer"
           >
             <Icon name={isLogging ? "x" : "plus"} size={16} />
             <span>{isLogging ? "Batal" : "Catat Aktivitas"}</span>
           </button>
         </div>
-      </section>
+      ) : (
+        <section className="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-white/[0.08] pb-6">
+          <div className="space-y-2 max-w-2xl">
+            <div className="flex flex-wrap items-center gap-2 font-mono text-[10px] uppercase tracking-widest text-[#94A3B8]">
+              <span>MODUL // RIWAYAT & TRACKING</span>
+              <span className="text-white/20">{"//"}</span>
+              <span className="text-[#d0bcff]">SISTEM MYLIFE OS v4.2</span>
+              <span className="text-white/20">{"//"}</span>
+              <div className="flex items-center gap-1.5 rounded-full bg-[#4edea3]/10 px-2 py-0.5 text-[#4edea3]">
+                <span className="h-1.5 w-1.5 rounded-full bg-[#4edea3] animate-pulse"></span>
+                <span className="font-semibold">LOG WAKTU REAL-TIME</span>
+              </div>
+            </div>
+            <h1 className="text-3xl sm:text-4xl font-bold tracking-tight text-white">
+              Aktivitas & Log Waktu
+            </h1>
+            <p className="text-sm text-[#94A3B8] leading-relaxed">
+              Riwayat telemetri harian untuk merekam alokasi waktu, tingkat energi, dan produktivitas Anda secara real-time.
+            </p>
+          </div>
+
+          <div className="flex items-center gap-3 shrink-0">
+            <button
+              type="button"
+              onClick={handleOpenLogForm}
+              className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-gradient-to-r from-[#d0bcff] via-[#a078ff] to-[#7c3aed] text-white font-mono text-xs font-semibold shadow-md shadow-purple-500/20 hover:opacity-95 transition-all cursor-pointer"
+            >
+              <Icon name={isLogging ? "x" : "plus"} size={16} />
+              <span>{isLogging ? "Batal" : "Catat Aktivitas"}</span>
+            </button>
+          </div>
+        </section>
+      )}
 
       {/* 2. Bento Telemetry Cards (4 Metrik Utama) */}
       <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
