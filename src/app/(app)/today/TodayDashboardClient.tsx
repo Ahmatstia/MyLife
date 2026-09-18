@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { useToast } from "@/app/components/ui/Toast";
 import { parseAmbientTask } from "@/ai/ambient/ambient-nlp";
 import { VoiceInputButton } from "@/app/components/ai/VoiceInputButton";
+import { RecentActivityFeed, type ActivityFeedItem } from "@/app/components/dashboard/RecentActivityFeed";
 
 interface AreaOption {
   id: string;
@@ -71,6 +72,7 @@ interface TodayDashboardClientProps {
   initialTasks: TaskItemData[];
   initialTimeblocks: TimeblockData[];
   initialCaptures: CaptureData[];
+  initialActivities?: ActivityFeedItem[];
   alertIssues: AlertIssueData[];
   stats: {
     totalMinutes: number;
@@ -87,6 +89,7 @@ export function TodayDashboardClient({
   initialTasks,
   initialTimeblocks,
   initialCaptures,
+  initialActivities = [],
   alertIssues,
   stats,
 }: TodayDashboardClientProps) {
@@ -161,6 +164,9 @@ export function TodayDashboardClient({
   // Optimistic ID sequence
   const [seqId, setSeqId] = useState(100);
 
+  // Recent Activities Feed State
+  const [activities, setActivities] = useState<ActivityFeedItem[]>(initialActivities);
+
   // Task Completion Toggle
   async function toggleTask(id: string) {
     const task = taskQueue.find((t) => t.id === id);
@@ -172,6 +178,21 @@ export function TodayDashboardClient({
     setTaskQueue((prev) =>
       prev.map((t) => (t.id === id ? { ...t, status: nextStatus } : t))
     );
+
+    if (nextStatus === "COMPLETED") {
+      setActivities((prev) => [
+        {
+          id: `act-task-${id}-${Date.now()}`,
+          type: "TASK_COMPLETED",
+          title: task.title,
+          category: task.categoryName || "Tugas Selesai",
+          timestamp: new Date().toISOString(),
+          xp: "+50 XP",
+          linkUrl: `/tasks/${id}`,
+        },
+        ...prev,
+      ]);
+    }
 
     toast(
       nextStatus === "COMPLETED"
@@ -211,6 +232,17 @@ export function TodayDashboardClient({
     };
 
     setCaptures((prev) => [newCap, ...prev]);
+    setActivities((prev) => [
+      {
+        id: `act-cap-${Date.now()}`,
+        type: "CAPTURE",
+        title: content,
+        category: "Catatan Cepat",
+        timestamp: new Date().toISOString(),
+        linkUrl: "/capture",
+      },
+      ...prev,
+    ]);
     setCaptureText("");
     toast("Catatan kilat tersimpan ke Inbox!", "success");
 
@@ -1398,9 +1430,9 @@ export function TodayDashboardClient({
                       <button
                         type="button"
                         onClick={() => convertCaptureToTask(item.id)}
-                        className="text-[#8B5CF6] hover:text-[#7c3aed] dark:text-[#d0bcff] dark:hover:text-white text-[11px] font-bold whitespace-nowrap shrink-0 transition-colors"
+                        className="text-[#8B5CF6] hover:text-[#7c3aed] dark:text-[#d0bcff] dark:hover:text-white text-[11px] font-bold whitespace-nowrap shrink-0 transition-colors cursor-pointer"
                       >
-                        + Jadi Tugas
+                        Jadi Tugas
                       </button>
                     </div>
                     <span className="text-[10px] text-slate-400 dark:text-[#94a3b8]">{item.tag}</span>
@@ -1410,53 +1442,13 @@ export function TodayDashboardClient({
             </div>
           </section>
 
-          {/* ── 3. YANG SUDAH BERES HARI INI (CELEBRATORY WALL OF WINS) ── */}
-          <section className="p-6 rounded-3xl bg-white/90 dark:bg-[#131825]/90 border border-slate-200/80 dark:border-white/10 shadow-sm dark:shadow-xl flex flex-col gap-3.5">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <span className="text-lg">✨</span>
-                <h3 className="text-base font-bold text-slate-900 dark:text-white tracking-tight">
-                  Tugas Beres Hari Ini
-                </h3>
-              </div>
-              <span className="text-xs font-semibold text-[#4edea3]">
-                {completedCount} Selesai
-              </span>
-            </div>
-
-            <div className="flex flex-col gap-2">
-              {completedTasksList.length > 0 ? (
-                completedTasksList.slice(0, 5).map((task) => (
-                  <div
-                    key={task.id}
-                    className="flex items-center justify-between p-3 rounded-2xl bg-slate-50 dark:bg-white/[0.03] border border-slate-200/60 dark:border-white/[0.05]"
-                  >
-                    <div className="flex items-center gap-2.5 min-w-0">
-                      <span className="material-symbols-outlined text-[#4edea3] text-[18px]">
-                        check_circle
-                      </span>
-                      <span className="text-xs font-medium text-slate-800 dark:text-slate-200 truncate">
-                        {task.title}
-                      </span>
-                    </div>
-                    <span className="text-xs font-bold text-[#4edea3] shrink-0 ml-2">
-                      {task.xp || "+50 XP"}
-                    </span>
-                  </div>
-                ))
-              ) : (
-                <div className="p-4 text-center text-xs text-slate-400 dark:text-[#94a3b8] bg-slate-50 dark:bg-white/[0.02] rounded-2xl">
-                  Belum ada tugas selesai hari ini. Semangat memulai langkah pertama!
-                </div>
-              )}
-            </div>
-
-            {/* Inspiring Micro-quote Card */}
-            <div className="p-3.5 rounded-2xl bg-[#8B5CF6]/10 border border-[#8B5CF6]/20 text-xs text-slate-600 dark:text-[#d0bcff] italic leading-relaxed flex items-center gap-2">
-              <span className="text-base shrink-0">💡</span>
-              <span>&ldquo;Fokus konsisten pada satu hal kecil menghasilkan lompatan besar.&rdquo;</span>
-            </div>
-          </section>
+          {/* ── 3. AKTIVITAS TERBARU (LIVE ACTIVITY TIMELINE FEED) ── */}
+          <RecentActivityFeed
+            activities={activities}
+            areas={areas}
+            projects={projects}
+            onActivityAdded={(newAct) => setActivities((prev) => [newAct, ...prev])}
+          />
         </div>
       </div>
 
