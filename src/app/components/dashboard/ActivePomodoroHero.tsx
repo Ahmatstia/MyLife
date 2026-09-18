@@ -41,24 +41,6 @@ export function ActivePomodoroHero({ session }: PomodoroHeroProps) {
     return () => clearInterval(timer);
   }, [isPaused, secondsRemaining, isCompleted]);
 
-  // Spacebar keyboard shortcut to toggle Pause/Resume
-  useEffect(() => {
-    function handleKeyDown(e: KeyboardEvent) {
-      if (
-        e.target instanceof HTMLInputElement ||
-        e.target instanceof HTMLTextAreaElement ||
-        e.target instanceof HTMLSelectElement
-      ) {
-        return;
-      }
-      if (e.code === "Space") {
-        e.preventDefault();
-        setIsPaused((p) => !p);
-      }
-    }
-    window.addEventListener("keydown", handleKeyDown);
-    return () => window.removeEventListener("keydown", handleKeyDown);
-  }, []);
 
   const m = Math.floor(secondsRemaining / 60);
   const s = secondsRemaining % 60;
@@ -159,7 +141,7 @@ export function ActivePomodoroHero({ session }: PomodoroHeroProps) {
             className="px-4 py-2 rounded-lg bg-[#d0bcff] text-[#3c0091] font-mono text-xs font-bold flex items-center gap-2 shadow-lg shadow-[#d0bcff]/20 hover:bg-[#e9ddff] transition-all"
           >
             <span>▶</span>
-            <span>Mulai Sesi Fokus [Spasi]</span>
+            <span>Mulai Sesi Fokus</span>
           </a>
           <div className="flex items-center gap-2 font-mono text-xs text-[#958ea0]">
             <span>Bonus Konsistensi: <strong className="text-[#F59E0B]">+150 XP</strong></span>
@@ -270,9 +252,6 @@ export function ActivePomodoroHero({ session }: PomodoroHeroProps) {
           >
             <span>{isPaused ? "▶" : "⏸"}</span>
             <span>{isPaused ? "Lanjutkan" : "Jeda"}</span>
-            <kbd className="px-1 py-0.5 rounded bg-[#3c0091]/20 text-[#3c0091] font-mono text-[10px]">
-              Spasi
-            </kbd>
           </button>
 
           <button
@@ -282,9 +261,6 @@ export function ActivePomodoroHero({ session }: PomodoroHeroProps) {
           >
             <span className="text-[#4edea3]">✓</span>
             <span>Selesai</span>
-            <kbd className="px-1 py-0.5 rounded bg-[#0c0e14] text-[#958ea0] font-mono text-[10px]">
-              ⌘↵
-            </kbd>
           </button>
 
           <button
