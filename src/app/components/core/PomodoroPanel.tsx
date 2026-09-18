@@ -1,11 +1,20 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { FocusOrb } from "./FocusOrb";
 import { Icon } from "@/app/components/ui/Icon";
 import { LearningNotesForm, type LearningNotesData } from "./LearningNotesForm";
 import { setFocusMode } from "@/app/components/focus-mode-store";
+import {
+  getActiveFocusState,
+  saveActiveFocusState,
+  updateFocusSessionPause,
+  updateFocusSessionTick,
+  clearActiveFocusState,
+  computeCurrentTimer,
+  subscribeFocusSession,
+} from "@/lib/focus-session-sync";
 
 // ── Preset durations ──────────────────────────────────────
 const PRESETS = [
@@ -53,16 +62,52 @@ export function PomodoroPanel({
 
   // Session state
   const [session, setSession] = useState(activeSession);
-  const [phase, setPhase] = useState<Phase>(activeSession ? "running" : "idle");
+
+  // Sync state from shared focus storage
+  const syncState = useMemo(() => {
+    if (!activeSession) return null;
+    return getActiveFocusState(activeSession.id);
+  }, [activeSession]);
+
+  const [paused, setPaused] = useState(() => {
+    if (syncState) return syncState.isPaused;
+    return false;
+  });
+
+  const [phase, setPhase] = useState<Phase>(() => {
+    if (!activeSession) return "idle";
+    if (syncState?.isPaused) return "paused";
+    return "running";
+  });
 
   // Timer state
-  const [elapsed, setElapsed] = useState(0);
   const [selectedPreset, setSelectedPreset] = useState(0); // index into PRESETS
   const [customMinutes, setCustomMinutes] = useState("");
-  const [targetSeconds, setTargetSeconds] = useState(0); // 0 = free mode
-  const [remaining, setRemaining] = useState(0);
-  const [paused, setPaused] = useState(false);
   const [completed, setCompleted] = useState(false);
+
+  const [targetSeconds, setTargetSeconds] = useState(() => {
+    if (syncState?.targetSeconds) return syncState.targetSeconds;
+    return 25 * 60;
+  });
+
+  const [remaining, setRemaining] = useState(() => {
+    if (!activeSession) return 0;
+    if (syncState) {
+      if (syncState.isPaused) return Math.max(0, syncState.remainingSeconds);
+      return computeCurrentTimer(syncState).remainingSeconds;
+    }
+    const el = Math.max(0, Math.floor((Date.now() - new Date(activeSession.startedAt).getTime()) / 1000));
+    return Math.max(0, 25 * 60 - el);
+  });
+
+  const [elapsed, setElapsed] = useState(() => {
+    if (!activeSession) return 0;
+    if (syncState) {
+      const rem = syncState.isPaused ? syncState.remainingSeconds : computeCurrentTimer(syncState).remainingSeconds;
+      return Math.max(0, syncState.targetSeconds - rem);
+    }
+    return Math.max(0, Math.floor((Date.now() - new Date(activeSession.startedAt).getTime()) / 1000));
+  });
 
   // Counts
   const [pomodoroCount, setPomodoroCount] = useState(0);
@@ -106,26 +151,65 @@ export function PomodoroPanel({
       return;
     }
     if (session) {
-      // Sync elapsed from server startedAt
       const update = () => {
-        const el = Math.max(0, Math.floor((Date.now() - new Date(session.startedAt).getTime()) / 1000));
-        setElapsed(el);
-        if (targetSeconds > 0) {
-          const rem = Math.max(0, targetSeconds - el);
-          setRemaining(rem);
-          if (rem === 0 && !completed) {
-            setCompleted(true);
-            playBell();
-            setPomodoroCount((c) => c + 1);
+        setElapsed((prevEl) => {
+          const nextEl = prevEl + 1;
+          if (targetSeconds > 0) {
+            const rem = Math.max(0, targetSeconds - nextEl);
+            setRemaining(rem);
+            updateFocusSessionTick(session.id, rem);
+            if (rem === 0 && !completed) {
+              setCompleted(true);
+              playBell();
+              setPomodoroCount((c) => c + 1);
+            }
           }
-        }
+          return nextEl;
+        });
       };
-      update();
       timerRef.current = setInterval(update, 1000);
     }
     return () => { if (timerRef.current) clearInterval(timerRef.current); };
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [phase, paused, session, targetSeconds]);
+  }, [phase, paused, session, targetSeconds, completed]);
+
+  const handleTogglePause = () => {
+    const nextPaused = !paused;
+    setPaused(nextPaused);
+    setPhase(nextPaused ? "paused" : "running");
+    if (session) {
+      updateFocusSessionPause(session.id, nextPaused, remaining);
+    }
+  };
+
+  // Cross-page real-time sync (e.g. when paused or cancelled from /focus)
+  useEffect(() => {
+    const unsubscribe = subscribeFocusSession((state) => {
+      if (!state) {
+        if (session) {
+          setSession(null);
+          setPhase("idle");
+          setElapsed(0);
+          setRemaining(0);
+          setCompleted(false);
+          setPaused(false);
+        }
+        return;
+      }
+      if (session && state.sessionId === session.id) {
+        setPaused(state.isPaused);
+        setPhase(state.isPaused ? "paused" : "running");
+        if (state.isPaused) {
+          setRemaining(Math.max(0, state.remainingSeconds));
+          setElapsed(Math.max(0, state.targetSeconds - state.remainingSeconds));
+        } else {
+          const current = computeCurrentTimer(state);
+          setRemaining(current.remainingSeconds);
+          setElapsed(Math.max(0, state.targetSeconds - current.remainingSeconds));
+        }
+      }
+    });
+    return unsubscribe;
+  }, [session]);
 
   async function startSession() {
     if (!taskId) return;
@@ -145,7 +229,20 @@ export function PomodoroPanel({
       setCompleted(false);
       setSession({ id: data.data.id, startedAt: data.data.startedAt });
       setPhase("running");
+      setPaused(false);
       setElapsed(0);
+      saveActiveFocusState({
+        sessionId: data.data.id,
+        taskId,
+        taskTitle: taskName,
+        startedAt: data.data.startedAt,
+        targetSeconds: totalSec,
+        remainingSeconds: totalSec,
+        isPaused: false,
+        pausedAt: null,
+        lastTickAt: Date.now(),
+        modePreset: "pomodoro",
+      });
       router.refresh();
     } catch (e) {
       setError(e instanceof Error ? e.message : "Gagal memulai sesi.");
@@ -176,11 +273,13 @@ export function PomodoroPanel({
         body: JSON.stringify(body),
       });
       if (!res.ok) throw new Error();
+      clearActiveFocusState(session.id);
       setSession(null);
       setPhase("idle");
       setElapsed(0);
       setRemaining(0);
       setCompleted(false);
+      setPaused(false);
       router.refresh();
     } catch {
       setError("Gagal menyimpan sesi.");
@@ -194,10 +293,13 @@ export function PomodoroPanel({
     setLoading(true);
     try {
       await fetch(`/api/sessions/${session.id}`, { method: "DELETE" });
+      clearActiveFocusState(session.id);
       setSession(null);
       setPhase("idle");
       setElapsed(0);
+      setRemaining(0);
       setCompleted(false);
+      setPaused(false);
       router.refresh();
     } catch {
       setError("Gagal membatalkan sesi.");
@@ -327,9 +429,12 @@ export function PomodoroPanel({
               paused ? "bg-amber-400" : "bg-violet-400 animate-pulse"
             }`}
           />
-          <span className={`text-[11px] font-bold uppercase tracking-wider ${
-            paused ? "text-amber-400" : "text-violet-400"
-          }`}>
+          <span
+            suppressHydrationWarning
+            className={`text-[11px] font-bold uppercase tracking-wider ${
+              paused ? "text-amber-400" : "text-violet-400"
+            }`}
+          >
             {paused ? "Dijeda" : completed ? "Selesai! 🎉" : "Sesi Aktif"}
           </span>
           {pomodoroCount > 0 && (
@@ -367,13 +472,14 @@ export function PomodoroPanel({
           ) : (
             <div className="flex flex-col items-center gap-1">
               <span
+                suppressHydrationWarning
                 className={`font-mono text-2xl font-bold tabular-nums tracking-tight ${
                   isLow ? "text-amber-400 countdown-pulse" : "text-white"
                 }`}
               >
                 {targetSeconds > 0 ? formatCountdown(remaining) : formatElapsed(elapsed)}
               </span>
-              <span className="text-[10px] text-surface-400">
+              <span suppressHydrationWarning className="text-[10px] text-surface-400">
                 {targetSeconds > 0 ? "tersisa" : "berjalan"}
               </span>
               {targetSeconds > 0 && (
@@ -407,7 +513,7 @@ export function PomodoroPanel({
         {!completed && (
           <button
             type="button"
-            onClick={() => setPaused(!paused)}
+            onClick={handleTogglePause}
             className="flex flex-1 items-center justify-center gap-2 rounded-xl border border-white/10 bg-[#0E131F] px-4 py-2.5 text-[13px] font-semibold text-white transition-all hover:bg-[#1A2133] hover:border-violet-500/30"
           >
             <Icon name={paused ? "play" : "pause"} size={14} />

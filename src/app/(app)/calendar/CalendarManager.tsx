@@ -4,6 +4,7 @@ import { useState, useMemo, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useToast } from "@/app/components/ui/Toast";
+import { BackButton } from "@/app/components/ui/BackButton";
 
 // ── Types ──────────────────────────────────────────────────────────
 export interface EventItem {
@@ -62,7 +63,6 @@ function getWeekNumber(d: Date): number {
 function formatTimeStr(d: Date) {
   return `${String(d.getHours()).padStart(2, "0")}:${String(d.getMinutes()).padStart(2, "0")}`;
 }
-
 
 function formatLocalDateOnly(d: Date) {
   const pad = (n: number) => String(n).padStart(2, "0");
@@ -139,61 +139,92 @@ function projectRecurringEvents(events: EventItem[], targetDay: Date): EventItem
 }
 
 // ── Category Config ──────────────────────────────────────────────────
-const CATEGORY_MAP: Record<
+export const CATEGORY_MAP: Record<
   string,
-  { label: string; dot: string; bg: string; border: string; text: string; glow: string }
+  {
+    label: string;
+    dot: string;
+    badgeBg: string;
+    badgeBorder: string;
+    badgeText: string;
+    cardBg: string;
+    cardBorder: string;
+    cardHover: string;
+    icon: string;
+    glow: string;
+  }
 > = {
   BLOCKED: {
     label: "Fokus",
-    dot: "#d0bcff",
-    bg: "bg-purple-50 dark:bg-[#340080]/25",
-    border: "border-purple-200 dark:border-[#d0bcff]/40",
-    text: "text-purple-700 dark:text-[#d0bcff]",
-    glow: "shadow-[0_0_20px_rgba(208,188,255,0.25)]",
+    dot: "#c084fc",
+    badgeBg: "bg-purple-500/15",
+    badgeBorder: "border-purple-500/30",
+    badgeText: "text-purple-300",
+    cardBg: "bg-purple-950/20",
+    cardBorder: "border-purple-500/25",
+    cardHover: "hover:border-purple-500/40 hover:bg-purple-950/30",
+    icon: "🎯",
+    glow: "shadow-[0_0_20px_rgba(192,132,252,0.15)]",
   },
   WORK: {
     label: "Pekerjaan",
-    dot: "#c0c1ff",
-    bg: "bg-indigo-50 dark:bg-[#3131c0]/25",
-    border: "border-indigo-200 dark:border-[#c0c1ff]/40",
-    text: "text-indigo-700 dark:text-[#c0c1ff]",
+    dot: "#818cf8",
+    badgeBg: "bg-indigo-500/15",
+    badgeBorder: "border-indigo-500/30",
+    badgeText: "text-indigo-300",
+    cardBg: "bg-indigo-950/20",
+    cardBorder: "border-indigo-500/25",
+    cardHover: "hover:border-indigo-500/40 hover:bg-indigo-950/30",
+    icon: "💼",
     glow: "",
   },
   PERSONAL: {
     label: "Pribadi",
-    dot: "#4edea3",
-    bg: "bg-emerald-50 dark:bg-[#00311f]/40",
-    border: "border-emerald-200 dark:border-[#4edea3]/40",
-    text: "text-emerald-700 dark:text-[#4edea3]",
+    dot: "#34d399",
+    badgeBg: "bg-emerald-500/15",
+    badgeBorder: "border-emerald-500/30",
+    badgeText: "text-emerald-300",
+    cardBg: "bg-emerald-950/20",
+    cardBorder: "border-emerald-500/25",
+    cardHover: "hover:border-emerald-500/40 hover:bg-emerald-950/30",
+    icon: "🌱",
     glow: "",
   },
   TASK_DEADLINE: {
     label: "Tenggat",
-    dot: "#F43F5E",
-    bg: "bg-rose-50 dark:bg-[#93000a]/35",
-    border: "border-rose-200 dark:border-[#F43F5E]/40",
-    text: "text-rose-700 dark:text-[#F43F5E]",
+    dot: "#fb7185",
+    badgeBg: "bg-rose-500/15",
+    badgeBorder: "border-rose-500/30",
+    badgeText: "text-rose-300",
+    cardBg: "bg-rose-950/20",
+    cardBorder: "border-rose-500/25",
+    cardHover: "hover:border-rose-500/40 hover:bg-rose-950/30",
+    icon: "🔴",
     glow: "",
   },
   REMINDER: {
     label: "Pengingat",
-    dot: "#F59E0B",
-    bg: "bg-amber-50 dark:bg-[#F59E0B]/15",
-    border: "border-amber-200 dark:border-[#F59E0B]/40",
-    text: "text-amber-700 dark:text-[#F59E0B]",
+    dot: "#fbbf24",
+    badgeBg: "bg-amber-500/15",
+    badgeBorder: "border-amber-500/30",
+    badgeText: "text-amber-300",
+    cardBg: "bg-amber-950/20",
+    cardBorder: "border-amber-500/25",
+    cardHover: "hover:border-amber-500/40 hover:bg-amber-950/30",
+    icon: "🔔",
     glow: "",
   },
 };
 
 const CATEGORIES = [
-  { id: "ALL", label: "Semua" },
-  ...Object.entries(CATEGORY_MAP).map(([id, v]) => ({ id, label: v.label })),
+  { id: "ALL", label: "Semua", icon: "✨" },
+  ...Object.entries(CATEGORY_MAP).map(([id, v]) => ({ id, label: v.label, icon: v.icon })),
 ];
 
 const recurrenceLabel: Record<string, string> = {
-  DAILY: "🔁 Setiap hari",
-  WEEKLY: "📅 Setiap minggu",
-  MONTHLY: "🗓 Setiap bulan",
+  DAILY: "Setiap hari",
+  WEEKLY: "Setiap minggu",
+  MONTHLY: "Setiap bulan",
 };
 
 // ── TO-DO LIST VIEW ──────────────────────────────────────────────────
@@ -236,9 +267,6 @@ function ToDoListView({
   const pendingCount = totalCount - completedCount;
   const progressPct = totalCount > 0 ? Math.round((completedCount / totalCount) * 100) : 0;
 
-  // Split into:
-  // 1. Scheduled (has time, not all-day)
-  // 2. Anytime (isAllDay)
   const scheduledEvents = dayEvents
     .filter((e) => !e.isAllDay)
     .sort((a, b) => new Date(a.startTime).getTime() - new Date(b.startTime).getTime());
@@ -258,33 +286,34 @@ function ToDoListView({
   }
 
   return (
-    <div className="flex flex-col gap-6 p-4 sm:p-6">
+    <div className="flex flex-col gap-6 p-4 sm:p-7">
       {/* ── QUICK ADD BAR ── */}
-      <div className="bg-white dark:bg-[#191b22] p-4 rounded-xl border border-slate-200 dark:border-white/[0.08] shadow-sm flex flex-col gap-3">
-        <form onSubmit={handleFormSubmit} className="flex flex-col md:flex-row items-stretch md:items-center gap-2.5">
+      <div className="bg-zinc-900/80 backdrop-blur-xl p-4 sm:p-5 rounded-3xl border border-white/[0.08] shadow-xl flex flex-col gap-3.5">
+        <form onSubmit={handleFormSubmit} className="flex flex-col md:flex-row items-stretch md:items-center gap-3">
           <div className="relative flex-1">
-            <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-emerald-600 dark:text-[#4edea3] font-bold text-sm">
+            <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-purple-400 font-bold text-base">
               +
             </span>
             <input
               type="text"
               value={quickTitle}
               onChange={(e) => setQuickTitle(e.target.value)}
-              placeholder="Tulis to-do baru... (cth: Bangun subuh, Sarapan, Beli buku)"
-              className="w-full bg-slate-50 dark:bg-[#0c0e14] pl-8 pr-3.5 py-2.5 rounded-lg font-mono text-xs text-slate-900 dark:text-[#e2e2eb] border border-slate-200 dark:border-white/[0.06] placeholder:text-slate-400 dark:placeholder-[#6b6675] focus:outline-none focus:border-emerald-500 dark:focus:border-[#4edea3]/60 shadow-inner"
+              placeholder="Tulis to-do atau agenda baru... (cth: Bangun subuh, Baca jurnal, Beli suplemen)"
+              className="w-full bg-zinc-950/70 pl-9 pr-3.5 py-3 rounded-2xl text-sm text-zinc-100 border border-white/[0.08] placeholder:text-zinc-500 focus:outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 transition-all shadow-inner"
             />
           </div>
 
-          {/* Quick time picker */}
-          <div className="flex items-center gap-2 shrink-0">
-            <div className="flex items-center bg-slate-100 dark:bg-[#0c0e14] rounded-lg border border-slate-200 dark:border-white/[0.06] p-0.5">
+          {/* Quick options */}
+          <div className="flex items-center gap-2.5 flex-wrap shrink-0">
+            {/* Mode switch */}
+            <div className="flex items-center bg-zinc-950/80 p-1 rounded-2xl border border-white/[0.06]">
               <button
                 type="button"
                 onClick={() => setQuickMode("START_ONLY")}
-                className={`px-2.5 py-1.5 rounded font-mono text-xs transition-all ${
+                className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition-all ${
                   quickMode === "START_ONLY"
-                    ? "bg-purple-100 text-purple-700 dark:bg-[#340080] dark:text-[#d0bcff] font-semibold"
-                    : "text-slate-500 dark:text-[#958ea0] hover:text-slate-900 dark:hover:text-[#e2e2eb]"
+                    ? "bg-purple-600 text-white shadow-md shadow-purple-600/30"
+                    : "text-zinc-400 hover:text-zinc-200"
                 }`}
               >
                 ⏰ Jam
@@ -292,10 +321,10 @@ function ToDoListView({
               <button
                 type="button"
                 onClick={() => setQuickMode("ALL_DAY")}
-                className={`px-2.5 py-1.5 rounded font-mono text-xs transition-all ${
+                className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition-all ${
                   quickMode === "ALL_DAY"
-                    ? "bg-purple-100 text-purple-700 dark:bg-[#340080] dark:text-[#d0bcff] font-semibold"
-                    : "text-slate-500 dark:text-[#958ea0] hover:text-slate-900 dark:hover:text-[#e2e2eb]"
+                    ? "bg-purple-600 text-white shadow-md shadow-purple-600/30"
+                    : "text-zinc-400 hover:text-zinc-200"
                 }`}
               >
                 📝 Bebas
@@ -307,14 +336,14 @@ function ToDoListView({
                 type="time"
                 value={quickTime}
                 onChange={(e) => setQuickTime(e.target.value)}
-                className="bg-slate-50 dark:bg-[#0c0e14] px-2.5 py-2 rounded-lg font-mono text-xs text-emerald-600 dark:text-[#4edea3] border border-slate-200 dark:border-white/[0.06] focus:outline-none focus:border-emerald-500 dark:focus:border-[#4edea3]/60 cursor-pointer"
+                className="bg-zinc-950/80 px-3 py-2 rounded-xl text-xs font-semibold text-purple-300 border border-white/[0.08] focus:outline-none focus:border-purple-500 cursor-pointer"
               />
             )}
 
             <select
               value={quickCategory}
               onChange={(e) => setQuickCategory(e.target.value)}
-              className="bg-slate-50 dark:bg-[#0c0e14] px-2.5 py-2 rounded-lg font-mono text-xs text-purple-700 dark:text-[#d0bcff] border border-slate-200 dark:border-white/[0.06] focus:outline-none focus:border-purple-500 dark:focus:border-[#d0bcff]/60 cursor-pointer"
+              className="bg-zinc-950/80 px-3 py-2 rounded-xl text-xs font-medium text-zinc-300 border border-white/[0.08] focus:outline-none focus:border-purple-500 cursor-pointer"
             >
               <option value="PERSONAL">🌱 Pribadi</option>
               <option value="BLOCKED">🎯 Fokus</option>
@@ -325,42 +354,43 @@ function ToDoListView({
             <button
               type="submit"
               disabled={submitting || !quickTitle.trim()}
-              className="px-4 py-2 bg-emerald-500 hover:bg-emerald-600 dark:bg-[#4edea3] dark:hover:bg-[#3ec48e] disabled:opacity-40 text-white dark:text-[#00311f] font-mono text-xs font-bold rounded-lg transition-all shadow-sm dark:shadow-[0_2px_12px_rgba(78,222,163,0.3)] active:scale-95 shrink-0"
+              className="px-4 py-2.5 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white font-semibold text-xs rounded-xl transition-all shadow-md shadow-purple-600/25 active:scale-95 disabled:opacity-40 shrink-0"
             >
-              {submitting ? "..." : "+ Tambah"}
+              {submitting ? "Menyimpan..." : "+ Tambah"}
             </button>
           </div>
         </form>
 
-        <div className="flex items-center justify-between text-[11px] text-slate-500 dark:text-[#958ea0] pt-1">
-          <span>
-            💡 <strong>Tips:</strong> To-do jam tidak mewajibkan jam selesai. Cukup tentukan jam mulai lalu ceklis saat selesai!
+        <div className="flex items-center justify-between text-xs text-zinc-400 pt-0.5">
+          <span className="flex items-center gap-1.5">
+            <span className="text-amber-400">💡</span>
+            <span>To-do dengan jam cukup tentukan jam mulai, lalu ceklis saat aktivitas selesai!</span>
           </span>
           <button
             type="button"
             onClick={onOpenModal}
-            className="text-purple-600 dark:text-[#d0bcff] hover:underline font-mono text-xs"
+            className="text-purple-400 hover:text-purple-300 hover:underline font-medium text-xs transition-colors shrink-0"
           >
             Form Lengkap &amp; Rutinitas ↗
           </button>
         </div>
       </div>
 
-      {/* ── PROGRESS BAR & STATS ── */}
-      <div className="bg-white dark:bg-[#191b22]/70 p-4 rounded-xl border border-slate-200 dark:border-white/[0.06] flex flex-col gap-2.5 shadow-sm">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2 font-mono text-xs text-slate-800 dark:text-[#e2e2eb]">
-            <span className="font-bold text-sm text-emerald-600 dark:text-[#4edea3]">{completedCount}</span>
-            <span className="text-slate-500 dark:text-[#958ea0]">dari {totalCount} To-Do Selesai</span>
+      {/* ── PROGRESS & STATS BENTO ── */}
+      <div className="bg-zinc-900/60 p-4 sm:p-5 rounded-3xl border border-white/[0.06] flex flex-col gap-3 shadow-inner">
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <div className="flex items-center gap-2 text-xs text-zinc-300">
+            <span className="text-sm font-bold text-emerald-400">{completedCount}</span>
+            <span className="text-zinc-400">dari {totalCount} To-Do Selesai</span>
             {totalCount > 0 && progressPct === 100 && (
-              <span className="px-2 py-0.5 bg-emerald-100 text-emerald-700 dark:bg-[#4edea3]/20 dark:text-[#4edea3] rounded-full text-[10px] font-bold animate-pulse">
+              <span className="px-2.5 py-0.5 bg-emerald-500/15 text-emerald-300 border border-emerald-500/25 rounded-full text-[11px] font-semibold animate-pulse">
                 Semua Beres! 🎉
               </span>
             )}
           </div>
 
           {/* Filter status */}
-          <div className="flex items-center gap-1 bg-slate-100 dark:bg-[#0c0e14] p-0.5 rounded-lg border border-slate-200 dark:border-white/[0.06]">
+          <div className="flex items-center gap-1 bg-zinc-950/80 p-1 rounded-2xl border border-white/[0.06]">
             {(
               [
                 { id: "ALL", label: `Semua (${totalCount})` },
@@ -372,10 +402,10 @@ function ToDoListView({
                 key={s.id}
                 type="button"
                 onClick={() => setStatusFilter(s.id)}
-                className={`px-2.5 py-1 rounded font-mono text-[11px] transition-all ${
+                className={`px-3 py-1 rounded-xl text-xs font-semibold transition-all ${
                   statusFilter === s.id
-                    ? "bg-purple-100 text-purple-700 dark:bg-[#340080] dark:text-[#d0bcff] font-semibold shadow-xs"
-                    : "text-slate-500 dark:text-[#958ea0] hover:text-slate-900 dark:hover:text-[#e2e2eb]"
+                    ? "bg-purple-600/30 text-purple-200 border border-purple-500/30 shadow-sm"
+                    : "text-zinc-400 hover:text-zinc-200"
                 }`}
               >
                 {s.label}
@@ -384,9 +414,9 @@ function ToDoListView({
           </div>
         </div>
 
-        <div className="w-full h-2 bg-slate-100 dark:bg-[#0c0e14] rounded-full overflow-hidden border border-slate-200 dark:border-white/[0.04]">
+        <div className="w-full h-2 bg-zinc-950 rounded-full overflow-hidden border border-white/[0.04]">
           <div
-            className="h-full bg-gradient-to-r from-emerald-400 to-purple-500 dark:from-[#4edea3] dark:to-[#a078ff] rounded-full transition-all duration-500"
+            className="h-full bg-gradient-to-r from-emerald-400 via-indigo-500 to-purple-500 rounded-full transition-all duration-500"
             style={{ width: `${progressPct}%` }}
           />
         </div>
@@ -394,14 +424,14 @@ function ToDoListView({
 
       {/* ── TO-DO LIST CONTENT ── */}
       {totalCount === 0 ? (
-        <div className="p-12 text-center flex flex-col items-center justify-center gap-3 bg-slate-50 dark:bg-[#191b22]/30 rounded-xl border border-dashed border-slate-300 dark:border-white/[0.08]">
-          <div className="w-12 h-12 rounded-full bg-purple-100 dark:bg-[#340080]/30 border border-purple-200 dark:border-[#d0bcff]/20 flex items-center justify-center text-xl">
+        <div className="p-12 text-center flex flex-col items-center justify-center gap-3 bg-zinc-900/30 rounded-3xl border border-dashed border-white/10">
+          <div className="w-14 h-14 rounded-2xl bg-purple-500/10 border border-purple-500/20 flex items-center justify-center text-2xl">
             📋
           </div>
-          <h3 className="text-base font-semibold text-slate-900 dark:text-[#e2e2eb]">
+          <h3 className="text-base font-semibold text-white">
             Belum ada to-do untuk hari ini
           </h3>
-          <p className="text-xs text-slate-500 dark:text-[#958ea0] max-w-sm">
+          <p className="text-xs text-zinc-400 max-w-sm leading-relaxed">
             Mulai susun harimu dari bangun pagi, sarapan, belajar, hingga tidur malam. Tulis di kotak tambah to-do di atas!
           </p>
         </div>
@@ -409,13 +439,13 @@ function ToDoListView({
         <div className="flex flex-col gap-6">
           {/* 1. SCHEDULED TO-DOS */}
           {scheduledEvents.length > 0 && (
-            <div className="flex flex-col gap-2.5">
-              <div className="flex items-center gap-2 font-mono text-xs font-bold text-purple-700 dark:text-[#d0bcff] tracking-wider uppercase">
-                <span>⏰ TO-DO BERJADWAL</span>
-                <span className="text-slate-500 dark:text-[#958ea0]">({scheduledEvents.length})</span>
+            <div className="flex flex-col gap-3">
+              <div className="flex items-center gap-2 text-xs font-bold text-purple-300 tracking-wider uppercase">
+                <span>⏰ To-Do Berjadwal</span>
+                <span className="text-zinc-500">({scheduledEvents.length})</span>
               </div>
 
-              <div className="flex flex-col gap-2">
+              <div className="flex flex-col gap-2.5">
                 {scheduledEvents
                   .filter((ev) => {
                     if (statusFilter === "PENDING") return !ev.isCompleted;
@@ -435,34 +465,34 @@ function ToDoListView({
                     return (
                       <div
                         key={ev.id}
-                        className={`group flex items-center justify-between gap-3 p-3 sm:p-3.5 rounded-xl border transition-all ${
+                        className={`group flex items-center justify-between gap-3 p-3.5 sm:p-4 rounded-2xl border transition-all ${
                           isDone
-                            ? "bg-slate-50 dark:bg-[#0c0e14]/60 border-slate-200 dark:border-white/[0.04] opacity-60"
-                            : `${cat.bg} ${cat.border} hover:border-emerald-500/50 dark:hover:border-[#4edea3]/50 shadow-xs`
+                            ? "bg-zinc-950/40 border-white/[0.04] opacity-60 hover:opacity-90"
+                            : `${cat.cardBg} ${cat.cardBorder} ${cat.cardHover} shadow-sm`
                         }`}
                       >
-                        <div className="flex items-center gap-3 min-w-0 flex-1">
-                          {/* Interactive Checkbox */}
+                        <div className="flex items-center gap-3.5 min-w-0 flex-1">
+                          {/* Checkbox */}
                           <button
                             type="button"
                             onClick={() => onToggleComplete(ev.id, isDone)}
-                            className={`w-6 h-6 rounded-md border flex items-center justify-center transition-all shrink-0 cursor-pointer ${
+                            className={`w-6 h-6 rounded-lg border flex items-center justify-center transition-all shrink-0 cursor-pointer ${
                               isDone
-                                ? "bg-emerald-500 border-emerald-500 text-white dark:bg-[#4edea3] dark:border-[#4edea3] dark:text-[#00311f] shadow-[0_0_10px_rgba(78,222,163,0.5)]"
-                                : "border-slate-300 dark:border-white/30 bg-white dark:bg-[#0c0e14] hover:border-emerald-500 dark:hover:border-[#4edea3] text-transparent hover:text-emerald-500/50"
+                                ? "bg-emerald-400 border-emerald-400 text-zinc-950 shadow-md shadow-emerald-400/30"
+                                : "border-white/20 bg-zinc-900/60 hover:border-emerald-400 text-transparent hover:text-emerald-400"
                             }`}
-                            title={isDone ? "Klik untuk tandai belum selesai" : "Klik untuk tandai selesai"}
+                            title={isDone ? "Tandai belum selesai" : "Tandai selesai"}
                           >
-                            <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
-                              <polyline points="20 6 9 17 4 12" />
+                            <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3">
+                              <path d="M5 13l4 4L19 7" />
                             </svg>
                           </button>
 
                           {/* Time badge */}
-                          <div className="flex items-center gap-1 font-mono text-xs px-2 py-0.5 rounded bg-white dark:bg-black/40 border border-slate-200 dark:border-white/[0.06] text-emerald-700 dark:text-[#4edea3] font-semibold shrink-0 shadow-xs">
+                          <div className="flex items-center gap-1 text-xs px-2.5 py-1 rounded-xl bg-zinc-950/80 border border-white/[0.06] text-purple-300 font-mono font-semibold shrink-0">
                             <span>{formatTimeStr(evStart)}</span>
                             {isRange && (
-                              <span className="text-slate-400 dark:text-[#958ea0] font-normal">
+                              <span className="text-zinc-500 font-normal">
                                 –{formatTimeStr(evEnd)}
                               </span>
                             )}
@@ -470,24 +500,25 @@ function ToDoListView({
 
                           {/* Title & tags */}
                           <div className="flex flex-col min-w-0">
-                            <div className="flex items-center gap-2">
+                            <div className="flex items-center gap-2 flex-wrap">
                               <span
-                                className={`text-sm font-medium truncate ${
-                                  isDone
-                                    ? "line-through text-slate-400 dark:text-[#958ea0]"
-                                    : "text-slate-900 dark:text-[#e2e2eb]"
+                                className={`text-sm font-semibold truncate ${
+                                  isDone ? "line-through text-zinc-500" : "text-white"
                                 }`}
                               >
                                 {ev.title}
                               </span>
                               {ev.recurrence && ev.recurrence !== "NONE" && (
-                                <span className="font-mono text-[9px] bg-slate-100 dark:bg-white/[0.08] text-slate-600 dark:text-[#cbc3d7] px-1 rounded shrink-0 border border-slate-200 dark:border-transparent" title={recurrenceLabel[ev.recurrence]}>
-                                  🔁 {ev.recurrence === "DAILY" ? "Harian" : ev.recurrence === "WEEKLY" ? "Mingguan" : "Bulanan"}
+                                <span
+                                  className="text-[11px] px-2 py-0.5 rounded-full bg-purple-500/10 text-purple-300 border border-purple-500/20 shrink-0 font-medium"
+                                  title={recurrenceLabel[ev.recurrence]}
+                                >
+                                  🔁 {recurrenceLabel[ev.recurrence] || "Rutin"}
                                 </span>
                               )}
                             </div>
                             {ev.description && (
-                              <span className="text-xs text-slate-500 dark:text-[#958ea0] truncate">
+                              <span className="text-xs text-zinc-400 truncate mt-0.5">
                                 {ev.description}
                               </span>
                             )}
@@ -497,19 +528,31 @@ function ToDoListView({
                         {/* Right side actions */}
                         <div className="flex items-center gap-2 shrink-0">
                           <span
-                            className={`font-mono text-[10px] px-2 py-0.5 rounded-full ${cat.text} bg-white dark:bg-black/30 border border-slate-200 dark:border-white/[0.06] hidden sm:inline-block shadow-xs`}
+                            className={`text-xs px-2.5 py-0.5 rounded-full ${cat.badgeBg} ${cat.badgeText} border ${cat.badgeBorder} hidden sm:inline-block font-medium`}
                           >
-                            {cat.label}
+                            {cat.icon} {cat.label}
                           </span>
 
-                          <div className="opacity-0 group-hover:opacity-100 flex items-center gap-1 transition-opacity">
+                          {/* Link to focus mode if tied to a task or important */}
+                          {ev.taskId && (
+                            <Link
+                              href={`/focus?taskId=${ev.taskId}`}
+                              className="px-2.5 py-1 rounded-lg bg-purple-600/20 hover:bg-purple-600/30 text-purple-300 border border-purple-500/30 text-xs font-semibold transition-all flex items-center gap-1"
+                              title="Buka sesi fokus mendalam untuk tugas ini"
+                            >
+                              <span>Fokus</span>
+                              <span>🍅</span>
+                            </Link>
+                          )}
+
+                          <div className="flex items-center gap-1 opacity-80 group-hover:opacity-100 transition-opacity">
                             <button
                               type="button"
                               onClick={() => onSelectEvent(ev)}
-                              className="p-1.5 hover:bg-slate-100 dark:hover:bg-white/[0.08] rounded text-slate-500 dark:text-[#958ea0] hover:text-slate-900 dark:hover:text-[#e2e2eb] transition-colors"
+                              className="p-1.5 hover:bg-white/[0.08] rounded-lg text-zinc-400 hover:text-white transition-colors"
                               title="Edit / Detail"
                             >
-                              <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                              <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                                 <path d="M12 20h9" />
                                 <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z" />
                               </svg>
@@ -517,10 +560,10 @@ function ToDoListView({
                             <button
                               type="button"
                               onClick={() => onDeleteEvent(ev.id)}
-                              className="p-1.5 hover:bg-red-500/20 rounded text-slate-500 dark:text-[#958ea0] hover:text-red-500 transition-colors"
+                              className="p-1.5 hover:bg-rose-500/20 rounded-lg text-zinc-400 hover:text-rose-400 transition-colors"
                               title="Hapus"
                             >
-                              <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                              <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                                 <polyline points="3 6 5 6 21 6" />
                                 <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
                               </svg>
@@ -536,13 +579,13 @@ function ToDoListView({
 
           {/* 2. ANYTIME / ALL-DAY TO-DOS */}
           {allDayEvents.length > 0 && (
-            <div className="flex flex-col gap-2.5">
-              <div className="flex items-center gap-2 font-mono text-xs font-bold text-emerald-600 dark:text-[#4edea3] tracking-wider uppercase">
-                <span>📌 TO-DO FLEKSIBEL (KAPAN SAJA HARI INI)</span>
-                <span className="text-slate-500 dark:text-[#958ea0]">({allDayEvents.length})</span>
+            <div className="flex flex-col gap-3">
+              <div className="flex items-center gap-2 text-xs font-bold text-emerald-400 tracking-wider uppercase">
+                <span>📌 To-Do Fleksibel (Kapan Saja Hari Ini)</span>
+                <span className="text-zinc-500">({allDayEvents.length})</span>
               </div>
 
-              <div className="flex flex-col gap-2">
+              <div className="flex flex-col gap-2.5">
                 {allDayEvents
                   .filter((ev) => {
                     if (statusFilter === "PENDING") return !ev.isCompleted;
@@ -556,45 +599,43 @@ function ToDoListView({
                     return (
                       <div
                         key={ev.id}
-                        className={`group flex items-center justify-between gap-3 p-3 sm:p-3.5 rounded-xl border transition-all ${
+                        className={`group flex items-center justify-between gap-3 p-3.5 sm:p-4 rounded-2xl border transition-all ${
                           isDone
-                            ? "bg-slate-50 dark:bg-[#0c0e14]/60 border-slate-200 dark:border-white/[0.04] opacity-60"
-                            : "bg-white dark:bg-[#191b22] border-slate-200 dark:border-white/[0.08] hover:border-emerald-500/50 dark:hover:border-[#4edea3]/50 shadow-xs"
+                            ? "bg-zinc-950/40 border-white/[0.04] opacity-60 hover:opacity-90"
+                            : "bg-zinc-900/60 border-white/[0.06] hover:border-emerald-500/40 shadow-sm"
                         }`}
                       >
-                        <div className="flex items-center gap-3 min-w-0 flex-1">
-                          {/* Interactive Checkbox */}
+                        <div className="flex items-center gap-3.5 min-w-0 flex-1">
+                          {/* Checkbox */}
                           <button
                             type="button"
                             onClick={() => onToggleComplete(ev.id, isDone)}
-                            className={`w-6 h-6 rounded-md border flex items-center justify-center transition-all shrink-0 cursor-pointer ${
+                            className={`w-6 h-6 rounded-lg border flex items-center justify-center transition-all shrink-0 cursor-pointer ${
                               isDone
-                                ? "bg-emerald-500 border-emerald-500 text-white dark:bg-[#4edea3] dark:border-[#4edea3] dark:text-[#00311f] shadow-[0_0_10px_rgba(78,222,163,0.5)]"
-                                : "border-slate-300 dark:border-white/30 bg-white dark:bg-[#0c0e14] hover:border-emerald-500 dark:hover:border-[#4edea3] text-transparent hover:text-emerald-500/50"
+                                ? "bg-emerald-400 border-emerald-400 text-zinc-950 shadow-md shadow-emerald-400/30"
+                                : "border-white/20 bg-zinc-900/60 hover:border-emerald-400 text-transparent hover:text-emerald-400"
                             }`}
-                            title={isDone ? "Klik untuk tandai belum selesai" : "Klik untuk tandai selesai"}
+                            title={isDone ? "Tandai belum selesai" : "Tandai selesai"}
                           >
-                            <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
-                              <polyline points="20 6 9 17 4 12" />
+                            <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3">
+                              <path d="M5 13l4 4L19 7" />
                             </svg>
                           </button>
 
-                          <span className="font-mono text-xs px-2 py-0.5 rounded bg-slate-100 dark:bg-white/[0.06] text-slate-600 dark:text-[#cbc3d7] shrink-0 border border-slate-200 dark:border-transparent">
+                          <span className="text-xs px-2.5 py-1 rounded-xl bg-zinc-950/80 text-zinc-400 border border-white/[0.06] shrink-0 font-medium">
                             Bebas Jam
                           </span>
 
                           <div className="flex flex-col min-w-0">
                             <span
-                              className={`text-sm font-medium truncate ${
-                                isDone
-                                  ? "line-through text-slate-400 dark:text-[#958ea0]"
-                                  : "text-slate-900 dark:text-[#e2e2eb]"
+                              className={`text-sm font-semibold truncate ${
+                                isDone ? "line-through text-zinc-500" : "text-white"
                               }`}
                             >
                               {ev.title}
                             </span>
                             {ev.description && (
-                              <span className="text-xs text-slate-500 dark:text-[#958ea0] truncate">
+                              <span className="text-xs text-zinc-400 truncate mt-0.5">
                                 {ev.description}
                               </span>
                             )}
@@ -604,19 +645,19 @@ function ToDoListView({
                         {/* Actions */}
                         <div className="flex items-center gap-2 shrink-0">
                           <span
-                            className={`font-mono text-[10px] px-2 py-0.5 rounded-full ${cat.text} bg-white dark:bg-black/30 border border-slate-200 dark:border-white/[0.06] hidden sm:inline-block shadow-xs`}
+                            className={`text-xs px-2.5 py-0.5 rounded-full ${cat.badgeBg} ${cat.badgeText} border ${cat.badgeBorder} hidden sm:inline-block font-medium`}
                           >
-                            {cat.label}
+                            {cat.icon} {cat.label}
                           </span>
 
-                          <div className="opacity-0 group-hover:opacity-100 flex items-center gap-1 transition-opacity">
+                          <div className="flex items-center gap-1 opacity-80 group-hover:opacity-100 transition-opacity">
                             <button
                               type="button"
                               onClick={() => onSelectEvent(ev)}
-                              className="p-1.5 hover:bg-slate-100 dark:hover:bg-white/[0.08] rounded text-slate-500 dark:text-[#958ea0] hover:text-slate-900 dark:hover:text-[#e2e2eb] transition-colors"
+                              className="p-1.5 hover:bg-white/[0.08] rounded-lg text-zinc-400 hover:text-white transition-colors"
                               title="Edit / Detail"
                             >
-                              <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                              <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                                 <path d="M12 20h9" />
                                 <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z" />
                               </svg>
@@ -624,10 +665,10 @@ function ToDoListView({
                             <button
                               type="button"
                               onClick={() => onDeleteEvent(ev.id)}
-                              className="p-1.5 hover:bg-red-500/20 rounded text-slate-500 dark:text-[#958ea0] hover:text-red-500 transition-colors"
+                              className="p-1.5 hover:bg-rose-500/20 rounded-lg text-zinc-400 hover:text-rose-400 transition-colors"
                               title="Hapus"
                             >
-                              <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                              <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                                 <polyline points="3 6 5 6 21 6" />
                                 <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
                               </svg>
@@ -702,38 +743,38 @@ function DailyFlowView({
   return (
     <div className="flex flex-col w-full">
       {/* Summary strip */}
-      <div className="bg-white dark:bg-[#191b22] px-4 py-3 border-b border-slate-200 dark:border-white/[0.06] flex flex-wrap items-center justify-between gap-3">
+      <div className="bg-zinc-900/90 px-5 py-3.5 border-b border-white/[0.08] flex flex-wrap items-center justify-between gap-3">
         <div className="flex items-center gap-3">
           {active ? (
-            <div className="flex items-center gap-2">
-              <span className="w-2 h-2 rounded-full bg-emerald-500 dark:bg-[#4edea3] animate-ping" />
-              <span className="font-mono text-xs text-slate-500 dark:text-[#958ea0]">SEKARANG:</span>
-              <span className="font-semibold text-xs text-slate-900 dark:text-[#e2e2eb]">
+            <div className="flex items-center gap-2.5">
+              <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-ping" />
+              <span className="text-xs font-semibold text-zinc-400">SEKARANG:</span>
+              <span className="text-xs font-bold text-white">
                 {active.title}
               </span>
-              <span className="font-mono text-[10px] text-emerald-700 dark:text-[#4edea3] bg-emerald-50 dark:bg-[#4edea3]/10 border border-emerald-200 dark:border-[#4edea3]/30 px-1.5 py-0.2 rounded font-semibold">
+              <span className="text-[11px] font-mono text-emerald-300 bg-emerald-500/15 border border-emerald-500/30 px-2 py-0.5 rounded-full font-semibold">
                 {formatTimeStr(new Date(active.startTime))}–{formatTimeStr(new Date(active.endTime))}
               </span>
             </div>
           ) : (
             <div className="flex items-center gap-2">
-              <span className="w-2 h-2 rounded-full bg-slate-400 dark:bg-[#958ea0]" />
-              <span className="font-mono text-xs text-slate-500 dark:text-[#958ea0]">
+              <span className="w-2 h-2 rounded-full bg-zinc-600" />
+              <span className="text-xs text-zinc-400">
                 Tidak ada aktivitas terjadwal saat ini
               </span>
             </div>
           )}
         </div>
 
-        <div className="flex items-center gap-4 font-mono text-xs font-semibold">
-          <span className="text-emerald-700 dark:text-[#4edea3]">✓ {done} Selesai</span>
-          <span className="text-slate-600 dark:text-[#cbc3d7]">⏳ {upcoming} Mendatang</span>
-          <span className="text-purple-700 dark:text-[#d0bcff]">⚡ {productiveHStr} Produktif</span>
+        <div className="flex items-center gap-4 text-xs font-semibold">
+          <span className="text-emerald-400">✓ {done} Selesai</span>
+          <span className="text-zinc-400">⏳ {upcoming} Mendatang</span>
+          <span className="text-purple-300">⚡ {productiveHStr} Produktif</span>
         </div>
       </div>
 
       {/* Timeline container */}
-      <div className="relative overflow-y-auto max-h-[75vh] bg-slate-50/50 dark:bg-[#0c0e14]/40 select-none">
+      <div className="relative overflow-y-auto max-h-[75vh] bg-zinc-950/50 select-none">
         <div
           className="relative"
           style={{ height: `${hours.length * PX_PER_HOUR}px` }}
@@ -746,14 +787,14 @@ function DailyFlowView({
                 className="absolute left-0 right-0 z-30 pointer-events-none flex items-center transition-all duration-1000"
                 style={{ top: `${nowTopPx}px` }}
               >
-                <div className="w-16 pr-2 flex items-center justify-end">
-                  <span className="font-mono text-[10px] text-rose-600 dark:text-[#F43F5E] font-bold bg-white dark:bg-[#131825] px-1 rounded shadow-sm border border-rose-200 dark:border-[#F43F5E]/30">
+                <div className="w-16 pr-2.5 flex items-center justify-end">
+                  <span className="text-[10px] font-mono font-bold text-rose-300 bg-rose-950/90 px-1.5 py-0.5 rounded border border-rose-500/40 shadow-sm">
                     {formatTimeStr(now)}
                   </span>
                 </div>
                 <div className="flex-1 relative flex items-center">
-                  <div className="h-[2px] w-full bg-rose-500 dark:bg-[#F43F5E] shadow-[0_0_10px_rgba(244,63,94,0.8)]" />
-                  <div className="absolute left-3 -top-2 flex items-center gap-1 bg-rose-500 dark:bg-[#F43F5E] text-white text-[9px] font-mono px-1.5 py-0.5 rounded-full shadow-sm">
+                  <div className="h-[2px] w-full bg-rose-500 shadow-[0_0_10px_rgba(244,63,94,0.8)]" />
+                  <div className="absolute left-3 -top-2 flex items-center gap-1 bg-rose-500 text-white text-[9px] font-bold px-2 py-0.5 rounded-full shadow-md">
                     <span className="w-1.5 h-1.5 rounded-full bg-white animate-ping" />
                     <span>SEKARANG</span>
                   </div>
@@ -767,15 +808,15 @@ function DailyFlowView({
             return (
               <div
                 key={h}
-                className={`absolute left-0 right-0 border-b border-slate-200/60 dark:border-white/[0.04] flex items-start ${
-                  isCurrent ? "bg-purple-50/70 dark:bg-[#340080]/10" : ""
+                className={`absolute left-0 right-0 border-b border-white/[0.04] flex items-start ${
+                  isCurrent ? "bg-purple-500/5" : ""
                 }`}
                 style={{
                   top: `${i * PX_PER_HOUR}px`,
                   height: `${PX_PER_HOUR}px`,
                 }}
               >
-                <div className="w-16 pt-1 pr-3 text-right font-mono text-[11px] text-slate-500 dark:text-[#958ea0] select-none border-r border-slate-200/60 dark:border-white/[0.04] shrink-0">
+                <div className="w-16 pt-1.5 pr-3 text-right font-mono text-xs text-zinc-500 select-none border-r border-white/[0.04] shrink-0">
                   {String(h).padStart(2, "0")}:00
                 </div>
 
@@ -783,12 +824,11 @@ function DailyFlowView({
                 <button
                   type="button"
                   onClick={() => onAddAtHour(h)}
-                  className="absolute left-16 right-0 top-0 bottom-0 group flex items-center hover:bg-slate-100/60 dark:hover:bg-white/[0.02] transition-colors"
+                  className="absolute left-16 right-0 top-0 bottom-0 group flex items-center hover:bg-white/[0.02] transition-colors"
                   title={`Tambah jadwal pukul ${String(h).padStart(2, "0")}:00`}
                 >
-                  <span className="opacity-0 group-hover:opacity-100 ml-3 text-[10px] text-slate-400 dark:text-[#494454] font-mono transition-opacity flex items-center gap-1">
-                    <span className="text-purple-600 dark:text-[#d0bcff]/60 font-bold">+</span> Tambah di{" "}
-                    {String(h).padStart(2, "0")}:00
+                  <span className="opacity-0 group-hover:opacity-100 ml-3 text-xs text-zinc-400 font-medium transition-opacity flex items-center gap-1.5">
+                    <span className="text-purple-400 font-bold">+</span> Tambah di jam {String(h).padStart(2, "0")}:00
                   </span>
                 </button>
               </div>
@@ -796,7 +836,7 @@ function DailyFlowView({
           })}
 
           {/* Event cards */}
-          <div className="absolute left-16 right-2 top-0 bottom-0 pointer-events-none">
+          <div className="absolute left-16 right-3 top-0 bottom-0 pointer-events-none">
             {dayEvents.map((ev) => {
               const evStart = new Date(ev.startTime);
               const evEnd = new Date(ev.endTime);
@@ -824,12 +864,12 @@ function DailyFlowView({
                 <div
                   key={ev.id}
                   onClick={() => onSelectEvent(ev)}
-                  className={`pointer-events-auto absolute left-0 right-0 rounded-lg px-3 py-1.5 cursor-pointer transition-all hover:scale-[1.01] hover:z-20 flex flex-col justify-between overflow-hidden border ${cat.bg} ${cat.border} ${isOngoing ? cat.glow : ""} ${isDone ? "opacity-50" : ""}`}
+                  className={`pointer-events-auto absolute left-0 right-0 rounded-xl px-3.5 py-2 cursor-pointer transition-all hover:scale-[1.008] hover:z-20 flex flex-col justify-between overflow-hidden border ${cat.cardBg} ${cat.cardBorder} ${isOngoing ? cat.glow : ""} ${isDone ? "opacity-50" : ""}`}
                   style={{ top: `${topPx}px`, height: `${heightPx}px` }}
                 >
                   <div className="flex items-center justify-between gap-2">
-                    <div className="flex items-center gap-2 min-w-0">
-                      {/* Direct checklist button on card */}
+                    <div className="flex items-center gap-2.5 min-w-0">
+                      {/* Checkbox button */}
                       <button
                         type="button"
                         onClick={(e) => {
@@ -838,8 +878,8 @@ function DailyFlowView({
                         }}
                         className={`w-4 h-4 rounded border flex items-center justify-center transition-all shrink-0 cursor-pointer ${
                           isDone
-                            ? "bg-emerald-500 border-emerald-500 text-white dark:bg-[#4edea3] dark:border-[#4edea3] dark:text-[#00311f] shadow-xs"
-                            : "border-slate-300 dark:border-white/30 bg-white dark:bg-[#0c0e14] hover:border-emerald-500 dark:hover:border-[#4edea3] text-transparent hover:text-emerald-500"
+                            ? "bg-emerald-400 border-emerald-400 text-zinc-950 shadow-xs"
+                            : "border-white/30 bg-zinc-900/60 hover:border-emerald-400 text-transparent hover:text-emerald-400"
                         }`}
                         title={isDone ? "Tandai belum selesai" : "Tandai selesai"}
                       >
@@ -847,38 +887,38 @@ function DailyFlowView({
                       </button>
 
                       {isOngoing && (
-                        <span className="shrink-0 flex items-center gap-1 font-mono text-[9px] font-bold text-emerald-600 dark:text-[#4edea3]">
-                          <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 dark:bg-[#4edea3] animate-pulse" />
+                        <span className="shrink-0 flex items-center gap-1 text-[10px] font-bold text-emerald-400">
+                          <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
                           BERJALAN
                         </span>
                       )}
-                      <span className={`text-xs font-semibold truncate ${cat.text} ${isDone ? "line-through text-slate-400 dark:text-[#958ea0]" : ""}`}>
+                      <span className={`text-xs font-semibold truncate ${cat.badgeText} ${isDone ? "line-through text-zinc-500" : ""}`}>
                         {ev.title}
                       </span>
                     </div>
 
-                    <div className="flex items-center gap-1.5 shrink-0">
+                    <div className="flex items-center gap-2 shrink-0">
                       {hasRecurrence && (
                         <span
-                          className="font-mono text-[9px] bg-white/60 dark:bg-white/[0.08] text-slate-600 dark:text-[#cbc3d7] px-1 rounded border border-slate-200/50 dark:border-transparent"
+                          className="text-[10px] bg-white/[0.08] text-zinc-300 px-1.5 py-0.5 rounded border border-white/[0.06]"
                           title={recurrenceLabel[ev.recurrence!]}
                         >
                           🔁
                         </span>
                       )}
-                      <span className={`font-mono text-[9px] ${cat.text} opacity-70`}>
+                      <span className="text-[11px] font-mono text-zinc-400">
                         {formatTimeStr(evStart)}
                         {evEnd.getTime() !== evStart.getTime() && `–${formatTimeStr(evEnd)}`}
                       </span>
                     </div>
                   </div>
 
-                  {isOngoing && heightPx >= 60 && (
+                  {isOngoing && heightPx >= 58 && (
                     <div className="flex items-center gap-2 mt-1">
                       <Link
                         href="/focus"
                         onClick={(e) => e.stopPropagation()}
-                        className="px-2 py-0.5 rounded bg-purple-100 text-purple-700 hover:bg-purple-200 dark:bg-[#d0bcff] dark:text-[#23005c] font-mono text-[9px] font-bold dark:hover:bg-[#b098f0] transition-colors shadow-xs"
+                        className="px-2.5 py-0.5 rounded-lg bg-purple-600/30 text-purple-200 border border-purple-400/30 text-[10px] font-semibold hover:bg-purple-600/40 transition-colors shadow-xs"
                       >
                         Fokus 🍅
                       </Link>
@@ -897,6 +937,8 @@ function DailyFlowView({
 // ── MAIN COMPONENT ──────────────────────────────────────────────────
 export function CalendarManager({
   initialEvents,
+  projects = [],
+  tasks = [],
   defaultReminderMinutes = 15,
 }: Props) {
   const router = useRouter();
@@ -991,29 +1033,6 @@ export function CalendarManager({
     setIsModalOpen(true);
   }, []);
 
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      const tag = (document.activeElement?.tagName || "").toLowerCase();
-      if (tag === "input" || tag === "textarea" || tag === "select") return;
-      if (e.key === "n" || e.key === "N") {
-        e.preventDefault();
-        openCreateModal();
-      } else if (e.key === "t" || e.key === "T") {
-        e.preventDefault();
-        const today = new Date();
-        today.setHours(0, 0, 0, 0);
-        setSelectedDay(today);
-        setWeekOffset(0);
-        toast("Kembali ke hari ini.", "info");
-      } else if (e.key === "Escape") {
-        setIsModalOpen(false);
-        setEditingEventId(null);
-      }
-    };
-    window.addEventListener("keydown", handleKeyDown);
-    return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [openCreateModal, toast]);
-
   const weekDays = useMemo(() => {
     const now = new Date();
     const currentDay = now.getDay();
@@ -1063,9 +1082,7 @@ export function CalendarManager({
       // Revert
       setEvents((prev) =>
         prev.map((ev) =>
-          ev.id === eventId
-            ? { ...ev, isCompleted: currentCompleted }
-            : ev
+          ev.id === eventId ? { ...ev, isCompleted: currentCompleted } : ev
         )
       );
       toast("Gagal memperbarui status to-do.", "error");
@@ -1094,7 +1111,7 @@ export function CalendarManager({
       endIso = new Date(`${dateStr}T${timeStr}:00`).toISOString();
       const hourNum = Number(timeStr.split(":")[0]);
       if (hourNum < 7) {
-        ignoreQuietHours = true; // Alarm bangun pagi harus abaikan jam hening
+        ignoreQuietHours = true;
       }
     }
 
@@ -1178,7 +1195,6 @@ export function CalendarManager({
         setIsModalOpen(false);
         setEditingEventId(null);
         toast("Jadwal/To-do berhasil diperbarui! 💾", "success");
-        router.refresh();
       } else {
         const res = await fetch("/api/calendar-events", {
           method: "POST",
@@ -1189,14 +1205,9 @@ export function CalendarManager({
         if (!res.ok) throw new Error(json.error?.message || "Gagal menyimpan jadwal.");
         setEvents((prev) => [json.data, ...prev]);
         setIsModalOpen(false);
-        toast(
-          formRecurrence !== "NONE"
-            ? `Rutinitas "${formTitle.trim()}" berhasil dibuat! 🔁`
-            : "Jadwal/To-do berhasil disimpan! 📋",
-          "success"
-        );
-        router.refresh();
+        toast("Jadwal/To-do berhasil disimpan! 🎉", "success");
       }
+      router.refresh();
     } catch (err: unknown) {
       toast(err instanceof Error ? err.message : "Terjadi kesalahan.", "error");
     } finally {
@@ -1204,138 +1215,148 @@ export function CalendarManager({
     }
   }
 
+  // Handle Delete Event
   async function handleDeleteEvent(id: string) {
+    if (!confirm("Hapus jadwal/to-do ini?")) return;
     try {
       const res = await fetch(`/api/calendar-events/${id}`, { method: "DELETE" });
       if (!res.ok) throw new Error();
-      setEvents((prev) => prev.filter((item) => item.id !== id));
+      setEvents((prev) => prev.filter((ev) => ev.id !== id));
       if (editingEventId === id) {
         setIsModalOpen(false);
         setEditingEventId(null);
       }
-      toast("Berhasil dihapus.", "info");
+      toast("Jadwal/To-do berhasil dihapus.", "info");
       router.refresh();
     } catch {
-      toast("Gagal menghapus.", "error");
+      toast("Gagal menghapus jadwal.", "error");
     }
   }
+
+  const shiftDay = (days: number) => {
+    setSelectedDay((prev) => {
+      const next = new Date(prev);
+      next.setDate(prev.getDate() + days);
+      return next;
+    });
+  };
 
   const filteredEvents = useMemo(() => {
     if (typeFilter === "ALL") return events;
     return events.filter((e) => e.eventType === typeFilter);
   }, [events, typeFilter]);
 
-  const WEEK_START_HOUR = 5;
-  const WEEK_END_HOUR = 23;
-  const WEEK_PX_PER_HOUR = 60;
+  const selectedDayLabel = useMemo(() => getDayLabel(selectedDay), [selectedDay]);
+
   const isCurrentWeek = weekOffset === 0;
   const currentHour = currentTime.getHours();
   const currentMinute = currentTime.getMinutes();
-  const currentMinutesFromStart = (currentHour - WEEK_START_HOUR) * 60 + currentMinute;
-  const redLineTopPx = Math.max(
-    0,
-    Math.min(
-      (WEEK_END_HOUR - WEEK_START_HOUR) * WEEK_PX_PER_HOUR,
-      (currentMinutesFromStart / 60) * WEEK_PX_PER_HOUR
-    )
+
+  const WEEK_START_HOUR = 6;
+  const WEEK_END_HOUR = 22;
+  const redLineTopPx =
+    ((currentHour - WEEK_START_HOUR) * 60 + currentMinute) * (56 / 60) + 40;
+
+  // Compute daily vitals for sidebar
+  const todayTargetDayEvents = useMemo(
+    () => projectRecurringEvents(events, selectedDay),
+    [events, selectedDay]
   );
-
-  const selectedDayLabel = getDayLabel(selectedDay);
-
-  function shiftDay(delta: number) {
-    setSelectedDay((prev) => {
-      const d = new Date(prev);
-      d.setDate(d.getDate() + delta);
-      return d;
-    });
-  }
+  const totalToday = todayTargetDayEvents.length;
+  const doneToday = todayTargetDayEvents.filter((e) => e.isCompleted).length;
+  const todayProgress = totalToday > 0 ? Math.round((doneToday / totalToday) * 100) : 0;
 
   return (
-    <div className="flex flex-col w-full pb-16 gap-6 selection:bg-[#d0bcff] selection:text-[#340080]">
-      {/* ── HEADER ── */}
-      <header className="flex flex-col xl:flex-row xl:items-end justify-between gap-4 pb-2 border-b border-slate-200 dark:border-white/[0.06]">
-        <div className="flex flex-col gap-1">
-          <div className="flex items-center gap-2 font-mono text-xs text-purple-600 dark:text-[#d0bcff] tracking-widest uppercase font-bold">
-            <span className="inline-block w-2 h-2 rounded-full bg-purple-500 dark:bg-[#d0bcff] animate-ping" />
-            <span>JADWAL &amp; TO-DO HARIAN</span>
-            <span className="text-slate-400 dark:text-[#494454]">•</span>
-            <span className="text-emerald-600 dark:text-[#4edea3]">AKTIF</span>
-          </div>
-          <h1 className="text-2xl sm:text-3xl text-slate-900 dark:text-[#e2e2eb] font-semibold tracking-tight flex items-center gap-3">
-            To-Do &amp; Jadwal
-            {(viewMode === "TODO" || viewMode === "DAILY") && (
-              <span className="font-mono text-xs text-emerald-700 dark:text-[#4edea3] bg-emerald-50 dark:bg-[#4edea3]/10 border border-emerald-200 dark:border-[#4edea3]/30 px-2 py-0.5 rounded">
-                {selectedDayLabel.toUpperCase()}
-              </span>
-            )}
-            {viewMode === "WEEKLY" && (
-              <span className="font-mono text-xs text-emerald-700 dark:text-[#4edea3] bg-emerald-50 dark:bg-[#4edea3]/10 border border-emerald-200 dark:border-[#4edea3]/30 px-2 py-0.5 rounded">
-                PEKAN {weekNumber}
-              </span>
-            )}
-          </h1>
-          <p className="text-sm text-slate-500 dark:text-[#958ea0] max-w-2xl">
-            {viewMode === "TODO"
-              ? "Daftar to-do harian interaktif — ceklis aktivitas saat selesai, input praktis tanpa wajib jam selesai."
-              : viewMode === "DAILY"
-              ? "Timeline alur waktu harian — lihat urutan jadwal visual dari subuh hingga malam."
-              : "Gambaran besar kalender mingguan — klik hari mana saja untuk melihat detail to-do."}
-          </p>
-        </div>
-
-        <div className="flex flex-wrap items-center gap-3 shrink-0">
-          <div className="flex items-center bg-slate-100 dark:bg-[#0c0e14] p-1 rounded-lg border border-slate-200 dark:border-white/[0.06] shadow-inner">
-            {(
-              [
-                { id: "TODO", label: "📋 To-Do Hari Ini" },
-                { id: "DAILY", label: "⏱️ Timeline Jam" },
-                { id: "WEEKLY", label: "📅 Mingguan" },
-                { id: "AGENDA", label: "≡ Semua" },
-              ] as const
-            ).map((v) => (
-              <button
-                key={v.id}
-                type="button"
-                onClick={() => setViewMode(v.id)}
-                className={`px-3 py-1.5 rounded font-mono text-xs font-semibold transition-all ${
-                  viewMode === v.id
-                    ? "bg-purple-100 text-purple-700 dark:bg-[#340080] dark:text-[#d0bcff] border border-purple-200 dark:border-[#d0bcff]/30 shadow-xs"
-                    : "text-slate-500 dark:text-[#958ea0] hover:text-slate-900 dark:hover:text-[#e2e2eb]"
-                }`}
-              >
-                {v.label}
-              </button>
-            ))}
+    <div className="flex flex-col w-full pb-20 gap-8 selection:bg-purple-500/20 selection:text-purple-300">
+      {/* ── Top Header & Mode Switcher ────────────────────────────── */}
+      <header className="flex flex-col gap-5">
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-5">
+          <div className="flex flex-col gap-2.5">
+            <div className="flex items-center gap-3">
+              <BackButton fallbackUrl="/today" label="Kembali ke Hari Ini" />
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-purple-500/10 border border-purple-500/20 text-purple-300 text-xs font-medium">
+                <span className="w-2 h-2 rounded-full bg-purple-400 animate-pulse" />
+                <span>Jadwal &amp; To-Do Harian</span>
+              </div>
+            </div>
+            <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-white flex items-center gap-3 flex-wrap">
+              <span>To-Do &amp; Jadwal</span>
+              {(viewMode === "TODO" || viewMode === "DAILY") && (
+                <span className="text-xs px-2.5 py-1 rounded-full bg-emerald-500/15 text-emerald-300 border border-emerald-500/25 font-semibold">
+                  {selectedDayLabel}
+                </span>
+              )}
+              {viewMode === "WEEKLY" && (
+                <span className="text-xs px-2.5 py-1 rounded-full bg-purple-500/15 text-purple-300 border border-purple-500/25 font-semibold">
+                  Pekan {weekNumber}
+                </span>
+              )}
+            </h1>
+            <p className="text-sm text-zinc-400 max-w-2xl leading-relaxed">
+              {viewMode === "TODO"
+                ? "Daftar to-do harian interaktif — ceklis aktivitas saat selesai, input praktis tanpa wajib jam selesai."
+                : viewMode === "DAILY"
+                ? "Timeline alur waktu harian — lihat urutan jadwal visual dari subuh hingga malam hari."
+                : viewMode === "WEEKLY"
+                ? "Gambaran besar kalender mingguan — klik hari mana saja untuk melihat detail jadwal."
+                : "Semua agenda dan rutinitas terorganisir rapi dalam satu suapan kronologis."}
+            </p>
           </div>
 
-          <button
-            type="button"
-            onClick={() => openCreateModal()}
-            className="group flex items-center gap-2 bg-gradient-to-r from-[#a078ff] to-[#6d3bd7] text-white px-4 py-2 rounded-lg font-mono text-xs font-semibold shadow-[0_4px_20px_rgba(160,120,255,0.25)] hover:shadow-[0_0_24px_rgba(160,120,255,0.45)] transition-all transform hover:-translate-y-0.5 active:scale-[0.98]"
-          >
-            <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
-              <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm5 11h-4v4h-2v-4H7v-2h4V7h2v4h4v2z" />
-            </svg>
-            <span>+ Buat Baru</span>
-            <kbd className="font-mono text-[10px] bg-white/20 text-white px-1.5 py-0.5 rounded group-hover:bg-white/30">
-              N
-            </kbd>
-          </button>
+          {/* Mode Switcher & + Buat Baru */}
+          <div className="flex flex-wrap items-center gap-3 self-start md:self-auto">
+            {/* 4-Tab Segmented Switcher */}
+            <div className="inline-flex items-center gap-1 p-1 rounded-2xl bg-zinc-900/90 border border-white/[0.08] backdrop-blur-md shadow-xl">
+              {(
+                [
+                  { id: "TODO", label: "📋 To-Do" },
+                  { id: "DAILY", label: "⏱️ Alur Jam" },
+                  { id: "WEEKLY", label: "📅 Mingguan" },
+                  { id: "AGENDA", label: "≡ Semua" },
+                ] as const
+              ).map((v) => (
+                <button
+                  key={v.id}
+                  type="button"
+                  onClick={() => setViewMode(v.id)}
+                  className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition-all ${
+                    viewMode === v.id
+                      ? "bg-purple-600/30 text-purple-200 border border-purple-400/40 shadow-sm"
+                      : "text-zinc-400 hover:text-zinc-200 hover:bg-white/[0.04] border border-transparent"
+                  }`}
+                >
+                  {v.label}
+                </button>
+              ))}
+            </div>
+
+            {/* Create Button (No shortcut badges) */}
+            <button
+              type="button"
+              onClick={() => openCreateModal()}
+              className="px-4 py-2 rounded-xl bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white font-semibold text-xs transition-all flex items-center gap-2 shadow-lg shadow-purple-600/30 active:scale-95"
+            >
+              <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm5 11h-4v4h-2v-4H7v-2h4V7h2v4h4v2z" />
+              </svg>
+              <span>+ Buat Jadwal</span>
+            </button>
+          </div>
         </div>
       </header>
 
-      {/* ── NAV BAR (day nav for TODO/DAILY, week nav for WEEKLY) ── */}
-      <section className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 bg-white dark:bg-[#131825]/70 backdrop-blur-md p-2.5 sm:p-3 rounded-xl border border-slate-200 dark:border-white/[0.07] shadow-sm">
+      {/* ── NAV BAR (Day nav for TODO/DAILY, Week nav for WEEKLY) ── */}
+      <section className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 bg-zinc-900/80 backdrop-blur-xl p-3 sm:p-4 rounded-3xl border border-white/[0.08] shadow-lg">
         {viewMode === "TODO" || viewMode === "DAILY" ? (
           <div className="flex items-center gap-3">
-            <div className="flex items-center bg-slate-100 dark:bg-[#0c0e14] rounded-lg p-1 border border-slate-200 dark:border-white/[0.06]">
+            <div className="flex items-center bg-zinc-950/80 rounded-2xl p-1 border border-white/[0.06]">
               <button
                 type="button"
                 onClick={() => shiftDay(-1)}
-                className="p-1 hover:bg-slate-200 dark:hover:bg-[#1A2133] rounded text-slate-500 dark:text-[#958ea0] hover:text-slate-900 dark:hover:text-[#e2e2eb] transition-colors"
+                className="p-1.5 hover:bg-white/[0.08] rounded-xl text-zinc-400 hover:text-white transition-colors"
                 title="Hari Sebelumnya"
               >
-                <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
                   <path d="M15 18l-6-6 6-6" />
                 </svg>
               </button>
@@ -1346,22 +1367,22 @@ export function CalendarManager({
                   t.setHours(0, 0, 0, 0);
                   setSelectedDay(t);
                 }}
-                className="px-2.5 py-1 font-mono text-xs text-slate-600 dark:text-[#958ea0] hover:text-slate-900 dark:hover:text-[#e2e2eb] hover:bg-slate-200 dark:hover:bg-[#1A2133] rounded transition-colors"
+                className="px-3 py-1 text-xs font-semibold text-zinc-300 hover:text-white hover:bg-white/[0.06] rounded-xl transition-colors"
               >
-                Hari Ini <kbd className="text-[9px] bg-slate-200 dark:bg-[#0c0e14] text-slate-600 dark:text-[#cbc3d7] px-1 rounded">T</kbd>
+                Hari Ini
               </button>
               <button
                 type="button"
                 onClick={() => shiftDay(1)}
-                className="p-1 hover:bg-slate-200 dark:hover:bg-[#1A2133] rounded text-slate-500 dark:text-[#958ea0] hover:text-slate-900 dark:hover:text-[#e2e2eb] transition-colors"
+                className="p-1.5 hover:bg-white/[0.08] rounded-xl text-zinc-400 hover:text-white transition-colors"
                 title="Hari Berikutnya"
               >
-                <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
                   <path d="M9 18l6-6-6-6" />
                 </svg>
               </button>
             </div>
-            <span className="text-sm font-semibold text-slate-900 dark:text-[#e2e2eb]">
+            <span className="text-sm font-semibold text-white">
               {selectedDay.toLocaleDateString("id-ID", {
                 weekday: "long",
                 day: "numeric",
@@ -1372,39 +1393,41 @@ export function CalendarManager({
           </div>
         ) : (
           <div className="flex items-center gap-3">
-            <div className="flex items-center bg-slate-100 dark:bg-[#0c0e14] rounded-lg p-1 border border-slate-200 dark:border-white/[0.06]">
+            <div className="flex items-center bg-zinc-950/80 rounded-2xl p-1 border border-white/[0.06]">
               <button
                 type="button"
                 onClick={() => setWeekOffset((o) => o - 1)}
-                className="p-1 hover:bg-slate-200 dark:hover:bg-[#1A2133] rounded text-slate-500 dark:text-[#958ea0] hover:text-slate-900 dark:hover:text-[#e2e2eb] transition-colors"
+                className="p-1.5 hover:bg-white/[0.08] rounded-xl text-zinc-400 hover:text-white transition-colors"
+                title="Pekan Sebelumnya"
               >
-                <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
                   <path d="M15 18l-6-6 6-6" />
                 </svg>
               </button>
               <button
                 type="button"
                 onClick={() => setWeekOffset(0)}
-                className="px-2.5 py-1 font-mono text-xs text-slate-600 dark:text-[#958ea0] hover:text-slate-900 dark:hover:text-[#e2e2eb] hover:bg-slate-200 dark:hover:bg-[#1A2133] rounded transition-colors"
+                className="px-3 py-1 text-xs font-semibold text-zinc-300 hover:text-white hover:bg-white/[0.06] rounded-xl transition-colors"
               >
-                Pekan Ini <kbd className="text-[9px] bg-slate-200 dark:bg-[#0c0e14] text-slate-600 dark:text-[#cbc3d7] px-1 rounded">T</kbd>
+                Pekan Ini
               </button>
               <button
                 type="button"
                 onClick={() => setWeekOffset((o) => o + 1)}
-                className="p-1 hover:bg-slate-200 dark:hover:bg-[#1A2133] rounded text-slate-500 dark:text-[#958ea0] hover:text-slate-900 dark:hover:text-[#e2e2eb] transition-colors"
+                className="p-1.5 hover:bg-white/[0.08] rounded-xl text-zinc-400 hover:text-white transition-colors"
+                title="Pekan Berikutnya"
               >
-                <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
                   <path d="M9 18l6-6-6-6" />
                 </svg>
               </button>
             </div>
-            <span className="text-sm font-semibold text-slate-900 dark:text-[#e2e2eb]">
+            <span className="text-sm font-semibold text-white">
               {weekDays[0].toLocaleDateString("id-ID", {
                 month: "long",
                 year: "numeric",
               })}
-              <span className="font-mono text-xs text-slate-500 dark:text-[#958ea0] ml-2">
+              <span className="text-xs text-zinc-400 ml-2 font-mono">
                 ({String(weekDays[0].getDate()).padStart(2, "0")} –{" "}
                 {String(weekDays[6].getDate()).padStart(2, "0")}{" "}
                 {weekDays[6].toLocaleDateString("id-ID", { month: "short" })})
@@ -1420,10 +1443,10 @@ export function CalendarManager({
               key={cat.id}
               type="button"
               onClick={() => setTypeFilter(cat.id)}
-              className={`flex items-center gap-1.5 px-3 py-1 rounded-full font-mono text-xs whitespace-nowrap transition-all border ${
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap transition-all border ${
                 typeFilter === cat.id
-                  ? "bg-purple-100 text-purple-700 border-purple-200 dark:bg-[#340080] dark:text-[#d0bcff] dark:border-[#d0bcff]/40 shadow-xs"
-                  : "bg-slate-100 dark:bg-[#191b22] text-slate-600 dark:text-[#958ea0] hover:text-slate-900 dark:hover:text-[#e2e2eb] border-slate-200/60 dark:border-transparent hover:bg-slate-200 dark:hover:bg-[#282a30]"
+                  ? "bg-purple-600/30 text-purple-200 border-purple-400/40 shadow-sm"
+                  : "bg-zinc-950/60 text-zinc-400 hover:text-zinc-200 border-white/[0.06] hover:bg-zinc-900"
               }`}
             >
               {cat.id !== "ALL" && CATEGORY_MAP[cat.id] && (
@@ -1438,10 +1461,10 @@ export function CalendarManager({
         </div>
       </section>
 
-      {/* ── MAIN CONTENT ── */}
-      <div className="grid grid-cols-1 xl:grid-cols-12 gap-6 items-start">
-        {/* Main Area */}
-        <main className="xl:col-span-8 bg-white dark:bg-[#131825] rounded-xl border border-slate-200 dark:border-white/[0.07] shadow-sm dark:shadow-xl overflow-hidden flex flex-col">
+      {/* ── MAIN CONTENT ───────────────────────────────────────────── */}
+      <div className="grid grid-cols-1 xl:grid-cols-12 gap-8 items-start">
+        {/* Main Workspace (8 Cols) */}
+        <main className="xl:col-span-8 bg-zinc-900/90 rounded-3xl border border-white/[0.08] shadow-2xl overflow-hidden flex flex-col backdrop-blur-xl">
           {/* TAB 1: TO-DO VIEW */}
           {viewMode === "TODO" && (
             <ToDoListView
@@ -1469,14 +1492,14 @@ export function CalendarManager({
 
           {/* TAB 3: WEEKLY VIEW */}
           {viewMode === "WEEKLY" && (
-            <>
+            <div className="flex flex-col w-full">
               {/* Day headers */}
-              <div className="grid grid-cols-8 bg-white/95 dark:bg-[#191b22]/90 backdrop-blur border-b border-slate-200 dark:border-white/[0.06] sticky top-0 z-20 text-center">
-                <div className="p-3 flex flex-col items-center justify-center font-mono text-xs text-slate-500 dark:text-[#958ea0] border-r border-slate-200/80 dark:border-white/[0.04]">
-                  <svg className="w-4 h-4 mb-0.5" viewBox="0 0 24 24" fill="currentColor">
+              <div className="grid grid-cols-8 bg-zinc-900/95 backdrop-blur border-b border-white/[0.08] sticky top-0 z-20 text-center">
+                <div className="p-3 flex flex-col items-center justify-center text-xs text-zinc-400 border-r border-white/[0.06]">
+                  <svg className="w-4 h-4 mb-1 text-purple-400" viewBox="0 0 24 24" fill="currentColor">
                     <path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z" />
                   </svg>
-                  <span>WIB</span>
+                  <span className="font-mono text-[11px]">WIB</span>
                 </div>
                 {weekDays.map((day, idx) => {
                   const now = new Date();
@@ -1485,11 +1508,11 @@ export function CalendarManager({
                   return (
                     <div
                       key={idx}
-                      className={`p-2.5 sm:p-3 flex flex-col items-center justify-center gap-1 border-r border-slate-200/80 dark:border-white/[0.04] last:border-r-0 cursor-pointer hover:bg-slate-50 dark:hover:bg-white/[0.02] transition-colors relative ${
+                      className={`p-2.5 sm:p-3 flex flex-col items-center justify-center gap-1 border-r border-white/[0.06] last:border-r-0 cursor-pointer hover:bg-white/[0.03] transition-colors relative ${
                         isToday
-                          ? "bg-purple-50/80 dark:bg-[#340080]/15"
+                          ? "bg-purple-950/25"
                           : isWeekend
-                          ? "bg-slate-50/50 dark:bg-[#0c0e14]/40"
+                          ? "bg-zinc-950/30"
                           : ""
                       }`}
                       onClick={() => {
@@ -1499,28 +1522,28 @@ export function CalendarManager({
                       title={`Buka To-Do: ${day.toLocaleDateString("id-ID", { weekday: "long", day: "numeric", month: "short" })}`}
                     >
                       {isToday && (
-                        <div className="absolute top-0 left-0 right-0 h-0.5 bg-purple-500 dark:bg-[#4edea3] shadow-sm" />
+                        <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-purple-500 to-indigo-500 shadow-sm" />
                       )}
                       {isToday ? (
-                        <span className="font-mono text-[9px] bg-purple-100 text-purple-700 dark:bg-[#4edea3] dark:text-[#003824] px-1.5 py-0.2 rounded-full font-bold shadow-xs">
-                          HARI INI
+                        <span className="text-[10px] bg-purple-500/20 text-purple-300 border border-purple-500/30 px-2 py-0.5 rounded-full font-bold">
+                          Hari Ini
                         </span>
                       ) : null}
                       <span
-                        className={`font-mono text-[10px] tracking-wider uppercase ${
-                          isToday ? "text-purple-700 dark:text-[#4edea3] font-bold" : "text-slate-500 dark:text-[#958ea0]"
+                        className={`text-[10px] tracking-wider uppercase font-semibold ${
+                          isToday ? "text-purple-300" : "text-zinc-500"
                         }`}
                       >
-                        {["SENIN", "SELASA", "RABU", "KAMIS", "JUMAT", "SABTU", "MINGGU"][idx]}
+                        {["SEN", "SEL", "RAB", "KAM", "JUM", "SAB", "MIN"][idx]}
                       </span>
                       <span
-                        className={`text-base font-semibold ${
-                          isToday ? "text-purple-700 dark:text-white font-bold" : "text-slate-800 dark:text-[#e2e2eb]"
+                        className={`text-base font-bold ${
+                          isToday ? "text-white" : "text-zinc-200"
                         }`}
                       >
                         {String(day.getDate()).padStart(2, "0")}
                       </span>
-                      <span className="font-mono text-[10px] text-slate-400 dark:text-[#958ea0]">
+                      <span className="text-[10px] text-zinc-500 font-mono">
                         {day.toLocaleDateString("id-ID", { month: "short" })}
                       </span>
                     </div>
@@ -1529,7 +1552,7 @@ export function CalendarManager({
               </div>
 
               {/* Grid Body */}
-              <div className="relative overflow-x-auto select-none min-w-[720px] bg-white dark:bg-[#0c0e14]/30">
+              <div className="relative overflow-x-auto select-none min-w-[720px] bg-zinc-950/40">
                 {/* Real-time line */}
                 {isCurrentWeek &&
                   currentHour >= WEEK_START_HOUR &&
@@ -1539,18 +1562,18 @@ export function CalendarManager({
                       style={{ top: `${redLineTopPx}px` }}
                     >
                       <div className="w-[12.5%] pl-2 flex items-center justify-end pr-2">
-                        <span className="font-mono text-[10px] text-rose-600 dark:text-[#F43F5E] bg-white dark:bg-[#131825] px-1 rounded shadow-sm border border-rose-200 dark:border-[#F43F5E]/30">
+                        <span className="text-[10px] font-mono text-rose-300 bg-rose-950 px-1.5 py-0.5 rounded border border-rose-500/40 shadow-sm">
                           {String(currentHour).padStart(2, "0")}:
                           {String(currentMinute).padStart(2, "0")}
                         </span>
                       </div>
                       <div className="flex-1 relative flex items-center">
-                        <div className="h-[2px] w-full bg-rose-500 dark:bg-[#F43F5E] shadow-sm" />
+                        <div className="h-[2px] w-full bg-rose-500 shadow-sm" />
                       </div>
                     </div>
                   )}
 
-                <div className="relative grid grid-cols-8 divide-x divide-slate-200/60 dark:divide-white/[0.04]">
+                <div className="relative grid grid-cols-8 divide-x divide-white/[0.04]">
                   {/* Time labels */}
                   <div className="flex flex-col select-none">
                     {Array.from(
@@ -1559,7 +1582,7 @@ export function CalendarManager({
                     ).map((hour) => (
                       <div
                         key={hour}
-                        className="h-[60px] border-b border-slate-200/60 dark:border-white/[0.04] p-1 text-right font-mono text-[10px] text-slate-400 dark:text-[#958ea0]"
+                        className="h-14 border-b border-white/[0.04] pr-2.5 text-right font-mono text-xs text-zinc-500 flex items-start justify-end pt-1"
                       >
                         {String(hour).padStart(2, "0")}:00
                       </div>
@@ -1567,51 +1590,46 @@ export function CalendarManager({
                   </div>
 
                   {/* Day columns */}
-                  {weekDays.map((day, dIdx) => {
-                    const dayEvts = projectRecurringEvents(filteredEvents, day);
+                  {weekDays.map((day, colIdx) => {
+                    const dayEvs = projectRecurringEvents(filteredEvents, day);
 
                     return (
-                      <div
-                        key={dIdx}
-                        className="relative flex flex-col hover:bg-slate-50/50 dark:hover:bg-white/[0.01] transition-colors"
-                      >
+                      <div key={colIdx} className="relative h-full">
                         {Array.from(
                           { length: WEEK_END_HOUR - WEEK_START_HOUR + 1 },
                           (_, i) => WEEK_START_HOUR + i
                         ).map((h) => (
                           <div
                             key={h}
+                            className="h-14 border-b border-white/[0.04] hover:bg-white/[0.02] cursor-pointer transition-colors"
                             onClick={() => openCreateModal(day, h)}
-                            className="h-[60px] border-b border-slate-200/60 dark:border-white/[0.04] hover:bg-slate-100/60 dark:hover:bg-white/[0.02] cursor-pointer"
-                            title={`+ Buat di ${day.toLocaleDateString("id-ID", { weekday: "short" })} jam ${String(h).padStart(2, "0")}:00`}
+                            title={`Tambah jadwal: ${day.toLocaleDateString("id-ID", { weekday: "short" })} jam ${h}:00`}
                           />
                         ))}
 
-                        {/* Events overlay */}
+                        {/* Events on this day */}
                         <div className="absolute inset-0 pointer-events-none p-1">
-                          {dayEvts.map((ev) => {
-                            const evStart = new Date(ev.startTime);
-                            const evEnd = new Date(ev.endTime);
-                            const sH = evStart.getHours();
-                            const sM = evStart.getMinutes();
-                            const eH = evEnd.getHours();
-                            const eM = evEnd.getMinutes();
+                          {dayEvs.map((ev) => {
+                            const start = new Date(ev.startTime);
+                            const end = new Date(ev.endTime);
+                            const sh = start.getHours();
+                            const sm = start.getMinutes();
+                            const eh = end.getHours();
+                            const em = end.getMinutes();
 
-                            const startOffsetMin = (sH - WEEK_START_HOUR) * 60 + sM;
-                            if (startOffsetMin < 0) return null;
-                            const topPx = (startOffsetMin / 60) * WEEK_PX_PER_HOUR;
-                            const durationMin = Math.max(
+                            if (sh > WEEK_END_HOUR) return null;
+                            if (eh < WEEK_START_HOUR) return null;
+
+                            const top = Math.max(
+                              0,
+                              (sh - WEEK_START_HOUR) * 56 + (sm / 60) * 56
+                            );
+                            const durMin = Math.max(
                               20,
-                              eH * 60 + eM - (sH * 60 + sM)
+                              eh * 60 + em - (sh * 60 + sm)
                             );
-                            const heightPx = Math.max(
-                              22,
-                              (durationMin / 60) * WEEK_PX_PER_HOUR - 2
-                            );
-                            const cat =
-                              CATEGORY_MAP[ev.eventType] ||
-                              CATEGORY_MAP["BLOCKED"];
-                            const isDone = !!ev.isCompleted;
+                            const height = Math.max(26, (durMin / 60) * 56);
+                            const cat = CATEGORY_MAP[ev.eventType] || CATEGORY_MAP["PERSONAL"];
 
                             return (
                               <div
@@ -1620,21 +1638,16 @@ export function CalendarManager({
                                   e.stopPropagation();
                                   openEditModal(ev);
                                 }}
-                                className={`pointer-events-auto absolute left-1 right-1 rounded p-1 border cursor-pointer hover:z-20 transition-all ${cat.bg} ${cat.border} ${isDone ? "opacity-40" : ""}`}
-                                style={{
-                                  top: `${topPx}px`,
-                                  height: `${heightPx}px`,
-                                }}
-                                title={`${ev.title} (${formatTimeStr(evStart)})`}
+                                className={`pointer-events-auto absolute left-1 right-1 rounded-lg p-1.5 cursor-pointer transition-all hover:scale-105 hover:z-20 border overflow-hidden ${cat.cardBg} ${cat.cardBorder} ${ev.isCompleted ? "opacity-50" : ""}`}
+                                style={{ top: `${top}px`, height: `${height}px` }}
+                                title={`${ev.title} (${formatTimeStr(start)}–${formatTimeStr(end)})`}
                               >
-                                <div className="flex items-center gap-1">
-                                  {isDone && <span className="text-[#4edea3] text-[9px]">✓</span>}
-                                  <span
-                                    className={`text-[10px] font-semibold truncate ${cat.text} ${isDone ? "line-through" : ""}`}
-                                  >
-                                    {ev.title}
-                                  </span>
-                                </div>
+                                <p className={`text-[11px] font-semibold truncate ${cat.badgeText}`}>
+                                  {ev.title}
+                                </p>
+                                <p className="text-[10px] font-mono text-zinc-400">
+                                  {formatTimeStr(start)}
+                                </p>
                               </div>
                             );
                           })}
@@ -1644,16 +1657,16 @@ export function CalendarManager({
                   })}
                 </div>
               </div>
-            </>
+            </div>
           )}
 
           {/* TAB 4: AGENDA VIEW */}
           {viewMode === "AGENDA" && (
-            <div className="p-6 flex flex-col gap-3">
-              <h3 className="text-base font-semibold text-slate-900 dark:text-[#e2e2eb]">
+            <div className="p-6 flex flex-col gap-4">
+              <h3 className="text-base font-bold text-white">
                 Semua Jadwal &amp; To-Do
               </h3>
-              <div className="flex flex-col gap-2">
+              <div className="flex flex-col gap-2.5">
                 {events.map((ev) => {
                   const cat = CATEGORY_MAP[ev.eventType] || CATEGORY_MAP["PERSONAL"];
                   const st = new Date(ev.startTime);
@@ -1662,27 +1675,29 @@ export function CalendarManager({
                   return (
                     <div
                       key={ev.id}
-                      className="flex items-center justify-between p-3 rounded-lg bg-slate-50 dark:bg-[#191b22] border border-slate-200 dark:border-white/[0.06]"
+                      className="flex items-center justify-between p-3.5 rounded-2xl bg-zinc-950/60 border border-white/[0.06] hover:border-purple-500/30 transition-all shadow-sm"
                     >
-                      <div className="flex items-center gap-3">
+                      <div className="flex items-center gap-3 min-w-0 flex-1">
                         <button
                           type="button"
                           onClick={() => handleToggleComplete(ev.id, isDone)}
-                          className={`w-5 h-5 rounded border flex items-center justify-center text-xs ${
+                          className={`w-6 h-6 rounded-lg border flex items-center justify-center transition-all shrink-0 cursor-pointer ${
                             isDone
-                              ? "bg-emerald-500 border-emerald-500 text-white dark:bg-[#4edea3] dark:border-[#4edea3] dark:text-[#00311f] shadow-xs"
-                              : "border-slate-300 dark:border-white/30 bg-white dark:bg-[#0c0e14] text-transparent hover:text-emerald-500"
+                              ? "bg-emerald-400 border-emerald-400 text-zinc-950"
+                              : "border-white/20 bg-zinc-900 hover:border-emerald-400 text-transparent hover:text-emerald-400"
                           }`}
                         >
                           ✓
                         </button>
-                        <div className="flex flex-col">
+                        <div className="flex flex-col min-w-0">
                           <span
-                            className={`text-sm font-semibold ${cat.text} ${isDone ? "line-through text-slate-400 dark:text-[#958ea0]" : ""}`}
+                            className={`text-sm font-semibold truncate ${
+                              isDone ? "line-through text-zinc-500" : "text-white"
+                            }`}
                           >
                             {ev.title}
                           </span>
-                          <span className="font-mono text-[11px] text-slate-500 dark:text-[#958ea0]">
+                          <span className="text-xs text-zinc-400 font-mono mt-0.5">
                             {st.toLocaleDateString("id-ID", {
                               weekday: "short",
                               day: "numeric",
@@ -1693,18 +1708,23 @@ export function CalendarManager({
                           </span>
                         </div>
                       </div>
-                      <div className="flex items-center gap-2">
+                      <div className="flex items-center gap-2 shrink-0">
+                        <span
+                          className={`text-xs px-2.5 py-0.5 rounded-full ${cat.badgeBg} ${cat.badgeText} border ${cat.badgeBorder} hidden sm:inline-block font-medium`}
+                        >
+                          {cat.icon} {cat.label}
+                        </span>
                         <button
                           type="button"
                           onClick={() => openEditModal(ev)}
-                          className="px-2.5 py-1 rounded bg-slate-100 dark:bg-[#282a30] text-xs text-slate-700 dark:text-[#e2e2eb] hover:bg-purple-100 dark:hover:bg-[#340080] border border-slate-200/60 dark:border-transparent transition-colors"
+                          className="px-3 py-1 rounded-xl bg-zinc-800 text-xs text-zinc-200 hover:bg-zinc-700 transition-colors font-medium border border-white/[0.06]"
                         >
                           Edit
                         </button>
                         <button
                           type="button"
                           onClick={() => handleDeleteEvent(ev.id)}
-                          className="p-1 rounded text-slate-400 dark:text-[#958ea0] hover:text-rose-600 transition-colors"
+                          className="p-1.5 rounded-lg text-zinc-400 hover:text-rose-400 transition-colors"
                         >
                           ✕
                         </button>
@@ -1717,42 +1737,116 @@ export function CalendarManager({
           )}
         </main>
 
-        {/* Sidebar */}
+        {/* Bento Sidebar (4 Cols) */}
         <aside className="xl:col-span-4 flex flex-col gap-6">
-          {/* Quick info card */}
-          <div className="bg-white dark:bg-[#131825] rounded-xl border border-slate-200 dark:border-white/[0.07] p-5 shadow-sm dark:shadow-xl flex flex-col gap-3">
-            <div className="flex items-center gap-2 text-sm font-semibold text-slate-900 dark:text-[#e2e2eb]">
+          {/* Card 1: Today Progress Vitals */}
+          <div className="bg-zinc-900/90 rounded-3xl border border-white/[0.08] p-6 shadow-xl flex flex-col gap-4 backdrop-blur-xl">
+            <div className="flex items-center justify-between">
+              <span className="text-xs font-bold text-zinc-400 uppercase tracking-wider">
+                Ringkasan {selectedDayLabel}
+              </span>
+              <span className="text-xs font-bold text-emerald-400">
+                {todayProgress}% Selesai
+              </span>
+            </div>
+
+            <div className="flex items-center gap-4 bg-zinc-950/70 p-4 rounded-2xl border border-white/[0.06]">
+              <div className="relative w-14 h-14 flex items-center justify-center shrink-0">
+                <svg className="w-full h-full transform -rotate-90" viewBox="0 0 36 36">
+                  <circle
+                    cx="18"
+                    cy="18"
+                    r="15"
+                    fill="transparent"
+                    stroke="#27272a"
+                    strokeWidth="3.5"
+                  />
+                  <circle
+                    cx="18"
+                    cy="18"
+                    r="15"
+                    fill="transparent"
+                    stroke="#10b981"
+                    strokeWidth="3.5"
+                    strokeDasharray={94.24}
+                    strokeDashoffset={94.24 * (1 - todayProgress / 100)}
+                    strokeLinecap="round"
+                    className="transition-all duration-500"
+                  />
+                </svg>
+                <span className="absolute text-xs font-bold text-white font-mono">
+                  {doneToday}/{totalToday}
+                </span>
+              </div>
+              <div className="flex flex-col">
+                <p className="text-sm font-bold text-white">To-Do Terselesaikan</p>
+                <p className="text-xs text-zinc-400 mt-0.5">
+                  {totalToday - doneToday > 0
+                    ? `Masih ada ${totalToday - doneToday} aktivitas pending hari ini.`
+                    : totalToday > 0
+                    ? "Semua aktivitas hari ini tuntas!"
+                    : "Belum ada to-do terjadwal."}
+                </p>
+              </div>
+            </div>
+
+            {/* Quick action jump */}
+            <div className="grid grid-cols-2 gap-2.5 pt-1">
+              <Link
+                href="/focus"
+                className="p-3 rounded-2xl bg-purple-600/15 hover:bg-purple-600/25 border border-purple-500/30 text-purple-300 text-xs font-semibold flex flex-col gap-1 transition-all active:scale-95"
+              >
+                <span className="text-base">🍅</span>
+                <span>Ruang Fokus</span>
+                <span className="text-[10px] text-zinc-400 font-normal">Deep work bebas distraksi</span>
+              </Link>
+
+              <Link
+                href="/today"
+                className="p-3 rounded-2xl bg-zinc-950/80 hover:bg-zinc-800/80 border border-white/[0.08] text-zinc-200 text-xs font-semibold flex flex-col gap-1 transition-all active:scale-95"
+              >
+                <span className="text-base">📋</span>
+                <span>Papan Hari Ini</span>
+                <span className="text-[10px] text-zinc-400 font-normal">Prioritas &amp; tugas utama</span>
+              </Link>
+            </div>
+          </div>
+
+          {/* Card 2: Productivity Tips & Rhythm */}
+          <div className="bg-zinc-900/90 rounded-3xl border border-white/[0.08] p-6 shadow-xl flex flex-col gap-3.5 backdrop-blur-xl">
+            <div className="flex items-center gap-2 text-sm font-bold text-white">
               <span>💡 Panduan To-Do &amp; Jadwal</span>
             </div>
-            <ul className="flex flex-col gap-2 font-mono text-xs text-slate-600 dark:text-[#958ea0]">
-              <li className="flex items-start gap-2">
-                <span className="text-emerald-600 dark:text-[#4edea3]">✓</span>
-                <span>Ceklis to-do langsung dari daftar ataupun timeline jam.</span>
+            <ul className="flex flex-col gap-2.5 text-xs text-zinc-300 leading-relaxed">
+              <li className="flex items-start gap-2.5">
+                <span className="text-emerald-400 font-bold shrink-0">✓</span>
+                <span>Ceklis to-do langsung dari daftar ataupun timeline alur jam tanpa reload halaman.</span>
               </li>
-              <li className="flex items-start gap-2">
-                <span className="text-emerald-600 dark:text-[#4edea3]">⏰</span>
+              <li className="flex items-start gap-2.5">
+                <span className="text-purple-400 font-bold shrink-0">⏰</span>
                 <span>To-do dengan jam tidak wajib punya jam selesai. Praktis untuk bangun subuh, minum obat, atau jadwal kelas.</span>
               </li>
-              <li className="flex items-start gap-2">
-                <span className="text-emerald-600 dark:text-[#4edea3]">🔁</span>
-                <span>Gunakan pengulangan <strong>Setiap Hari</strong> untuk rutinitas yang ingin Anda lakukan konsisten.</span>
+              <li className="flex items-start gap-2.5">
+                <span className="text-amber-400 font-bold shrink-0">🔁</span>
+                <span>Gunakan pengulangan <strong>Setiap Hari</strong> untuk kebiasaan rutin yang ingin Anda bangun konsisten.</span>
               </li>
             </ul>
           </div>
         </aside>
       </div>
 
-      {/* ── MODAL BUAT JADWAL / TO-DO BARU ── */}
+      {/* ── MODAL BUAT / EDIT JADWAL ──────────────────────────────── */}
       {isModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 dark:bg-[#0B0D13]/80 backdrop-blur-sm animate-in fade-in duration-150">
-          <div className="w-full max-w-xl bg-white dark:bg-[#131825] rounded-xl shadow-2xl p-6 flex flex-col gap-4 border border-slate-200 dark:border-white/[0.08] relative animate-in zoom-in-95 duration-150 max-h-[92vh] overflow-y-auto">
-            <div className="flex items-center justify-between pb-2 border-b border-slate-200 dark:border-white/[0.08]">
-              <div className="flex items-center gap-2">
-                <svg className="w-5 h-5 text-emerald-600 dark:text-[#4edea3]" viewBox="0 0 24 24" fill="currentColor">
-                  <path d="M19 4h-1V2h-2v2H8V2H6v2H5c-1.11 0-1.99.9-1.99 2L3 20a2 2 0 0 0 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 16H5V10h14v10z" />
-                </svg>
-                <h2 className="text-base font-semibold text-slate-900 dark:text-[#e2e2eb]">
-                  {editingEventId ? "Edit To-Do / Jadwal ✏️" : "Tambah To-Do / Jadwal Baru"}
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-md animate-in fade-in duration-200">
+          <div className="w-full max-w-xl bg-zinc-900 rounded-3xl shadow-2xl p-6 sm:p-7 flex flex-col gap-5 border border-white/[0.08] relative animate-in zoom-in-95 duration-200 max-h-[92vh] overflow-y-auto">
+            {/* Modal Header */}
+            <div className="flex items-center justify-between pb-3 border-b border-white/[0.08]">
+              <div className="flex items-center gap-2.5">
+                <div className="w-8 h-8 rounded-xl bg-purple-500/20 text-purple-300 border border-purple-500/30 flex items-center justify-center text-sm">
+                  {editingEventId ? "✏️" : "📅"}
+                </div>
+                <h2 className="text-lg font-bold text-white">
+                  {editingEventId ? "Edit To-Do / Jadwal" : "Tambah To-Do / Jadwal Baru"}
                 </h2>
               </div>
               <button
@@ -1761,134 +1855,133 @@ export function CalendarManager({
                   setIsModalOpen(false);
                   setEditingEventId(null);
                 }}
-                className="text-slate-400 dark:text-[#958ea0] hover:text-slate-900 dark:hover:text-[#e2e2eb] p-1 rounded-lg hover:bg-slate-100 dark:hover:bg-[#1A2133] transition-colors"
+                className="w-8 h-8 rounded-xl bg-zinc-800 text-zinc-400 hover:text-white hover:bg-zinc-700 flex items-center justify-center transition-colors text-sm"
+                title="Tutup"
               >
-                <span className="font-mono text-xs px-1.5 py-0.5 rounded bg-slate-100 dark:bg-[#282a30] text-slate-600 dark:text-[#cbc3d7]">
-                  ESC
-                </span>
+                ✕
               </button>
             </div>
 
             <form onSubmit={handleSaveEvent} className="flex flex-col gap-4">
               {/* Title */}
-              <div className="flex flex-col gap-1">
-                <label className="font-mono text-[10px] uppercase text-slate-700 dark:text-[#958ea0] font-semibold">
-                  JUDUL TO-DO / AKTIVITAS
+              <div className="flex flex-col gap-1.5">
+                <label className="text-xs font-semibold text-zinc-300">
+                  Judul To-Do / Aktivitas
                 </label>
                 <input
                   type="text"
                   required
                   value={formTitle}
                   onChange={(e) => setFormTitle(e.target.value)}
-                  placeholder="cth: Bangun Pagi Jam 5, Kuliah Basis Data, Beli vitamin..."
+                  placeholder="cth: Bangun Subuh Jam 5, Kuliah Basis Data, Beli vitamin..."
                   autoFocus
-                  className="w-full bg-slate-50 dark:bg-[#0c0e14] px-3.5 py-2.5 rounded-lg font-mono text-xs text-slate-900 dark:text-[#e2e2eb] border border-slate-200 dark:border-white/[0.06] placeholder:text-slate-400 dark:placeholder-[#494454] focus:outline-none focus:border-emerald-500 dark:focus:border-[#4edea3]/50 shadow-inner"
+                  className="w-full bg-zinc-950 px-4 py-3 rounded-2xl text-sm text-white border border-white/[0.08] placeholder:text-zinc-500 focus:outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 shadow-inner"
                 />
               </div>
 
               {/* Time Mode Selection */}
-              <div className="flex flex-col gap-1.5">
-                <label className="font-mono text-[10px] uppercase text-slate-700 dark:text-[#958ea0] font-semibold">
-                  PILIHAN WAKTU
+              <div className="flex flex-col gap-2">
+                <label className="text-xs font-semibold text-zinc-300">
+                  Pilihan Waktu
                 </label>
                 <div className="grid grid-cols-3 gap-2">
                   <button
                     type="button"
                     onClick={() => setFormTimeMode("START_ONLY")}
-                    className={`p-2.5 rounded-lg border font-mono text-xs flex flex-col items-center gap-1 transition-all ${
+                    className={`p-3 rounded-2xl border text-xs flex flex-col items-center gap-1 transition-all ${
                       formTimeMode === "START_ONLY"
-                        ? "bg-purple-100 text-purple-700 border-purple-200 dark:bg-[#340080] dark:text-[#d0bcff] dark:border-[#d0bcff]/50 shadow-xs font-semibold"
-                        : "bg-slate-50 dark:bg-[#0c0e14] text-slate-600 dark:text-[#958ea0] border-slate-200 dark:border-white/[0.06] hover:bg-slate-100 hover:text-slate-900 dark:hover:text-[#e2e2eb]"
+                        ? "bg-purple-600/30 text-purple-200 border-purple-500/50 shadow-sm font-semibold"
+                        : "bg-zinc-950 text-zinc-400 border-white/[0.06] hover:bg-zinc-800"
                     }`}
                   >
-                    <span>⏰ Jam Mulai Saja</span>
-                    <span className="text-[9px] opacity-70">Tanpa jam selesai</span>
+                    <span>⏰ Jam Mulai</span>
+                    <span className="text-[10px] text-zinc-500">Tanpa jam selesai</span>
                   </button>
                   <button
                     type="button"
                     onClick={() => setFormTimeMode("RANGE")}
-                    className={`p-2.5 rounded-lg border font-mono text-xs flex flex-col items-center gap-1 transition-all ${
+                    className={`p-3 rounded-2xl border text-xs flex flex-col items-center gap-1 transition-all ${
                       formTimeMode === "RANGE"
-                        ? "bg-purple-100 text-purple-700 border-purple-200 dark:bg-[#340080] dark:text-[#d0bcff] dark:border-[#d0bcff]/50 shadow-xs font-semibold"
-                        : "bg-slate-50 dark:bg-[#0c0e14] text-slate-600 dark:text-[#958ea0] border-slate-200 dark:border-white/[0.06] hover:bg-slate-100 hover:text-slate-900 dark:hover:text-[#e2e2eb]"
+                        ? "bg-purple-600/30 text-purple-200 border-purple-500/50 shadow-sm font-semibold"
+                        : "bg-zinc-950 text-zinc-400 border-white/[0.06] hover:bg-zinc-800"
                     }`}
                   >
                     <span>⏳ Rentang Waktu</span>
-                    <span className="text-[9px] opacity-70">Ada jam selesai</span>
+                    <span className="text-[10px] text-zinc-500">Ada jam selesai</span>
                   </button>
                   <button
                     type="button"
                     onClick={() => setFormTimeMode("ALL_DAY")}
-                    className={`p-2.5 rounded-lg border font-mono text-xs flex flex-col items-center gap-1 transition-all ${
+                    className={`p-3 rounded-2xl border text-xs flex flex-col items-center gap-1 transition-all ${
                       formTimeMode === "ALL_DAY"
-                        ? "bg-purple-100 text-purple-700 border-purple-200 dark:bg-[#340080] dark:text-[#d0bcff] dark:border-[#d0bcff]/50 shadow-xs font-semibold"
-                        : "bg-slate-50 dark:bg-[#0c0e14] text-slate-600 dark:text-[#958ea0] border-slate-200 dark:border-white/[0.06] hover:bg-slate-100 hover:text-slate-900 dark:hover:text-[#e2e2eb]"
+                        ? "bg-purple-600/30 text-purple-200 border-purple-500/50 shadow-sm font-semibold"
+                        : "bg-zinc-950 text-zinc-400 border-white/[0.06] hover:bg-zinc-800"
                     }`}
                   >
                     <span>📝 Bebas Jam</span>
-                    <span className="text-[9px] opacity-70">Kapan saja hari ini</span>
+                    <span className="text-[10px] text-zinc-500">Kapan saja</span>
                   </button>
                 </div>
               </div>
 
               {/* Date & Time inputs */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                <div className="flex flex-col gap-1">
-                  <label className="font-mono text-[10px] uppercase text-slate-700 dark:text-[#958ea0] font-semibold">
-                    TANGGAL
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div className="flex flex-col gap-1.5">
+                  <label className="text-xs font-semibold text-zinc-300">
+                    Tanggal
                   </label>
                   <input
                     type="date"
                     required
                     value={formDate}
                     onChange={(e) => setFormDate(e.target.value)}
-                    className="w-full bg-slate-50 dark:bg-[#0c0e14] px-3 py-2.5 rounded-lg font-mono text-xs text-slate-900 dark:text-[#e2e2eb] border border-slate-200 dark:border-white/[0.06] focus:outline-none focus:border-emerald-500 dark:focus:border-[#4edea3]/50"
+                    className="w-full bg-zinc-950 px-3.5 py-2.5 rounded-xl text-xs text-white border border-white/[0.08] focus:outline-none focus:border-purple-500"
                   />
                 </div>
 
                 {formTimeMode !== "ALL_DAY" && (
-                  <div className="flex flex-col gap-1">
-                    <label className="font-mono text-[10px] uppercase text-slate-700 dark:text-[#958ea0] font-semibold">
-                      {formTimeMode === "START_ONLY" ? "JAM TO-DO" : "JAM MULAI"}
+                  <div className="flex flex-col gap-1.5">
+                    <label className="text-xs font-semibold text-zinc-300">
+                      {formTimeMode === "START_ONLY" ? "Jam Aktivitas" : "Jam Mulai"}
                     </label>
                     <input
                       type="time"
                       required
                       value={formStartTime}
                       onChange={(e) => setFormStartTime(e.target.value)}
-                      className="w-full bg-slate-50 dark:bg-[#0c0e14] px-3 py-2.5 rounded-lg font-mono text-xs text-emerald-700 dark:text-[#4edea3] border border-slate-200 dark:border-white/[0.06] focus:outline-none focus:border-emerald-500 dark:focus:border-[#4edea3]/50"
+                      className="w-full bg-zinc-950 px-3.5 py-2.5 rounded-xl text-xs font-semibold text-purple-300 border border-white/[0.08] focus:outline-none focus:border-purple-500"
                     />
                   </div>
                 )}
 
                 {formTimeMode === "RANGE" && (
-                  <div className="flex flex-col gap-1 md:col-span-2">
-                    <label className="font-mono text-[10px] uppercase text-slate-700 dark:text-[#958ea0] font-semibold">
-                      JAM SELESAI
+                  <div className="flex flex-col gap-1.5 sm:col-span-2">
+                    <label className="text-xs font-semibold text-zinc-300">
+                      Jam Selesai
                     </label>
                     <input
                       type="time"
                       required
                       value={formEndTime}
                       onChange={(e) => setFormEndTime(e.target.value)}
-                      className="w-full bg-slate-50 dark:bg-[#0c0e14] px-3 py-2.5 rounded-lg font-mono text-xs text-emerald-700 dark:text-[#4edea3] border border-slate-200 dark:border-white/[0.06] focus:outline-none focus:border-emerald-500 dark:focus:border-[#4edea3]/50"
+                      className="w-full bg-zinc-950 px-3.5 py-2.5 rounded-xl text-xs font-semibold text-purple-300 border border-white/[0.08] focus:outline-none focus:border-purple-500"
                     />
                   </div>
                 )}
               </div>
 
               {/* Category */}
-              <div className="flex flex-col gap-1">
-                <label className="font-mono text-[10px] uppercase text-slate-700 dark:text-[#958ea0] font-semibold">
-                  KATEGORI
+              <div className="flex flex-col gap-1.5">
+                <label className="text-xs font-semibold text-zinc-300">
+                  Kategori
                 </label>
                 <select
                   value={formCategory}
                   onChange={(e) => setFormCategory(e.target.value)}
-                  className="w-full bg-slate-50 dark:bg-[#0c0e14] px-3.5 py-2.5 rounded-lg font-mono text-xs text-purple-700 dark:text-[#d0bcff] border border-slate-200 dark:border-white/[0.06] focus:outline-none focus:border-purple-500 dark:focus:border-[#d0bcff]/50 cursor-pointer"
+                  className="w-full bg-zinc-950 px-3.5 py-2.5 rounded-xl text-xs text-zinc-200 border border-white/[0.08] focus:outline-none focus:border-purple-500 cursor-pointer"
                 >
                   <option value="PERSONAL">🌱 Pribadi &amp; Kebiasaan (Bangun tidur, Sarapan, Ibadah, Olahraga)</option>
-                  <option value="BLOCKED">🎯 Sesi Fokus / Deep Work (Belajar, Skripsi, Tugas Penting)</option>
+                  <option value="BLOCKED">🎯 Sesi Fokus / Deep Work (Belajar, Skripsi, Tugas Utama)</option>
                   <option value="WORK">💼 Pekerjaan &amp; Kuliah (Kelas, Meeting, Kerja)</option>
                   <option value="REMINDER">🔔 Pengingat &amp; Tugas Ringan (Beli barang, Telepon)</option>
                   <option value="TASK_DEADLINE">🔴 Tenggat Waktu</option>
@@ -1896,14 +1989,14 @@ export function CalendarManager({
               </div>
 
               {/* Recurrence */}
-              <div className="flex flex-col gap-1 bg-purple-50/50 dark:bg-[#0c0e14]/60 p-3 rounded-lg border border-purple-100 dark:border-white/[0.04]">
-                <label className="font-mono text-[10px] uppercase text-purple-700 dark:text-[#d0bcff] font-semibold flex items-center gap-1.5">
-                  <span>🔁 PENGULANGAN RUTINITAS</span>
+              <div className="flex flex-col gap-1.5 bg-zinc-950/60 p-3.5 rounded-2xl border border-white/[0.06]">
+                <label className="text-xs font-semibold text-purple-300 flex items-center gap-1.5">
+                  <span>🔁 Pengulangan Rutinitas</span>
                 </label>
                 <select
                   value={formRecurrence}
                   onChange={(e) => setFormRecurrence(e.target.value)}
-                  className="w-full bg-white dark:bg-[#191b22] px-3 py-2 rounded-lg font-mono text-xs text-slate-900 dark:text-[#e2e2eb] border border-slate-200 dark:border-white/[0.06] focus:outline-none focus:border-purple-500 dark:focus:border-[#d0bcff]/50 cursor-pointer mt-1"
+                  className="w-full bg-zinc-900 px-3 py-2 rounded-xl text-xs text-white border border-white/[0.08] focus:outline-none focus:border-purple-500 cursor-pointer mt-1"
                 >
                   <option value="NONE">Hanya sekali (hari ini saja)</option>
                   <option value="DAILY">Setiap hari (Rutinitas Harian)</option>
@@ -1912,13 +2005,13 @@ export function CalendarManager({
                 </select>
               </div>
 
-              {/* Reminders */}
-              <div className="flex flex-col gap-2 bg-amber-50/50 dark:bg-[#0c0e14]/40 p-3 rounded-lg border border-amber-100 dark:border-white/[0.04]">
+              {/* Telegram Notifications & Quiet Hours */}
+              <div className="flex flex-col gap-2.5 bg-zinc-950/60 p-3.5 rounded-2xl border border-white/[0.06]">
                 <div className="flex items-center justify-between">
-                  <label className="font-mono text-[10px] uppercase text-amber-700 dark:text-[#F59E0B] font-semibold">
-                    🔔 NOTIFIKASI TELEGRAM
+                  <label className="text-xs font-semibold text-amber-300">
+                    🔔 Notifikasi Pengingat
                   </label>
-                  <span className="font-mono text-[10px] text-slate-500 dark:text-[#958ea0]">
+                  <span className="text-[11px] text-zinc-400">
                     Default: {defaultReminderMinutes} menit
                   </span>
                 </div>
@@ -1930,7 +2023,7 @@ export function CalendarManager({
                         e.target.value === "" ? "" : Number(e.target.value)
                       )
                     }
-                    className="w-full bg-white dark:bg-[#191b22] px-3 py-2 rounded-lg font-mono text-xs text-slate-900 dark:text-[#e2e2eb] border border-slate-200 dark:border-white/[0.06] focus:outline-none focus:border-amber-500 dark:focus:border-[#F59E0B]/50 cursor-pointer"
+                    className="w-full bg-zinc-900 px-3 py-2 rounded-xl text-xs text-white border border-white/[0.08] focus:outline-none focus:border-amber-500 cursor-pointer"
                   >
                     <option value="">Ikuti Preferensi ({defaultReminderMinutes} mnt)</option>
                     <option value="5">5 menit sebelum</option>
@@ -1939,51 +2032,92 @@ export function CalendarManager({
                     <option value="60">1 jam sebelum</option>
                   </select>
 
-                  <label className="flex items-center gap-2 font-mono text-xs text-slate-800 dark:text-[#e2e2eb] cursor-pointer">
+                  <label className="flex items-center gap-2 text-xs text-zinc-300 cursor-pointer">
                     <input
                       type="checkbox"
                       checked={formIgnoreQuietHours}
                       onChange={(e) => setFormIgnoreQuietHours(e.target.checked)}
-                      className="w-4 h-4 accent-emerald-600 dark:accent-[#4edea3] rounded"
+                      className="w-4 h-4 accent-purple-500 rounded"
                     />
                     <span>Alarm Bangun (Abaikan Jam Hening)</span>
                   </label>
                 </div>
               </div>
 
-              {/* Submit & Delete */}
-              <div className="flex items-center justify-between pt-2 border-t border-slate-200 dark:border-white/[0.06]">
+              {/* Optional Project or Task Link */}
+              {(projects.length > 0 || tasks.length > 0) && (
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  {projects.length > 0 && (
+                    <div className="flex flex-col gap-1">
+                      <label className="text-xs text-zinc-400">Tautkan ke Proyek (Opsional)</label>
+                      <select
+                        value={formProjectId}
+                        onChange={(e) => setFormProjectId(e.target.value)}
+                        className="w-full bg-zinc-950 px-3 py-2 rounded-xl text-xs text-zinc-300 border border-white/[0.08]"
+                      >
+                        <option value="">Tanpa Proyek</option>
+                        {projects.map((p) => (
+                          <option key={p.id} value={p.id}>
+                            {p.title}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                  )}
+
+                  {tasks.length > 0 && (
+                    <div className="flex flex-col gap-1">
+                      <label className="text-xs text-zinc-400">Tautkan ke Tugas (Opsional)</label>
+                      <select
+                        value={formTaskId}
+                        onChange={(e) => setFormTaskId(e.target.value)}
+                        className="w-full bg-zinc-950 px-3 py-2 rounded-xl text-xs text-zinc-300 border border-white/[0.08]"
+                      >
+                        <option value="">Tanpa Tugas</option>
+                        {tasks.map((t) => (
+                          <option key={t.id} value={t.id}>
+                            {t.title}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                  )}
+                </div>
+              )}
+
+              {/* Submit & Delete buttons */}
+              <div className="flex items-center justify-between pt-3 border-t border-white/[0.08]">
                 {editingEventId ? (
                   <button
                     type="button"
                     onClick={() => handleDeleteEvent(editingEventId)}
-                    className="px-3 py-2 rounded-lg bg-rose-50 hover:bg-rose-100 text-rose-700 dark:bg-red-500/15 dark:hover:bg-red-500/25 dark:text-red-400 font-mono text-xs transition-colors cursor-pointer flex items-center gap-1.5 border border-rose-200 dark:border-transparent"
+                    className="px-3.5 py-2 rounded-xl bg-rose-500/15 hover:bg-rose-500/25 text-rose-300 text-xs font-semibold transition-colors flex items-center gap-1.5 border border-rose-500/30"
                   >
                     <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                       <polyline points="3 6 5 6 21 6" />
                       <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
                     </svg>
-                    <span>Hapus To-Do</span>
+                    <span>Hapus</span>
                   </button>
                 ) : (
                   <div />
                 )}
 
-                <div className="flex items-center gap-3">
+                <div className="flex items-center gap-2.5">
                   <button
                     type="button"
                     onClick={() => {
                       setIsModalOpen(false);
                       setEditingEventId(null);
                     }}
-                    className="px-4 py-2 font-mono text-xs text-slate-600 dark:text-[#958ea0] hover:text-slate-900 dark:hover:text-[#e2e2eb] hover:bg-slate-100 dark:hover:bg-transparent rounded-lg transition-colors"
+                    className="px-4 py-2 text-xs text-zinc-400 hover:text-white rounded-xl transition-colors font-medium"
                   >
                     Batal
                   </button>
                   <button
                     type="submit"
                     disabled={loading}
-                    className="px-5 py-2.5 rounded-lg bg-emerald-500 hover:bg-emerald-600 text-white dark:bg-[#4edea3] dark:hover:bg-[#3ec48e] dark:text-[#00311f] font-mono text-xs font-bold transition-all shadow-sm dark:shadow-[0_0_16px_rgba(78,222,163,0.3)] disabled:opacity-50 active:scale-98 cursor-pointer"
+                    className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white font-semibold text-xs transition-all shadow-lg shadow-purple-600/30 active:scale-95 disabled:opacity-50"
                   >
                     {loading
                       ? "Menyimpan..."
