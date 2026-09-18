@@ -116,13 +116,13 @@ describe("Phase 9: Real User Experience & Product Validation", { timeout: 90000 
   });
 
   describe("4. Distinct Primary Navigation Icons (ISSUE-04)", () => {
-    it("should use distinct icons for Insights and Analitik in Sidebar.tsx", () => {
+    it("should use distinct icons for Progress & Refleksi and Life Copilot AI in Sidebar.tsx", () => {
       const sidebarPath = path.resolve(__dirname, "../src/app/components/shell/Sidebar.tsx");
       const sidebarContent = fs.readFileSync(sidebarPath, "utf8");
 
-      // Verify /insights uses sparkles and /dashboard uses chart
-      expect(sidebarContent).toMatch(/href:\s*["']\/insights["'][^}]*icon:\s*["']sparkles["']/);
-      expect(sidebarContent).toMatch(/href:\s*["']\/dashboard["'][^}]*icon:\s*["']chart["']/);
+      // Verify /progress uses chart and /assistant uses sparkles
+      expect(sidebarContent).toMatch(/href:\s*["']\/progress["'][^}]*icon:\s*["']chart["']/);
+      expect(sidebarContent).toMatch(/href:\s*["']\/assistant["'][^}]*icon:\s*["']sparkles["']/);
     });
   });
 

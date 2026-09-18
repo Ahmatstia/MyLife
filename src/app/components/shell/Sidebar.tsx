@@ -24,34 +24,43 @@ const navigationGroups: NavGroup[] = [
     items: [
       { href: "/today", label: "Hari Ini", verb: "Harian", icon: "sun", color: "text-[#F59E0B]" },
       { href: "/focus", label: "Mode Fokus", verb: "Pomodoro", icon: "target", color: "text-[#d0bcff]" },
-      { href: "/calendar", label: "Jadwal & Kalender", verb: "Waktu", icon: "calendar", color: "text-[#38bdf8]" },
+      { href: "/calendar", label: "Kalender", verb: "Jadwal", icon: "calendar", color: "text-[#38bdf8]" },
     ],
   },
   {
-    title: "Strategi & Target",
+    title: "Perencanaan",
     items: [
       { href: "/direction", label: "Arah & Identitas", verb: "Kompas", icon: "compass", color: "text-[#38bdf8]" },
-      { href: "/goals", label: "Target (Goals)", verb: "Sasaran", icon: "flag", color: "text-[#a078ff]" },
-      { href: "/projects", label: "Proyek (Projects)", verb: "Eksekusi", icon: "layers", color: "text-[#8B5CF6]" },
-      { href: "/areas", label: "Pilar Hidup (Areas)", verb: "Fondasi", icon: "tree", color: "text-[#4edea3]" },
+      { href: "/goals", label: "Target & Proyek", verb: "Sasaran", icon: "flag", color: "text-[#a078ff]" },
+      { href: "/capture", label: "Inbox", verb: "Catat", icon: "inbox", color: "text-[#F59E0B]" },
     ],
   },
   {
-    title: "Pencatatan & Refleksi",
+    title: "Evaluasi & AI",
     items: [
-      { href: "/capture", label: "Kotak Masuk (Inbox)", verb: "Catat", icon: "inbox", color: "text-[#F59E0B]" },
-      { href: "/review", label: "Refleksi & Evaluasi", verb: "Jurnal", icon: "capture", color: "text-[#38bdf8]" },
-      { href: "/insights", label: "Wawasan & AI", verb: "Insights", icon: "sparkles", color: "text-[#d0bcff]" },
+      { href: "/progress", label: "Progress & Refleksi", verb: "Evaluasi", icon: "chart", color: "text-[#4edea3]" },
       { href: "/assistant", label: "Life Copilot AI", verb: "Asisten", icon: "sparkles", color: "text-[#a078ff]" },
-      { href: "/dashboard", label: "Grafik & Analitik", verb: "Statistik", icon: "chart", color: "text-[#4edea3]" },
       { href: "/notifications", label: "Notifikasi", verb: "Info", icon: "bell", color: "text-[#F43F5E]" },
     ],
   },
 ];
 
+
 export function isActive(href: string, pathname: string): boolean {
   if (href === "/today") return pathname === "/today" || pathname === "/";
   if (href === "/") return pathname === "/";
+  // /progress is active for all merged evaluation pages
+  if (href === "/progress") {
+    return ["/progress", "/dashboard", "/review", "/insights", "/activity"].some(
+      (p) => pathname === p || pathname.startsWith(p + "/")
+    );
+  }
+  // /goals is active for projects and areas too
+  if (href === "/goals") {
+    return ["/goals", "/projects", "/areas"].some(
+      (p) => pathname === p || pathname.startsWith(p + "/")
+    );
+  }
   return pathname === href || pathname.startsWith(href + "/");
 }
 

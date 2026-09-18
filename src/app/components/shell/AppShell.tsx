@@ -66,7 +66,7 @@ const mobileNav: { href: string; label: string; icon: IconName }[] = [
   { href: "/focus", label: "Fokus", icon: "target" },
   { href: "/goals", label: "Target", icon: "flag" },
   { href: "/capture", label: "Catat", icon: "inbox" },
-  { href: "/review", label: "Refleksi", icon: "capture" },
+  { href: "/progress", label: "Progress", icon: "chart" },
 ];
 
 export function AppShell({

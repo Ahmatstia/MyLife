@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Button } from "./ui/Button";
 import { useToast } from "./ui/Toast";
@@ -138,7 +139,13 @@ export default function ReviewForm({ goalId, periodStart, periodEnd, metrics, re
         </div>
       )}
 
-      <div className="mt-6 flex justify-end">
+      <div className="mt-6 flex items-center justify-between gap-3">
+        <Link
+          href="/progress?tab=review"
+          className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-mono font-medium text-[#94A3B8] hover:text-white bg-white/[0.04] hover:bg-white/[0.08] border border-white/[0.08] transition-all"
+        >
+          <span>←</span> Kembali ke Progress & Refleksi
+        </Link>
         <Button onClick={save} disabled={saving} icon="check">
           {saving ? "Menyimpan…" : review?.id ? "Perbarui Review" : "Simpan Review Mingguan"}
         </Button>

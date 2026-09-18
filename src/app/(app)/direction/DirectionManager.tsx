@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Icon } from "@/app/components/ui/Icon";
 import { Dialog } from "@/app/components/ui/Dialog";
@@ -899,17 +900,33 @@ export function DirectionManager({
       {/* TAB 4: REFLECTIONS */}
       {activeTab === "reflections" && (
         <div className="space-y-6 animate-in fade-in duration-300">
-          <div className="flex items-center justify-between">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div>
-              <h2 className="text-xl font-bold text-slate-900 dark:text-white">Jurnal Refleksi Arah</h2>
+              <h2 className="text-xl font-bold text-slate-900 dark:text-white">Jurnal Refleksi Arah Hidup</h2>
               <p className="text-sm text-slate-600 dark:text-slate-300">
-                Apakah Anda masih melangkah ke arah yang tepat? Luangkan waktu berkala untuk mengevaluasi diri secara damai.
+                Ruang kontemplasi berkala untuk menilai keselarasan hidup Anda dengan visi, nilai, dan babak saat ini.
               </p>
             </div>
-            <Button onClick={() => setIsReflectionModalOpen(true)} className="text-xs font-semibold gap-1.5">
+            <Button onClick={() => setIsReflectionModalOpen(true)} className="text-xs font-semibold gap-1.5 shrink-0">
               <Icon name="pen" size={14} />
               Tulis Refleksi Baru
             </Button>
+          </div>
+
+          <div className="p-4 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-900 dark:text-emerald-300 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-xs">
+            <div className="flex items-start gap-2.5">
+              <span className="text-base shrink-0">💡</span>
+              <p className="leading-relaxed">
+                <span className="font-bold">Panduan Refleksi:</span> Jurnal ini difokuskan untuk evaluasi strategis (apakah arah hidup Anda sudah tepat). Jika Anda ingin mengevaluasi pencapaian target dan tugas mingguan, gunakan menu evaluasi mingguan.
+              </p>
+            </div>
+            <Link
+              href="/progress?tab=review"
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl font-semibold bg-emerald-600 hover:bg-emerald-700 text-white shadow-xs transition-all shrink-0 self-end sm:self-center"
+            >
+              <span>Buka Review Mingguan</span>
+              <span>→</span>
+            </Link>
           </div>
 
           {initialReflections.length > 0 ? (

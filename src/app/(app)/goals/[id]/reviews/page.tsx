@@ -29,12 +29,19 @@ export default async function ReviewsPage({ params }: { params: Promise<{ id: st
 
   return (
     <div className="mx-auto max-w-4xl space-y-8 pb-16">
-      <div className="flex items-center gap-2">
+      <div className="flex flex-wrap items-center gap-3">
+        <Link
+          href="/progress?tab=review"
+          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-mono text-[#d0bcff] bg-[#8B5CF6]/10 border border-[#8B5CF6]/30 hover:bg-[#8B5CF6]/20 transition-colors"
+        >
+          <Icon name="arrowLeft" size={13} /> Progress & Refleksi
+        </Link>
+        <span className="text-white/20 font-mono text-xs">/</span>
         <Link
           href={`/goals/${goal.id}`}
-          className="inline-flex items-center gap-2 text-xs font-mono text-[#94A3B8] transition-colors hover:text-white"
+          className="inline-flex items-center gap-1.5 text-xs font-mono text-[#94A3B8] hover:text-white transition-colors"
         >
-          <Icon name="arrowLeft" size={14} /> Kembali ke {goal.title}
+          Target: <span className="text-white font-semibold underline underline-offset-4">{goal.title}</span>
         </Link>
       </div>
 
