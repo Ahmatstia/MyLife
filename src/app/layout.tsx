@@ -21,9 +21,14 @@ const jetbrains = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Personal Progress OS",
+  title: "MyLife — Personal Life OS",
   description:
     "Personal system untuk mengelola dan memahami perkembangan diri.",
+  icons: {
+    icon: "/logo.png",
+    shortcut: "/logo.png",
+    apple: "/logo.png",
+  },
 };
 
 export default function RootLayout({

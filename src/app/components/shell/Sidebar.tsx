@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
 import { Icon, type IconName } from "../ui/Icon";
 
@@ -22,7 +23,7 @@ const navigationGroups: NavGroup[] = [
   {
     title: "Pusat",
     items: [
-      { href: "/direction", label: "Beranda", verb: "Utama", icon: "home", color: "text-[#8B5CF6]" },
+      { href: "/", label: "Beranda", verb: "Utama", icon: "home", color: "text-[#8B5CF6]" },
     ],
   },
   {
@@ -52,9 +53,8 @@ const navigationGroups: NavGroup[] = [
 
 
 export function isActive(href: string, pathname: string): boolean {
-  if (href === "/direction") return pathname === "/direction" || pathname === "/beranda";
-  if (href === "/today") return pathname === "/today" || pathname === "/";
-  if (href === "/") return pathname === "/";
+  if (href === "/") return pathname === "/" || pathname === "/beranda" || pathname === "/direction" || pathname === "/home";
+  if (href === "/today") return pathname === "/today";
   // /progress is active for all merged evaluation pages
   if (href === "/progress") {
     return ["/progress", "/dashboard", "/review", "/insights", "/activity"].some(
@@ -131,16 +131,23 @@ export function Sidebar({
       {/* Brand & Lock Pin Header */}
       <div className="flex items-center justify-between h-9 px-1 shrink-0">
         <Link
-          href="/today"
+          href="/"
           prefetch={true}
-          onMouseEnter={() => router.prefetch("/today")}
+          onMouseEnter={() => router.prefetch("/")}
           onClick={onNavigate}
           className="flex items-center gap-2.5 group min-w-0"
           title="MyLife - Personal Life OS"
         >
-          <span className="relative flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-[#8B5CF6] to-[#6366F1] text-white shadow-[0_0_12px_rgba(139,92,246,0.35)] transition-transform group-hover:scale-105">
-            <Icon name="sparkles" size={16} />
-          </span>
+          <div className="relative flex h-8 w-8 shrink-0 items-center justify-center rounded-xl overflow-hidden shadow-[0_0_12px_rgba(99,102,241,0.35)] transition-transform group-hover:scale-105">
+            <Image
+              src="/logo.png"
+              alt="MyLife Logo"
+              width={32}
+              height={32}
+              priority
+              className="object-cover w-full h-full"
+            />
+          </div>
           <div
             className={`flex flex-col leading-tight whitespace-nowrap overflow-hidden transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] ${
               isExpanded

@@ -246,7 +246,7 @@ function ReviewTab({ data }: { data: Awaited<ReturnType<typeof buildReviewData>>
           </div>
         </div>
         <Link
-          href="/direction"
+          href="/"
           className="inline-flex items-center gap-1 text-[#d0bcff] hover:text-white font-semibold transition-colors shrink-0"
         >
           <span>Refleksi Arah & Visi Hidup</span>

@@ -57,7 +57,7 @@ export function DirectionCompassCard({ chapter }: DirectionCompassCardProps) {
         </div>
         <div className="flex items-center gap-2">
           <Link
-            href="/direction"
+            href="/"
             className="font-bold text-purple-600 dark:text-purple-400 hover:underline"
           >
             Tentukan Arah Anda →
@@ -102,7 +102,7 @@ export function DirectionCompassCard({ chapter }: DirectionCompassCardProps) {
 
         <div className="flex items-center gap-1.5 shrink-0">
           <Link
-            href="/direction"
+            href="/"
             className="hidden sm:inline-flex items-center gap-1 text-xs font-semibold px-2.5 py-1 rounded-lg bg-slate-100 dark:bg-white/10 hover:bg-slate-200 dark:hover:bg-white/15 text-slate-700 dark:text-slate-200 transition-colors"
           >
             Buka Kompas

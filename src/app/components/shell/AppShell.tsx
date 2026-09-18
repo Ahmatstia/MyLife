@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { Icon, type IconName } from "../ui/Icon";
 import { AICommandPanel } from "../AICommandPanel";
@@ -183,10 +184,16 @@ export function AppShell({
             </button>
 
             {/* Logo mobile */}
-            <Link href="/today" className="flex items-center gap-2 lg:hidden">
-              <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-gradient-to-br from-[#8B5CF6] to-[#6366F1] text-white">
-                <Icon name="sparkles" size={14} />
-              </span>
+            <Link href="/" className="flex items-center gap-2 lg:hidden">
+              <div className="relative flex h-7 w-7 shrink-0 items-center justify-center rounded-lg overflow-hidden shadow-[0_0_8px_rgba(99,102,241,0.35)]">
+                <Image
+                  src="/logo.png"
+                  alt="MyLife Logo"
+                  width={28}
+                  height={28}
+                  className="object-cover w-full h-full"
+                />
+              </div>
               <span className="text-sm font-bold tracking-tight text-slate-900 dark:text-white">
                 My<span className="gradient-text">Life</span>
               </span>
