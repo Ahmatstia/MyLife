@@ -8,17 +8,16 @@ import { calculateGoalProgress } from "@/services/progress.service";
 import { GoalsBoard, type GoalCard } from "@/app/components/goals/GoalsBoard";
 import { ProjectsManager } from "@/app/(app)/projects/ProjectsManager";
 import { AreasManager } from "@/app/(app)/areas/AreasManager";
-import { PageHeader } from "@/app/components/ui/PageHeader";
 
 export const dynamic = "force-dynamic";
 
 type Tab = "goals" | "projects" | "areas";
 const VALID_TABS: Tab[] = ["goals", "projects", "areas"];
 
-const TABS: { id: Tab; label: string; icon: string; verb: string }[] = [
-  { id: "goals",    label: "Target (Goals)",      icon: "flag",   verb: "Sasaran" },
-  { id: "projects", label: "Proyek (Projects)",   icon: "layers", verb: "Eksekusi" },
-  { id: "areas",    label: "Pilar Hidup (Areas)", icon: "tree",   verb: "Fondasi" },
+const TABS: { id: Tab; label: string; verb: string }[] = [
+  { id: "goals", label: "Target (Goals)", verb: "Sasaran" },
+  { id: "projects", label: "Proyek (Projects)", verb: "Eksekusi" },
+  { id: "areas", label: "Pilar Hidup (Areas)", verb: "Fondasi" },
 ];
 
 function formatDate(value: Date | null | undefined) {
@@ -103,20 +102,39 @@ export default async function GoalsPage({
   const activeTab: Tab = (VALID_TABS.includes(rawTab as Tab) ? rawTab : "goals") as Tab;
 
   return (
-    <div className="space-y-6 pb-16">
+    <div className="space-y-6 pb-16 max-w-7xl mx-auto">
       {/* TAB NAVIGATOR */}
-      <div className="flex items-center gap-1 p-1 rounded-xl bg-[#131825] border border-white/[0.08] w-fit font-mono text-xs">
+      <div className="flex items-center gap-1.5 p-1.5 rounded-2xl bg-[#131825]/90 border border-white/[0.08] backdrop-blur-md w-fit">
         {TABS.map((t) => (
           <Link
             key={t.id}
             href={`/goals?tab=${t.id}`}
-            className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-colors whitespace-nowrap ${
+            className={`flex items-center gap-2 px-4 py-2 rounded-xl transition-all font-medium text-xs sm:text-sm ${
               activeTab === t.id
-                ? "bg-purple-600/20 text-purple-300 font-semibold border border-purple-500/30 shadow-sm"
-                : "text-[#94A3B8] hover:text-white hover:bg-white/[0.05]"
+                ? "bg-purple-600/20 text-purple-200 border border-purple-500/30 shadow-[0_0_15px_rgba(168,85,247,0.15)] font-semibold"
+                : "text-zinc-400 hover:text-white hover:bg-white/[0.05] border border-transparent"
             }`}
           >
-            <span className="material-symbols-outlined text-[15px]">{t.icon}</span>
+            {t.id === "goals" && (
+              <svg className="w-4 h-4 text-purple-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <circle cx="12" cy="12" r="10" />
+                <circle cx="12" cy="12" r="6" />
+                <circle cx="12" cy="12" r="2" />
+              </svg>
+            )}
+            {t.id === "projects" && (
+              <svg className="w-4 h-4 text-indigo-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <polygon points="12 2 2 7 12 12 22 7 12 2" />
+                <polyline points="2 17 12 22 22 17" />
+                <polyline points="2 12 12 17 22 12" />
+              </svg>
+            )}
+            {t.id === "areas" && (
+              <svg className="w-4 h-4 text-emerald-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <circle cx="12" cy="12" r="10" />
+                <polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76" />
+              </svg>
+            )}
             <span>{t.label}</span>
           </Link>
         ))}
@@ -150,30 +168,10 @@ async function ProjectsTabContent({ userId }: { userId: string }) {
     getAreas(userId),
     getGoals(userId),
   ]);
-  return (
-    <div className="space-y-6">
-      <div className="flex flex-col gap-1">
-        <div className="flex items-center gap-2 font-mono text-xs uppercase tracking-wider text-purple-400">
-          <span>INISIASI & EKSEKUSI // PORTOFOLIO KERJA</span>
-        </div>
-        <h1 className="text-2xl md:text-3xl font-bold text-white tracking-tight">Daftar Proyek</h1>
-        <p className="text-sm text-gray-400 max-w-2xl">Kelola inisiatif kerja terstruktur melalui Tonggak Capaian dan rincian tugas terintegrasi.</p>
-      </div>
-      <ProjectsManager initialProjects={projects} goals={goals} areas={areas} />
-    </div>
-  );
+  return <ProjectsManager initialProjects={projects} goals={goals} areas={areas} />;
 }
 
 async function AreasTabContent({ userId }: { userId: string }) {
   const areas = await getAreas(userId);
-  return (
-    <div className="space-y-8">
-      <PageHeader
-        eyebrow="Domain Kehidupan"
-        title="Areas"
-        description="Kelola pilar utama kehidupan Anda untuk menyelaraskan Goals, Projects, dan Tasks."
-      />
-      <AreasManager initialAreas={areas} />
-    </div>
-  );
+  return <AreasManager initialAreas={areas} />;
 }

@@ -93,16 +93,22 @@ export function ProjectsManager({
   return (
     <div className="space-y-6 text-gray-200">
       {/* Header Bar */}
-      <div className="flex flex-wrap items-center justify-between gap-4">
-        <div className="flex items-center gap-2">
-          <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-          <p className="text-xs font-mono text-gray-400">
-            INISIATIF EKSEKUSI // TONGGAK CAPAIAN &amp; TUGAS TERSTRUKTUR
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div>
+          <div className="flex items-center gap-2 text-indigo-400 text-xs font-medium">
+            <span className="w-2 h-2 rounded-full bg-indigo-400 animate-pulse" />
+            <span>Portofolio &amp; Eksekusi</span>
+          </div>
+          <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-white mt-1">
+            Daftar Proyek
+          </h1>
+          <p className="text-zinc-400 text-sm mt-1 max-w-xl">
+            Kelola inisiatif kerja terstruktur melalui tonggak capaian dan rincian tugas terintegrasi.
           </p>
         </div>
         <button
           onClick={() => setIsCreating(!isCreating)}
-          className="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-purple-600 to-indigo-600 px-4 py-2 text-xs font-mono font-semibold text-white shadow-[0_0_20px_rgba(168,85,247,0.35)] hover:brightness-110 transition-all"
+          className="self-start sm:self-auto inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-purple-600 to-indigo-600 px-4 py-2.5 text-xs font-semibold text-white shadow-[0_0_20px_rgba(168,85,247,0.35)] hover:brightness-110 transition-all active:scale-[0.98]"
         >
           <Icon name={isCreating ? "x" : "plus"} size={14} />
           {isCreating ? "Batal" : "Proyek Baru"}
@@ -112,11 +118,11 @@ export function ProjectsManager({
       {isCreating && (
         <form onSubmit={handleCreate} className="rounded-2xl border border-white/[0.08] bg-[#131825] p-6 shadow-xl space-y-4">
           <div className="flex items-center justify-between border-b border-white/[0.06] pb-3">
-            <h3 className="text-sm font-bold text-white tracking-tight flex items-center gap-2 font-mono">
-              <span className="material-symbols-outlined text-purple-400 text-[18px]">add_box</span>
-              BUAT PROYEK STRATEGIS BARU
+            <h3 className="text-sm font-bold text-white tracking-tight flex items-center gap-2">
+              <span className="w-2 h-2 rounded-full bg-purple-400" />
+              Buat Proyek Baru
             </h3>
-            <span className="text-[11px] font-mono text-gray-500">PARAMETER INSIATIF</span>
+            <span className="text-[11px] text-zinc-400">Inisiatif Terencana</span>
           </div>
 
           <div className="grid gap-4 sm:grid-cols-2">
@@ -284,15 +290,21 @@ export function ProjectsManager({
       </div>
 
       {initialProjects.length === 0 && !isCreating && (
-        <div className="rounded-2xl border border-dashed border-white/[0.1] p-10 text-center bg-[#131825]/40">
-          <span className="material-symbols-outlined text-4xl text-gray-500 mb-2">biotech</span>
+        <div className="rounded-2xl border border-dashed border-white/[0.1] p-12 text-center bg-[#131825]/40 flex flex-col items-center justify-center">
+          <div className="w-12 h-12 rounded-2xl bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center text-indigo-400 mb-3">
+            <svg className="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <polygon points="12 2 2 7 12 12 22 7 12 2" />
+              <polyline points="2 17 12 22 22 17" />
+              <polyline points="2 12 12 17 22 12" />
+            </svg>
+          </div>
           <p className="text-sm font-semibold text-white">Belum ada Proyek terdaftar</p>
-          <p className="mt-1 text-xs font-mono text-gray-400">
+          <p className="mt-1 text-xs text-zinc-400 max-w-md">
             Buat inisiatif proyek untuk memecah target strategis menjadi tahapan tonggak capaian yang konkret.
           </p>
           <button
             onClick={() => setIsCreating(true)}
-            className="mt-4 inline-flex items-center gap-2 rounded-xl bg-purple-600 px-4 py-2 text-xs font-mono font-semibold text-white shadow-sm hover:bg-purple-500 transition-colors"
+            className="mt-4 inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-purple-600 to-indigo-600 px-4 py-2.5 text-xs font-semibold text-white shadow-sm hover:brightness-110 transition-all active:scale-[0.98]"
           >
             <Icon name="plus" size={14} />
             Buat Proyek Pertama

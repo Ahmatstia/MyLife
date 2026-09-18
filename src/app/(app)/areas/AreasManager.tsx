@@ -90,24 +90,23 @@ export function AreasManager({ initialAreas }: { initialAreas: AreaItem[] }) {
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <div className="flex items-center gap-2 text-violet-400 font-mono text-xs uppercase tracking-widest font-bold">
-            <span>DOMAIN KEHIDUPAN // PILAR UTAMA</span>
-            <span className="text-white/20">•</span>
-            <span className="text-emerald-400">AKTIF</span>
+          <div className="flex items-center gap-2 text-emerald-400 text-xs font-medium">
+            <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+            <span>Fondasi &amp; Pilar Kehidupan</span>
           </div>
           <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-white mt-1">
-            Bidang Hidup <span className="text-surface-400 font-normal text-lg">(Life Areas)</span>
+            Pilar Hidup <span className="text-zinc-400 font-normal text-lg">(Life Areas)</span>
           </h1>
-          <p className="text-sm text-surface-400 mt-0.5">
-            Kelola pilar utama kehidupan Anda untuk menyelaraskan Goals, Projects, dan Tasks.
+          <p className="text-sm text-zinc-400 mt-1 max-w-xl">
+            Kelola pilar utama kehidupan Anda untuk menyelaraskan target, proyek, dan tugas harian secara seimbang.
           </p>
         </div>
         <button
           onClick={() => setIsCreating(!isCreating)}
-          className="inline-flex items-center gap-2 rounded-xl bg-violet-600 px-4 py-2 text-sm font-semibold text-white shadow-lg shadow-violet-500/25 hover:bg-violet-500 transition-all self-start sm:self-auto"
+          className="inline-flex items-center gap-2 rounded-xl bg-violet-600 px-4 py-2.5 text-xs font-semibold text-white shadow-lg shadow-violet-500/25 hover:bg-violet-500 transition-all self-start sm:self-auto active:scale-[0.98]"
         >
-          <Icon name={isCreating ? "x" : "plus"} size={16} />
-          {isCreating ? "Batal" : "+ Tambah Bidang"}
+          <Icon name={isCreating ? "x" : "plus"} size={14} />
+          {isCreating ? "Batal" : "+ Tambah Pilar"}
         </button>
       </div>
 
