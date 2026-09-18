@@ -52,10 +52,17 @@ export type IconName =
   | "flame"
   | "bell"
   | "mic"
+  | "home"
   | "micOff"
   | "send";
 
 const paths: Record<IconName, React.ReactNode> = {
+  home: (
+    <>
+      <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+      <polyline points="9 22 9 12 15 12 15 22" />
+    </>
+  ),
   sparkles: (
     <>
       <path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9L12 3z" />

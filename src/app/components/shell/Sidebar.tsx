@@ -20,6 +20,12 @@ type NavGroup = {
 
 const navigationGroups: NavGroup[] = [
   {
+    title: "Pusat",
+    items: [
+      { href: "/direction", label: "Beranda", verb: "Utama", icon: "home", color: "text-[#8B5CF6]" },
+    ],
+  },
+  {
     title: "Eksekusi Harian",
     items: [
       { href: "/today", label: "Hari Ini", verb: "Harian", icon: "sun", color: "text-[#F59E0B]" },
@@ -30,7 +36,6 @@ const navigationGroups: NavGroup[] = [
   {
     title: "Perencanaan",
     items: [
-      { href: "/direction", label: "Arah & Identitas", verb: "Kompas", icon: "compass", color: "text-[#38bdf8]" },
       { href: "/goals", label: "Target & Proyek", verb: "Sasaran", icon: "flag", color: "text-[#a078ff]" },
       { href: "/capture", label: "Inbox", verb: "Catat", icon: "inbox", color: "text-[#F59E0B]" },
     ],
@@ -47,6 +52,7 @@ const navigationGroups: NavGroup[] = [
 
 
 export function isActive(href: string, pathname: string): boolean {
+  if (href === "/direction") return pathname === "/direction" || pathname === "/beranda";
   if (href === "/today") return pathname === "/today" || pathname === "/";
   if (href === "/") return pathname === "/";
   // /progress is active for all merged evaluation pages
