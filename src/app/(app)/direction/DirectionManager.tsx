@@ -168,6 +168,8 @@ export function DirectionManager({
         setIsCloseChapterModalOpen(false);
         setCloseChapterNotes("");
         router.refresh();
+      } else {
+        alert(data.error?.message || "Gagal menutup babak kehidupan.");
       }
     } catch {
       alert("Terjadi kesalahan jaringan.");

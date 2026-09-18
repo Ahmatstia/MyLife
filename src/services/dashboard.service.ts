@@ -686,7 +686,23 @@ export async function getMissionControlData(userId: string): Promise<MissionCont
 
   const focusHours = Math.floor(todayMinutes / 60);
   const focusRemMinutes = todayMinutes % 60;
-  const streakDays = Math.max(todaySessions.length > 0 ? 1 : 0, recent7DaysSessions.length > 0 ? 3 : 0);
+  const activeDateSet = new Set(
+    last84DaysSessions
+      .filter((s) => s.durationMinutes && s.durationMinutes > 0)
+      .map((s) => {
+        const d = new Date(s.startedAt);
+        return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+      })
+  );
+  let streakDays = 0;
+  const streakCursor = new Date(now);
+  streakCursor.setHours(0, 0, 0, 0);
+  while (true) {
+    const key = `${streakCursor.getFullYear()}-${String(streakCursor.getMonth() + 1).padStart(2, "0")}-${String(streakCursor.getDate()).padStart(2, "0")}`;
+    if (!activeDateSet.has(key)) break;
+    streakDays++;
+    streakCursor.setDate(streakCursor.getDate() - 1);
+  }
   const alignmentPct = totalTaskCount > 0 ? Math.round((alignedTaskCount / totalTaskCount) * 100) : 100;
 
   // 6. Quick Capture Inbox

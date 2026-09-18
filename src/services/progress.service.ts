@@ -26,6 +26,7 @@ type RankedTask = NextActionTaskLike & {
 };
 
 const priorityOrder: Record<string, number> = {
+  URGENT: -1,
   HIGH: 0,
   MEDIUM: 1,
   LOW: 2,

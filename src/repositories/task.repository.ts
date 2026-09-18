@@ -75,12 +75,5 @@ export function findTaskDetail(userId: string, id: string) {
 }
 
 export function countTasks(userId: string) {
-  return prisma.task.count({
-    where: {
-      OR: [
-        { userId },
-        { stage: { goal: { userId } } },
-      ],
-    },
-  });
+  return prisma.task.count({ where: { userId } });
 }

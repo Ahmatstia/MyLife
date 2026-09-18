@@ -285,32 +285,34 @@ export async function updateChapter(id: string, input: UpdateChapterInput, userI
     throw new Error("Babak kehidupan tidak ditemukan.");
   }
 
-  if (input.isActive) {
-    await prisma.lifeChapter.updateMany({
-      where: { userId: owner, isActive: true, NOT: { id } },
-      data: { isActive: false },
-    });
-  }
+  return prisma.$transaction(async (tx) => {
+    if (input.isActive) {
+      await tx.lifeChapter.updateMany({
+        where: { userId: owner, isActive: true, NOT: { id } },
+        data: { isActive: false },
+      });
+    }
 
-  return prisma.lifeChapter.update({
-    where: { id },
-    data: {
-      title: input.title,
-      description: input.description,
-      themeColor: input.themeColor,
-      icon: input.icon,
-      startDate: input.startDate ? new Date(input.startDate) : undefined,
-      targetEndDate: input.targetEndDate !== undefined ? (input.targetEndDate ? new Date(input.targetEndDate) : null) : undefined,
-      actualEndDate: input.actualEndDate !== undefined ? (input.actualEndDate ? new Date(input.actualEndDate) : null) : undefined,
-      isActive: input.isActive,
-      mainIntent: input.mainIntent,
-      reflectionNotes: input.reflectionNotes,
-    },
-    include: {
-      focusAreas: {
-        include: { area: true },
+    return tx.lifeChapter.update({
+      where: { id, userId: owner },
+      data: {
+        title: input.title,
+        description: input.description,
+        themeColor: input.themeColor,
+        icon: input.icon,
+        startDate: input.startDate ? new Date(input.startDate) : undefined,
+        targetEndDate: input.targetEndDate !== undefined ? (input.targetEndDate ? new Date(input.targetEndDate) : null) : undefined,
+        actualEndDate: input.actualEndDate !== undefined ? (input.actualEndDate ? new Date(input.actualEndDate) : null) : undefined,
+        isActive: input.isActive,
+        mainIntent: input.mainIntent,
+        reflectionNotes: input.reflectionNotes,
       },
-    },
+      include: {
+        focusAreas: {
+          include: { area: true },
+        },
+      },
+    });
   });
 }
 
@@ -326,7 +328,7 @@ export async function closeChapter(id: string, reflectionNotes?: string, userId?
   }
 
   return prisma.lifeChapter.update({
-    where: { id },
+    where: { id, userId: owner },
     data: {
       isActive: false,
       actualEndDate: new Date(),
@@ -347,7 +349,7 @@ export async function deleteChapter(id: string, userId?: string) {
   }
 
   return prisma.lifeChapter.delete({
-    where: { id },
+    where: { id, userId: owner },
   });
 }
 
