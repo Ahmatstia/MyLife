@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useToast } from "../ui/Toast";
 
 interface QueueTask {
@@ -28,6 +29,7 @@ export function TodayFocusQueue({
   tasks: initialTasks,
   progressPct: initialProgressPct,
 }: QueueProps) {
+  const router = useRouter();
   const { toast } = useToast();
   const [tasks, setTasks] = useState<QueueTask[]>(initialTasks);
   const [newTitle, setNewTitle] = useState("");
@@ -52,12 +54,14 @@ export function TodayFocusQueue({
     );
 
     try {
-      await fetch(`/api/tasks/${task.taskId}`, {
+      const res = await fetch(`/api/tasks/${task.taskId}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ status: isNowDone ? "COMPLETED" : "TODO" }),
       });
+      if (!res.ok) throw new Error("Gagal mengubah status task.");
       toast(isNowDone ? `Task "${task.title}" diselesaikan! ✓` : "Status dikembalikan ke To Do", "success");
+      router.refresh();
     } catch {
       // Revert if failed
       setTasks((prev) =>

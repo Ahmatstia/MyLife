@@ -104,13 +104,6 @@ export default async function Home() {
     }
   }
 
-  const recentSessionsList = todayData.momentumSessions.map((s) => ({
-    id: s.id,
-    title: s.task.title,
-    durationMinutes: s.durationMinutes || 25,
-    endedAt: s.endedAt ? s.endedAt.toISOString() : null,
-  }));
-
   const activeGoalsList = userGoals.map((g) => {
     const total = g.tasks.length;
     const completed = g.tasks.filter((t) => t.status === "COMPLETED").length;
@@ -136,7 +129,6 @@ export default async function Home() {
       availableAreas={areas}
       todayTasks={Array.from(uniqueTasksMap.values())}
       activeGoals={activeGoalsList}
-      recentActivities={recentSessionsList}
     />
   );
 }

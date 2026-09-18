@@ -23,7 +23,7 @@ interface TaskItemData {
   id: string;
   title: string;
   subtitle: string;
-  status: "COMPLETED" | "RUNNING" | "PENDING";
+  status: "COMPLETED" | "RUNNING" | "PENDING" | "TODO";
   priority?: string;
   categoryName?: string;
   badge?: string;
@@ -172,7 +172,8 @@ export function TodayDashboardClient({
     const task = taskQueue.find((t) => t.id === id);
     if (!task) return;
 
-    const nextStatus = task.status === "COMPLETED" ? "PENDING" : "COMPLETED";
+    const isCurrentlyCompleted = task.status === "COMPLETED";
+    const nextStatus: "COMPLETED" | "PENDING" = isCurrentlyCompleted ? "PENDING" : "COMPLETED";
 
     // Optimistic UI update
     setTaskQueue((prev) =>
@@ -202,15 +203,21 @@ export function TodayDashboardClient({
     );
 
     try {
-      await fetch(`/api/tasks/${id}`, {
+      const res = await fetch(`/api/tasks/${id}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          status: nextStatus === "COMPLETED" ? "COMPLETED" : "IN_PROGRESS",
+          status: isCurrentlyCompleted ? "TODO" : "COMPLETED",
         }),
       });
+      if (!res.ok) throw new Error("Gagal memperbarui status tugas");
+      router.refresh();
     } catch {
-      // offline fallback
+      // Revert if error
+      setTaskQueue((prev) =>
+        prev.map((t) => (t.id === id ? { ...t, status: task.status } : t))
+      );
+      toast("Gagal memperbarui status tugas", "error");
     }
   }
 

@@ -112,7 +112,10 @@ export async function updateTask(id: string, input: UpdateTaskInput, userId?: st
   }
 
   if (input.status) {
-    const rawStatus = input.status === "NOT_STARTED" ? "TODO" : input.status;
+    const rawStatus =
+      input.status === "NOT_STARTED" || input.status === "PENDING"
+        ? "TODO"
+        : input.status;
     data.status = rawStatus as TaskStatus;
     data.completedAt = rawStatus === "COMPLETED" ? new Date() : null;
     if (rawStatus !== "TODO") data.startedAt = task.startedAt ?? new Date();

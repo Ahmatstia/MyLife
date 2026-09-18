@@ -10,6 +10,7 @@ export const taskStatusSchema = z.enum([
   "CANCELLED",
   "ARCHIVED",
   "NOT_STARTED", // Backwards compatibility for legacy tests/clients
+  "PENDING",     // Backwards compatibility for pending tasks
 ]);
 export const taskTypeSchema = z.enum(["TASK", "LEARNING", "BUG", "IMPROVEMENT"]);
 

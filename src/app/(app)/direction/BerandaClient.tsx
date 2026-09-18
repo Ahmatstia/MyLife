@@ -52,7 +52,6 @@ interface BerandaClientProps {
   availableAreas: Area[];
   todayTasks: { id: string; title: string; status: string }[];
   activeGoals: { id: string; title: string; status: string; progress: number; areaName: string; areaColor: string }[];
-  recentActivities: { id: string; title: string; durationMinutes: number; endedAt: string | null }[];
 }
 
 function getValueIcon(name: string): string {
@@ -85,7 +84,6 @@ export function BerandaClient({
   availableAreas,
   todayTasks: initialTodayTasks,
   activeGoals,
-  recentActivities,
 }: BerandaClientProps) {
   const router = useRouter();
 
@@ -111,6 +109,21 @@ export function BerandaClient({
       { id: "starter-2", text: "Sesi deep work 25 menit", done: false },
     ];
   });
+
+  // Sync tasksState when initialTodayTasks prop updates (e.g. from router.refresh())
+  const [prevInitialTasks, setPrevInitialTasks] = useState(initialTodayTasks);
+  if (prevInitialTasks !== initialTodayTasks) {
+    setPrevInitialTasks(initialTodayTasks);
+    if (initialTodayTasks && initialTodayTasks.length > 0) {
+      setTasksState(
+        initialTodayTasks.map((t) => ({
+          id: t.id,
+          text: t.title,
+          done: t.status === "COMPLETED",
+        }))
+      );
+    }
+  }
 
   // Edit Modals State
   const [isEditIdentityOpen, setIsEditIdentityOpen] = useState(false);
@@ -218,17 +231,22 @@ export function BerandaClient({
     if (id.startsWith("starter-")) return;
 
     try {
-      await fetch(`/api/tasks/${id}`, {
+      const res = await fetch(`/api/tasks/${id}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ status: nextDone ? "COMPLETED" : "PENDING" }),
+        body: JSON.stringify({ status: nextDone ? "COMPLETED" : "TODO" }),
       });
-      showToast(nextDone ? "Tugas ditandai selesai! 🎉" : "Status tugas diperbarui.");
+      if (!res.ok) {
+        throw new Error("Gagal memperbarui status tugas.");
+      }
+      showToast(nextDone ? "Tugas ditandai selesai! 🎉" : "Status tugas dikembalikan.");
+      router.refresh();
     } catch {
       // Revert if error
       setTasksState((prev) =>
         prev.map((t) => (t.id === id ? { ...t, done: currentDone } : t))
       );
+      showToast("Gagal memperbarui status tugas.");
     }
   }
 
@@ -1215,48 +1233,7 @@ export function BerandaClient({
               </div>
             </div>
 
-            {/* ROW 4: Aktivitas Terbaru (REAL DATA) */}
-            <div className="space-y-2.5">
-              <div className="flex items-center justify-between">
-                <h2 className="text-xs font-bold text-zinc-400 uppercase tracking-wider">
-                  Aktivitas Terbaru
-                </h2>
-                <Link
-                  href="/today"
-                  className="text-xs font-medium text-indigo-400 hover:text-indigo-300 transition-colors"
-                >
-                  Lihat Semua →
-                </Link>
-              </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3">
-                {recentActivities.length > 0 ? (
-                  recentActivities.slice(0, 4).map((act) => (
-                    <div
-                      key={act.id}
-                      className="flex items-center gap-2.5 rounded-xl border border-white/10 bg-zinc-900/80 p-3 shadow-md"
-                    >
-                      <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-indigo-500/20 text-indigo-400">
-                        ⏱️
-                      </span>
-                      <div className="min-w-0">
-                        <p className="text-xs font-bold text-white truncate">{act.title}</p>
-                        <p className="text-[10px] text-zinc-400 truncate">
-                          Sesi Fokus • {act.durationMinutes} menit
-                        </p>
-                      </div>
-                    </div>
-                  ))
-                ) : (
-                  <div className="col-span-full rounded-xl border border-white/5 bg-zinc-900/50 p-4 text-center text-xs text-zinc-400">
-                    Belum ada sesi fokus tercatat hari ini.{" "}
-                    <Link href="/focus" className="text-indigo-400 font-semibold hover:underline">
-                      Mulai sesi fokus 🍅 →
-                    </Link>
-                  </div>
-                )}
-              </div>
-            </div>
           </div>
 
           {/* ================= RIGHT SIDEBAR WIDGETS (4 COLS) ===================== */}
