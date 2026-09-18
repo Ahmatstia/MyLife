@@ -112,3 +112,42 @@ export async function findWeeklyReviewDashboardData(userId: string, periodStart:
     sessionReflections,
   };
 }
+
+export async function findBatchReviewData(userId: string, periodStart: Date, periodEnd: Date) {
+  const [reviews, sessions, completedTasks] = await Promise.all([
+    prisma.review.findMany({
+      where: { userId, periodStart, periodEnd },
+    }),
+    prisma.session.findMany({
+      where: {
+        userId,
+        endedAt: { gte: periodStart, lte: periodEnd },
+      },
+      select: {
+        durationMinutes: true,
+        understanding: true,
+        task: {
+          select: {
+            stage: {
+              select: { goalId: true },
+            },
+          },
+        },
+      },
+    }),
+    prisma.task.findMany({
+      where: {
+        userId,
+        status: "COMPLETED",
+        completedAt: { gte: periodStart, lte: periodEnd },
+      },
+      select: {
+        stage: {
+          select: { goalId: true },
+        },
+      },
+    }),
+  ]);
+
+  return { reviews, sessions, completedTasks };
+}

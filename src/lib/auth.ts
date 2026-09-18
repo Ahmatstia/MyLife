@@ -1,4 +1,5 @@
 import { createHmac, randomBytes, timingSafeEqual } from "node:crypto";
+import { cache } from "react";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { findUserById } from "@/repositories/user.repository";
@@ -47,13 +48,13 @@ function verify(token: string) {
   return a.length === b.length && timingSafeEqual(a, b) ? userId : null;
 }
 
-export async function getCurrentUser(request?: Request) {
+export const getCurrentUser = cache(async (request?: Request) => {
   const token = request
     ? request.headers.get("cookie")?.split(";").map((item) => item.trim()).find((item) => item.startsWith(`${SESSION_COOKIE}=`))?.slice(SESSION_COOKIE.length + 1)
     : (await cookies()).get(SESSION_COOKIE)?.value;
   const userId = token ? verify(token) : null;
   return userId ? findUserById(userId) : null;
-}
+});
 
 export async function requireCurrentUser(request?: Request) {
   const user = await getCurrentUser(request);

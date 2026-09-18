@@ -9,6 +9,7 @@ import {
   findReviewsByGoalId,
   findUserReviews,
   findWeeklyReviewDashboardData,
+  findBatchReviewData,
   updateReview as updateReviewRecord,
 } from "@/repositories/review.repository";
 import type { ReviewInput } from "@/schemas/review.schema";
@@ -131,4 +132,54 @@ export async function getWeeklyReviewOverview(userId?: string) {
   const owner = requireUserId(userId);
   const period = getWeekPeriod(new Date());
   return findWeeklyReviewDashboardData(owner, period.periodStart);
+}
+
+export async function getBatchPeriodReviewData(userId: string, periodStart: Date, periodEnd: Date) {
+  const owner = requireUserId(userId);
+  const { reviews, sessions, completedTasks } = await findBatchReviewData(owner, periodStart, periodEnd);
+
+  const reviewMap = new Map<string, (typeof reviews)[0]>();
+  for (const r of reviews) {
+    reviewMap.set(r.goalId, r);
+  }
+
+  // Group sessions by goalId
+  const sessionsByGoal = new Map<string, { duration: number; understandings: number[] }>();
+  for (const s of sessions) {
+    const goalId = s.task?.stage?.goalId;
+    if (!goalId) continue;
+    const current = sessionsByGoal.get(goalId) || { duration: 0, understandings: [] };
+    current.duration += s.durationMinutes ?? 0;
+    if (s.understanding !== null) current.understandings.push(s.understanding);
+    sessionsByGoal.set(goalId, current);
+  }
+
+  // Group completed tasks by goalId
+  const completedCountByGoal = new Map<string, number>();
+  for (const t of completedTasks) {
+    const goalId = t.stage?.goalId;
+    if (!goalId) continue;
+    completedCountByGoal.set(goalId, (completedCountByGoal.get(goalId) || 0) + 1);
+  }
+
+  return {
+    getMetrics(goalId: string) {
+      const sess = sessionsByGoal.get(goalId);
+      const learningMinutes = sess?.duration ?? 0;
+      const tasksCompleted = completedCountByGoal.get(goalId) ?? 0;
+      const understanding = sess && sess.understandings.length > 0
+        ? sess.understandings.reduce((a, b) => a + b, 0) / sess.understandings.length
+        : null;
+
+      return {
+        learningMinutes,
+        learningHours: learningMinutes / 60,
+        tasksCompleted,
+        understanding,
+      };
+    },
+    getReview(goalId: string) {
+      return reviewMap.get(goalId) ?? null;
+    },
+  };
 }

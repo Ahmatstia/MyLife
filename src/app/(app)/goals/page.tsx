@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import Link from "next/link";
 import { getGoalsWithStages } from "@/services/goal.service";
 import { getAreas } from "@/services/area.service";
@@ -8,6 +9,7 @@ import { calculateGoalProgress } from "@/services/progress.service";
 import { GoalsBoard, type GoalCard } from "@/app/components/goals/GoalsBoard";
 import { ProjectsManager } from "@/app/(app)/projects/ProjectsManager";
 import { AreasManager } from "@/app/(app)/areas/AreasManager";
+import { CardSkeleton, ListSkeleton } from "@/app/components/ui/PageSkeleton";
 
 export const dynamic = "force-dynamic";
 
@@ -140,14 +142,30 @@ export default async function GoalsPage({
         ))}
       </div>
 
-      {/* TAB: GOALS */}
-      {activeTab === "goals" && <GoalsTabContent userId={user.id} />}
+      {/* TAB CONTENT WITH SUSPENSE */}
+      <Suspense key={activeTab} fallback={<GoalsTabFallback tab={activeTab} />}>
+        {/* TAB: GOALS */}
+        {activeTab === "goals" && <GoalsTabContent userId={user.id} />}
 
-      {/* TAB: PROJECTS */}
-      {activeTab === "projects" && <ProjectsTabContent userId={user.id} />}
+        {/* TAB: PROJECTS */}
+        {activeTab === "projects" && <ProjectsTabContent userId={user.id} />}
 
-      {/* TAB: AREAS */}
-      {activeTab === "areas" && <AreasTabContent userId={user.id} />}
+        {/* TAB: AREAS */}
+        {activeTab === "areas" && <AreasTabContent userId={user.id} />}
+      </Suspense>
+    </div>
+  );
+}
+
+function GoalsTabFallback({ tab }: { tab: Tab }) {
+  if (tab === "projects" || tab === "areas") {
+    return <ListSkeleton rows={5} />;
+  }
+  return (
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+      {Array.from({ length: 6 }).map((_, i) => (
+        <CardSkeleton key={i} className="h-56" />
+      ))}
     </div>
   );
 }

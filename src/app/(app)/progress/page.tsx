@@ -1,15 +1,15 @@
+import { Suspense } from "react";
 import Link from "next/link";
 import { requirePageUser } from "@/lib/auth";
 import {
   getWeekPeriod,
-  getPeriodMetrics,
-  getPeriodReview,
   getWeeklyReviewOverview,
   getAllReviews,
+  getBatchPeriodReviewData,
 } from "@/services/review.service";
 import { getDashboardAnalytics } from "@/services/analytics.service";
-import { getDashboardData } from "@/services/dashboard.service";
 import { calculateGoalProgress } from "@/services/progress.service";
+import { prisma } from "@/lib/prisma";
 import {
   getInsightsAnalytics,
   getPrioritizedTasks,
@@ -35,6 +35,12 @@ import InsightsDashboard from "@/app/(app)/insights/InsightsDashboard";
 import { ActivityManager } from "@/app/(app)/activity/ActivityManager";
 import { AICommandPanel } from "@/app/components/AICommandPanel";
 import { formatDuration } from "@/lib/format";
+import {
+  MetricCardsSkeleton,
+  BentoGridSkeleton,
+  ListSkeleton,
+  CardSkeleton,
+} from "@/app/components/ui/PageSkeleton";
 
 export const dynamic = "force-dynamic";
 
@@ -54,6 +60,43 @@ function formatRange(start: Date, end: Date) {
   return `${fmt.format(start)} – ${fmt.format(end)}`;
 }
 
+function ProgressTabFallback({ tab }: { tab: Tab }) {
+  if (tab === "statistik") {
+    return (
+      <div className="space-y-6">
+        <MetricCardsSkeleton />
+        <BentoGridSkeleton />
+      </div>
+    );
+  }
+  if (tab === "wawasan") {
+    return (
+      <div className="space-y-6">
+        <MetricCardsSkeleton />
+        <BentoGridSkeleton />
+      </div>
+    );
+  }
+  if (tab === "log") {
+    return (
+      <div className="space-y-6">
+        <ListSkeleton rows={6} />
+      </div>
+    );
+  }
+  return (
+    <div className="space-y-6">
+      <CardSkeleton className="h-16" />
+      <MetricCardsSkeleton />
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+        {Array.from({ length: 6 }).map((_, i) => (
+          <CardSkeleton key={i} className="h-56" />
+        ))}
+      </div>
+    </div>
+  );
+}
+
 export default async function ProgressPage({
   searchParams,
 }: {
@@ -63,30 +106,6 @@ export default async function ProgressPage({
   const { tab: rawTab } = await searchParams;
   const activeTab: Tab = (VALID_TABS.includes(rawTab as Tab) ? rawTab : "review") as Tab;
   const now = new Date();
-
-  // ── REVIEW ────────────────────────────────────────────────────────────────
-  let reviewData: Awaited<ReturnType<typeof buildReviewData>> | null = null;
-  if (activeTab === "review") {
-    reviewData = await buildReviewData(user.id, now);
-  }
-
-  // ── STATISTIK ─────────────────────────────────────────────────────────────
-  let statistikData: Awaited<ReturnType<typeof buildStatistikData>> | null = null;
-  if (activeTab === "statistik") {
-    statistikData = await buildStatistikData(user.id);
-  }
-
-  // ── WAWASAN ───────────────────────────────────────────────────────────────
-  let wawasanData: Awaited<ReturnType<typeof buildWawasanData>> | null = null;
-  if (activeTab === "wawasan") {
-    wawasanData = await buildWawasanData(user.id, now);
-  }
-
-  // ── LOG ───────────────────────────────────────────────────────────────────
-  let logData: Awaited<ReturnType<typeof buildLogData>> | null = null;
-  if (activeTab === "log") {
-    logData = await buildLogData(user.id);
-  }
 
   return (
     <div className="flex flex-col w-full space-y-6 pb-16 text-gray-200">
@@ -126,34 +145,52 @@ export default async function ProgressPage({
         </div>
       </div>
 
-      {/* ── TAB: REVIEW MINGGUAN ─────────────────────────────────────────── */}
-      {activeTab === "review" && reviewData && <ReviewTab data={reviewData} />}
-
-      {/* ── TAB: STATISTIK ───────────────────────────────────────────────── */}
-      {activeTab === "statistik" && statistikData && <StatistikTab data={statistikData} />}
-
-      {/* ── TAB: WAWASAN AI ──────────────────────────────────────────────── */}
-      {activeTab === "wawasan" && wawasanData && (
-        <InsightsDashboard
-          initialAnalytics={wawasanData.analytics}
-          initialPriority={wawasanData.priority}
-          initialDailyPlan={wawasanData.dailyPlan}
-          initialConflicts={wawasanData.conflicts}
-          initialInbox={wawasanData.inbox}
-          initialHealth={wawasanData.health}
-        />
-      )}
-
-      {/* ── TAB: LOG AKTIVITAS ───────────────────────────────────────────── */}
-      {activeTab === "log" && logData && (
-        <ActivityManager
-          initialActivities={logData.activities}
-          areas={logData.areas}
-          projects={logData.projects}
-          compact={true}
-        />
-      )}
+      {/* TAB CONTENT WITH SUSPENSE STREAMING */}
+      <Suspense key={activeTab} fallback={<ProgressTabFallback tab={activeTab} />}>
+        {activeTab === "review" && <AsyncReviewTab userId={user.id} now={now} />}
+        {activeTab === "statistik" && <AsyncStatistikTab userId={user.id} />}
+        {activeTab === "wawasan" && <AsyncWawasanTab userId={user.id} now={now} />}
+        {activeTab === "log" && <AsyncLogTab userId={user.id} />}
+      </Suspense>
     </div>
+  );
+}
+
+// ── ASYNC TAB STREAMING CONTAINERS ───────────────────────────────────────────
+
+async function AsyncReviewTab({ userId, now }: { userId: string; now: Date }) {
+  const data = await buildReviewData(userId, now);
+  return <ReviewTab data={data} />;
+}
+
+async function AsyncStatistikTab({ userId }: { userId: string }) {
+  const data = await buildStatistikData(userId);
+  return <StatistikTab data={data} />;
+}
+
+async function AsyncWawasanTab({ userId, now }: { userId: string; now: Date }) {
+  const data = await buildWawasanData(userId, now);
+  return (
+    <InsightsDashboard
+      initialAnalytics={data.analytics}
+      initialPriority={data.priority}
+      initialDailyPlan={data.dailyPlan}
+      initialConflicts={data.conflicts}
+      initialInbox={data.inbox}
+      initialHealth={data.health}
+    />
+  );
+}
+
+async function AsyncLogTab({ userId }: { userId: string }) {
+  const data = await buildLogData(userId);
+  return (
+    <ActivityManager
+      initialActivities={data.activities}
+      areas={data.areas}
+      projects={data.projects}
+      compact={true}
+    />
   );
 }
 
@@ -161,20 +198,17 @@ export default async function ProgressPage({
 
 async function buildReviewData(userId: string, now: Date) {
   const period = getWeekPeriod(now);
-  const [overview, allPastReviews] = await Promise.all([
+  const [overview, allPastReviews, batchMetrics] = await Promise.all([
     getWeeklyReviewOverview(userId),
     getAllReviews(userId, 15),
+    getBatchPeriodReviewData(userId, period.periodStart, period.periodEnd),
   ]);
   const { goals, reviewedGoalIds: reviewed, captures, sessionReflections } = overview;
-  const rows = await Promise.all(
-    goals.map(async (goal) => {
-      const [metrics, review] = await Promise.all([
-        getPeriodMetrics(goal.id, period.periodStart, period.periodEnd, userId),
-        getPeriodReview(goal.id, period.periodStart, period.periodEnd, userId),
-      ]);
-      return { goal, metrics, review, progress: calculateGoalProgress(goal.stages) };
-    })
-  );
+  const rows = goals.map((goal) => {
+    const metrics = batchMetrics.getMetrics(goal.id);
+    const review = batchMetrics.getReview(goal.id);
+    return { goal, metrics, review, progress: calculateGoalProgress(goal.stages) };
+  });
   const totalMinutes = rows.reduce((s, r) => s + r.metrics.learningMinutes, 0);
   const totalTasks = rows.reduce((s, r) => s + r.metrics.tasksCompleted, 0);
   const timelineEntries: TimelineEntry[] = [
@@ -205,12 +239,39 @@ async function buildReviewData(userId: string, now: Date) {
 }
 
 async function buildStatistikData(userId: string) {
-  const [analytics, dashboard] = await Promise.all([
+  const startOfToday = new Date();
+  startOfToday.setHours(0, 0, 0, 0);
+
+  const [analytics, todayAgg, recentSessions] = await Promise.all([
     getDashboardAnalytics({ days: 365 }, userId),
-    getDashboardData(userId),
+    prisma.session.aggregate({
+      where: { userId, endedAt: { gte: startOfToday } },
+      _sum: { durationMinutes: true },
+    }),
+    prisma.session.findMany({
+      where: { userId },
+      orderBy: { startedAt: "desc" },
+      take: 5,
+      include: {
+        task: {
+          include: {
+            stage: {
+              include: { goal: true },
+            },
+          },
+        },
+      },
+    }),
   ]);
+
+  const dashboard = {
+    studyMinutesToday: todayAgg._sum.durationMinutes ?? 0,
+    recentSessions,
+  };
+
   return { analytics, dashboard, summary: analytics.summary, bottlenecks: analytics.bottlenecks };
 }
+
 
 async function buildWawasanData(userId: string, now: Date) {
   const [analytics, priority, dailyPlan, conflicts, inbox, health] = await Promise.all([
