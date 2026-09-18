@@ -65,6 +65,8 @@ export default function TaskForm({ stageId, label = "Tambah task" }: TaskFormPro
     }
   }
 
+  const cleanLabel = (label || "Task baru").replace(/^\+\s*/, "");
+
   return (
     <>
       <button
@@ -72,7 +74,7 @@ export default function TaskForm({ stageId, label = "Tambah task" }: TaskFormPro
         onClick={() => setOpen(true)}
         className="mt-4 flex w-full items-center justify-center gap-1.5 rounded-xl border border-dashed border-surface-300 bg-surface-0 px-4 py-3 text-sm font-medium text-surface-500 transition hover:border-primary-400 hover:bg-primary-50/40 hover:text-primary-700"
       >
-        <span className="text-lg leading-none">+</span> {label}
+        <span className="text-lg leading-none">+</span> {cleanLabel}
       </button>
 
       <Dialog

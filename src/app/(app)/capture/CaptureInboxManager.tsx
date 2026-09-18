@@ -581,7 +581,7 @@ export function CaptureInboxManager({
                           <polyline points="9 11 12 14 22 4" />
                           <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11" />
                         </svg>
-                        <span>+ Tugas</span>
+                        <span>Tugas</span>
                       </button>
                       <button
                         type="button"
@@ -593,7 +593,7 @@ export function CaptureInboxManager({
                           <circle cx="12" cy="12" r="6" />
                           <circle cx="12" cy="12" r="2" />
                         </svg>
-                        <span>+ Target</span>
+                        <span>Target</span>
                       </button>
                       <button
                         type="button"
@@ -605,7 +605,7 @@ export function CaptureInboxManager({
                           <polyline points="2 17 12 22 22 17" />
                           <polyline points="2 12 12 17 22 12" />
                         </svg>
-                        <span>+ Proyek</span>
+                        <span>Proyek</span>
                       </button>
                     </div>
                   )}

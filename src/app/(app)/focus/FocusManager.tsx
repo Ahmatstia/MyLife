@@ -1081,7 +1081,7 @@ export function FocusManager({
                         href="/today"
                         className="px-4 py-2 rounded-xl bg-zinc-800 hover:bg-zinc-700 text-purple-300 font-medium text-xs transition-all flex items-center gap-1.5 border border-white/[0.08]"
                       >
-                        <span>+ Tambah Tugas di Halaman Hari Ini</span>
+                        <span>Tambah Tugas di Halaman Hari Ini</span>
                       </Link>
                     )}
                   </div>
@@ -1640,7 +1640,7 @@ export function FocusManager({
                           <line x1="12" y1="5" x2="12" y2="19" />
                           <line x1="5" y1="12" x2="19" y2="12" />
                         </svg>
-                        <span>{loadingTaskId === task.id ? "..." : "+ Fokus"}</span>
+                        <span>{loadingTaskId === task.id ? "..." : "Fokus"}</span>
                       </button>
                     </div>
                   ))

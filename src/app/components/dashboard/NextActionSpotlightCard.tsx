@@ -58,7 +58,7 @@ export function NextActionSpotlightCard({ action }: NextActionProps) {
           href="/tasks"
           className="px-3.5 py-2 rounded-lg bg-[#282a30] hover:bg-[#1A2133] text-[#cbc3d7] font-mono text-xs border border-white/[0.06] transition-colors shrink-0"
         >
-          + Tambah Tugas
+          Tambah Tugas
         </Link>
       </div>
     );

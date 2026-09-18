@@ -169,19 +169,29 @@ export default function GoalActionsMenu({
 
   return (
     <>
-      <div className="relative" ref={menuRef}>
+      <div className="flex items-center gap-1.5">
         <Button
           variant="secondary"
           size="sm"
-          onClick={() => setMenuOpen((prev) => !prev)}
-          aria-label="Aksi goal"
-          aria-expanded={menuOpen}
-          aria-haspopup="menu"
-        >
-          <Icon name="menu" size={15} />
-          <span className="hidden sm:inline ml-1">Aksi</span>
-          <Icon name="arrowRight" size={12} className={`transition-transform ${menuOpen ? "rotate-90" : ""}`} />
-        </Button>
+          icon="edit"
+          onClick={() => setEditOpen(true)}
+          title="Edit Target"
+          aria-label="Edit Target"
+        />
+
+        <div className="relative" ref={menuRef}>
+          <Button
+            variant="secondary"
+            size="sm"
+            onClick={() => setMenuOpen((prev) => !prev)}
+            aria-label="Aksi goal"
+            aria-expanded={menuOpen}
+            aria-haspopup="menu"
+          >
+            <Icon name="menu" size={15} />
+            <span className="hidden sm:inline ml-1">Aksi</span>
+            <Icon name="arrowRight" size={12} className={`transition-transform ${menuOpen ? "rotate-90" : ""}`} />
+          </Button>
 
         {menuOpen && (
           <div
@@ -241,6 +251,7 @@ export default function GoalActionsMenu({
             </button>
           </div>
         )}
+      </div>
       </div>
 
       {/* ── Edit Goal Dialog ──────────────────────────────────── */}

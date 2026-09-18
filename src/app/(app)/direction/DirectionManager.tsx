@@ -578,7 +578,7 @@ export function DirectionManager({
                       onClick={() => setIsFocusAreaModalOpen(true)}
                       className="mt-3 text-xs"
                     >
-                      + Tambah Fokus Pertama
+                      Tambah Fokus Pertama
                     </Button>
                   </div>
                 )}

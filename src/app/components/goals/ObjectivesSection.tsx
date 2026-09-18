@@ -142,7 +142,7 @@ export function ObjectivesSection({
           }`}
         >
           <Icon name={isAdding ? "x" : "plus"} size={14} />
-          {isAdding ? "Tutup Form" : "+ Buat Target Angka"}
+          {isAdding ? "Tutup Form" : "Buat Target Angka"}
         </button>
       </div>
 
@@ -402,7 +402,7 @@ export function ObjectivesSection({
               Belum Ada Indikator Target Angka
             </p>
             <p className="text-[11px] text-gray-500 max-w-md">
-              Ingin mengukur pencapaian dengan angka pasti (seperti menyelesaikan 40 latihan soal atau 5 modul)? Klik tombol <strong className="text-purple-300 font-mono">+ Buat Target Angka</strong> di atas.
+              Ingin mengukur pencapaian dengan angka pasti (seperti menyelesaikan 40 latihan soal atau 5 modul)? Klik tombol <strong className="text-purple-300 font-mono">Buat Target Angka</strong> di atas.
             </p>
           </div>
         )}

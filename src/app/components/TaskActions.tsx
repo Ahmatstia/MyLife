@@ -96,9 +96,9 @@ export default function TaskActions({ id, name, description, priority, estimated
         size="sm"
         onClick={startEditing}
         disabled={loading}
-      >
-        Edit detail
-      </Button>
+        title="Edit detail tugas"
+        aria-label="Edit detail tugas"
+      />
 
       <Button
         variant="ghost"

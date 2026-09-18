@@ -978,9 +978,11 @@ export function BerandaClient({
                     <button
                       type="button"
                       onClick={() => setIsEditValuesOpen(true)}
-                      className="text-[11px] font-semibold text-zinc-600 hover:text-zinc-900 transition-colors flex items-center gap-1"
+                      className="flex h-7 w-7 items-center justify-center rounded-lg border border-[#E8DFC8] text-zinc-600 hover:bg-black/5 hover:text-zinc-900 transition-colors cursor-pointer"
+                      title="Edit Nilai-Nilai Inti"
+                      aria-label="Edit Nilai-Nilai Inti"
                     >
-                      <Icon name="edit" size={11} /> Edit
+                      <Icon name="edit" size={13} />
                     </button>
                   </div>
 
@@ -1004,7 +1006,7 @@ export function BerandaClient({
                           onClick={() => setIsEditValuesOpen(true)}
                           className="text-amber-800 font-semibold hover:underline"
                         >
-                          + Tambah Nilai Inti →
+                          Tambah Nilai Inti →
                         </button>
                       </div>
                     )}
@@ -1044,9 +1046,11 @@ export function BerandaClient({
                     <button
                       type="button"
                       onClick={() => setIsEditPrinciplesOpen(true)}
-                      className="flex items-center gap-1 rounded-md px-1.5 py-0.5 text-[11px] text-zinc-400 hover:bg-white/10 hover:text-white transition-colors"
+                      className="flex h-7 w-7 items-center justify-center rounded-lg border border-white/10 text-zinc-400 hover:bg-white/10 hover:text-white transition-colors cursor-pointer"
+                      title="Edit Prinsip Hidup"
+                      aria-label="Edit Prinsip Hidup"
                     >
-                      <Icon name="edit" size={11} /> Edit
+                      <Icon name="edit" size={13} />
                     </button>
                   </div>
 
@@ -1071,7 +1075,7 @@ export function BerandaClient({
                           onClick={() => setIsEditPrinciplesOpen(true)}
                           className="text-indigo-400 font-semibold hover:underline"
                         >
-                          + Tambah Prinsip Hidup →
+                          Tambah Prinsip Hidup →
                         </button>
                       </div>
                     )}
@@ -1169,9 +1173,11 @@ export function BerandaClient({
                   <button
                     type="button"
                     onClick={() => setIsEditRolesOpen(true)}
-                    className="flex items-center gap-1 rounded-md px-1.5 py-0.5 text-[11px] text-zinc-400 hover:bg-white/10 hover:text-white transition-colors"
+                    className="flex h-7 w-7 items-center justify-center rounded-lg border border-white/10 text-zinc-400 hover:bg-white/10 hover:text-white transition-colors cursor-pointer"
+                    title="Edit Peran Penting"
+                    aria-label="Edit Peran Penting"
                   >
-                    <Icon name="edit" size={11} /> Edit
+                    <Icon name="edit" size={13} />
                   </button>
                 </div>
 
@@ -1473,10 +1479,11 @@ export function BerandaClient({
               <Button
                 variant="secondary"
                 size="sm"
+                icon="edit"
                 onClick={() => setIsVisionModalOpen(true)}
-              >
-                <Icon name="edit" size={13} /> Edit Visi
-              </Button>
+                title="Edit Visi"
+                aria-label="Edit Visi"
+              />
             </div>
 
             <p className="text-sm md:text-base font-serif italic text-zinc-200 leading-relaxed bg-zinc-950/40 p-4 rounded-2xl border border-white/5">
@@ -1605,9 +1612,14 @@ export function BerandaClient({
                 <span className="text-amber-400 text-base">💡</span>
                 <h3 className="text-base font-bold text-white">Prinsip Hidup Pegangan</h3>
               </div>
-              <Button variant="secondary" size="sm" onClick={() => setIsEditPrinciplesOpen(true)}>
-                <Icon name="edit" size={13} /> Edit Prinsip
-              </Button>
+              <Button
+                variant="secondary"
+                size="sm"
+                icon="edit"
+                onClick={() => setIsEditPrinciplesOpen(true)}
+                title="Edit Prinsip"
+                aria-label="Edit Prinsip"
+              />
             </div>
 
             <div className="space-y-2.5">

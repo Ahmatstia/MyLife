@@ -151,7 +151,7 @@ export function LearningNotesForm({
                 onChange={(e) => setConceptInput(e.target.value)}
                 onKeyDown={onConceptKeyDown}
                 onBlur={addConcept}
-                placeholder={concepts.length === 0 ? "Ketik konsep, tekan Enter…" : "+ Tambah"}
+                placeholder={concepts.length === 0 ? "Ketik konsep, tekan Enter…" : "Tambah konsep…"}
                 className="min-w-0 flex-1 bg-transparent text-[12px] text-white placeholder:text-zinc-500 outline-none"
               />
             )}

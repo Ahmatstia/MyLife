@@ -111,6 +111,8 @@ export default function NewGoalButton({
     }
   }
 
+  const cleanLabel = (buttonLabel || "Goal baru").replace(/^\+\s*/, "");
+
   return (
     <>
       {customTrigger ? (
@@ -128,7 +130,7 @@ export default function NewGoalButton({
             setOpen(true);
           }}
         >
-          {buttonLabel}
+          {cleanLabel}
         </Button>
       )}
 

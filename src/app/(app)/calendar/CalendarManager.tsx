@@ -356,7 +356,7 @@ function ToDoListView({
               disabled={submitting || !quickTitle.trim()}
               className="px-4 py-2.5 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white font-semibold text-xs rounded-xl transition-all shadow-md shadow-purple-600/25 active:scale-95 disabled:opacity-40 shrink-0"
             >
-              {submitting ? "Menyimpan..." : "+ Tambah"}
+              {submitting ? "Menyimpan..." : "Tambah"}
             </button>
           </div>
         </form>
@@ -1339,7 +1339,7 @@ export function CalendarManager({
               <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
                 <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm5 11h-4v4h-2v-4H7v-2h4V7h2v4h4v2z" />
               </svg>
-              <span>+ Buat Jadwal</span>
+              <span>Buat Jadwal</span>
             </button>
           </div>
         </div>

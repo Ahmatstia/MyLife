@@ -121,7 +121,7 @@ export default async function AreaDetailPage({
               <NewGoalButton
                 areas={allAreas}
                 defaultAreaId={area.id}
-                buttonLabel="+ Target"
+                buttonLabel="Target Baru"
                 buttonVariant="primary"
                 buttonSize="md"
               />
@@ -130,7 +130,7 @@ export default async function AreaDetailPage({
                 className="inline-flex items-center gap-1.5 rounded-xl border border-white/10 bg-[#0E131F] px-4 py-2.5 text-xs font-semibold text-white hover:border-violet-500/40 hover:bg-[#1A2133] shadow-lg transition active:scale-95"
               >
                 <Icon name="plus" size={14} className="text-indigo-400" />
-                <span>+ Proyek</span>
+                <span>Proyek</span>
               </Link>
             </div>
           </div>
@@ -179,7 +179,7 @@ export default async function AreaDetailPage({
           <NewGoalButton
             areas={allAreas}
             defaultAreaId={area.id}
-            buttonLabel="+ Tambah Target"
+            buttonLabel="Tambah Target"
             buttonVariant="secondary"
             buttonSize="sm"
           />
@@ -256,7 +256,7 @@ export default async function AreaDetailPage({
             className="inline-flex items-center gap-1 rounded-xl border border-white/10 bg-[#0E131F] px-3 py-1.5 text-xs font-semibold text-surface-300 hover:border-violet-500/30 hover:text-white transition"
           >
             <Icon name="plus" size={12} />
-            + Tambah Proyek
+            Tambah Proyek
           </Link>
         </div>
 

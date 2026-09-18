@@ -1065,7 +1065,7 @@ export function TodayDashboardClient({
                         disabled={isAddingTask || !newTaskTitle.trim()}
                         className="px-4 py-2.5 rounded-xl bg-[#8B5CF6] hover:bg-[#7c3aed] text-white text-xs font-bold shadow-xs disabled:opacity-50 transition-all shrink-0 active:scale-95"
                       >
-                        {isAddingTask ? "Menyimpan..." : "+ Tambah"}
+                        {isAddingTask ? "Menyimpan..." : "Tambah"}
                       </button>
                     </div>
                   </form>
@@ -1120,7 +1120,7 @@ export function TodayDashboardClient({
                   className="px-3.5 py-2 rounded-xl bg-[#8B5CF6]/15 hover:bg-[#8B5CF6]/25 text-[#8B5CF6] dark:text-[#d0bcff] border border-[#8B5CF6]/30 text-xs font-bold flex items-center gap-1.5 transition-all cursor-pointer active:scale-95"
                 >
                   <span className="material-symbols-outlined text-[16px]">add</span>
-                  <span>+ Blok Waktu</span>
+                  <span>Blok Waktu</span>
                 </button>
 
                 <Link
@@ -1148,7 +1148,7 @@ export function TodayDashboardClient({
                   onClick={() => setIsCreatingTimeblock(true)}
                   className="px-4 py-2 rounded-xl bg-[#8B5CF6] hover:bg-[#7c3aed] text-white text-xs font-bold transition-all shadow-xs"
                 >
-                  + Jadwalkan Blok Waktu
+                  Jadwalkan Blok Waktu
                 </button>
               </div>
             ) : (

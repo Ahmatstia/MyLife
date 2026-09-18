@@ -475,14 +475,15 @@ export function ProjectDetailView({ project }: { project: ProjectDetail }) {
                 <span className="font-mono text-xs font-bold text-[#4edea3]">{progressPercent}%</span>
               </div>
 
-              {/* Edit Detail Proyek Button */}
+              {/* Edit Detail Proyek Button (Icon-Only Pencil) */}
               <button
                 type="button"
                 onClick={() => setIsEditingProject(true)}
-                className="inline-flex items-center gap-2 px-3.5 py-2 rounded-lg bg-[#282a30] hover:bg-[#1A2133] text-white font-medium text-xs transition-all shadow-sm border border-white/[0.08] cursor-pointer"
+                className="flex h-8 w-8 items-center justify-center rounded-lg bg-[#282a30] hover:bg-[#1A2133] text-[#d0bcff] hover:text-white transition-all shadow-sm border border-white/[0.08] cursor-pointer"
+                title="Edit Detail Proyek"
+                aria-label="Edit Detail Proyek"
               >
-                <span className="material-symbols-outlined text-[16px] text-[#d0bcff]">edit</span>
-                <span>Edit Detail Proyek</span>
+                <span className="material-symbols-outlined text-[16px]">edit</span>
               </button>
             </div>
           </div>
@@ -694,7 +695,7 @@ export function ProjectDetailView({ project }: { project: ProjectDetail }) {
                   onClick={() => setIsAddingTask(true)}
                   className="mt-2 text-xs font-mono font-semibold text-[#d0bcff] hover:underline"
                 >
-                  + Tambah Tugas Pertama
+                  Tambah Tugas Pertama
                 </button>
               </div>
             )}
@@ -1014,7 +1015,7 @@ export function ProjectDetailView({ project }: { project: ProjectDetail }) {
                   onClick={() => setIsAddingMilestone(true)}
                   className="mt-2 text-xs font-mono font-semibold text-[#c0c1ff] hover:underline cursor-pointer"
                 >
-                  + Tambah Tonggak Pertama
+                  Tambah Tonggak Pertama
                 </button>
               </div>
             )}

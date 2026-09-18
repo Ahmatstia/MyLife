@@ -106,7 +106,7 @@ export function AreasManager({ initialAreas }: { initialAreas: AreaItem[] }) {
           className="inline-flex items-center gap-2 rounded-xl bg-violet-600 px-4 py-2.5 text-xs font-semibold text-white shadow-lg shadow-violet-500/25 hover:bg-violet-500 transition-all self-start sm:self-auto active:scale-[0.98]"
         >
           <Icon name={isCreating ? "x" : "plus"} size={14} />
-          {isCreating ? "Batal" : "+ Tambah Pilar"}
+          {isCreating ? "Batal" : "Tambah Pilar"}
         </button>
       </div>
 
@@ -272,7 +272,7 @@ export function AreasManager({ initialAreas }: { initialAreas: AreaItem[] }) {
                 <NewGoalButton
                   areas={initialAreas.map((a) => ({ id: a.id, name: a.name, color: a.color }))}
                   defaultAreaId={area.id}
-                  buttonLabel="+ Goal"
+                  buttonLabel="Target Baru"
                   buttonVariant="secondary"
                   buttonSize="sm"
                 />
@@ -281,7 +281,7 @@ export function AreasManager({ initialAreas }: { initialAreas: AreaItem[] }) {
                   className="inline-flex h-8 items-center gap-1 rounded-xl border border-white/10 bg-[#0E131F] px-3 text-xs font-semibold text-surface-300 hover:border-violet-500/30 hover:text-white transition"
                 >
                   <Icon name="plus" size={12} />
-                  + Proyek
+                  Proyek
                 </Link>
               </div>
 
