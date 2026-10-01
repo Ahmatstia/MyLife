@@ -217,6 +217,9 @@ export type UserWhereInput = {
   lifeVision?: Prisma.XOR<Prisma.LifeVisionNullableScalarRelationFilter, Prisma.LifeVisionWhereInput> | null
   lifeChapters?: Prisma.LifeChapterListRelationFilter
   lifeReflections?: Prisma.LifeReflectionListRelationFilter
+  habits?: Prisma.HabitListRelationFilter
+  habitLogs?: Prisma.HabitLogListRelationFilter
+  habitStreaks?: Prisma.HabitStreakListRelationFilter
 }
 
 export type UserOrderByWithRelationInput = {
@@ -246,6 +249,9 @@ export type UserOrderByWithRelationInput = {
   lifeVision?: Prisma.LifeVisionOrderByWithRelationInput
   lifeChapters?: Prisma.LifeChapterOrderByRelationAggregateInput
   lifeReflections?: Prisma.LifeReflectionOrderByRelationAggregateInput
+  habits?: Prisma.HabitOrderByRelationAggregateInput
+  habitLogs?: Prisma.HabitLogOrderByRelationAggregateInput
+  habitStreaks?: Prisma.HabitStreakOrderByRelationAggregateInput
 }
 
 export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -278,6 +284,9 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   lifeVision?: Prisma.XOR<Prisma.LifeVisionNullableScalarRelationFilter, Prisma.LifeVisionWhereInput> | null
   lifeChapters?: Prisma.LifeChapterListRelationFilter
   lifeReflections?: Prisma.LifeReflectionListRelationFilter
+  habits?: Prisma.HabitListRelationFilter
+  habitLogs?: Prisma.HabitLogListRelationFilter
+  habitStreaks?: Prisma.HabitStreakListRelationFilter
 }, "id" | "email">
 
 export type UserOrderByWithAggregationInput = {
@@ -333,6 +342,9 @@ export type UserCreateInput = {
   lifeVision?: Prisma.LifeVisionCreateNestedOneWithoutUserInput
   lifeChapters?: Prisma.LifeChapterCreateNestedManyWithoutUserInput
   lifeReflections?: Prisma.LifeReflectionCreateNestedManyWithoutUserInput
+  habits?: Prisma.HabitCreateNestedManyWithoutUserInput
+  habitLogs?: Prisma.HabitLogCreateNestedManyWithoutUserInput
+  habitStreaks?: Prisma.HabitStreakCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateInput = {
@@ -362,6 +374,9 @@ export type UserUncheckedCreateInput = {
   lifeVision?: Prisma.LifeVisionUncheckedCreateNestedOneWithoutUserInput
   lifeChapters?: Prisma.LifeChapterUncheckedCreateNestedManyWithoutUserInput
   lifeReflections?: Prisma.LifeReflectionUncheckedCreateNestedManyWithoutUserInput
+  habits?: Prisma.HabitUncheckedCreateNestedManyWithoutUserInput
+  habitLogs?: Prisma.HabitLogUncheckedCreateNestedManyWithoutUserInput
+  habitStreaks?: Prisma.HabitStreakUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserUpdateInput = {
@@ -391,6 +406,9 @@ export type UserUpdateInput = {
   lifeVision?: Prisma.LifeVisionUpdateOneWithoutUserNestedInput
   lifeChapters?: Prisma.LifeChapterUpdateManyWithoutUserNestedInput
   lifeReflections?: Prisma.LifeReflectionUpdateManyWithoutUserNestedInput
+  habits?: Prisma.HabitUpdateManyWithoutUserNestedInput
+  habitLogs?: Prisma.HabitLogUpdateManyWithoutUserNestedInput
+  habitStreaks?: Prisma.HabitStreakUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateInput = {
@@ -420,6 +438,9 @@ export type UserUncheckedUpdateInput = {
   lifeVision?: Prisma.LifeVisionUncheckedUpdateOneWithoutUserNestedInput
   lifeChapters?: Prisma.LifeChapterUncheckedUpdateManyWithoutUserNestedInput
   lifeReflections?: Prisma.LifeReflectionUncheckedUpdateManyWithoutUserNestedInput
+  habits?: Prisma.HabitUncheckedUpdateManyWithoutUserNestedInput
+  habitLogs?: Prisma.HabitLogUncheckedUpdateManyWithoutUserNestedInput
+  habitStreaks?: Prisma.HabitStreakUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateManyInput = {
@@ -765,6 +786,48 @@ export type UserUpdateOneRequiredWithoutLifeReflectionsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutLifeReflectionsInput, Prisma.UserUpdateWithoutLifeReflectionsInput>, Prisma.UserUncheckedUpdateWithoutLifeReflectionsInput>
 }
 
+export type UserCreateNestedOneWithoutHabitsInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutHabitsInput, Prisma.UserUncheckedCreateWithoutHabitsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutHabitsInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutHabitsNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutHabitsInput, Prisma.UserUncheckedCreateWithoutHabitsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutHabitsInput
+  upsert?: Prisma.UserUpsertWithoutHabitsInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutHabitsInput, Prisma.UserUpdateWithoutHabitsInput>, Prisma.UserUncheckedUpdateWithoutHabitsInput>
+}
+
+export type UserCreateNestedOneWithoutHabitLogsInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutHabitLogsInput, Prisma.UserUncheckedCreateWithoutHabitLogsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutHabitLogsInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutHabitLogsNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutHabitLogsInput, Prisma.UserUncheckedCreateWithoutHabitLogsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutHabitLogsInput
+  upsert?: Prisma.UserUpsertWithoutHabitLogsInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutHabitLogsInput, Prisma.UserUpdateWithoutHabitLogsInput>, Prisma.UserUncheckedUpdateWithoutHabitLogsInput>
+}
+
+export type UserCreateNestedOneWithoutHabitStreaksInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutHabitStreaksInput, Prisma.UserUncheckedCreateWithoutHabitStreaksInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutHabitStreaksInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutHabitStreaksNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutHabitStreaksInput, Prisma.UserUncheckedCreateWithoutHabitStreaksInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutHabitStreaksInput
+  upsert?: Prisma.UserUpsertWithoutHabitStreaksInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutHabitStreaksInput, Prisma.UserUpdateWithoutHabitStreaksInput>, Prisma.UserUncheckedUpdateWithoutHabitStreaksInput>
+}
+
 export type UserCreateWithoutPreferenceInput = {
   id?: string
   email: string
@@ -791,6 +854,9 @@ export type UserCreateWithoutPreferenceInput = {
   lifeVision?: Prisma.LifeVisionCreateNestedOneWithoutUserInput
   lifeChapters?: Prisma.LifeChapterCreateNestedManyWithoutUserInput
   lifeReflections?: Prisma.LifeReflectionCreateNestedManyWithoutUserInput
+  habits?: Prisma.HabitCreateNestedManyWithoutUserInput
+  habitLogs?: Prisma.HabitLogCreateNestedManyWithoutUserInput
+  habitStreaks?: Prisma.HabitStreakCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutPreferenceInput = {
@@ -819,6 +885,9 @@ export type UserUncheckedCreateWithoutPreferenceInput = {
   lifeVision?: Prisma.LifeVisionUncheckedCreateNestedOneWithoutUserInput
   lifeChapters?: Prisma.LifeChapterUncheckedCreateNestedManyWithoutUserInput
   lifeReflections?: Prisma.LifeReflectionUncheckedCreateNestedManyWithoutUserInput
+  habits?: Prisma.HabitUncheckedCreateNestedManyWithoutUserInput
+  habitLogs?: Prisma.HabitLogUncheckedCreateNestedManyWithoutUserInput
+  habitStreaks?: Prisma.HabitStreakUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutPreferenceInput = {
@@ -863,6 +932,9 @@ export type UserUpdateWithoutPreferenceInput = {
   lifeVision?: Prisma.LifeVisionUpdateOneWithoutUserNestedInput
   lifeChapters?: Prisma.LifeChapterUpdateManyWithoutUserNestedInput
   lifeReflections?: Prisma.LifeReflectionUpdateManyWithoutUserNestedInput
+  habits?: Prisma.HabitUpdateManyWithoutUserNestedInput
+  habitLogs?: Prisma.HabitLogUpdateManyWithoutUserNestedInput
+  habitStreaks?: Prisma.HabitStreakUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutPreferenceInput = {
@@ -891,6 +963,9 @@ export type UserUncheckedUpdateWithoutPreferenceInput = {
   lifeVision?: Prisma.LifeVisionUncheckedUpdateOneWithoutUserNestedInput
   lifeChapters?: Prisma.LifeChapterUncheckedUpdateManyWithoutUserNestedInput
   lifeReflections?: Prisma.LifeReflectionUncheckedUpdateManyWithoutUserNestedInput
+  habits?: Prisma.HabitUncheckedUpdateManyWithoutUserNestedInput
+  habitLogs?: Prisma.HabitLogUncheckedUpdateManyWithoutUserNestedInput
+  habitStreaks?: Prisma.HabitStreakUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutAreasInput = {
@@ -919,6 +994,9 @@ export type UserCreateWithoutAreasInput = {
   lifeVision?: Prisma.LifeVisionCreateNestedOneWithoutUserInput
   lifeChapters?: Prisma.LifeChapterCreateNestedManyWithoutUserInput
   lifeReflections?: Prisma.LifeReflectionCreateNestedManyWithoutUserInput
+  habits?: Prisma.HabitCreateNestedManyWithoutUserInput
+  habitLogs?: Prisma.HabitLogCreateNestedManyWithoutUserInput
+  habitStreaks?: Prisma.HabitStreakCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutAreasInput = {
@@ -947,6 +1025,9 @@ export type UserUncheckedCreateWithoutAreasInput = {
   lifeVision?: Prisma.LifeVisionUncheckedCreateNestedOneWithoutUserInput
   lifeChapters?: Prisma.LifeChapterUncheckedCreateNestedManyWithoutUserInput
   lifeReflections?: Prisma.LifeReflectionUncheckedCreateNestedManyWithoutUserInput
+  habits?: Prisma.HabitUncheckedCreateNestedManyWithoutUserInput
+  habitLogs?: Prisma.HabitLogUncheckedCreateNestedManyWithoutUserInput
+  habitStreaks?: Prisma.HabitStreakUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutAreasInput = {
@@ -991,6 +1072,9 @@ export type UserUpdateWithoutAreasInput = {
   lifeVision?: Prisma.LifeVisionUpdateOneWithoutUserNestedInput
   lifeChapters?: Prisma.LifeChapterUpdateManyWithoutUserNestedInput
   lifeReflections?: Prisma.LifeReflectionUpdateManyWithoutUserNestedInput
+  habits?: Prisma.HabitUpdateManyWithoutUserNestedInput
+  habitLogs?: Prisma.HabitLogUpdateManyWithoutUserNestedInput
+  habitStreaks?: Prisma.HabitStreakUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutAreasInput = {
@@ -1019,6 +1103,9 @@ export type UserUncheckedUpdateWithoutAreasInput = {
   lifeVision?: Prisma.LifeVisionUncheckedUpdateOneWithoutUserNestedInput
   lifeChapters?: Prisma.LifeChapterUncheckedUpdateManyWithoutUserNestedInput
   lifeReflections?: Prisma.LifeReflectionUncheckedUpdateManyWithoutUserNestedInput
+  habits?: Prisma.HabitUncheckedUpdateManyWithoutUserNestedInput
+  habitLogs?: Prisma.HabitLogUncheckedUpdateManyWithoutUserNestedInput
+  habitStreaks?: Prisma.HabitStreakUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutGoalsInput = {
@@ -1047,6 +1134,9 @@ export type UserCreateWithoutGoalsInput = {
   lifeVision?: Prisma.LifeVisionCreateNestedOneWithoutUserInput
   lifeChapters?: Prisma.LifeChapterCreateNestedManyWithoutUserInput
   lifeReflections?: Prisma.LifeReflectionCreateNestedManyWithoutUserInput
+  habits?: Prisma.HabitCreateNestedManyWithoutUserInput
+  habitLogs?: Prisma.HabitLogCreateNestedManyWithoutUserInput
+  habitStreaks?: Prisma.HabitStreakCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutGoalsInput = {
@@ -1075,6 +1165,9 @@ export type UserUncheckedCreateWithoutGoalsInput = {
   lifeVision?: Prisma.LifeVisionUncheckedCreateNestedOneWithoutUserInput
   lifeChapters?: Prisma.LifeChapterUncheckedCreateNestedManyWithoutUserInput
   lifeReflections?: Prisma.LifeReflectionUncheckedCreateNestedManyWithoutUserInput
+  habits?: Prisma.HabitUncheckedCreateNestedManyWithoutUserInput
+  habitLogs?: Prisma.HabitLogUncheckedCreateNestedManyWithoutUserInput
+  habitStreaks?: Prisma.HabitStreakUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutGoalsInput = {
@@ -1119,6 +1212,9 @@ export type UserUpdateWithoutGoalsInput = {
   lifeVision?: Prisma.LifeVisionUpdateOneWithoutUserNestedInput
   lifeChapters?: Prisma.LifeChapterUpdateManyWithoutUserNestedInput
   lifeReflections?: Prisma.LifeReflectionUpdateManyWithoutUserNestedInput
+  habits?: Prisma.HabitUpdateManyWithoutUserNestedInput
+  habitLogs?: Prisma.HabitLogUpdateManyWithoutUserNestedInput
+  habitStreaks?: Prisma.HabitStreakUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutGoalsInput = {
@@ -1147,6 +1243,9 @@ export type UserUncheckedUpdateWithoutGoalsInput = {
   lifeVision?: Prisma.LifeVisionUncheckedUpdateOneWithoutUserNestedInput
   lifeChapters?: Prisma.LifeChapterUncheckedUpdateManyWithoutUserNestedInput
   lifeReflections?: Prisma.LifeReflectionUncheckedUpdateManyWithoutUserNestedInput
+  habits?: Prisma.HabitUncheckedUpdateManyWithoutUserNestedInput
+  habitLogs?: Prisma.HabitLogUncheckedUpdateManyWithoutUserNestedInput
+  habitStreaks?: Prisma.HabitStreakUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutObjectivesInput = {
@@ -1175,6 +1274,9 @@ export type UserCreateWithoutObjectivesInput = {
   lifeVision?: Prisma.LifeVisionCreateNestedOneWithoutUserInput
   lifeChapters?: Prisma.LifeChapterCreateNestedManyWithoutUserInput
   lifeReflections?: Prisma.LifeReflectionCreateNestedManyWithoutUserInput
+  habits?: Prisma.HabitCreateNestedManyWithoutUserInput
+  habitLogs?: Prisma.HabitLogCreateNestedManyWithoutUserInput
+  habitStreaks?: Prisma.HabitStreakCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutObjectivesInput = {
@@ -1203,6 +1305,9 @@ export type UserUncheckedCreateWithoutObjectivesInput = {
   lifeVision?: Prisma.LifeVisionUncheckedCreateNestedOneWithoutUserInput
   lifeChapters?: Prisma.LifeChapterUncheckedCreateNestedManyWithoutUserInput
   lifeReflections?: Prisma.LifeReflectionUncheckedCreateNestedManyWithoutUserInput
+  habits?: Prisma.HabitUncheckedCreateNestedManyWithoutUserInput
+  habitLogs?: Prisma.HabitLogUncheckedCreateNestedManyWithoutUserInput
+  habitStreaks?: Prisma.HabitStreakUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutObjectivesInput = {
@@ -1247,6 +1352,9 @@ export type UserUpdateWithoutObjectivesInput = {
   lifeVision?: Prisma.LifeVisionUpdateOneWithoutUserNestedInput
   lifeChapters?: Prisma.LifeChapterUpdateManyWithoutUserNestedInput
   lifeReflections?: Prisma.LifeReflectionUpdateManyWithoutUserNestedInput
+  habits?: Prisma.HabitUpdateManyWithoutUserNestedInput
+  habitLogs?: Prisma.HabitLogUpdateManyWithoutUserNestedInput
+  habitStreaks?: Prisma.HabitStreakUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutObjectivesInput = {
@@ -1275,6 +1383,9 @@ export type UserUncheckedUpdateWithoutObjectivesInput = {
   lifeVision?: Prisma.LifeVisionUncheckedUpdateOneWithoutUserNestedInput
   lifeChapters?: Prisma.LifeChapterUncheckedUpdateManyWithoutUserNestedInput
   lifeReflections?: Prisma.LifeReflectionUncheckedUpdateManyWithoutUserNestedInput
+  habits?: Prisma.HabitUncheckedUpdateManyWithoutUserNestedInput
+  habitLogs?: Prisma.HabitLogUncheckedUpdateManyWithoutUserNestedInput
+  habitStreaks?: Prisma.HabitStreakUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutProjectsInput = {
@@ -1303,6 +1414,9 @@ export type UserCreateWithoutProjectsInput = {
   lifeVision?: Prisma.LifeVisionCreateNestedOneWithoutUserInput
   lifeChapters?: Prisma.LifeChapterCreateNestedManyWithoutUserInput
   lifeReflections?: Prisma.LifeReflectionCreateNestedManyWithoutUserInput
+  habits?: Prisma.HabitCreateNestedManyWithoutUserInput
+  habitLogs?: Prisma.HabitLogCreateNestedManyWithoutUserInput
+  habitStreaks?: Prisma.HabitStreakCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutProjectsInput = {
@@ -1331,6 +1445,9 @@ export type UserUncheckedCreateWithoutProjectsInput = {
   lifeVision?: Prisma.LifeVisionUncheckedCreateNestedOneWithoutUserInput
   lifeChapters?: Prisma.LifeChapterUncheckedCreateNestedManyWithoutUserInput
   lifeReflections?: Prisma.LifeReflectionUncheckedCreateNestedManyWithoutUserInput
+  habits?: Prisma.HabitUncheckedCreateNestedManyWithoutUserInput
+  habitLogs?: Prisma.HabitLogUncheckedCreateNestedManyWithoutUserInput
+  habitStreaks?: Prisma.HabitStreakUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutProjectsInput = {
@@ -1375,6 +1492,9 @@ export type UserUpdateWithoutProjectsInput = {
   lifeVision?: Prisma.LifeVisionUpdateOneWithoutUserNestedInput
   lifeChapters?: Prisma.LifeChapterUpdateManyWithoutUserNestedInput
   lifeReflections?: Prisma.LifeReflectionUpdateManyWithoutUserNestedInput
+  habits?: Prisma.HabitUpdateManyWithoutUserNestedInput
+  habitLogs?: Prisma.HabitLogUpdateManyWithoutUserNestedInput
+  habitStreaks?: Prisma.HabitStreakUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutProjectsInput = {
@@ -1403,6 +1523,9 @@ export type UserUncheckedUpdateWithoutProjectsInput = {
   lifeVision?: Prisma.LifeVisionUncheckedUpdateOneWithoutUserNestedInput
   lifeChapters?: Prisma.LifeChapterUncheckedUpdateManyWithoutUserNestedInput
   lifeReflections?: Prisma.LifeReflectionUncheckedUpdateManyWithoutUserNestedInput
+  habits?: Prisma.HabitUncheckedUpdateManyWithoutUserNestedInput
+  habitLogs?: Prisma.HabitLogUncheckedUpdateManyWithoutUserNestedInput
+  habitStreaks?: Prisma.HabitStreakUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutStagesInput = {
@@ -1431,6 +1554,9 @@ export type UserCreateWithoutStagesInput = {
   lifeVision?: Prisma.LifeVisionCreateNestedOneWithoutUserInput
   lifeChapters?: Prisma.LifeChapterCreateNestedManyWithoutUserInput
   lifeReflections?: Prisma.LifeReflectionCreateNestedManyWithoutUserInput
+  habits?: Prisma.HabitCreateNestedManyWithoutUserInput
+  habitLogs?: Prisma.HabitLogCreateNestedManyWithoutUserInput
+  habitStreaks?: Prisma.HabitStreakCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutStagesInput = {
@@ -1459,6 +1585,9 @@ export type UserUncheckedCreateWithoutStagesInput = {
   lifeVision?: Prisma.LifeVisionUncheckedCreateNestedOneWithoutUserInput
   lifeChapters?: Prisma.LifeChapterUncheckedCreateNestedManyWithoutUserInput
   lifeReflections?: Prisma.LifeReflectionUncheckedCreateNestedManyWithoutUserInput
+  habits?: Prisma.HabitUncheckedCreateNestedManyWithoutUserInput
+  habitLogs?: Prisma.HabitLogUncheckedCreateNestedManyWithoutUserInput
+  habitStreaks?: Prisma.HabitStreakUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutStagesInput = {
@@ -1503,6 +1632,9 @@ export type UserUpdateWithoutStagesInput = {
   lifeVision?: Prisma.LifeVisionUpdateOneWithoutUserNestedInput
   lifeChapters?: Prisma.LifeChapterUpdateManyWithoutUserNestedInput
   lifeReflections?: Prisma.LifeReflectionUpdateManyWithoutUserNestedInput
+  habits?: Prisma.HabitUpdateManyWithoutUserNestedInput
+  habitLogs?: Prisma.HabitLogUpdateManyWithoutUserNestedInput
+  habitStreaks?: Prisma.HabitStreakUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutStagesInput = {
@@ -1531,6 +1663,9 @@ export type UserUncheckedUpdateWithoutStagesInput = {
   lifeVision?: Prisma.LifeVisionUncheckedUpdateOneWithoutUserNestedInput
   lifeChapters?: Prisma.LifeChapterUncheckedUpdateManyWithoutUserNestedInput
   lifeReflections?: Prisma.LifeReflectionUncheckedUpdateManyWithoutUserNestedInput
+  habits?: Prisma.HabitUncheckedUpdateManyWithoutUserNestedInput
+  habitLogs?: Prisma.HabitLogUncheckedUpdateManyWithoutUserNestedInput
+  habitStreaks?: Prisma.HabitStreakUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutMilestonesInput = {
@@ -1559,6 +1694,9 @@ export type UserCreateWithoutMilestonesInput = {
   lifeVision?: Prisma.LifeVisionCreateNestedOneWithoutUserInput
   lifeChapters?: Prisma.LifeChapterCreateNestedManyWithoutUserInput
   lifeReflections?: Prisma.LifeReflectionCreateNestedManyWithoutUserInput
+  habits?: Prisma.HabitCreateNestedManyWithoutUserInput
+  habitLogs?: Prisma.HabitLogCreateNestedManyWithoutUserInput
+  habitStreaks?: Prisma.HabitStreakCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutMilestonesInput = {
@@ -1587,6 +1725,9 @@ export type UserUncheckedCreateWithoutMilestonesInput = {
   lifeVision?: Prisma.LifeVisionUncheckedCreateNestedOneWithoutUserInput
   lifeChapters?: Prisma.LifeChapterUncheckedCreateNestedManyWithoutUserInput
   lifeReflections?: Prisma.LifeReflectionUncheckedCreateNestedManyWithoutUserInput
+  habits?: Prisma.HabitUncheckedCreateNestedManyWithoutUserInput
+  habitLogs?: Prisma.HabitLogUncheckedCreateNestedManyWithoutUserInput
+  habitStreaks?: Prisma.HabitStreakUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutMilestonesInput = {
@@ -1631,6 +1772,9 @@ export type UserUpdateWithoutMilestonesInput = {
   lifeVision?: Prisma.LifeVisionUpdateOneWithoutUserNestedInput
   lifeChapters?: Prisma.LifeChapterUpdateManyWithoutUserNestedInput
   lifeReflections?: Prisma.LifeReflectionUpdateManyWithoutUserNestedInput
+  habits?: Prisma.HabitUpdateManyWithoutUserNestedInput
+  habitLogs?: Prisma.HabitLogUpdateManyWithoutUserNestedInput
+  habitStreaks?: Prisma.HabitStreakUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutMilestonesInput = {
@@ -1659,6 +1803,9 @@ export type UserUncheckedUpdateWithoutMilestonesInput = {
   lifeVision?: Prisma.LifeVisionUncheckedUpdateOneWithoutUserNestedInput
   lifeChapters?: Prisma.LifeChapterUncheckedUpdateManyWithoutUserNestedInput
   lifeReflections?: Prisma.LifeReflectionUncheckedUpdateManyWithoutUserNestedInput
+  habits?: Prisma.HabitUncheckedUpdateManyWithoutUserNestedInput
+  habitLogs?: Prisma.HabitLogUncheckedUpdateManyWithoutUserNestedInput
+  habitStreaks?: Prisma.HabitStreakUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutTasksInput = {
@@ -1687,6 +1834,9 @@ export type UserCreateWithoutTasksInput = {
   lifeVision?: Prisma.LifeVisionCreateNestedOneWithoutUserInput
   lifeChapters?: Prisma.LifeChapterCreateNestedManyWithoutUserInput
   lifeReflections?: Prisma.LifeReflectionCreateNestedManyWithoutUserInput
+  habits?: Prisma.HabitCreateNestedManyWithoutUserInput
+  habitLogs?: Prisma.HabitLogCreateNestedManyWithoutUserInput
+  habitStreaks?: Prisma.HabitStreakCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutTasksInput = {
@@ -1715,6 +1865,9 @@ export type UserUncheckedCreateWithoutTasksInput = {
   lifeVision?: Prisma.LifeVisionUncheckedCreateNestedOneWithoutUserInput
   lifeChapters?: Prisma.LifeChapterUncheckedCreateNestedManyWithoutUserInput
   lifeReflections?: Prisma.LifeReflectionUncheckedCreateNestedManyWithoutUserInput
+  habits?: Prisma.HabitUncheckedCreateNestedManyWithoutUserInput
+  habitLogs?: Prisma.HabitLogUncheckedCreateNestedManyWithoutUserInput
+  habitStreaks?: Prisma.HabitStreakUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutTasksInput = {
@@ -1759,6 +1912,9 @@ export type UserUpdateWithoutTasksInput = {
   lifeVision?: Prisma.LifeVisionUpdateOneWithoutUserNestedInput
   lifeChapters?: Prisma.LifeChapterUpdateManyWithoutUserNestedInput
   lifeReflections?: Prisma.LifeReflectionUpdateManyWithoutUserNestedInput
+  habits?: Prisma.HabitUpdateManyWithoutUserNestedInput
+  habitLogs?: Prisma.HabitLogUpdateManyWithoutUserNestedInput
+  habitStreaks?: Prisma.HabitStreakUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutTasksInput = {
@@ -1787,6 +1943,9 @@ export type UserUncheckedUpdateWithoutTasksInput = {
   lifeVision?: Prisma.LifeVisionUncheckedUpdateOneWithoutUserNestedInput
   lifeChapters?: Prisma.LifeChapterUncheckedUpdateManyWithoutUserNestedInput
   lifeReflections?: Prisma.LifeReflectionUncheckedUpdateManyWithoutUserNestedInput
+  habits?: Prisma.HabitUncheckedUpdateManyWithoutUserNestedInput
+  habitLogs?: Prisma.HabitLogUncheckedUpdateManyWithoutUserNestedInput
+  habitStreaks?: Prisma.HabitStreakUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutSessionsInput = {
@@ -1815,6 +1974,9 @@ export type UserCreateWithoutSessionsInput = {
   lifeVision?: Prisma.LifeVisionCreateNestedOneWithoutUserInput
   lifeChapters?: Prisma.LifeChapterCreateNestedManyWithoutUserInput
   lifeReflections?: Prisma.LifeReflectionCreateNestedManyWithoutUserInput
+  habits?: Prisma.HabitCreateNestedManyWithoutUserInput
+  habitLogs?: Prisma.HabitLogCreateNestedManyWithoutUserInput
+  habitStreaks?: Prisma.HabitStreakCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutSessionsInput = {
@@ -1843,6 +2005,9 @@ export type UserUncheckedCreateWithoutSessionsInput = {
   lifeVision?: Prisma.LifeVisionUncheckedCreateNestedOneWithoutUserInput
   lifeChapters?: Prisma.LifeChapterUncheckedCreateNestedManyWithoutUserInput
   lifeReflections?: Prisma.LifeReflectionUncheckedCreateNestedManyWithoutUserInput
+  habits?: Prisma.HabitUncheckedCreateNestedManyWithoutUserInput
+  habitLogs?: Prisma.HabitLogUncheckedCreateNestedManyWithoutUserInput
+  habitStreaks?: Prisma.HabitStreakUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutSessionsInput = {
@@ -1887,6 +2052,9 @@ export type UserUpdateWithoutSessionsInput = {
   lifeVision?: Prisma.LifeVisionUpdateOneWithoutUserNestedInput
   lifeChapters?: Prisma.LifeChapterUpdateManyWithoutUserNestedInput
   lifeReflections?: Prisma.LifeReflectionUpdateManyWithoutUserNestedInput
+  habits?: Prisma.HabitUpdateManyWithoutUserNestedInput
+  habitLogs?: Prisma.HabitLogUpdateManyWithoutUserNestedInput
+  habitStreaks?: Prisma.HabitStreakUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutSessionsInput = {
@@ -1915,6 +2083,9 @@ export type UserUncheckedUpdateWithoutSessionsInput = {
   lifeVision?: Prisma.LifeVisionUncheckedUpdateOneWithoutUserNestedInput
   lifeChapters?: Prisma.LifeChapterUncheckedUpdateManyWithoutUserNestedInput
   lifeReflections?: Prisma.LifeReflectionUncheckedUpdateManyWithoutUserNestedInput
+  habits?: Prisma.HabitUncheckedUpdateManyWithoutUserNestedInput
+  habitLogs?: Prisma.HabitLogUncheckedUpdateManyWithoutUserNestedInput
+  habitStreaks?: Prisma.HabitStreakUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutDailyFocusesInput = {
@@ -1943,6 +2114,9 @@ export type UserCreateWithoutDailyFocusesInput = {
   lifeVision?: Prisma.LifeVisionCreateNestedOneWithoutUserInput
   lifeChapters?: Prisma.LifeChapterCreateNestedManyWithoutUserInput
   lifeReflections?: Prisma.LifeReflectionCreateNestedManyWithoutUserInput
+  habits?: Prisma.HabitCreateNestedManyWithoutUserInput
+  habitLogs?: Prisma.HabitLogCreateNestedManyWithoutUserInput
+  habitStreaks?: Prisma.HabitStreakCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutDailyFocusesInput = {
@@ -1971,6 +2145,9 @@ export type UserUncheckedCreateWithoutDailyFocusesInput = {
   lifeVision?: Prisma.LifeVisionUncheckedCreateNestedOneWithoutUserInput
   lifeChapters?: Prisma.LifeChapterUncheckedCreateNestedManyWithoutUserInput
   lifeReflections?: Prisma.LifeReflectionUncheckedCreateNestedManyWithoutUserInput
+  habits?: Prisma.HabitUncheckedCreateNestedManyWithoutUserInput
+  habitLogs?: Prisma.HabitLogUncheckedCreateNestedManyWithoutUserInput
+  habitStreaks?: Prisma.HabitStreakUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutDailyFocusesInput = {
@@ -2015,6 +2192,9 @@ export type UserUpdateWithoutDailyFocusesInput = {
   lifeVision?: Prisma.LifeVisionUpdateOneWithoutUserNestedInput
   lifeChapters?: Prisma.LifeChapterUpdateManyWithoutUserNestedInput
   lifeReflections?: Prisma.LifeReflectionUpdateManyWithoutUserNestedInput
+  habits?: Prisma.HabitUpdateManyWithoutUserNestedInput
+  habitLogs?: Prisma.HabitLogUpdateManyWithoutUserNestedInput
+  habitStreaks?: Prisma.HabitStreakUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutDailyFocusesInput = {
@@ -2043,6 +2223,9 @@ export type UserUncheckedUpdateWithoutDailyFocusesInput = {
   lifeVision?: Prisma.LifeVisionUncheckedUpdateOneWithoutUserNestedInput
   lifeChapters?: Prisma.LifeChapterUncheckedUpdateManyWithoutUserNestedInput
   lifeReflections?: Prisma.LifeReflectionUncheckedUpdateManyWithoutUserNestedInput
+  habits?: Prisma.HabitUncheckedUpdateManyWithoutUserNestedInput
+  habitLogs?: Prisma.HabitLogUncheckedUpdateManyWithoutUserNestedInput
+  habitStreaks?: Prisma.HabitStreakUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutReviewsInput = {
@@ -2071,6 +2254,9 @@ export type UserCreateWithoutReviewsInput = {
   lifeVision?: Prisma.LifeVisionCreateNestedOneWithoutUserInput
   lifeChapters?: Prisma.LifeChapterCreateNestedManyWithoutUserInput
   lifeReflections?: Prisma.LifeReflectionCreateNestedManyWithoutUserInput
+  habits?: Prisma.HabitCreateNestedManyWithoutUserInput
+  habitLogs?: Prisma.HabitLogCreateNestedManyWithoutUserInput
+  habitStreaks?: Prisma.HabitStreakCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutReviewsInput = {
@@ -2099,6 +2285,9 @@ export type UserUncheckedCreateWithoutReviewsInput = {
   lifeVision?: Prisma.LifeVisionUncheckedCreateNestedOneWithoutUserInput
   lifeChapters?: Prisma.LifeChapterUncheckedCreateNestedManyWithoutUserInput
   lifeReflections?: Prisma.LifeReflectionUncheckedCreateNestedManyWithoutUserInput
+  habits?: Prisma.HabitUncheckedCreateNestedManyWithoutUserInput
+  habitLogs?: Prisma.HabitLogUncheckedCreateNestedManyWithoutUserInput
+  habitStreaks?: Prisma.HabitStreakUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutReviewsInput = {
@@ -2143,6 +2332,9 @@ export type UserUpdateWithoutReviewsInput = {
   lifeVision?: Prisma.LifeVisionUpdateOneWithoutUserNestedInput
   lifeChapters?: Prisma.LifeChapterUpdateManyWithoutUserNestedInput
   lifeReflections?: Prisma.LifeReflectionUpdateManyWithoutUserNestedInput
+  habits?: Prisma.HabitUpdateManyWithoutUserNestedInput
+  habitLogs?: Prisma.HabitLogUpdateManyWithoutUserNestedInput
+  habitStreaks?: Prisma.HabitStreakUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutReviewsInput = {
@@ -2171,6 +2363,9 @@ export type UserUncheckedUpdateWithoutReviewsInput = {
   lifeVision?: Prisma.LifeVisionUncheckedUpdateOneWithoutUserNestedInput
   lifeChapters?: Prisma.LifeChapterUncheckedUpdateManyWithoutUserNestedInput
   lifeReflections?: Prisma.LifeReflectionUncheckedUpdateManyWithoutUserNestedInput
+  habits?: Prisma.HabitUncheckedUpdateManyWithoutUserNestedInput
+  habitLogs?: Prisma.HabitLogUncheckedUpdateManyWithoutUserNestedInput
+  habitStreaks?: Prisma.HabitStreakUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutCalendarEventsInput = {
@@ -2199,6 +2394,9 @@ export type UserCreateWithoutCalendarEventsInput = {
   lifeVision?: Prisma.LifeVisionCreateNestedOneWithoutUserInput
   lifeChapters?: Prisma.LifeChapterCreateNestedManyWithoutUserInput
   lifeReflections?: Prisma.LifeReflectionCreateNestedManyWithoutUserInput
+  habits?: Prisma.HabitCreateNestedManyWithoutUserInput
+  habitLogs?: Prisma.HabitLogCreateNestedManyWithoutUserInput
+  habitStreaks?: Prisma.HabitStreakCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutCalendarEventsInput = {
@@ -2227,6 +2425,9 @@ export type UserUncheckedCreateWithoutCalendarEventsInput = {
   lifeVision?: Prisma.LifeVisionUncheckedCreateNestedOneWithoutUserInput
   lifeChapters?: Prisma.LifeChapterUncheckedCreateNestedManyWithoutUserInput
   lifeReflections?: Prisma.LifeReflectionUncheckedCreateNestedManyWithoutUserInput
+  habits?: Prisma.HabitUncheckedCreateNestedManyWithoutUserInput
+  habitLogs?: Prisma.HabitLogUncheckedCreateNestedManyWithoutUserInput
+  habitStreaks?: Prisma.HabitStreakUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutCalendarEventsInput = {
@@ -2271,6 +2472,9 @@ export type UserUpdateWithoutCalendarEventsInput = {
   lifeVision?: Prisma.LifeVisionUpdateOneWithoutUserNestedInput
   lifeChapters?: Prisma.LifeChapterUpdateManyWithoutUserNestedInput
   lifeReflections?: Prisma.LifeReflectionUpdateManyWithoutUserNestedInput
+  habits?: Prisma.HabitUpdateManyWithoutUserNestedInput
+  habitLogs?: Prisma.HabitLogUpdateManyWithoutUserNestedInput
+  habitStreaks?: Prisma.HabitStreakUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutCalendarEventsInput = {
@@ -2299,6 +2503,9 @@ export type UserUncheckedUpdateWithoutCalendarEventsInput = {
   lifeVision?: Prisma.LifeVisionUncheckedUpdateOneWithoutUserNestedInput
   lifeChapters?: Prisma.LifeChapterUncheckedUpdateManyWithoutUserNestedInput
   lifeReflections?: Prisma.LifeReflectionUncheckedUpdateManyWithoutUserNestedInput
+  habits?: Prisma.HabitUncheckedUpdateManyWithoutUserNestedInput
+  habitLogs?: Prisma.HabitLogUncheckedUpdateManyWithoutUserNestedInput
+  habitStreaks?: Prisma.HabitStreakUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutActivitiesInput = {
@@ -2327,6 +2534,9 @@ export type UserCreateWithoutActivitiesInput = {
   lifeVision?: Prisma.LifeVisionCreateNestedOneWithoutUserInput
   lifeChapters?: Prisma.LifeChapterCreateNestedManyWithoutUserInput
   lifeReflections?: Prisma.LifeReflectionCreateNestedManyWithoutUserInput
+  habits?: Prisma.HabitCreateNestedManyWithoutUserInput
+  habitLogs?: Prisma.HabitLogCreateNestedManyWithoutUserInput
+  habitStreaks?: Prisma.HabitStreakCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutActivitiesInput = {
@@ -2355,6 +2565,9 @@ export type UserUncheckedCreateWithoutActivitiesInput = {
   lifeVision?: Prisma.LifeVisionUncheckedCreateNestedOneWithoutUserInput
   lifeChapters?: Prisma.LifeChapterUncheckedCreateNestedManyWithoutUserInput
   lifeReflections?: Prisma.LifeReflectionUncheckedCreateNestedManyWithoutUserInput
+  habits?: Prisma.HabitUncheckedCreateNestedManyWithoutUserInput
+  habitLogs?: Prisma.HabitLogUncheckedCreateNestedManyWithoutUserInput
+  habitStreaks?: Prisma.HabitStreakUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutActivitiesInput = {
@@ -2399,6 +2612,9 @@ export type UserUpdateWithoutActivitiesInput = {
   lifeVision?: Prisma.LifeVisionUpdateOneWithoutUserNestedInput
   lifeChapters?: Prisma.LifeChapterUpdateManyWithoutUserNestedInput
   lifeReflections?: Prisma.LifeReflectionUpdateManyWithoutUserNestedInput
+  habits?: Prisma.HabitUpdateManyWithoutUserNestedInput
+  habitLogs?: Prisma.HabitLogUpdateManyWithoutUserNestedInput
+  habitStreaks?: Prisma.HabitStreakUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutActivitiesInput = {
@@ -2427,6 +2643,9 @@ export type UserUncheckedUpdateWithoutActivitiesInput = {
   lifeVision?: Prisma.LifeVisionUncheckedUpdateOneWithoutUserNestedInput
   lifeChapters?: Prisma.LifeChapterUncheckedUpdateManyWithoutUserNestedInput
   lifeReflections?: Prisma.LifeReflectionUncheckedUpdateManyWithoutUserNestedInput
+  habits?: Prisma.HabitUncheckedUpdateManyWithoutUserNestedInput
+  habitLogs?: Prisma.HabitLogUncheckedUpdateManyWithoutUserNestedInput
+  habitStreaks?: Prisma.HabitStreakUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutCapturesInput = {
@@ -2455,6 +2674,9 @@ export type UserCreateWithoutCapturesInput = {
   lifeVision?: Prisma.LifeVisionCreateNestedOneWithoutUserInput
   lifeChapters?: Prisma.LifeChapterCreateNestedManyWithoutUserInput
   lifeReflections?: Prisma.LifeReflectionCreateNestedManyWithoutUserInput
+  habits?: Prisma.HabitCreateNestedManyWithoutUserInput
+  habitLogs?: Prisma.HabitLogCreateNestedManyWithoutUserInput
+  habitStreaks?: Prisma.HabitStreakCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutCapturesInput = {
@@ -2483,6 +2705,9 @@ export type UserUncheckedCreateWithoutCapturesInput = {
   lifeVision?: Prisma.LifeVisionUncheckedCreateNestedOneWithoutUserInput
   lifeChapters?: Prisma.LifeChapterUncheckedCreateNestedManyWithoutUserInput
   lifeReflections?: Prisma.LifeReflectionUncheckedCreateNestedManyWithoutUserInput
+  habits?: Prisma.HabitUncheckedCreateNestedManyWithoutUserInput
+  habitLogs?: Prisma.HabitLogUncheckedCreateNestedManyWithoutUserInput
+  habitStreaks?: Prisma.HabitStreakUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutCapturesInput = {
@@ -2527,6 +2752,9 @@ export type UserUpdateWithoutCapturesInput = {
   lifeVision?: Prisma.LifeVisionUpdateOneWithoutUserNestedInput
   lifeChapters?: Prisma.LifeChapterUpdateManyWithoutUserNestedInput
   lifeReflections?: Prisma.LifeReflectionUpdateManyWithoutUserNestedInput
+  habits?: Prisma.HabitUpdateManyWithoutUserNestedInput
+  habitLogs?: Prisma.HabitLogUpdateManyWithoutUserNestedInput
+  habitStreaks?: Prisma.HabitStreakUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutCapturesInput = {
@@ -2555,6 +2783,9 @@ export type UserUncheckedUpdateWithoutCapturesInput = {
   lifeVision?: Prisma.LifeVisionUncheckedUpdateOneWithoutUserNestedInput
   lifeChapters?: Prisma.LifeChapterUncheckedUpdateManyWithoutUserNestedInput
   lifeReflections?: Prisma.LifeReflectionUncheckedUpdateManyWithoutUserNestedInput
+  habits?: Prisma.HabitUncheckedUpdateManyWithoutUserNestedInput
+  habitLogs?: Prisma.HabitLogUncheckedUpdateManyWithoutUserNestedInput
+  habitStreaks?: Prisma.HabitStreakUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutNotificationsInput = {
@@ -2583,6 +2814,9 @@ export type UserCreateWithoutNotificationsInput = {
   lifeVision?: Prisma.LifeVisionCreateNestedOneWithoutUserInput
   lifeChapters?: Prisma.LifeChapterCreateNestedManyWithoutUserInput
   lifeReflections?: Prisma.LifeReflectionCreateNestedManyWithoutUserInput
+  habits?: Prisma.HabitCreateNestedManyWithoutUserInput
+  habitLogs?: Prisma.HabitLogCreateNestedManyWithoutUserInput
+  habitStreaks?: Prisma.HabitStreakCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutNotificationsInput = {
@@ -2611,6 +2845,9 @@ export type UserUncheckedCreateWithoutNotificationsInput = {
   lifeVision?: Prisma.LifeVisionUncheckedCreateNestedOneWithoutUserInput
   lifeChapters?: Prisma.LifeChapterUncheckedCreateNestedManyWithoutUserInput
   lifeReflections?: Prisma.LifeReflectionUncheckedCreateNestedManyWithoutUserInput
+  habits?: Prisma.HabitUncheckedCreateNestedManyWithoutUserInput
+  habitLogs?: Prisma.HabitLogUncheckedCreateNestedManyWithoutUserInput
+  habitStreaks?: Prisma.HabitStreakUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutNotificationsInput = {
@@ -2655,6 +2892,9 @@ export type UserUpdateWithoutNotificationsInput = {
   lifeVision?: Prisma.LifeVisionUpdateOneWithoutUserNestedInput
   lifeChapters?: Prisma.LifeChapterUpdateManyWithoutUserNestedInput
   lifeReflections?: Prisma.LifeReflectionUpdateManyWithoutUserNestedInput
+  habits?: Prisma.HabitUpdateManyWithoutUserNestedInput
+  habitLogs?: Prisma.HabitLogUpdateManyWithoutUserNestedInput
+  habitStreaks?: Prisma.HabitStreakUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutNotificationsInput = {
@@ -2683,6 +2923,9 @@ export type UserUncheckedUpdateWithoutNotificationsInput = {
   lifeVision?: Prisma.LifeVisionUncheckedUpdateOneWithoutUserNestedInput
   lifeChapters?: Prisma.LifeChapterUncheckedUpdateManyWithoutUserNestedInput
   lifeReflections?: Prisma.LifeReflectionUncheckedUpdateManyWithoutUserNestedInput
+  habits?: Prisma.HabitUncheckedUpdateManyWithoutUserNestedInput
+  habitLogs?: Prisma.HabitLogUncheckedUpdateManyWithoutUserNestedInput
+  habitStreaks?: Prisma.HabitStreakUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutLifeIdentityInput = {
@@ -2711,6 +2954,9 @@ export type UserCreateWithoutLifeIdentityInput = {
   lifeVision?: Prisma.LifeVisionCreateNestedOneWithoutUserInput
   lifeChapters?: Prisma.LifeChapterCreateNestedManyWithoutUserInput
   lifeReflections?: Prisma.LifeReflectionCreateNestedManyWithoutUserInput
+  habits?: Prisma.HabitCreateNestedManyWithoutUserInput
+  habitLogs?: Prisma.HabitLogCreateNestedManyWithoutUserInput
+  habitStreaks?: Prisma.HabitStreakCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutLifeIdentityInput = {
@@ -2739,6 +2985,9 @@ export type UserUncheckedCreateWithoutLifeIdentityInput = {
   lifeVision?: Prisma.LifeVisionUncheckedCreateNestedOneWithoutUserInput
   lifeChapters?: Prisma.LifeChapterUncheckedCreateNestedManyWithoutUserInput
   lifeReflections?: Prisma.LifeReflectionUncheckedCreateNestedManyWithoutUserInput
+  habits?: Prisma.HabitUncheckedCreateNestedManyWithoutUserInput
+  habitLogs?: Prisma.HabitLogUncheckedCreateNestedManyWithoutUserInput
+  habitStreaks?: Prisma.HabitStreakUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutLifeIdentityInput = {
@@ -2783,6 +3032,9 @@ export type UserUpdateWithoutLifeIdentityInput = {
   lifeVision?: Prisma.LifeVisionUpdateOneWithoutUserNestedInput
   lifeChapters?: Prisma.LifeChapterUpdateManyWithoutUserNestedInput
   lifeReflections?: Prisma.LifeReflectionUpdateManyWithoutUserNestedInput
+  habits?: Prisma.HabitUpdateManyWithoutUserNestedInput
+  habitLogs?: Prisma.HabitLogUpdateManyWithoutUserNestedInput
+  habitStreaks?: Prisma.HabitStreakUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutLifeIdentityInput = {
@@ -2811,6 +3063,9 @@ export type UserUncheckedUpdateWithoutLifeIdentityInput = {
   lifeVision?: Prisma.LifeVisionUncheckedUpdateOneWithoutUserNestedInput
   lifeChapters?: Prisma.LifeChapterUncheckedUpdateManyWithoutUserNestedInput
   lifeReflections?: Prisma.LifeReflectionUncheckedUpdateManyWithoutUserNestedInput
+  habits?: Prisma.HabitUncheckedUpdateManyWithoutUserNestedInput
+  habitLogs?: Prisma.HabitLogUncheckedUpdateManyWithoutUserNestedInput
+  habitStreaks?: Prisma.HabitStreakUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutLifeVisionInput = {
@@ -2839,6 +3094,9 @@ export type UserCreateWithoutLifeVisionInput = {
   lifeIdentity?: Prisma.LifeIdentityCreateNestedOneWithoutUserInput
   lifeChapters?: Prisma.LifeChapterCreateNestedManyWithoutUserInput
   lifeReflections?: Prisma.LifeReflectionCreateNestedManyWithoutUserInput
+  habits?: Prisma.HabitCreateNestedManyWithoutUserInput
+  habitLogs?: Prisma.HabitLogCreateNestedManyWithoutUserInput
+  habitStreaks?: Prisma.HabitStreakCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutLifeVisionInput = {
@@ -2867,6 +3125,9 @@ export type UserUncheckedCreateWithoutLifeVisionInput = {
   lifeIdentity?: Prisma.LifeIdentityUncheckedCreateNestedOneWithoutUserInput
   lifeChapters?: Prisma.LifeChapterUncheckedCreateNestedManyWithoutUserInput
   lifeReflections?: Prisma.LifeReflectionUncheckedCreateNestedManyWithoutUserInput
+  habits?: Prisma.HabitUncheckedCreateNestedManyWithoutUserInput
+  habitLogs?: Prisma.HabitLogUncheckedCreateNestedManyWithoutUserInput
+  habitStreaks?: Prisma.HabitStreakUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutLifeVisionInput = {
@@ -2911,6 +3172,9 @@ export type UserUpdateWithoutLifeVisionInput = {
   lifeIdentity?: Prisma.LifeIdentityUpdateOneWithoutUserNestedInput
   lifeChapters?: Prisma.LifeChapterUpdateManyWithoutUserNestedInput
   lifeReflections?: Prisma.LifeReflectionUpdateManyWithoutUserNestedInput
+  habits?: Prisma.HabitUpdateManyWithoutUserNestedInput
+  habitLogs?: Prisma.HabitLogUpdateManyWithoutUserNestedInput
+  habitStreaks?: Prisma.HabitStreakUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutLifeVisionInput = {
@@ -2939,6 +3203,9 @@ export type UserUncheckedUpdateWithoutLifeVisionInput = {
   lifeIdentity?: Prisma.LifeIdentityUncheckedUpdateOneWithoutUserNestedInput
   lifeChapters?: Prisma.LifeChapterUncheckedUpdateManyWithoutUserNestedInput
   lifeReflections?: Prisma.LifeReflectionUncheckedUpdateManyWithoutUserNestedInput
+  habits?: Prisma.HabitUncheckedUpdateManyWithoutUserNestedInput
+  habitLogs?: Prisma.HabitLogUncheckedUpdateManyWithoutUserNestedInput
+  habitStreaks?: Prisma.HabitStreakUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutLifeChaptersInput = {
@@ -2967,6 +3234,9 @@ export type UserCreateWithoutLifeChaptersInput = {
   lifeIdentity?: Prisma.LifeIdentityCreateNestedOneWithoutUserInput
   lifeVision?: Prisma.LifeVisionCreateNestedOneWithoutUserInput
   lifeReflections?: Prisma.LifeReflectionCreateNestedManyWithoutUserInput
+  habits?: Prisma.HabitCreateNestedManyWithoutUserInput
+  habitLogs?: Prisma.HabitLogCreateNestedManyWithoutUserInput
+  habitStreaks?: Prisma.HabitStreakCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutLifeChaptersInput = {
@@ -2995,6 +3265,9 @@ export type UserUncheckedCreateWithoutLifeChaptersInput = {
   lifeIdentity?: Prisma.LifeIdentityUncheckedCreateNestedOneWithoutUserInput
   lifeVision?: Prisma.LifeVisionUncheckedCreateNestedOneWithoutUserInput
   lifeReflections?: Prisma.LifeReflectionUncheckedCreateNestedManyWithoutUserInput
+  habits?: Prisma.HabitUncheckedCreateNestedManyWithoutUserInput
+  habitLogs?: Prisma.HabitLogUncheckedCreateNestedManyWithoutUserInput
+  habitStreaks?: Prisma.HabitStreakUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutLifeChaptersInput = {
@@ -3039,6 +3312,9 @@ export type UserUpdateWithoutLifeChaptersInput = {
   lifeIdentity?: Prisma.LifeIdentityUpdateOneWithoutUserNestedInput
   lifeVision?: Prisma.LifeVisionUpdateOneWithoutUserNestedInput
   lifeReflections?: Prisma.LifeReflectionUpdateManyWithoutUserNestedInput
+  habits?: Prisma.HabitUpdateManyWithoutUserNestedInput
+  habitLogs?: Prisma.HabitLogUpdateManyWithoutUserNestedInput
+  habitStreaks?: Prisma.HabitStreakUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutLifeChaptersInput = {
@@ -3067,6 +3343,9 @@ export type UserUncheckedUpdateWithoutLifeChaptersInput = {
   lifeIdentity?: Prisma.LifeIdentityUncheckedUpdateOneWithoutUserNestedInput
   lifeVision?: Prisma.LifeVisionUncheckedUpdateOneWithoutUserNestedInput
   lifeReflections?: Prisma.LifeReflectionUncheckedUpdateManyWithoutUserNestedInput
+  habits?: Prisma.HabitUncheckedUpdateManyWithoutUserNestedInput
+  habitLogs?: Prisma.HabitLogUncheckedUpdateManyWithoutUserNestedInput
+  habitStreaks?: Prisma.HabitStreakUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutLifeReflectionsInput = {
@@ -3095,6 +3374,9 @@ export type UserCreateWithoutLifeReflectionsInput = {
   lifeIdentity?: Prisma.LifeIdentityCreateNestedOneWithoutUserInput
   lifeVision?: Prisma.LifeVisionCreateNestedOneWithoutUserInput
   lifeChapters?: Prisma.LifeChapterCreateNestedManyWithoutUserInput
+  habits?: Prisma.HabitCreateNestedManyWithoutUserInput
+  habitLogs?: Prisma.HabitLogCreateNestedManyWithoutUserInput
+  habitStreaks?: Prisma.HabitStreakCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutLifeReflectionsInput = {
@@ -3123,6 +3405,9 @@ export type UserUncheckedCreateWithoutLifeReflectionsInput = {
   lifeIdentity?: Prisma.LifeIdentityUncheckedCreateNestedOneWithoutUserInput
   lifeVision?: Prisma.LifeVisionUncheckedCreateNestedOneWithoutUserInput
   lifeChapters?: Prisma.LifeChapterUncheckedCreateNestedManyWithoutUserInput
+  habits?: Prisma.HabitUncheckedCreateNestedManyWithoutUserInput
+  habitLogs?: Prisma.HabitLogUncheckedCreateNestedManyWithoutUserInput
+  habitStreaks?: Prisma.HabitStreakUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutLifeReflectionsInput = {
@@ -3167,6 +3452,9 @@ export type UserUpdateWithoutLifeReflectionsInput = {
   lifeIdentity?: Prisma.LifeIdentityUpdateOneWithoutUserNestedInput
   lifeVision?: Prisma.LifeVisionUpdateOneWithoutUserNestedInput
   lifeChapters?: Prisma.LifeChapterUpdateManyWithoutUserNestedInput
+  habits?: Prisma.HabitUpdateManyWithoutUserNestedInput
+  habitLogs?: Prisma.HabitLogUpdateManyWithoutUserNestedInput
+  habitStreaks?: Prisma.HabitStreakUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutLifeReflectionsInput = {
@@ -3195,6 +3483,429 @@ export type UserUncheckedUpdateWithoutLifeReflectionsInput = {
   lifeIdentity?: Prisma.LifeIdentityUncheckedUpdateOneWithoutUserNestedInput
   lifeVision?: Prisma.LifeVisionUncheckedUpdateOneWithoutUserNestedInput
   lifeChapters?: Prisma.LifeChapterUncheckedUpdateManyWithoutUserNestedInput
+  habits?: Prisma.HabitUncheckedUpdateManyWithoutUserNestedInput
+  habitLogs?: Prisma.HabitLogUncheckedUpdateManyWithoutUserNestedInput
+  habitStreaks?: Prisma.HabitStreakUncheckedUpdateManyWithoutUserNestedInput
+}
+
+export type UserCreateWithoutHabitsInput = {
+  id?: string
+  email: string
+  passwordHash?: string | null
+  name?: string | null
+  avatarUrl?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  preference?: Prisma.UserPreferenceCreateNestedOneWithoutUserInput
+  areas?: Prisma.AreaCreateNestedManyWithoutUserInput
+  goals?: Prisma.GoalCreateNestedManyWithoutUserInput
+  objectives?: Prisma.ObjectiveCreateNestedManyWithoutUserInput
+  projects?: Prisma.ProjectCreateNestedManyWithoutUserInput
+  stages?: Prisma.StageCreateNestedManyWithoutUserInput
+  milestones?: Prisma.MilestoneCreateNestedManyWithoutUserInput
+  tasks?: Prisma.TaskCreateNestedManyWithoutUserInput
+  sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
+  dailyFocuses?: Prisma.DailyFocusCreateNestedManyWithoutUserInput
+  reviews?: Prisma.ReviewCreateNestedManyWithoutUserInput
+  calendarEvents?: Prisma.CalendarEventCreateNestedManyWithoutUserInput
+  activities?: Prisma.ActivityCreateNestedManyWithoutUserInput
+  captures?: Prisma.CaptureCreateNestedManyWithoutUserInput
+  notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
+  lifeIdentity?: Prisma.LifeIdentityCreateNestedOneWithoutUserInput
+  lifeVision?: Prisma.LifeVisionCreateNestedOneWithoutUserInput
+  lifeChapters?: Prisma.LifeChapterCreateNestedManyWithoutUserInput
+  lifeReflections?: Prisma.LifeReflectionCreateNestedManyWithoutUserInput
+  habitLogs?: Prisma.HabitLogCreateNestedManyWithoutUserInput
+  habitStreaks?: Prisma.HabitStreakCreateNestedManyWithoutUserInput
+}
+
+export type UserUncheckedCreateWithoutHabitsInput = {
+  id?: string
+  email: string
+  passwordHash?: string | null
+  name?: string | null
+  avatarUrl?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  preference?: Prisma.UserPreferenceUncheckedCreateNestedOneWithoutUserInput
+  areas?: Prisma.AreaUncheckedCreateNestedManyWithoutUserInput
+  goals?: Prisma.GoalUncheckedCreateNestedManyWithoutUserInput
+  objectives?: Prisma.ObjectiveUncheckedCreateNestedManyWithoutUserInput
+  projects?: Prisma.ProjectUncheckedCreateNestedManyWithoutUserInput
+  stages?: Prisma.StageUncheckedCreateNestedManyWithoutUserInput
+  milestones?: Prisma.MilestoneUncheckedCreateNestedManyWithoutUserInput
+  tasks?: Prisma.TaskUncheckedCreateNestedManyWithoutUserInput
+  sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
+  dailyFocuses?: Prisma.DailyFocusUncheckedCreateNestedManyWithoutUserInput
+  reviews?: Prisma.ReviewUncheckedCreateNestedManyWithoutUserInput
+  calendarEvents?: Prisma.CalendarEventUncheckedCreateNestedManyWithoutUserInput
+  activities?: Prisma.ActivityUncheckedCreateNestedManyWithoutUserInput
+  captures?: Prisma.CaptureUncheckedCreateNestedManyWithoutUserInput
+  notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
+  lifeIdentity?: Prisma.LifeIdentityUncheckedCreateNestedOneWithoutUserInput
+  lifeVision?: Prisma.LifeVisionUncheckedCreateNestedOneWithoutUserInput
+  lifeChapters?: Prisma.LifeChapterUncheckedCreateNestedManyWithoutUserInput
+  lifeReflections?: Prisma.LifeReflectionUncheckedCreateNestedManyWithoutUserInput
+  habitLogs?: Prisma.HabitLogUncheckedCreateNestedManyWithoutUserInput
+  habitStreaks?: Prisma.HabitStreakUncheckedCreateNestedManyWithoutUserInput
+}
+
+export type UserCreateOrConnectWithoutHabitsInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutHabitsInput, Prisma.UserUncheckedCreateWithoutHabitsInput>
+}
+
+export type UserUpsertWithoutHabitsInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutHabitsInput, Prisma.UserUncheckedUpdateWithoutHabitsInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutHabitsInput, Prisma.UserUncheckedCreateWithoutHabitsInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutHabitsInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutHabitsInput, Prisma.UserUncheckedUpdateWithoutHabitsInput>
+}
+
+export type UserUpdateWithoutHabitsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  preference?: Prisma.UserPreferenceUpdateOneWithoutUserNestedInput
+  areas?: Prisma.AreaUpdateManyWithoutUserNestedInput
+  goals?: Prisma.GoalUpdateManyWithoutUserNestedInput
+  objectives?: Prisma.ObjectiveUpdateManyWithoutUserNestedInput
+  projects?: Prisma.ProjectUpdateManyWithoutUserNestedInput
+  stages?: Prisma.StageUpdateManyWithoutUserNestedInput
+  milestones?: Prisma.MilestoneUpdateManyWithoutUserNestedInput
+  tasks?: Prisma.TaskUpdateManyWithoutUserNestedInput
+  sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
+  dailyFocuses?: Prisma.DailyFocusUpdateManyWithoutUserNestedInput
+  reviews?: Prisma.ReviewUpdateManyWithoutUserNestedInput
+  calendarEvents?: Prisma.CalendarEventUpdateManyWithoutUserNestedInput
+  activities?: Prisma.ActivityUpdateManyWithoutUserNestedInput
+  captures?: Prisma.CaptureUpdateManyWithoutUserNestedInput
+  notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
+  lifeIdentity?: Prisma.LifeIdentityUpdateOneWithoutUserNestedInput
+  lifeVision?: Prisma.LifeVisionUpdateOneWithoutUserNestedInput
+  lifeChapters?: Prisma.LifeChapterUpdateManyWithoutUserNestedInput
+  lifeReflections?: Prisma.LifeReflectionUpdateManyWithoutUserNestedInput
+  habitLogs?: Prisma.HabitLogUpdateManyWithoutUserNestedInput
+  habitStreaks?: Prisma.HabitStreakUpdateManyWithoutUserNestedInput
+}
+
+export type UserUncheckedUpdateWithoutHabitsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  preference?: Prisma.UserPreferenceUncheckedUpdateOneWithoutUserNestedInput
+  areas?: Prisma.AreaUncheckedUpdateManyWithoutUserNestedInput
+  goals?: Prisma.GoalUncheckedUpdateManyWithoutUserNestedInput
+  objectives?: Prisma.ObjectiveUncheckedUpdateManyWithoutUserNestedInput
+  projects?: Prisma.ProjectUncheckedUpdateManyWithoutUserNestedInput
+  stages?: Prisma.StageUncheckedUpdateManyWithoutUserNestedInput
+  milestones?: Prisma.MilestoneUncheckedUpdateManyWithoutUserNestedInput
+  tasks?: Prisma.TaskUncheckedUpdateManyWithoutUserNestedInput
+  sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
+  dailyFocuses?: Prisma.DailyFocusUncheckedUpdateManyWithoutUserNestedInput
+  reviews?: Prisma.ReviewUncheckedUpdateManyWithoutUserNestedInput
+  calendarEvents?: Prisma.CalendarEventUncheckedUpdateManyWithoutUserNestedInput
+  activities?: Prisma.ActivityUncheckedUpdateManyWithoutUserNestedInput
+  captures?: Prisma.CaptureUncheckedUpdateManyWithoutUserNestedInput
+  notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
+  lifeIdentity?: Prisma.LifeIdentityUncheckedUpdateOneWithoutUserNestedInput
+  lifeVision?: Prisma.LifeVisionUncheckedUpdateOneWithoutUserNestedInput
+  lifeChapters?: Prisma.LifeChapterUncheckedUpdateManyWithoutUserNestedInput
+  lifeReflections?: Prisma.LifeReflectionUncheckedUpdateManyWithoutUserNestedInput
+  habitLogs?: Prisma.HabitLogUncheckedUpdateManyWithoutUserNestedInput
+  habitStreaks?: Prisma.HabitStreakUncheckedUpdateManyWithoutUserNestedInput
+}
+
+export type UserCreateWithoutHabitLogsInput = {
+  id?: string
+  email: string
+  passwordHash?: string | null
+  name?: string | null
+  avatarUrl?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  preference?: Prisma.UserPreferenceCreateNestedOneWithoutUserInput
+  areas?: Prisma.AreaCreateNestedManyWithoutUserInput
+  goals?: Prisma.GoalCreateNestedManyWithoutUserInput
+  objectives?: Prisma.ObjectiveCreateNestedManyWithoutUserInput
+  projects?: Prisma.ProjectCreateNestedManyWithoutUserInput
+  stages?: Prisma.StageCreateNestedManyWithoutUserInput
+  milestones?: Prisma.MilestoneCreateNestedManyWithoutUserInput
+  tasks?: Prisma.TaskCreateNestedManyWithoutUserInput
+  sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
+  dailyFocuses?: Prisma.DailyFocusCreateNestedManyWithoutUserInput
+  reviews?: Prisma.ReviewCreateNestedManyWithoutUserInput
+  calendarEvents?: Prisma.CalendarEventCreateNestedManyWithoutUserInput
+  activities?: Prisma.ActivityCreateNestedManyWithoutUserInput
+  captures?: Prisma.CaptureCreateNestedManyWithoutUserInput
+  notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
+  lifeIdentity?: Prisma.LifeIdentityCreateNestedOneWithoutUserInput
+  lifeVision?: Prisma.LifeVisionCreateNestedOneWithoutUserInput
+  lifeChapters?: Prisma.LifeChapterCreateNestedManyWithoutUserInput
+  lifeReflections?: Prisma.LifeReflectionCreateNestedManyWithoutUserInput
+  habits?: Prisma.HabitCreateNestedManyWithoutUserInput
+  habitStreaks?: Prisma.HabitStreakCreateNestedManyWithoutUserInput
+}
+
+export type UserUncheckedCreateWithoutHabitLogsInput = {
+  id?: string
+  email: string
+  passwordHash?: string | null
+  name?: string | null
+  avatarUrl?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  preference?: Prisma.UserPreferenceUncheckedCreateNestedOneWithoutUserInput
+  areas?: Prisma.AreaUncheckedCreateNestedManyWithoutUserInput
+  goals?: Prisma.GoalUncheckedCreateNestedManyWithoutUserInput
+  objectives?: Prisma.ObjectiveUncheckedCreateNestedManyWithoutUserInput
+  projects?: Prisma.ProjectUncheckedCreateNestedManyWithoutUserInput
+  stages?: Prisma.StageUncheckedCreateNestedManyWithoutUserInput
+  milestones?: Prisma.MilestoneUncheckedCreateNestedManyWithoutUserInput
+  tasks?: Prisma.TaskUncheckedCreateNestedManyWithoutUserInput
+  sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
+  dailyFocuses?: Prisma.DailyFocusUncheckedCreateNestedManyWithoutUserInput
+  reviews?: Prisma.ReviewUncheckedCreateNestedManyWithoutUserInput
+  calendarEvents?: Prisma.CalendarEventUncheckedCreateNestedManyWithoutUserInput
+  activities?: Prisma.ActivityUncheckedCreateNestedManyWithoutUserInput
+  captures?: Prisma.CaptureUncheckedCreateNestedManyWithoutUserInput
+  notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
+  lifeIdentity?: Prisma.LifeIdentityUncheckedCreateNestedOneWithoutUserInput
+  lifeVision?: Prisma.LifeVisionUncheckedCreateNestedOneWithoutUserInput
+  lifeChapters?: Prisma.LifeChapterUncheckedCreateNestedManyWithoutUserInput
+  lifeReflections?: Prisma.LifeReflectionUncheckedCreateNestedManyWithoutUserInput
+  habits?: Prisma.HabitUncheckedCreateNestedManyWithoutUserInput
+  habitStreaks?: Prisma.HabitStreakUncheckedCreateNestedManyWithoutUserInput
+}
+
+export type UserCreateOrConnectWithoutHabitLogsInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutHabitLogsInput, Prisma.UserUncheckedCreateWithoutHabitLogsInput>
+}
+
+export type UserUpsertWithoutHabitLogsInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutHabitLogsInput, Prisma.UserUncheckedUpdateWithoutHabitLogsInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutHabitLogsInput, Prisma.UserUncheckedCreateWithoutHabitLogsInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutHabitLogsInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutHabitLogsInput, Prisma.UserUncheckedUpdateWithoutHabitLogsInput>
+}
+
+export type UserUpdateWithoutHabitLogsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  preference?: Prisma.UserPreferenceUpdateOneWithoutUserNestedInput
+  areas?: Prisma.AreaUpdateManyWithoutUserNestedInput
+  goals?: Prisma.GoalUpdateManyWithoutUserNestedInput
+  objectives?: Prisma.ObjectiveUpdateManyWithoutUserNestedInput
+  projects?: Prisma.ProjectUpdateManyWithoutUserNestedInput
+  stages?: Prisma.StageUpdateManyWithoutUserNestedInput
+  milestones?: Prisma.MilestoneUpdateManyWithoutUserNestedInput
+  tasks?: Prisma.TaskUpdateManyWithoutUserNestedInput
+  sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
+  dailyFocuses?: Prisma.DailyFocusUpdateManyWithoutUserNestedInput
+  reviews?: Prisma.ReviewUpdateManyWithoutUserNestedInput
+  calendarEvents?: Prisma.CalendarEventUpdateManyWithoutUserNestedInput
+  activities?: Prisma.ActivityUpdateManyWithoutUserNestedInput
+  captures?: Prisma.CaptureUpdateManyWithoutUserNestedInput
+  notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
+  lifeIdentity?: Prisma.LifeIdentityUpdateOneWithoutUserNestedInput
+  lifeVision?: Prisma.LifeVisionUpdateOneWithoutUserNestedInput
+  lifeChapters?: Prisma.LifeChapterUpdateManyWithoutUserNestedInput
+  lifeReflections?: Prisma.LifeReflectionUpdateManyWithoutUserNestedInput
+  habits?: Prisma.HabitUpdateManyWithoutUserNestedInput
+  habitStreaks?: Prisma.HabitStreakUpdateManyWithoutUserNestedInput
+}
+
+export type UserUncheckedUpdateWithoutHabitLogsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  preference?: Prisma.UserPreferenceUncheckedUpdateOneWithoutUserNestedInput
+  areas?: Prisma.AreaUncheckedUpdateManyWithoutUserNestedInput
+  goals?: Prisma.GoalUncheckedUpdateManyWithoutUserNestedInput
+  objectives?: Prisma.ObjectiveUncheckedUpdateManyWithoutUserNestedInput
+  projects?: Prisma.ProjectUncheckedUpdateManyWithoutUserNestedInput
+  stages?: Prisma.StageUncheckedUpdateManyWithoutUserNestedInput
+  milestones?: Prisma.MilestoneUncheckedUpdateManyWithoutUserNestedInput
+  tasks?: Prisma.TaskUncheckedUpdateManyWithoutUserNestedInput
+  sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
+  dailyFocuses?: Prisma.DailyFocusUncheckedUpdateManyWithoutUserNestedInput
+  reviews?: Prisma.ReviewUncheckedUpdateManyWithoutUserNestedInput
+  calendarEvents?: Prisma.CalendarEventUncheckedUpdateManyWithoutUserNestedInput
+  activities?: Prisma.ActivityUncheckedUpdateManyWithoutUserNestedInput
+  captures?: Prisma.CaptureUncheckedUpdateManyWithoutUserNestedInput
+  notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
+  lifeIdentity?: Prisma.LifeIdentityUncheckedUpdateOneWithoutUserNestedInput
+  lifeVision?: Prisma.LifeVisionUncheckedUpdateOneWithoutUserNestedInput
+  lifeChapters?: Prisma.LifeChapterUncheckedUpdateManyWithoutUserNestedInput
+  lifeReflections?: Prisma.LifeReflectionUncheckedUpdateManyWithoutUserNestedInput
+  habits?: Prisma.HabitUncheckedUpdateManyWithoutUserNestedInput
+  habitStreaks?: Prisma.HabitStreakUncheckedUpdateManyWithoutUserNestedInput
+}
+
+export type UserCreateWithoutHabitStreaksInput = {
+  id?: string
+  email: string
+  passwordHash?: string | null
+  name?: string | null
+  avatarUrl?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  preference?: Prisma.UserPreferenceCreateNestedOneWithoutUserInput
+  areas?: Prisma.AreaCreateNestedManyWithoutUserInput
+  goals?: Prisma.GoalCreateNestedManyWithoutUserInput
+  objectives?: Prisma.ObjectiveCreateNestedManyWithoutUserInput
+  projects?: Prisma.ProjectCreateNestedManyWithoutUserInput
+  stages?: Prisma.StageCreateNestedManyWithoutUserInput
+  milestones?: Prisma.MilestoneCreateNestedManyWithoutUserInput
+  tasks?: Prisma.TaskCreateNestedManyWithoutUserInput
+  sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
+  dailyFocuses?: Prisma.DailyFocusCreateNestedManyWithoutUserInput
+  reviews?: Prisma.ReviewCreateNestedManyWithoutUserInput
+  calendarEvents?: Prisma.CalendarEventCreateNestedManyWithoutUserInput
+  activities?: Prisma.ActivityCreateNestedManyWithoutUserInput
+  captures?: Prisma.CaptureCreateNestedManyWithoutUserInput
+  notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
+  lifeIdentity?: Prisma.LifeIdentityCreateNestedOneWithoutUserInput
+  lifeVision?: Prisma.LifeVisionCreateNestedOneWithoutUserInput
+  lifeChapters?: Prisma.LifeChapterCreateNestedManyWithoutUserInput
+  lifeReflections?: Prisma.LifeReflectionCreateNestedManyWithoutUserInput
+  habits?: Prisma.HabitCreateNestedManyWithoutUserInput
+  habitLogs?: Prisma.HabitLogCreateNestedManyWithoutUserInput
+}
+
+export type UserUncheckedCreateWithoutHabitStreaksInput = {
+  id?: string
+  email: string
+  passwordHash?: string | null
+  name?: string | null
+  avatarUrl?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  preference?: Prisma.UserPreferenceUncheckedCreateNestedOneWithoutUserInput
+  areas?: Prisma.AreaUncheckedCreateNestedManyWithoutUserInput
+  goals?: Prisma.GoalUncheckedCreateNestedManyWithoutUserInput
+  objectives?: Prisma.ObjectiveUncheckedCreateNestedManyWithoutUserInput
+  projects?: Prisma.ProjectUncheckedCreateNestedManyWithoutUserInput
+  stages?: Prisma.StageUncheckedCreateNestedManyWithoutUserInput
+  milestones?: Prisma.MilestoneUncheckedCreateNestedManyWithoutUserInput
+  tasks?: Prisma.TaskUncheckedCreateNestedManyWithoutUserInput
+  sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
+  dailyFocuses?: Prisma.DailyFocusUncheckedCreateNestedManyWithoutUserInput
+  reviews?: Prisma.ReviewUncheckedCreateNestedManyWithoutUserInput
+  calendarEvents?: Prisma.CalendarEventUncheckedCreateNestedManyWithoutUserInput
+  activities?: Prisma.ActivityUncheckedCreateNestedManyWithoutUserInput
+  captures?: Prisma.CaptureUncheckedCreateNestedManyWithoutUserInput
+  notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
+  lifeIdentity?: Prisma.LifeIdentityUncheckedCreateNestedOneWithoutUserInput
+  lifeVision?: Prisma.LifeVisionUncheckedCreateNestedOneWithoutUserInput
+  lifeChapters?: Prisma.LifeChapterUncheckedCreateNestedManyWithoutUserInput
+  lifeReflections?: Prisma.LifeReflectionUncheckedCreateNestedManyWithoutUserInput
+  habits?: Prisma.HabitUncheckedCreateNestedManyWithoutUserInput
+  habitLogs?: Prisma.HabitLogUncheckedCreateNestedManyWithoutUserInput
+}
+
+export type UserCreateOrConnectWithoutHabitStreaksInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutHabitStreaksInput, Prisma.UserUncheckedCreateWithoutHabitStreaksInput>
+}
+
+export type UserUpsertWithoutHabitStreaksInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutHabitStreaksInput, Prisma.UserUncheckedUpdateWithoutHabitStreaksInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutHabitStreaksInput, Prisma.UserUncheckedCreateWithoutHabitStreaksInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutHabitStreaksInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutHabitStreaksInput, Prisma.UserUncheckedUpdateWithoutHabitStreaksInput>
+}
+
+export type UserUpdateWithoutHabitStreaksInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  preference?: Prisma.UserPreferenceUpdateOneWithoutUserNestedInput
+  areas?: Prisma.AreaUpdateManyWithoutUserNestedInput
+  goals?: Prisma.GoalUpdateManyWithoutUserNestedInput
+  objectives?: Prisma.ObjectiveUpdateManyWithoutUserNestedInput
+  projects?: Prisma.ProjectUpdateManyWithoutUserNestedInput
+  stages?: Prisma.StageUpdateManyWithoutUserNestedInput
+  milestones?: Prisma.MilestoneUpdateManyWithoutUserNestedInput
+  tasks?: Prisma.TaskUpdateManyWithoutUserNestedInput
+  sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
+  dailyFocuses?: Prisma.DailyFocusUpdateManyWithoutUserNestedInput
+  reviews?: Prisma.ReviewUpdateManyWithoutUserNestedInput
+  calendarEvents?: Prisma.CalendarEventUpdateManyWithoutUserNestedInput
+  activities?: Prisma.ActivityUpdateManyWithoutUserNestedInput
+  captures?: Prisma.CaptureUpdateManyWithoutUserNestedInput
+  notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
+  lifeIdentity?: Prisma.LifeIdentityUpdateOneWithoutUserNestedInput
+  lifeVision?: Prisma.LifeVisionUpdateOneWithoutUserNestedInput
+  lifeChapters?: Prisma.LifeChapterUpdateManyWithoutUserNestedInput
+  lifeReflections?: Prisma.LifeReflectionUpdateManyWithoutUserNestedInput
+  habits?: Prisma.HabitUpdateManyWithoutUserNestedInput
+  habitLogs?: Prisma.HabitLogUpdateManyWithoutUserNestedInput
+}
+
+export type UserUncheckedUpdateWithoutHabitStreaksInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  preference?: Prisma.UserPreferenceUncheckedUpdateOneWithoutUserNestedInput
+  areas?: Prisma.AreaUncheckedUpdateManyWithoutUserNestedInput
+  goals?: Prisma.GoalUncheckedUpdateManyWithoutUserNestedInput
+  objectives?: Prisma.ObjectiveUncheckedUpdateManyWithoutUserNestedInput
+  projects?: Prisma.ProjectUncheckedUpdateManyWithoutUserNestedInput
+  stages?: Prisma.StageUncheckedUpdateManyWithoutUserNestedInput
+  milestones?: Prisma.MilestoneUncheckedUpdateManyWithoutUserNestedInput
+  tasks?: Prisma.TaskUncheckedUpdateManyWithoutUserNestedInput
+  sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
+  dailyFocuses?: Prisma.DailyFocusUncheckedUpdateManyWithoutUserNestedInput
+  reviews?: Prisma.ReviewUncheckedUpdateManyWithoutUserNestedInput
+  calendarEvents?: Prisma.CalendarEventUncheckedUpdateManyWithoutUserNestedInput
+  activities?: Prisma.ActivityUncheckedUpdateManyWithoutUserNestedInput
+  captures?: Prisma.CaptureUncheckedUpdateManyWithoutUserNestedInput
+  notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
+  lifeIdentity?: Prisma.LifeIdentityUncheckedUpdateOneWithoutUserNestedInput
+  lifeVision?: Prisma.LifeVisionUncheckedUpdateOneWithoutUserNestedInput
+  lifeChapters?: Prisma.LifeChapterUncheckedUpdateManyWithoutUserNestedInput
+  lifeReflections?: Prisma.LifeReflectionUncheckedUpdateManyWithoutUserNestedInput
+  habits?: Prisma.HabitUncheckedUpdateManyWithoutUserNestedInput
+  habitLogs?: Prisma.HabitLogUncheckedUpdateManyWithoutUserNestedInput
 }
 
 
@@ -3219,6 +3930,9 @@ export type UserCountOutputType = {
   notifications: number
   lifeChapters: number
   lifeReflections: number
+  habits: number
+  habitLogs: number
+  habitStreaks: number
 }
 
 export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -3238,6 +3952,9 @@ export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.I
   notifications?: boolean | UserCountOutputTypeCountNotificationsArgs
   lifeChapters?: boolean | UserCountOutputTypeCountLifeChaptersArgs
   lifeReflections?: boolean | UserCountOutputTypeCountLifeReflectionsArgs
+  habits?: boolean | UserCountOutputTypeCountHabitsArgs
+  habitLogs?: boolean | UserCountOutputTypeCountHabitLogsArgs
+  habitStreaks?: boolean | UserCountOutputTypeCountHabitStreaksArgs
 }
 
 /**
@@ -3362,6 +4079,27 @@ export type UserCountOutputTypeCountLifeReflectionsArgs<ExtArgs extends runtime.
   where?: Prisma.LifeReflectionWhereInput
 }
 
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountHabitsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.HabitWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountHabitLogsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.HabitLogWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountHabitStreaksArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.HabitStreakWhereInput
+}
+
 
 export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -3390,6 +4128,9 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   lifeVision?: boolean | Prisma.User$lifeVisionArgs<ExtArgs>
   lifeChapters?: boolean | Prisma.User$lifeChaptersArgs<ExtArgs>
   lifeReflections?: boolean | Prisma.User$lifeReflectionsArgs<ExtArgs>
+  habits?: boolean | Prisma.User$habitsArgs<ExtArgs>
+  habitLogs?: boolean | Prisma.User$habitLogsArgs<ExtArgs>
+  habitStreaks?: boolean | Prisma.User$habitStreaksArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["user"]>
 
@@ -3444,6 +4185,9 @@ export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   lifeVision?: boolean | Prisma.User$lifeVisionArgs<ExtArgs>
   lifeChapters?: boolean | Prisma.User$lifeChaptersArgs<ExtArgs>
   lifeReflections?: boolean | Prisma.User$lifeReflectionsArgs<ExtArgs>
+  habits?: boolean | Prisma.User$habitsArgs<ExtArgs>
+  habitLogs?: boolean | Prisma.User$habitLogsArgs<ExtArgs>
+  habitStreaks?: boolean | Prisma.User$habitStreaksArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type UserIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
@@ -3471,6 +4215,9 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     lifeVision: Prisma.$LifeVisionPayload<ExtArgs> | null
     lifeChapters: Prisma.$LifeChapterPayload<ExtArgs>[]
     lifeReflections: Prisma.$LifeReflectionPayload<ExtArgs>[]
+    habits: Prisma.$HabitPayload<ExtArgs>[]
+    habitLogs: Prisma.$HabitLogPayload<ExtArgs>[]
+    habitStreaks: Prisma.$HabitStreakPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -3893,6 +4640,9 @@ export interface Prisma__UserClient<T, Null = never, ExtArgs extends runtime.Typ
   lifeVision<T extends Prisma.User$lifeVisionArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$lifeVisionArgs<ExtArgs>>): Prisma.Prisma__LifeVisionClient<runtime.Types.Result.GetResult<Prisma.$LifeVisionPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   lifeChapters<T extends Prisma.User$lifeChaptersArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$lifeChaptersArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$LifeChapterPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   lifeReflections<T extends Prisma.User$lifeReflectionsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$lifeReflectionsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$LifeReflectionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  habits<T extends Prisma.User$habitsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$habitsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$HabitPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  habitLogs<T extends Prisma.User$habitLogsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$habitLogsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$HabitLogPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  habitStreaks<T extends Prisma.User$habitStreaksArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$habitStreaksArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$HabitStreakPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -4760,6 +5510,78 @@ export type User$lifeReflectionsArgs<ExtArgs extends runtime.Types.Extensions.In
   take?: number
   skip?: number
   distinct?: Prisma.LifeReflectionScalarFieldEnum | Prisma.LifeReflectionScalarFieldEnum[]
+}
+
+/**
+ * User.habits
+ */
+export type User$habitsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Habit
+   */
+  select?: Prisma.HabitSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Habit
+   */
+  omit?: Prisma.HabitOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.HabitInclude<ExtArgs> | null
+  where?: Prisma.HabitWhereInput
+  orderBy?: Prisma.HabitOrderByWithRelationInput | Prisma.HabitOrderByWithRelationInput[]
+  cursor?: Prisma.HabitWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.HabitScalarFieldEnum | Prisma.HabitScalarFieldEnum[]
+}
+
+/**
+ * User.habitLogs
+ */
+export type User$habitLogsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the HabitLog
+   */
+  select?: Prisma.HabitLogSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the HabitLog
+   */
+  omit?: Prisma.HabitLogOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.HabitLogInclude<ExtArgs> | null
+  where?: Prisma.HabitLogWhereInput
+  orderBy?: Prisma.HabitLogOrderByWithRelationInput | Prisma.HabitLogOrderByWithRelationInput[]
+  cursor?: Prisma.HabitLogWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.HabitLogScalarFieldEnum | Prisma.HabitLogScalarFieldEnum[]
+}
+
+/**
+ * User.habitStreaks
+ */
+export type User$habitStreaksArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the HabitStreak
+   */
+  select?: Prisma.HabitStreakSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the HabitStreak
+   */
+  omit?: Prisma.HabitStreakOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.HabitStreakInclude<ExtArgs> | null
+  where?: Prisma.HabitStreakWhereInput
+  orderBy?: Prisma.HabitStreakOrderByWithRelationInput | Prisma.HabitStreakOrderByWithRelationInput[]
+  cursor?: Prisma.HabitStreakWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.HabitStreakScalarFieldEnum | Prisma.HabitStreakScalarFieldEnum[]
 }
 
 /**

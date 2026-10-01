@@ -183,3 +183,21 @@ export const NotificationSeverity = {
 } as const
 
 export type NotificationSeverity = (typeof NotificationSeverity)[keyof typeof NotificationSeverity]
+
+
+export const HabitType = {
+  GOOD: 'GOOD',
+  BAD: 'BAD'
+} as const
+
+export type HabitType = (typeof HabitType)[keyof typeof HabitType]
+
+
+export const HabitDifficulty = {
+  EASY: 'EASY',
+  MEDIUM: 'MEDIUM',
+  HARD: 'HARD',
+  EXTREME: 'EXTREME'
+} as const
+
+export type HabitDifficulty = (typeof HabitDifficulty)[keyof typeof HabitDifficulty]

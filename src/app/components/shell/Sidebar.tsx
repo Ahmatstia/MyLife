@@ -38,6 +38,7 @@ const navigationGroups: NavGroup[] = [
     title: "Perencanaan",
     items: [
       { href: "/goals", label: "Target & Proyek", verb: "Sasaran", icon: "flag", color: "text-[#a078ff]" },
+      { href: "/habits", label: "Habit Tracker", verb: "Kebiasaan", icon: "flame", color: "text-[#f43f5e]" },
       { href: "/capture", label: "Inbox", verb: "Catat", icon: "inbox", color: "text-[#F59E0B]" },
     ],
   },
@@ -66,6 +67,10 @@ export function isActive(href: string, pathname: string): boolean {
     return ["/goals", "/projects", "/areas"].some(
       (p) => pathname === p || pathname.startsWith(p + "/")
     );
+  }
+  // /habits is active for all habit sub-routes
+  if (href === "/habits") {
+    return pathname === "/habits" || pathname.startsWith("/habits/");
   }
   return pathname === href || pathname.startsWith(href + "/");
 }
