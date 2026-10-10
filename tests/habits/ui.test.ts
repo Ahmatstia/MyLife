@@ -49,14 +49,11 @@ describe("Habits v2 UI Logic & Contract Tests (Langkah 1.6)", () => {
       expect(isV2Active({ HABITS_V2: "0", NEXT_PUBLIC_HABITS_V2: "1" })).toBe(true);
     });
 
-    it("verifies habits page imports both HabitsManager and HabitsV2App conditionally", () => {
+    it("verifies habits page renders HabitsV2App permanently after cutover", () => {
       const pagePath = path.resolve(process.cwd(), "src/app/(app)/habits/page.tsx");
       const content = fs.readFileSync(pagePath, "utf-8");
 
-      expect(content).toContain('import { HabitsManager } from "@/app/(app)/habits/HabitsManager"');
       expect(content).toContain('import { HabitsV2App } from "@/app/components/habits-v2"');
-      expect(content).toContain("HABITS_V2");
-      expect(content).toContain("<HabitsManager");
       expect(content).toContain("<HabitsV2App");
     });
   });

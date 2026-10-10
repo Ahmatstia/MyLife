@@ -137,18 +137,6 @@ enum NotificationSeverity {
   URGENT
 }
 
-enum HabitType {
-  GOOD
-  BAD
-}
-
-enum HabitDifficulty {
-  EASY
-  MEDIUM
-  HARD
-  EXTREME
-}
-
 // ------------------------------------------------------------------------------
 // CORE DOMAIN
 // ------------------------------------------------------------------------------
@@ -181,10 +169,6 @@ model User {
   lifeVision      LifeVision?
   lifeChapters    LifeChapter[]
   lifeReflections LifeReflection[]
-  habits          Habit[]
-  habitTasks      HabitTask[]
-  habitLogs       HabitLog[]
-  habitStreaks    HabitStreak[]
   trackedHabits   TrackedHabit[]
   habitEvents     HabitEvent[]
   habitOutbox     HabitNotificationOutbox[]
@@ -229,7 +213,6 @@ model Area {
   tasks       Task[]
   activities  Activity[]
   chapterFocuses ChapterFocusArea[]
-  habits      Habit[]
   trackedHabits TrackedHabit[]
 
   @@unique([userId, name])
@@ -686,124 +669,8 @@ model LifeReflection {
 }
 
 // ------------------------------------------------------------------------------
-// HABIT DOMAIN
+// HABITS V2 DOMAIN
 // ------------------------------------------------------------------------------
-
-model Habit {
-  id               String          @id @default(cuid())
-  userId           String
-  title            String
-  description      String?
-  type             HabitType       @default(GOOD)
-  difficulty       HabitDifficulty @default(MEDIUM)
-  color            String          @default("#8B5CF6")
-  icon             String          @default("zap")
-  areaId           String?
-  isActive         Boolean         @default(true)
-
-  // Evaluation & Target
-  checkInTime      String          @default("06:00")
-  targetDays       Int?
-
-  // BAD habit specific
-  triggerNotes     String?
-  replacementHabit String?
-  whyQuit          String?
-
-  // GOOD habit specific (Cue-Routine-Reward)
-  cue              String?
-  reward           String?
-
-  startDate        DateTime        @default(now())
-  createdAt        DateTime        @default(now())
-  updatedAt        DateTime        @updatedAt
-
-  user             User            @relation(fields: [userId], references: [id], onDelete: Cascade)
-  area             Area?           @relation(fields: [areaId], references: [id], onDelete: SetNull)
-  phases           HabitPhase[]
-  tasks            HabitTask[]
-  logs             HabitLog[]
-  streaks          HabitStreak[]
-
-  @@index([userId, type])
-  @@index([userId, isActive])
-  @@index([userId, areaId])
-}
-
-model HabitTask {
-  id          String   @id @default(cuid())
-  userId      String
-  habitId     String
-  title       String
-  description String?
-  isCompleted Boolean  @default(false)
-  category    String   @default("ACTION") // ACTION, BARRIER, REPLACEMENT, PROTOCOL
-  order       Int      @default(0)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-
-  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  habit       Habit    @relation(fields: [habitId], references: [id], onDelete: Cascade)
-
-  @@index([habitId, order])
-  @@index([userId, habitId])
-}
-
-model HabitPhase {
-  id               String    @id @default(cuid())
-  habitId          String
-  order            Int
-  title            String
-  description      String?
-  targetDays       Int
-  afterRelapseDays Int?      // Days of grace after completing phase
-  isCompleted      Boolean   @default(false)
-  completedAt      DateTime?
-  startedAt        DateTime?
-  psychTip         String?
-
-  habit            Habit     @relation(fields: [habitId], references: [id], onDelete: Cascade)
-
-  @@index([habitId, order])
-  @@index([habitId, isCompleted])
-}
-
-model HabitLog {
-  id              String    @id @default(cuid())
-  userId          String
-  habitId         String
-  date            DateTime  // Normalized to date only (no time)
-  isSuccess       Boolean   @default(true)
-  mood            Int?      // 1-5
-  energyLevel     Int?      // 1-5
-  notes           String?
-  relapseTrigger  String?
-  createdAt       DateTime  @default(now())
-
-  user            User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-  habit           Habit     @relation(fields: [habitId], references: [id], onDelete: Cascade)
-
-  @@unique([userId, habitId, date])
-  @@index([userId, habitId])
-  @@index([userId, date])
-  @@index([habitId, date])
-}
-
-model HabitStreak {
-  id          String    @id @default(cuid())
-  userId      String
-  habitId     String
-  startDate   DateTime
-  endDate     DateTime?
-  days        Int       @default(0)
-  isCurrent   Boolean   @default(true)
-
-  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-  habit       Habit     @relation(fields: [habitId], references: [id], onDelete: Cascade)
-
-  @@index([userId, habitId, isCurrent])
-  @@index([habitId, isCurrent])
-}
 
 // ------------------------------------------------------------------------------
 // HABITS V2 DOMAIN (FASE 1)

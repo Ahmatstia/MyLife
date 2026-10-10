@@ -418,17 +418,13 @@ describe("Database Schema Constraints & Integrity (Habits v2 Phase 1)", () => {
     });
   });
 
-  describe("5. Smoke Test Tabel Lama", () => {
-    it("Tabel-tabel lama tetap utuh dan dapat diakses", async () => {
-      const habits = await prisma.habit.findMany({ take: 1 });
-      const habitLogs = await prisma.habitLog.findMany({ take: 1 });
-      const habitStreaks = await prisma.habitStreak.findMany({ take: 1 });
-      const habitTasks = await prisma.habitTask.findMany({ take: 1 });
-
-      expect(Array.isArray(habits)).toBe(true);
-      expect(Array.isArray(habitLogs)).toBe(true);
-      expect(Array.isArray(habitStreaks)).toBe(true);
-      expect(Array.isArray(habitTasks)).toBe(true);
+  describe("5. Verifikasi Penghapusan Tabel Lama (Post-Cutover Fase 6)", () => {
+    it("Tabel-tabel lama telah dihapus sepenuhnya dari basis data", async () => {
+      const client = prisma as unknown as Record<string, unknown>;
+      expect(client.habit).toBeUndefined();
+      expect(client.habitLog).toBeUndefined();
+      expect(client.habitStreak).toBeUndefined();
+      expect(client.habitTask).toBeUndefined();
     });
   });
 });

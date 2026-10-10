@@ -21,11 +21,19 @@ interface PendingCheckinItem {
 
 interface HabitsV2AppProps {
   userTimezone?: string;
+  initialHabitId?: string;
 }
 
-export function HabitsV2App({ userTimezone = "Asia/Jakarta" }: HabitsV2AppProps) {
-  const [view, setView] = useState<"LIST" | "DASHBOARD" | "WIZARD">("LIST");
-  const [selectedHabitId, setSelectedHabitId] = useState<string | null>(null);
+export function HabitsV2App({
+  userTimezone = "Asia/Jakarta",
+  initialHabitId,
+}: HabitsV2AppProps) {
+  const [view, setView] = useState<"LIST" | "DASHBOARD" | "WIZARD">(() =>
+    initialHabitId ? "DASHBOARD" : "LIST",
+  );
+  const [selectedHabitId, setSelectedHabitId] = useState<string | null>(
+    () => initialHabitId || null,
+  );
   const [habits, setHabits] = useState<TrackedHabitItem[]>([]);
   const [pendingCheckins, setPendingCheckins] = useState<PendingCheckinItem[]>([]);
   const [loading, setLoading] = useState(true);

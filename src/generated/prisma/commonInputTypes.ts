@@ -596,40 +596,6 @@ export type JsonNullableWithAggregatesFilterBase<$PrismaModel = never> = {
   _max?: Prisma.NestedJsonNullableFilter<$PrismaModel>
 }
 
-export type EnumHabitTypeFilter<$PrismaModel = never> = {
-  equals?: $Enums.HabitType | Prisma.EnumHabitTypeFieldRefInput<$PrismaModel>
-  in?: $Enums.HabitType[] | Prisma.ListEnumHabitTypeFieldRefInput<$PrismaModel>
-  notIn?: $Enums.HabitType[] | Prisma.ListEnumHabitTypeFieldRefInput<$PrismaModel>
-  not?: Prisma.NestedEnumHabitTypeFilter<$PrismaModel> | $Enums.HabitType
-}
-
-export type EnumHabitDifficultyFilter<$PrismaModel = never> = {
-  equals?: $Enums.HabitDifficulty | Prisma.EnumHabitDifficultyFieldRefInput<$PrismaModel>
-  in?: $Enums.HabitDifficulty[] | Prisma.ListEnumHabitDifficultyFieldRefInput<$PrismaModel>
-  notIn?: $Enums.HabitDifficulty[] | Prisma.ListEnumHabitDifficultyFieldRefInput<$PrismaModel>
-  not?: Prisma.NestedEnumHabitDifficultyFilter<$PrismaModel> | $Enums.HabitDifficulty
-}
-
-export type EnumHabitTypeWithAggregatesFilter<$PrismaModel = never> = {
-  equals?: $Enums.HabitType | Prisma.EnumHabitTypeFieldRefInput<$PrismaModel>
-  in?: $Enums.HabitType[] | Prisma.ListEnumHabitTypeFieldRefInput<$PrismaModel>
-  notIn?: $Enums.HabitType[] | Prisma.ListEnumHabitTypeFieldRefInput<$PrismaModel>
-  not?: Prisma.NestedEnumHabitTypeWithAggregatesFilter<$PrismaModel> | $Enums.HabitType
-  _count?: Prisma.NestedIntFilter<$PrismaModel>
-  _min?: Prisma.NestedEnumHabitTypeFilter<$PrismaModel>
-  _max?: Prisma.NestedEnumHabitTypeFilter<$PrismaModel>
-}
-
-export type EnumHabitDifficultyWithAggregatesFilter<$PrismaModel = never> = {
-  equals?: $Enums.HabitDifficulty | Prisma.EnumHabitDifficultyFieldRefInput<$PrismaModel>
-  in?: $Enums.HabitDifficulty[] | Prisma.ListEnumHabitDifficultyFieldRefInput<$PrismaModel>
-  notIn?: $Enums.HabitDifficulty[] | Prisma.ListEnumHabitDifficultyFieldRefInput<$PrismaModel>
-  not?: Prisma.NestedEnumHabitDifficultyWithAggregatesFilter<$PrismaModel> | $Enums.HabitDifficulty
-  _count?: Prisma.NestedIntFilter<$PrismaModel>
-  _min?: Prisma.NestedEnumHabitDifficultyFilter<$PrismaModel>
-  _max?: Prisma.NestedEnumHabitDifficultyFilter<$PrismaModel>
-}
-
 export type EnumHabitKindFilter<$PrismaModel = never> = {
   equals?: $Enums.HabitKind | Prisma.EnumHabitKindFieldRefInput<$PrismaModel>
   in?: $Enums.HabitKind[] | Prisma.ListEnumHabitKindFieldRefInput<$PrismaModel>
@@ -1432,40 +1398,6 @@ export type NestedJsonNullableFilterBase<$PrismaModel = never> = {
   gt?: runtime.InputJsonValue | Prisma.JsonFieldRefInput<$PrismaModel>
   gte?: runtime.InputJsonValue | Prisma.JsonFieldRefInput<$PrismaModel>
   not?: runtime.InputJsonValue | Prisma.JsonFieldRefInput<$PrismaModel> | Prisma.JsonNullValueFilter
-}
-
-export type NestedEnumHabitTypeFilter<$PrismaModel = never> = {
-  equals?: $Enums.HabitType | Prisma.EnumHabitTypeFieldRefInput<$PrismaModel>
-  in?: $Enums.HabitType[] | Prisma.ListEnumHabitTypeFieldRefInput<$PrismaModel>
-  notIn?: $Enums.HabitType[] | Prisma.ListEnumHabitTypeFieldRefInput<$PrismaModel>
-  not?: Prisma.NestedEnumHabitTypeFilter<$PrismaModel> | $Enums.HabitType
-}
-
-export type NestedEnumHabitDifficultyFilter<$PrismaModel = never> = {
-  equals?: $Enums.HabitDifficulty | Prisma.EnumHabitDifficultyFieldRefInput<$PrismaModel>
-  in?: $Enums.HabitDifficulty[] | Prisma.ListEnumHabitDifficultyFieldRefInput<$PrismaModel>
-  notIn?: $Enums.HabitDifficulty[] | Prisma.ListEnumHabitDifficultyFieldRefInput<$PrismaModel>
-  not?: Prisma.NestedEnumHabitDifficultyFilter<$PrismaModel> | $Enums.HabitDifficulty
-}
-
-export type NestedEnumHabitTypeWithAggregatesFilter<$PrismaModel = never> = {
-  equals?: $Enums.HabitType | Prisma.EnumHabitTypeFieldRefInput<$PrismaModel>
-  in?: $Enums.HabitType[] | Prisma.ListEnumHabitTypeFieldRefInput<$PrismaModel>
-  notIn?: $Enums.HabitType[] | Prisma.ListEnumHabitTypeFieldRefInput<$PrismaModel>
-  not?: Prisma.NestedEnumHabitTypeWithAggregatesFilter<$PrismaModel> | $Enums.HabitType
-  _count?: Prisma.NestedIntFilter<$PrismaModel>
-  _min?: Prisma.NestedEnumHabitTypeFilter<$PrismaModel>
-  _max?: Prisma.NestedEnumHabitTypeFilter<$PrismaModel>
-}
-
-export type NestedEnumHabitDifficultyWithAggregatesFilter<$PrismaModel = never> = {
-  equals?: $Enums.HabitDifficulty | Prisma.EnumHabitDifficultyFieldRefInput<$PrismaModel>
-  in?: $Enums.HabitDifficulty[] | Prisma.ListEnumHabitDifficultyFieldRefInput<$PrismaModel>
-  notIn?: $Enums.HabitDifficulty[] | Prisma.ListEnumHabitDifficultyFieldRefInput<$PrismaModel>
-  not?: Prisma.NestedEnumHabitDifficultyWithAggregatesFilter<$PrismaModel> | $Enums.HabitDifficulty
-  _count?: Prisma.NestedIntFilter<$PrismaModel>
-  _min?: Prisma.NestedEnumHabitDifficultyFilter<$PrismaModel>
-  _max?: Prisma.NestedEnumHabitDifficultyFilter<$PrismaModel>
 }
 
 export type NestedEnumHabitKindFilter<$PrismaModel = never> = {

@@ -147,31 +147,6 @@ export type ChapterFocusArea = Prisma.ChapterFocusAreaModel
  */
 export type LifeReflection = Prisma.LifeReflectionModel
 /**
- * Model Habit
- * 
- */
-export type Habit = Prisma.HabitModel
-/**
- * Model HabitTask
- * 
- */
-export type HabitTask = Prisma.HabitTaskModel
-/**
- * Model HabitPhase
- * 
- */
-export type HabitPhase = Prisma.HabitPhaseModel
-/**
- * Model HabitLog
- * 
- */
-export type HabitLog = Prisma.HabitLogModel
-/**
- * Model HabitStreak
- * 
- */
-export type HabitStreak = Prisma.HabitStreakModel
-/**
  * Model TrackedHabit
  * 
  */

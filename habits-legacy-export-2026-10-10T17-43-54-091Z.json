@@ -1,0 +1,148 @@
+{
+  "exportedAt": "2026-10-10T17:43:54.093Z",
+  "counts": {
+    "total": 2,
+    "bad": 1,
+    "good": 1
+  },
+  "habits": [
+    {
+      "id": "cmv243jma000a7gc2c0mmznvw",
+      "userId": "f591d9bd-1a21-4150-95c7-1a77022ce151",
+      "title": "sdad",
+      "description": null,
+      "type": "BAD",
+      "difficulty": "MEDIUM",
+      "color": "#f43f5e",
+      "icon": "flame",
+      "areaId": null,
+      "isActive": true,
+      "checkInTime": "06:00",
+      "targetDays": null,
+      "triggerNotes": null,
+      "replacementHabit": null,
+      "whyQuit": null,
+      "cue": null,
+      "reward": null,
+      "startDate": "2026-10-10T08:07:58.738Z",
+      "createdAt": "2026-10-10T08:07:58.738Z",
+      "updatedAt": "2026-10-10T08:07:58.738Z",
+      "logs": [
+        {
+          "id": "cmv2446fw000b7gc2up933ef8",
+          "userId": "f591d9bd-1a21-4150-95c7-1a77022ce151",
+          "habitId": "cmv243jma000a7gc2c0mmznvw",
+          "date": "2026-10-10T00:00:00.000Z",
+          "isSuccess": true,
+          "mood": 3,
+          "energyLevel": null,
+          "notes": null,
+          "relapseTrigger": null,
+          "createdAt": "2026-10-10T08:08:28.316Z"
+        }
+      ],
+      "streaks": [
+        {
+          "id": "cmv2447b7000c7gc2g8h0ei1c",
+          "userId": "f591d9bd-1a21-4150-95c7-1a77022ce151",
+          "habitId": "cmv243jma000a7gc2c0mmznvw",
+          "startDate": "2026-10-10T00:00:00.000Z",
+          "endDate": null,
+          "days": 1,
+          "isCurrent": true
+        }
+      ],
+      "user": {
+        "id": "f591d9bd-1a21-4150-95c7-1a77022ce151",
+        "email": "admin@mylife.local",
+        "passwordHash": null,
+        "name": "Lexa",
+        "avatarUrl": null,
+        "createdAt": "2026-09-02T03:01:22.926Z",
+        "updatedAt": "2026-09-04T16:11:56.807Z",
+        "preference": {
+          "id": "cmtmw9tos0001jcc2gbmrbdz3",
+          "userId": "f591d9bd-1a21-4150-95c7-1a77022ce151",
+          "theme": "DARK",
+          "weekStartDay": 1,
+          "dailyFocusLimit": 5,
+          "enableNotifications": true,
+          "enableAiAssistance": true,
+          "timezone": "Asia/Jakarta",
+          "defaultReminderMinutes": 15,
+          "createdAt": "2026-09-04T11:52:39.820Z",
+          "updatedAt": "2026-10-10T07:13:17.483Z"
+        }
+      }
+    },
+    {
+      "id": "cmv2ffxj3000g7gc2x8o22hwg",
+      "userId": "f591d9bd-1a21-4150-95c7-1a77022ce151",
+      "title": "olahraga",
+      "description": null,
+      "type": "GOOD",
+      "difficulty": "MEDIUM",
+      "color": "#10b981",
+      "icon": "zap",
+      "areaId": "cmtoa2prj0005ssc28vml4on0",
+      "isActive": true,
+      "checkInTime": "06:00",
+      "targetDays": null,
+      "triggerNotes": null,
+      "replacementHabit": null,
+      "whyQuit": null,
+      "cue": null,
+      "reward": null,
+      "startDate": "2026-10-10T13:25:32.415Z",
+      "createdAt": "2026-10-10T13:25:32.415Z",
+      "updatedAt": "2026-10-10T13:25:32.415Z",
+      "logs": [
+        {
+          "id": "cmv2fgfc0000h7gc2o7fgesyn",
+          "userId": "f591d9bd-1a21-4150-95c7-1a77022ce151",
+          "habitId": "cmv2ffxj3000g7gc2x8o22hwg",
+          "date": "2026-10-10T00:00:00.000Z",
+          "isSuccess": true,
+          "mood": 3,
+          "energyLevel": null,
+          "notes": null,
+          "relapseTrigger": null,
+          "createdAt": "2026-10-10T13:25:55.488Z"
+        }
+      ],
+      "streaks": [
+        {
+          "id": "cmv2fgg64000i7gc20td1s8mm",
+          "userId": "f591d9bd-1a21-4150-95c7-1a77022ce151",
+          "habitId": "cmv2ffxj3000g7gc2x8o22hwg",
+          "startDate": "2026-10-10T00:00:00.000Z",
+          "endDate": null,
+          "days": 1,
+          "isCurrent": true
+        }
+      ],
+      "user": {
+        "id": "f591d9bd-1a21-4150-95c7-1a77022ce151",
+        "email": "admin@mylife.local",
+        "passwordHash": null,
+        "name": "Lexa",
+        "avatarUrl": null,
+        "createdAt": "2026-09-02T03:01:22.926Z",
+        "updatedAt": "2026-09-04T16:11:56.807Z",
+        "preference": {
+          "id": "cmtmw9tos0001jcc2gbmrbdz3",
+          "userId": "f591d9bd-1a21-4150-95c7-1a77022ce151",
+          "theme": "DARK",
+          "weekStartDay": 1,
+          "dailyFocusLimit": 5,
+          "enableNotifications": true,
+          "enableAiAssistance": true,
+          "timezone": "Asia/Jakarta",
+          "defaultReminderMinutes": 15,
+          "createdAt": "2026-09-04T11:52:39.820Z",
+          "updatedAt": "2026-10-10T07:13:17.483Z"
+        }
+      }
+    }
+  ]
+}

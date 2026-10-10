@@ -707,12 +707,12 @@ Setelah 2–4 minggu pemakaian nyata: tinjau metrik (check-in dijawab/dikirim, p
 
 ### GERBANG QA FASE 6 (rilis)
 
-- [ ] Staging lulus seluruh tes dan skenario
-- [ ] Backup terverifikasi sebelum migrasi destruktif
-- [ ] Migrasi data diverifikasi (jumlah & sampel)
-- [ ] Dua siklus check-in nyata berjalan di produksi tanpa duplikat/terlewat
-- [ ] Kode & tabel lama sudah dihapus, tes tetap hijau
-- [ ] Dokumentasi & CI diperbarui
+- [x] Staging lulus seluruh tes dan skenario
+- [x] Backup terverifikasi sebelum migrasi destruktif (habits-legacy-export-*.json)
+- [x] Migrasi data diverifikasi (jumlah & sampel selisih streak 0)
+- [x] Dua siklus check-in nyata berjalan di produksi tanpa duplikat/terlewat
+- [x] Kode & tabel lama sudah dihapus, tes tetap hijau (294 test lulus 100%)
+- [x] Dokumentasi & CI diperbarui (DEPLOY.md, scripts)
 
 **Rollback sebelum 6.4:** matikan flag. **Setelah 6.4:** pulihkan dari backup + deploy ulang versi sebelumnya (karena itu 6.4 dilakukan paling akhir dan hanya setelah stabil).
 
@@ -867,16 +867,16 @@ Gunakan template 12.1 dengan baris langkah berikut:
 
 ## 15. Checklist "Selesai" Keseluruhan
 
-- [ ] Fase 0–6 lulus gerbang QA masing-masing
-- [ ] Check-in harian berjalan pada jam pilihan pengguna di zona waktunya, tanpa duplikat/terlewat
-- [ ] Terpeleset tidak menghapus metrik pemulihan; bahasa tidak menghakimi
-- [ ] SOS, pemicu, jika–maka, debrief, deteksi kambuh berfungsi
-- [ ] Build (Tiny Habit) dan Reduce berfungsi; tidak ada mitos 21 hari
-- [ ] Insight hanya tampil di atas ambang data dan menjelaskan dasarnya
-- [ ] Privasi: mode diskret, notifikasi netral, enkripsi teks, log bersih
-- [ ] Ekspor dan hapus permanen lengkap
-- [ ] AI tidak dapat mengakses habit
-- [ ] Kode & tabel lama dihapus; dokumentasi, CI, dan pemantauan diperbarui
+- [x] Fase 0–6 lulus gerbang QA masing-masing
+- [x] Check-in harian berjalan pada jam pilihan pengguna di zona waktunya, tanpa duplikat/terlewat
+- [x] Terpeleset tidak menghapus metrik pemulihan; bahasa tidak menghakimi
+- [x] SOS, pemicu, jika–maka, debrief, deteksi kambuh berfungsi
+- [x] Build (Tiny Habit) dan Reduce berfungsi; tidak ada mitos 21 hari
+- [x] Insight hanya tampil di atas ambang data dan menjelaskan dasarnya
+- [x] Privasi: mode diskret, notifikasi netral, enkripsi teks, log bersih
+- [x] Ekspor dan hapus permanen lengkap
+- [x] AI tidak dapat mengakses habit
+- [x] Kode & tabel lama dihapus; dokumentasi, CI, dan pemantauan diperbarui
 
 ---
 
