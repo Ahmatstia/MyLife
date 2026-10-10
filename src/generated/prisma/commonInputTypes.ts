@@ -854,6 +854,23 @@ export type EnumTriggerCategoryWithAggregatesFilter<$PrismaModel = never> = {
   _max?: Prisma.NestedEnumTriggerCategoryFilter<$PrismaModel>
 }
 
+export type EnumHabitScheduleTypeFilter<$PrismaModel = never> = {
+  equals?: $Enums.HabitScheduleType | Prisma.EnumHabitScheduleTypeFieldRefInput<$PrismaModel>
+  in?: $Enums.HabitScheduleType[] | Prisma.ListEnumHabitScheduleTypeFieldRefInput<$PrismaModel>
+  notIn?: $Enums.HabitScheduleType[] | Prisma.ListEnumHabitScheduleTypeFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumHabitScheduleTypeFilter<$PrismaModel> | $Enums.HabitScheduleType
+}
+
+export type EnumHabitScheduleTypeWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.HabitScheduleType | Prisma.EnumHabitScheduleTypeFieldRefInput<$PrismaModel>
+  in?: $Enums.HabitScheduleType[] | Prisma.ListEnumHabitScheduleTypeFieldRefInput<$PrismaModel>
+  notIn?: $Enums.HabitScheduleType[] | Prisma.ListEnumHabitScheduleTypeFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumHabitScheduleTypeWithAggregatesFilter<$PrismaModel> | $Enums.HabitScheduleType
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumHabitScheduleTypeFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumHabitScheduleTypeFilter<$PrismaModel>
+}
+
 export type NestedStringFilter<$PrismaModel = never> = {
   equals?: string | Prisma.StringFieldRefInput<$PrismaModel>
   in?: string[] | Prisma.ListStringFieldRefInput<$PrismaModel>
@@ -1629,6 +1646,23 @@ export type NestedEnumTriggerCategoryWithAggregatesFilter<$PrismaModel = never> 
   _count?: Prisma.NestedIntFilter<$PrismaModel>
   _min?: Prisma.NestedEnumTriggerCategoryFilter<$PrismaModel>
   _max?: Prisma.NestedEnumTriggerCategoryFilter<$PrismaModel>
+}
+
+export type NestedEnumHabitScheduleTypeFilter<$PrismaModel = never> = {
+  equals?: $Enums.HabitScheduleType | Prisma.EnumHabitScheduleTypeFieldRefInput<$PrismaModel>
+  in?: $Enums.HabitScheduleType[] | Prisma.ListEnumHabitScheduleTypeFieldRefInput<$PrismaModel>
+  notIn?: $Enums.HabitScheduleType[] | Prisma.ListEnumHabitScheduleTypeFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumHabitScheduleTypeFilter<$PrismaModel> | $Enums.HabitScheduleType
+}
+
+export type NestedEnumHabitScheduleTypeWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.HabitScheduleType | Prisma.EnumHabitScheduleTypeFieldRefInput<$PrismaModel>
+  in?: $Enums.HabitScheduleType[] | Prisma.ListEnumHabitScheduleTypeFieldRefInput<$PrismaModel>
+  notIn?: $Enums.HabitScheduleType[] | Prisma.ListEnumHabitScheduleTypeFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumHabitScheduleTypeWithAggregatesFilter<$PrismaModel> | $Enums.HabitScheduleType
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumHabitScheduleTypeFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumHabitScheduleTypeFilter<$PrismaModel>
 }
 
 

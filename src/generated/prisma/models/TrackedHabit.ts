@@ -339,6 +339,8 @@ export type TrackedHabitWhereInput = {
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   area?: Prisma.XOR<Prisma.AreaNullableScalarRelationFilter, Prisma.AreaWhereInput> | null
   breakProfile?: Prisma.XOR<Prisma.HabitBreakProfileNullableScalarRelationFilter, Prisma.HabitBreakProfileWhereInput> | null
+  buildProfile?: Prisma.XOR<Prisma.HabitBuildProfileNullableScalarRelationFilter, Prisma.HabitBuildProfileWhereInput> | null
+  replacedByProfiles?: Prisma.HabitBuildProfileListRelationFilter
   events?: Prisma.HabitEventListRelationFilter
   checkins?: Prisma.HabitCheckinListRelationFilter
   stats?: Prisma.XOR<Prisma.HabitStatsNullableScalarRelationFilter, Prisma.HabitStatsWhereInput> | null
@@ -346,6 +348,7 @@ export type TrackedHabitWhereInput = {
   triggers?: Prisma.HabitTriggerListRelationFilter
   copingPlans?: Prisma.CopingPlanListRelationFilter
   milestones?: Prisma.HabitMilestoneListRelationFilter
+  automaticitySurveys?: Prisma.AutomaticitySurveyListRelationFilter
 }
 
 export type TrackedHabitOrderByWithRelationInput = {
@@ -372,6 +375,8 @@ export type TrackedHabitOrderByWithRelationInput = {
   user?: Prisma.UserOrderByWithRelationInput
   area?: Prisma.AreaOrderByWithRelationInput
   breakProfile?: Prisma.HabitBreakProfileOrderByWithRelationInput
+  buildProfile?: Prisma.HabitBuildProfileOrderByWithRelationInput
+  replacedByProfiles?: Prisma.HabitBuildProfileOrderByRelationAggregateInput
   events?: Prisma.HabitEventOrderByRelationAggregateInput
   checkins?: Prisma.HabitCheckinOrderByRelationAggregateInput
   stats?: Prisma.HabitStatsOrderByWithRelationInput
@@ -379,6 +384,7 @@ export type TrackedHabitOrderByWithRelationInput = {
   triggers?: Prisma.HabitTriggerOrderByRelationAggregateInput
   copingPlans?: Prisma.CopingPlanOrderByRelationAggregateInput
   milestones?: Prisma.HabitMilestoneOrderByRelationAggregateInput
+  automaticitySurveys?: Prisma.AutomaticitySurveyOrderByRelationAggregateInput
 }
 
 export type TrackedHabitWhereUniqueInput = Prisma.AtLeast<{
@@ -408,6 +414,8 @@ export type TrackedHabitWhereUniqueInput = Prisma.AtLeast<{
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   area?: Prisma.XOR<Prisma.AreaNullableScalarRelationFilter, Prisma.AreaWhereInput> | null
   breakProfile?: Prisma.XOR<Prisma.HabitBreakProfileNullableScalarRelationFilter, Prisma.HabitBreakProfileWhereInput> | null
+  buildProfile?: Prisma.XOR<Prisma.HabitBuildProfileNullableScalarRelationFilter, Prisma.HabitBuildProfileWhereInput> | null
+  replacedByProfiles?: Prisma.HabitBuildProfileListRelationFilter
   events?: Prisma.HabitEventListRelationFilter
   checkins?: Prisma.HabitCheckinListRelationFilter
   stats?: Prisma.XOR<Prisma.HabitStatsNullableScalarRelationFilter, Prisma.HabitStatsWhereInput> | null
@@ -415,6 +423,7 @@ export type TrackedHabitWhereUniqueInput = Prisma.AtLeast<{
   triggers?: Prisma.HabitTriggerListRelationFilter
   copingPlans?: Prisma.CopingPlanListRelationFilter
   milestones?: Prisma.HabitMilestoneListRelationFilter
+  automaticitySurveys?: Prisma.AutomaticitySurveyListRelationFilter
 }, "id">
 
 export type TrackedHabitOrderByWithAggregationInput = {
@@ -493,6 +502,8 @@ export type TrackedHabitCreateInput = {
   user: Prisma.UserCreateNestedOneWithoutTrackedHabitsInput
   area?: Prisma.AreaCreateNestedOneWithoutTrackedHabitsInput
   breakProfile?: Prisma.HabitBreakProfileCreateNestedOneWithoutHabitInput
+  buildProfile?: Prisma.HabitBuildProfileCreateNestedOneWithoutHabitInput
+  replacedByProfiles?: Prisma.HabitBuildProfileCreateNestedManyWithoutReplacesHabitInput
   events?: Prisma.HabitEventCreateNestedManyWithoutHabitInput
   checkins?: Prisma.HabitCheckinCreateNestedManyWithoutHabitInput
   stats?: Prisma.HabitStatsCreateNestedOneWithoutHabitInput
@@ -500,6 +511,7 @@ export type TrackedHabitCreateInput = {
   triggers?: Prisma.HabitTriggerCreateNestedManyWithoutHabitInput
   copingPlans?: Prisma.CopingPlanCreateNestedManyWithoutHabitInput
   milestones?: Prisma.HabitMilestoneCreateNestedManyWithoutHabitInput
+  automaticitySurveys?: Prisma.AutomaticitySurveyCreateNestedManyWithoutHabitInput
 }
 
 export type TrackedHabitUncheckedCreateInput = {
@@ -524,6 +536,8 @@ export type TrackedHabitUncheckedCreateInput = {
   updatedAt?: Date | string
   archivedAt?: Date | string | null
   breakProfile?: Prisma.HabitBreakProfileUncheckedCreateNestedOneWithoutHabitInput
+  buildProfile?: Prisma.HabitBuildProfileUncheckedCreateNestedOneWithoutHabitInput
+  replacedByProfiles?: Prisma.HabitBuildProfileUncheckedCreateNestedManyWithoutReplacesHabitInput
   events?: Prisma.HabitEventUncheckedCreateNestedManyWithoutHabitInput
   checkins?: Prisma.HabitCheckinUncheckedCreateNestedManyWithoutHabitInput
   stats?: Prisma.HabitStatsUncheckedCreateNestedOneWithoutHabitInput
@@ -531,6 +545,7 @@ export type TrackedHabitUncheckedCreateInput = {
   triggers?: Prisma.HabitTriggerUncheckedCreateNestedManyWithoutHabitInput
   copingPlans?: Prisma.CopingPlanUncheckedCreateNestedManyWithoutHabitInput
   milestones?: Prisma.HabitMilestoneUncheckedCreateNestedManyWithoutHabitInput
+  automaticitySurveys?: Prisma.AutomaticitySurveyUncheckedCreateNestedManyWithoutHabitInput
 }
 
 export type TrackedHabitUpdateInput = {
@@ -555,6 +570,8 @@ export type TrackedHabitUpdateInput = {
   user?: Prisma.UserUpdateOneRequiredWithoutTrackedHabitsNestedInput
   area?: Prisma.AreaUpdateOneWithoutTrackedHabitsNestedInput
   breakProfile?: Prisma.HabitBreakProfileUpdateOneWithoutHabitNestedInput
+  buildProfile?: Prisma.HabitBuildProfileUpdateOneWithoutHabitNestedInput
+  replacedByProfiles?: Prisma.HabitBuildProfileUpdateManyWithoutReplacesHabitNestedInput
   events?: Prisma.HabitEventUpdateManyWithoutHabitNestedInput
   checkins?: Prisma.HabitCheckinUpdateManyWithoutHabitNestedInput
   stats?: Prisma.HabitStatsUpdateOneWithoutHabitNestedInput
@@ -562,6 +579,7 @@ export type TrackedHabitUpdateInput = {
   triggers?: Prisma.HabitTriggerUpdateManyWithoutHabitNestedInput
   copingPlans?: Prisma.CopingPlanUpdateManyWithoutHabitNestedInput
   milestones?: Prisma.HabitMilestoneUpdateManyWithoutHabitNestedInput
+  automaticitySurveys?: Prisma.AutomaticitySurveyUpdateManyWithoutHabitNestedInput
 }
 
 export type TrackedHabitUncheckedUpdateInput = {
@@ -586,6 +604,8 @@ export type TrackedHabitUncheckedUpdateInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   breakProfile?: Prisma.HabitBreakProfileUncheckedUpdateOneWithoutHabitNestedInput
+  buildProfile?: Prisma.HabitBuildProfileUncheckedUpdateOneWithoutHabitNestedInput
+  replacedByProfiles?: Prisma.HabitBuildProfileUncheckedUpdateManyWithoutReplacesHabitNestedInput
   events?: Prisma.HabitEventUncheckedUpdateManyWithoutHabitNestedInput
   checkins?: Prisma.HabitCheckinUncheckedUpdateManyWithoutHabitNestedInput
   stats?: Prisma.HabitStatsUncheckedUpdateOneWithoutHabitNestedInput
@@ -593,6 +613,7 @@ export type TrackedHabitUncheckedUpdateInput = {
   triggers?: Prisma.HabitTriggerUncheckedUpdateManyWithoutHabitNestedInput
   copingPlans?: Prisma.CopingPlanUncheckedUpdateManyWithoutHabitNestedInput
   milestones?: Prisma.HabitMilestoneUncheckedUpdateManyWithoutHabitNestedInput
+  automaticitySurveys?: Prisma.AutomaticitySurveyUncheckedUpdateManyWithoutHabitNestedInput
 }
 
 export type TrackedHabitCreateManyInput = {
@@ -973,6 +994,50 @@ export type TrackedHabitUpdateOneRequiredWithoutMilestonesNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.TrackedHabitUpdateToOneWithWhereWithoutMilestonesInput, Prisma.TrackedHabitUpdateWithoutMilestonesInput>, Prisma.TrackedHabitUncheckedUpdateWithoutMilestonesInput>
 }
 
+export type TrackedHabitCreateNestedOneWithoutBuildProfileInput = {
+  create?: Prisma.XOR<Prisma.TrackedHabitCreateWithoutBuildProfileInput, Prisma.TrackedHabitUncheckedCreateWithoutBuildProfileInput>
+  connectOrCreate?: Prisma.TrackedHabitCreateOrConnectWithoutBuildProfileInput
+  connect?: Prisma.TrackedHabitWhereUniqueInput
+}
+
+export type TrackedHabitCreateNestedOneWithoutReplacedByProfilesInput = {
+  create?: Prisma.XOR<Prisma.TrackedHabitCreateWithoutReplacedByProfilesInput, Prisma.TrackedHabitUncheckedCreateWithoutReplacedByProfilesInput>
+  connectOrCreate?: Prisma.TrackedHabitCreateOrConnectWithoutReplacedByProfilesInput
+  connect?: Prisma.TrackedHabitWhereUniqueInput
+}
+
+export type TrackedHabitUpdateOneRequiredWithoutBuildProfileNestedInput = {
+  create?: Prisma.XOR<Prisma.TrackedHabitCreateWithoutBuildProfileInput, Prisma.TrackedHabitUncheckedCreateWithoutBuildProfileInput>
+  connectOrCreate?: Prisma.TrackedHabitCreateOrConnectWithoutBuildProfileInput
+  upsert?: Prisma.TrackedHabitUpsertWithoutBuildProfileInput
+  connect?: Prisma.TrackedHabitWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.TrackedHabitUpdateToOneWithWhereWithoutBuildProfileInput, Prisma.TrackedHabitUpdateWithoutBuildProfileInput>, Prisma.TrackedHabitUncheckedUpdateWithoutBuildProfileInput>
+}
+
+export type TrackedHabitUpdateOneWithoutReplacedByProfilesNestedInput = {
+  create?: Prisma.XOR<Prisma.TrackedHabitCreateWithoutReplacedByProfilesInput, Prisma.TrackedHabitUncheckedCreateWithoutReplacedByProfilesInput>
+  connectOrCreate?: Prisma.TrackedHabitCreateOrConnectWithoutReplacedByProfilesInput
+  upsert?: Prisma.TrackedHabitUpsertWithoutReplacedByProfilesInput
+  disconnect?: Prisma.TrackedHabitWhereInput | boolean
+  delete?: Prisma.TrackedHabitWhereInput | boolean
+  connect?: Prisma.TrackedHabitWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.TrackedHabitUpdateToOneWithWhereWithoutReplacedByProfilesInput, Prisma.TrackedHabitUpdateWithoutReplacedByProfilesInput>, Prisma.TrackedHabitUncheckedUpdateWithoutReplacedByProfilesInput>
+}
+
+export type TrackedHabitCreateNestedOneWithoutAutomaticitySurveysInput = {
+  create?: Prisma.XOR<Prisma.TrackedHabitCreateWithoutAutomaticitySurveysInput, Prisma.TrackedHabitUncheckedCreateWithoutAutomaticitySurveysInput>
+  connectOrCreate?: Prisma.TrackedHabitCreateOrConnectWithoutAutomaticitySurveysInput
+  connect?: Prisma.TrackedHabitWhereUniqueInput
+}
+
+export type TrackedHabitUpdateOneRequiredWithoutAutomaticitySurveysNestedInput = {
+  create?: Prisma.XOR<Prisma.TrackedHabitCreateWithoutAutomaticitySurveysInput, Prisma.TrackedHabitUncheckedCreateWithoutAutomaticitySurveysInput>
+  connectOrCreate?: Prisma.TrackedHabitCreateOrConnectWithoutAutomaticitySurveysInput
+  upsert?: Prisma.TrackedHabitUpsertWithoutAutomaticitySurveysInput
+  connect?: Prisma.TrackedHabitWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.TrackedHabitUpdateToOneWithWhereWithoutAutomaticitySurveysInput, Prisma.TrackedHabitUpdateWithoutAutomaticitySurveysInput>, Prisma.TrackedHabitUncheckedUpdateWithoutAutomaticitySurveysInput>
+}
+
 export type TrackedHabitCreateWithoutUserInput = {
   id?: string
   kind: $Enums.HabitKind
@@ -994,6 +1059,8 @@ export type TrackedHabitCreateWithoutUserInput = {
   archivedAt?: Date | string | null
   area?: Prisma.AreaCreateNestedOneWithoutTrackedHabitsInput
   breakProfile?: Prisma.HabitBreakProfileCreateNestedOneWithoutHabitInput
+  buildProfile?: Prisma.HabitBuildProfileCreateNestedOneWithoutHabitInput
+  replacedByProfiles?: Prisma.HabitBuildProfileCreateNestedManyWithoutReplacesHabitInput
   events?: Prisma.HabitEventCreateNestedManyWithoutHabitInput
   checkins?: Prisma.HabitCheckinCreateNestedManyWithoutHabitInput
   stats?: Prisma.HabitStatsCreateNestedOneWithoutHabitInput
@@ -1001,6 +1068,7 @@ export type TrackedHabitCreateWithoutUserInput = {
   triggers?: Prisma.HabitTriggerCreateNestedManyWithoutHabitInput
   copingPlans?: Prisma.CopingPlanCreateNestedManyWithoutHabitInput
   milestones?: Prisma.HabitMilestoneCreateNestedManyWithoutHabitInput
+  automaticitySurveys?: Prisma.AutomaticitySurveyCreateNestedManyWithoutHabitInput
 }
 
 export type TrackedHabitUncheckedCreateWithoutUserInput = {
@@ -1024,6 +1092,8 @@ export type TrackedHabitUncheckedCreateWithoutUserInput = {
   updatedAt?: Date | string
   archivedAt?: Date | string | null
   breakProfile?: Prisma.HabitBreakProfileUncheckedCreateNestedOneWithoutHabitInput
+  buildProfile?: Prisma.HabitBuildProfileUncheckedCreateNestedOneWithoutHabitInput
+  replacedByProfiles?: Prisma.HabitBuildProfileUncheckedCreateNestedManyWithoutReplacesHabitInput
   events?: Prisma.HabitEventUncheckedCreateNestedManyWithoutHabitInput
   checkins?: Prisma.HabitCheckinUncheckedCreateNestedManyWithoutHabitInput
   stats?: Prisma.HabitStatsUncheckedCreateNestedOneWithoutHabitInput
@@ -1031,6 +1101,7 @@ export type TrackedHabitUncheckedCreateWithoutUserInput = {
   triggers?: Prisma.HabitTriggerUncheckedCreateNestedManyWithoutHabitInput
   copingPlans?: Prisma.CopingPlanUncheckedCreateNestedManyWithoutHabitInput
   milestones?: Prisma.HabitMilestoneUncheckedCreateNestedManyWithoutHabitInput
+  automaticitySurveys?: Prisma.AutomaticitySurveyUncheckedCreateNestedManyWithoutHabitInput
 }
 
 export type TrackedHabitCreateOrConnectWithoutUserInput = {
@@ -1106,6 +1177,8 @@ export type TrackedHabitCreateWithoutAreaInput = {
   archivedAt?: Date | string | null
   user: Prisma.UserCreateNestedOneWithoutTrackedHabitsInput
   breakProfile?: Prisma.HabitBreakProfileCreateNestedOneWithoutHabitInput
+  buildProfile?: Prisma.HabitBuildProfileCreateNestedOneWithoutHabitInput
+  replacedByProfiles?: Prisma.HabitBuildProfileCreateNestedManyWithoutReplacesHabitInput
   events?: Prisma.HabitEventCreateNestedManyWithoutHabitInput
   checkins?: Prisma.HabitCheckinCreateNestedManyWithoutHabitInput
   stats?: Prisma.HabitStatsCreateNestedOneWithoutHabitInput
@@ -1113,6 +1186,7 @@ export type TrackedHabitCreateWithoutAreaInput = {
   triggers?: Prisma.HabitTriggerCreateNestedManyWithoutHabitInput
   copingPlans?: Prisma.CopingPlanCreateNestedManyWithoutHabitInput
   milestones?: Prisma.HabitMilestoneCreateNestedManyWithoutHabitInput
+  automaticitySurveys?: Prisma.AutomaticitySurveyCreateNestedManyWithoutHabitInput
 }
 
 export type TrackedHabitUncheckedCreateWithoutAreaInput = {
@@ -1136,6 +1210,8 @@ export type TrackedHabitUncheckedCreateWithoutAreaInput = {
   updatedAt?: Date | string
   archivedAt?: Date | string | null
   breakProfile?: Prisma.HabitBreakProfileUncheckedCreateNestedOneWithoutHabitInput
+  buildProfile?: Prisma.HabitBuildProfileUncheckedCreateNestedOneWithoutHabitInput
+  replacedByProfiles?: Prisma.HabitBuildProfileUncheckedCreateNestedManyWithoutReplacesHabitInput
   events?: Prisma.HabitEventUncheckedCreateNestedManyWithoutHabitInput
   checkins?: Prisma.HabitCheckinUncheckedCreateNestedManyWithoutHabitInput
   stats?: Prisma.HabitStatsUncheckedCreateNestedOneWithoutHabitInput
@@ -1143,6 +1219,7 @@ export type TrackedHabitUncheckedCreateWithoutAreaInput = {
   triggers?: Prisma.HabitTriggerUncheckedCreateNestedManyWithoutHabitInput
   copingPlans?: Prisma.CopingPlanUncheckedCreateNestedManyWithoutHabitInput
   milestones?: Prisma.HabitMilestoneUncheckedCreateNestedManyWithoutHabitInput
+  automaticitySurveys?: Prisma.AutomaticitySurveyUncheckedCreateNestedManyWithoutHabitInput
 }
 
 export type TrackedHabitCreateOrConnectWithoutAreaInput = {
@@ -1192,6 +1269,8 @@ export type TrackedHabitCreateWithoutBreakProfileInput = {
   archivedAt?: Date | string | null
   user: Prisma.UserCreateNestedOneWithoutTrackedHabitsInput
   area?: Prisma.AreaCreateNestedOneWithoutTrackedHabitsInput
+  buildProfile?: Prisma.HabitBuildProfileCreateNestedOneWithoutHabitInput
+  replacedByProfiles?: Prisma.HabitBuildProfileCreateNestedManyWithoutReplacesHabitInput
   events?: Prisma.HabitEventCreateNestedManyWithoutHabitInput
   checkins?: Prisma.HabitCheckinCreateNestedManyWithoutHabitInput
   stats?: Prisma.HabitStatsCreateNestedOneWithoutHabitInput
@@ -1199,6 +1278,7 @@ export type TrackedHabitCreateWithoutBreakProfileInput = {
   triggers?: Prisma.HabitTriggerCreateNestedManyWithoutHabitInput
   copingPlans?: Prisma.CopingPlanCreateNestedManyWithoutHabitInput
   milestones?: Prisma.HabitMilestoneCreateNestedManyWithoutHabitInput
+  automaticitySurveys?: Prisma.AutomaticitySurveyCreateNestedManyWithoutHabitInput
 }
 
 export type TrackedHabitUncheckedCreateWithoutBreakProfileInput = {
@@ -1222,6 +1302,8 @@ export type TrackedHabitUncheckedCreateWithoutBreakProfileInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   archivedAt?: Date | string | null
+  buildProfile?: Prisma.HabitBuildProfileUncheckedCreateNestedOneWithoutHabitInput
+  replacedByProfiles?: Prisma.HabitBuildProfileUncheckedCreateNestedManyWithoutReplacesHabitInput
   events?: Prisma.HabitEventUncheckedCreateNestedManyWithoutHabitInput
   checkins?: Prisma.HabitCheckinUncheckedCreateNestedManyWithoutHabitInput
   stats?: Prisma.HabitStatsUncheckedCreateNestedOneWithoutHabitInput
@@ -1229,6 +1311,7 @@ export type TrackedHabitUncheckedCreateWithoutBreakProfileInput = {
   triggers?: Prisma.HabitTriggerUncheckedCreateNestedManyWithoutHabitInput
   copingPlans?: Prisma.CopingPlanUncheckedCreateNestedManyWithoutHabitInput
   milestones?: Prisma.HabitMilestoneUncheckedCreateNestedManyWithoutHabitInput
+  automaticitySurveys?: Prisma.AutomaticitySurveyUncheckedCreateNestedManyWithoutHabitInput
 }
 
 export type TrackedHabitCreateOrConnectWithoutBreakProfileInput = {
@@ -1268,6 +1351,8 @@ export type TrackedHabitUpdateWithoutBreakProfileInput = {
   archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   user?: Prisma.UserUpdateOneRequiredWithoutTrackedHabitsNestedInput
   area?: Prisma.AreaUpdateOneWithoutTrackedHabitsNestedInput
+  buildProfile?: Prisma.HabitBuildProfileUpdateOneWithoutHabitNestedInput
+  replacedByProfiles?: Prisma.HabitBuildProfileUpdateManyWithoutReplacesHabitNestedInput
   events?: Prisma.HabitEventUpdateManyWithoutHabitNestedInput
   checkins?: Prisma.HabitCheckinUpdateManyWithoutHabitNestedInput
   stats?: Prisma.HabitStatsUpdateOneWithoutHabitNestedInput
@@ -1275,6 +1360,7 @@ export type TrackedHabitUpdateWithoutBreakProfileInput = {
   triggers?: Prisma.HabitTriggerUpdateManyWithoutHabitNestedInput
   copingPlans?: Prisma.CopingPlanUpdateManyWithoutHabitNestedInput
   milestones?: Prisma.HabitMilestoneUpdateManyWithoutHabitNestedInput
+  automaticitySurveys?: Prisma.AutomaticitySurveyUpdateManyWithoutHabitNestedInput
 }
 
 export type TrackedHabitUncheckedUpdateWithoutBreakProfileInput = {
@@ -1298,6 +1384,8 @@ export type TrackedHabitUncheckedUpdateWithoutBreakProfileInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  buildProfile?: Prisma.HabitBuildProfileUncheckedUpdateOneWithoutHabitNestedInput
+  replacedByProfiles?: Prisma.HabitBuildProfileUncheckedUpdateManyWithoutReplacesHabitNestedInput
   events?: Prisma.HabitEventUncheckedUpdateManyWithoutHabitNestedInput
   checkins?: Prisma.HabitCheckinUncheckedUpdateManyWithoutHabitNestedInput
   stats?: Prisma.HabitStatsUncheckedUpdateOneWithoutHabitNestedInput
@@ -1305,6 +1393,7 @@ export type TrackedHabitUncheckedUpdateWithoutBreakProfileInput = {
   triggers?: Prisma.HabitTriggerUncheckedUpdateManyWithoutHabitNestedInput
   copingPlans?: Prisma.CopingPlanUncheckedUpdateManyWithoutHabitNestedInput
   milestones?: Prisma.HabitMilestoneUncheckedUpdateManyWithoutHabitNestedInput
+  automaticitySurveys?: Prisma.AutomaticitySurveyUncheckedUpdateManyWithoutHabitNestedInput
 }
 
 export type TrackedHabitCreateWithoutEventsInput = {
@@ -1329,12 +1418,15 @@ export type TrackedHabitCreateWithoutEventsInput = {
   user: Prisma.UserCreateNestedOneWithoutTrackedHabitsInput
   area?: Prisma.AreaCreateNestedOneWithoutTrackedHabitsInput
   breakProfile?: Prisma.HabitBreakProfileCreateNestedOneWithoutHabitInput
+  buildProfile?: Prisma.HabitBuildProfileCreateNestedOneWithoutHabitInput
+  replacedByProfiles?: Prisma.HabitBuildProfileCreateNestedManyWithoutReplacesHabitInput
   checkins?: Prisma.HabitCheckinCreateNestedManyWithoutHabitInput
   stats?: Prisma.HabitStatsCreateNestedOneWithoutHabitInput
   outbox?: Prisma.HabitNotificationOutboxCreateNestedManyWithoutHabitInput
   triggers?: Prisma.HabitTriggerCreateNestedManyWithoutHabitInput
   copingPlans?: Prisma.CopingPlanCreateNestedManyWithoutHabitInput
   milestones?: Prisma.HabitMilestoneCreateNestedManyWithoutHabitInput
+  automaticitySurveys?: Prisma.AutomaticitySurveyCreateNestedManyWithoutHabitInput
 }
 
 export type TrackedHabitUncheckedCreateWithoutEventsInput = {
@@ -1359,12 +1451,15 @@ export type TrackedHabitUncheckedCreateWithoutEventsInput = {
   updatedAt?: Date | string
   archivedAt?: Date | string | null
   breakProfile?: Prisma.HabitBreakProfileUncheckedCreateNestedOneWithoutHabitInput
+  buildProfile?: Prisma.HabitBuildProfileUncheckedCreateNestedOneWithoutHabitInput
+  replacedByProfiles?: Prisma.HabitBuildProfileUncheckedCreateNestedManyWithoutReplacesHabitInput
   checkins?: Prisma.HabitCheckinUncheckedCreateNestedManyWithoutHabitInput
   stats?: Prisma.HabitStatsUncheckedCreateNestedOneWithoutHabitInput
   outbox?: Prisma.HabitNotificationOutboxUncheckedCreateNestedManyWithoutHabitInput
   triggers?: Prisma.HabitTriggerUncheckedCreateNestedManyWithoutHabitInput
   copingPlans?: Prisma.CopingPlanUncheckedCreateNestedManyWithoutHabitInput
   milestones?: Prisma.HabitMilestoneUncheckedCreateNestedManyWithoutHabitInput
+  automaticitySurveys?: Prisma.AutomaticitySurveyUncheckedCreateNestedManyWithoutHabitInput
 }
 
 export type TrackedHabitCreateOrConnectWithoutEventsInput = {
@@ -1405,12 +1500,15 @@ export type TrackedHabitUpdateWithoutEventsInput = {
   user?: Prisma.UserUpdateOneRequiredWithoutTrackedHabitsNestedInput
   area?: Prisma.AreaUpdateOneWithoutTrackedHabitsNestedInput
   breakProfile?: Prisma.HabitBreakProfileUpdateOneWithoutHabitNestedInput
+  buildProfile?: Prisma.HabitBuildProfileUpdateOneWithoutHabitNestedInput
+  replacedByProfiles?: Prisma.HabitBuildProfileUpdateManyWithoutReplacesHabitNestedInput
   checkins?: Prisma.HabitCheckinUpdateManyWithoutHabitNestedInput
   stats?: Prisma.HabitStatsUpdateOneWithoutHabitNestedInput
   outbox?: Prisma.HabitNotificationOutboxUpdateManyWithoutHabitNestedInput
   triggers?: Prisma.HabitTriggerUpdateManyWithoutHabitNestedInput
   copingPlans?: Prisma.CopingPlanUpdateManyWithoutHabitNestedInput
   milestones?: Prisma.HabitMilestoneUpdateManyWithoutHabitNestedInput
+  automaticitySurveys?: Prisma.AutomaticitySurveyUpdateManyWithoutHabitNestedInput
 }
 
 export type TrackedHabitUncheckedUpdateWithoutEventsInput = {
@@ -1435,12 +1533,15 @@ export type TrackedHabitUncheckedUpdateWithoutEventsInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   breakProfile?: Prisma.HabitBreakProfileUncheckedUpdateOneWithoutHabitNestedInput
+  buildProfile?: Prisma.HabitBuildProfileUncheckedUpdateOneWithoutHabitNestedInput
+  replacedByProfiles?: Prisma.HabitBuildProfileUncheckedUpdateManyWithoutReplacesHabitNestedInput
   checkins?: Prisma.HabitCheckinUncheckedUpdateManyWithoutHabitNestedInput
   stats?: Prisma.HabitStatsUncheckedUpdateOneWithoutHabitNestedInput
   outbox?: Prisma.HabitNotificationOutboxUncheckedUpdateManyWithoutHabitNestedInput
   triggers?: Prisma.HabitTriggerUncheckedUpdateManyWithoutHabitNestedInput
   copingPlans?: Prisma.CopingPlanUncheckedUpdateManyWithoutHabitNestedInput
   milestones?: Prisma.HabitMilestoneUncheckedUpdateManyWithoutHabitNestedInput
+  automaticitySurveys?: Prisma.AutomaticitySurveyUncheckedUpdateManyWithoutHabitNestedInput
 }
 
 export type TrackedHabitCreateWithoutCheckinsInput = {
@@ -1465,12 +1566,15 @@ export type TrackedHabitCreateWithoutCheckinsInput = {
   user: Prisma.UserCreateNestedOneWithoutTrackedHabitsInput
   area?: Prisma.AreaCreateNestedOneWithoutTrackedHabitsInput
   breakProfile?: Prisma.HabitBreakProfileCreateNestedOneWithoutHabitInput
+  buildProfile?: Prisma.HabitBuildProfileCreateNestedOneWithoutHabitInput
+  replacedByProfiles?: Prisma.HabitBuildProfileCreateNestedManyWithoutReplacesHabitInput
   events?: Prisma.HabitEventCreateNestedManyWithoutHabitInput
   stats?: Prisma.HabitStatsCreateNestedOneWithoutHabitInput
   outbox?: Prisma.HabitNotificationOutboxCreateNestedManyWithoutHabitInput
   triggers?: Prisma.HabitTriggerCreateNestedManyWithoutHabitInput
   copingPlans?: Prisma.CopingPlanCreateNestedManyWithoutHabitInput
   milestones?: Prisma.HabitMilestoneCreateNestedManyWithoutHabitInput
+  automaticitySurveys?: Prisma.AutomaticitySurveyCreateNestedManyWithoutHabitInput
 }
 
 export type TrackedHabitUncheckedCreateWithoutCheckinsInput = {
@@ -1495,12 +1599,15 @@ export type TrackedHabitUncheckedCreateWithoutCheckinsInput = {
   updatedAt?: Date | string
   archivedAt?: Date | string | null
   breakProfile?: Prisma.HabitBreakProfileUncheckedCreateNestedOneWithoutHabitInput
+  buildProfile?: Prisma.HabitBuildProfileUncheckedCreateNestedOneWithoutHabitInput
+  replacedByProfiles?: Prisma.HabitBuildProfileUncheckedCreateNestedManyWithoutReplacesHabitInput
   events?: Prisma.HabitEventUncheckedCreateNestedManyWithoutHabitInput
   stats?: Prisma.HabitStatsUncheckedCreateNestedOneWithoutHabitInput
   outbox?: Prisma.HabitNotificationOutboxUncheckedCreateNestedManyWithoutHabitInput
   triggers?: Prisma.HabitTriggerUncheckedCreateNestedManyWithoutHabitInput
   copingPlans?: Prisma.CopingPlanUncheckedCreateNestedManyWithoutHabitInput
   milestones?: Prisma.HabitMilestoneUncheckedCreateNestedManyWithoutHabitInput
+  automaticitySurveys?: Prisma.AutomaticitySurveyUncheckedCreateNestedManyWithoutHabitInput
 }
 
 export type TrackedHabitCreateOrConnectWithoutCheckinsInput = {
@@ -1541,12 +1648,15 @@ export type TrackedHabitUpdateWithoutCheckinsInput = {
   user?: Prisma.UserUpdateOneRequiredWithoutTrackedHabitsNestedInput
   area?: Prisma.AreaUpdateOneWithoutTrackedHabitsNestedInput
   breakProfile?: Prisma.HabitBreakProfileUpdateOneWithoutHabitNestedInput
+  buildProfile?: Prisma.HabitBuildProfileUpdateOneWithoutHabitNestedInput
+  replacedByProfiles?: Prisma.HabitBuildProfileUpdateManyWithoutReplacesHabitNestedInput
   events?: Prisma.HabitEventUpdateManyWithoutHabitNestedInput
   stats?: Prisma.HabitStatsUpdateOneWithoutHabitNestedInput
   outbox?: Prisma.HabitNotificationOutboxUpdateManyWithoutHabitNestedInput
   triggers?: Prisma.HabitTriggerUpdateManyWithoutHabitNestedInput
   copingPlans?: Prisma.CopingPlanUpdateManyWithoutHabitNestedInput
   milestones?: Prisma.HabitMilestoneUpdateManyWithoutHabitNestedInput
+  automaticitySurveys?: Prisma.AutomaticitySurveyUpdateManyWithoutHabitNestedInput
 }
 
 export type TrackedHabitUncheckedUpdateWithoutCheckinsInput = {
@@ -1571,12 +1681,15 @@ export type TrackedHabitUncheckedUpdateWithoutCheckinsInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   breakProfile?: Prisma.HabitBreakProfileUncheckedUpdateOneWithoutHabitNestedInput
+  buildProfile?: Prisma.HabitBuildProfileUncheckedUpdateOneWithoutHabitNestedInput
+  replacedByProfiles?: Prisma.HabitBuildProfileUncheckedUpdateManyWithoutReplacesHabitNestedInput
   events?: Prisma.HabitEventUncheckedUpdateManyWithoutHabitNestedInput
   stats?: Prisma.HabitStatsUncheckedUpdateOneWithoutHabitNestedInput
   outbox?: Prisma.HabitNotificationOutboxUncheckedUpdateManyWithoutHabitNestedInput
   triggers?: Prisma.HabitTriggerUncheckedUpdateManyWithoutHabitNestedInput
   copingPlans?: Prisma.CopingPlanUncheckedUpdateManyWithoutHabitNestedInput
   milestones?: Prisma.HabitMilestoneUncheckedUpdateManyWithoutHabitNestedInput
+  automaticitySurveys?: Prisma.AutomaticitySurveyUncheckedUpdateManyWithoutHabitNestedInput
 }
 
 export type TrackedHabitCreateWithoutStatsInput = {
@@ -1601,12 +1714,15 @@ export type TrackedHabitCreateWithoutStatsInput = {
   user: Prisma.UserCreateNestedOneWithoutTrackedHabitsInput
   area?: Prisma.AreaCreateNestedOneWithoutTrackedHabitsInput
   breakProfile?: Prisma.HabitBreakProfileCreateNestedOneWithoutHabitInput
+  buildProfile?: Prisma.HabitBuildProfileCreateNestedOneWithoutHabitInput
+  replacedByProfiles?: Prisma.HabitBuildProfileCreateNestedManyWithoutReplacesHabitInput
   events?: Prisma.HabitEventCreateNestedManyWithoutHabitInput
   checkins?: Prisma.HabitCheckinCreateNestedManyWithoutHabitInput
   outbox?: Prisma.HabitNotificationOutboxCreateNestedManyWithoutHabitInput
   triggers?: Prisma.HabitTriggerCreateNestedManyWithoutHabitInput
   copingPlans?: Prisma.CopingPlanCreateNestedManyWithoutHabitInput
   milestones?: Prisma.HabitMilestoneCreateNestedManyWithoutHabitInput
+  automaticitySurveys?: Prisma.AutomaticitySurveyCreateNestedManyWithoutHabitInput
 }
 
 export type TrackedHabitUncheckedCreateWithoutStatsInput = {
@@ -1631,12 +1747,15 @@ export type TrackedHabitUncheckedCreateWithoutStatsInput = {
   updatedAt?: Date | string
   archivedAt?: Date | string | null
   breakProfile?: Prisma.HabitBreakProfileUncheckedCreateNestedOneWithoutHabitInput
+  buildProfile?: Prisma.HabitBuildProfileUncheckedCreateNestedOneWithoutHabitInput
+  replacedByProfiles?: Prisma.HabitBuildProfileUncheckedCreateNestedManyWithoutReplacesHabitInput
   events?: Prisma.HabitEventUncheckedCreateNestedManyWithoutHabitInput
   checkins?: Prisma.HabitCheckinUncheckedCreateNestedManyWithoutHabitInput
   outbox?: Prisma.HabitNotificationOutboxUncheckedCreateNestedManyWithoutHabitInput
   triggers?: Prisma.HabitTriggerUncheckedCreateNestedManyWithoutHabitInput
   copingPlans?: Prisma.CopingPlanUncheckedCreateNestedManyWithoutHabitInput
   milestones?: Prisma.HabitMilestoneUncheckedCreateNestedManyWithoutHabitInput
+  automaticitySurveys?: Prisma.AutomaticitySurveyUncheckedCreateNestedManyWithoutHabitInput
 }
 
 export type TrackedHabitCreateOrConnectWithoutStatsInput = {
@@ -1677,12 +1796,15 @@ export type TrackedHabitUpdateWithoutStatsInput = {
   user?: Prisma.UserUpdateOneRequiredWithoutTrackedHabitsNestedInput
   area?: Prisma.AreaUpdateOneWithoutTrackedHabitsNestedInput
   breakProfile?: Prisma.HabitBreakProfileUpdateOneWithoutHabitNestedInput
+  buildProfile?: Prisma.HabitBuildProfileUpdateOneWithoutHabitNestedInput
+  replacedByProfiles?: Prisma.HabitBuildProfileUpdateManyWithoutReplacesHabitNestedInput
   events?: Prisma.HabitEventUpdateManyWithoutHabitNestedInput
   checkins?: Prisma.HabitCheckinUpdateManyWithoutHabitNestedInput
   outbox?: Prisma.HabitNotificationOutboxUpdateManyWithoutHabitNestedInput
   triggers?: Prisma.HabitTriggerUpdateManyWithoutHabitNestedInput
   copingPlans?: Prisma.CopingPlanUpdateManyWithoutHabitNestedInput
   milestones?: Prisma.HabitMilestoneUpdateManyWithoutHabitNestedInput
+  automaticitySurveys?: Prisma.AutomaticitySurveyUpdateManyWithoutHabitNestedInput
 }
 
 export type TrackedHabitUncheckedUpdateWithoutStatsInput = {
@@ -1707,12 +1829,15 @@ export type TrackedHabitUncheckedUpdateWithoutStatsInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   breakProfile?: Prisma.HabitBreakProfileUncheckedUpdateOneWithoutHabitNestedInput
+  buildProfile?: Prisma.HabitBuildProfileUncheckedUpdateOneWithoutHabitNestedInput
+  replacedByProfiles?: Prisma.HabitBuildProfileUncheckedUpdateManyWithoutReplacesHabitNestedInput
   events?: Prisma.HabitEventUncheckedUpdateManyWithoutHabitNestedInput
   checkins?: Prisma.HabitCheckinUncheckedUpdateManyWithoutHabitNestedInput
   outbox?: Prisma.HabitNotificationOutboxUncheckedUpdateManyWithoutHabitNestedInput
   triggers?: Prisma.HabitTriggerUncheckedUpdateManyWithoutHabitNestedInput
   copingPlans?: Prisma.CopingPlanUncheckedUpdateManyWithoutHabitNestedInput
   milestones?: Prisma.HabitMilestoneUncheckedUpdateManyWithoutHabitNestedInput
+  automaticitySurveys?: Prisma.AutomaticitySurveyUncheckedUpdateManyWithoutHabitNestedInput
 }
 
 export type TrackedHabitCreateWithoutOutboxInput = {
@@ -1737,12 +1862,15 @@ export type TrackedHabitCreateWithoutOutboxInput = {
   user: Prisma.UserCreateNestedOneWithoutTrackedHabitsInput
   area?: Prisma.AreaCreateNestedOneWithoutTrackedHabitsInput
   breakProfile?: Prisma.HabitBreakProfileCreateNestedOneWithoutHabitInput
+  buildProfile?: Prisma.HabitBuildProfileCreateNestedOneWithoutHabitInput
+  replacedByProfiles?: Prisma.HabitBuildProfileCreateNestedManyWithoutReplacesHabitInput
   events?: Prisma.HabitEventCreateNestedManyWithoutHabitInput
   checkins?: Prisma.HabitCheckinCreateNestedManyWithoutHabitInput
   stats?: Prisma.HabitStatsCreateNestedOneWithoutHabitInput
   triggers?: Prisma.HabitTriggerCreateNestedManyWithoutHabitInput
   copingPlans?: Prisma.CopingPlanCreateNestedManyWithoutHabitInput
   milestones?: Prisma.HabitMilestoneCreateNestedManyWithoutHabitInput
+  automaticitySurveys?: Prisma.AutomaticitySurveyCreateNestedManyWithoutHabitInput
 }
 
 export type TrackedHabitUncheckedCreateWithoutOutboxInput = {
@@ -1767,12 +1895,15 @@ export type TrackedHabitUncheckedCreateWithoutOutboxInput = {
   updatedAt?: Date | string
   archivedAt?: Date | string | null
   breakProfile?: Prisma.HabitBreakProfileUncheckedCreateNestedOneWithoutHabitInput
+  buildProfile?: Prisma.HabitBuildProfileUncheckedCreateNestedOneWithoutHabitInput
+  replacedByProfiles?: Prisma.HabitBuildProfileUncheckedCreateNestedManyWithoutReplacesHabitInput
   events?: Prisma.HabitEventUncheckedCreateNestedManyWithoutHabitInput
   checkins?: Prisma.HabitCheckinUncheckedCreateNestedManyWithoutHabitInput
   stats?: Prisma.HabitStatsUncheckedCreateNestedOneWithoutHabitInput
   triggers?: Prisma.HabitTriggerUncheckedCreateNestedManyWithoutHabitInput
   copingPlans?: Prisma.CopingPlanUncheckedCreateNestedManyWithoutHabitInput
   milestones?: Prisma.HabitMilestoneUncheckedCreateNestedManyWithoutHabitInput
+  automaticitySurveys?: Prisma.AutomaticitySurveyUncheckedCreateNestedManyWithoutHabitInput
 }
 
 export type TrackedHabitCreateOrConnectWithoutOutboxInput = {
@@ -1813,12 +1944,15 @@ export type TrackedHabitUpdateWithoutOutboxInput = {
   user?: Prisma.UserUpdateOneRequiredWithoutTrackedHabitsNestedInput
   area?: Prisma.AreaUpdateOneWithoutTrackedHabitsNestedInput
   breakProfile?: Prisma.HabitBreakProfileUpdateOneWithoutHabitNestedInput
+  buildProfile?: Prisma.HabitBuildProfileUpdateOneWithoutHabitNestedInput
+  replacedByProfiles?: Prisma.HabitBuildProfileUpdateManyWithoutReplacesHabitNestedInput
   events?: Prisma.HabitEventUpdateManyWithoutHabitNestedInput
   checkins?: Prisma.HabitCheckinUpdateManyWithoutHabitNestedInput
   stats?: Prisma.HabitStatsUpdateOneWithoutHabitNestedInput
   triggers?: Prisma.HabitTriggerUpdateManyWithoutHabitNestedInput
   copingPlans?: Prisma.CopingPlanUpdateManyWithoutHabitNestedInput
   milestones?: Prisma.HabitMilestoneUpdateManyWithoutHabitNestedInput
+  automaticitySurveys?: Prisma.AutomaticitySurveyUpdateManyWithoutHabitNestedInput
 }
 
 export type TrackedHabitUncheckedUpdateWithoutOutboxInput = {
@@ -1843,12 +1977,15 @@ export type TrackedHabitUncheckedUpdateWithoutOutboxInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   breakProfile?: Prisma.HabitBreakProfileUncheckedUpdateOneWithoutHabitNestedInput
+  buildProfile?: Prisma.HabitBuildProfileUncheckedUpdateOneWithoutHabitNestedInput
+  replacedByProfiles?: Prisma.HabitBuildProfileUncheckedUpdateManyWithoutReplacesHabitNestedInput
   events?: Prisma.HabitEventUncheckedUpdateManyWithoutHabitNestedInput
   checkins?: Prisma.HabitCheckinUncheckedUpdateManyWithoutHabitNestedInput
   stats?: Prisma.HabitStatsUncheckedUpdateOneWithoutHabitNestedInput
   triggers?: Prisma.HabitTriggerUncheckedUpdateManyWithoutHabitNestedInput
   copingPlans?: Prisma.CopingPlanUncheckedUpdateManyWithoutHabitNestedInput
   milestones?: Prisma.HabitMilestoneUncheckedUpdateManyWithoutHabitNestedInput
+  automaticitySurveys?: Prisma.AutomaticitySurveyUncheckedUpdateManyWithoutHabitNestedInput
 }
 
 export type TrackedHabitCreateWithoutTriggersInput = {
@@ -1873,12 +2010,15 @@ export type TrackedHabitCreateWithoutTriggersInput = {
   user: Prisma.UserCreateNestedOneWithoutTrackedHabitsInput
   area?: Prisma.AreaCreateNestedOneWithoutTrackedHabitsInput
   breakProfile?: Prisma.HabitBreakProfileCreateNestedOneWithoutHabitInput
+  buildProfile?: Prisma.HabitBuildProfileCreateNestedOneWithoutHabitInput
+  replacedByProfiles?: Prisma.HabitBuildProfileCreateNestedManyWithoutReplacesHabitInput
   events?: Prisma.HabitEventCreateNestedManyWithoutHabitInput
   checkins?: Prisma.HabitCheckinCreateNestedManyWithoutHabitInput
   stats?: Prisma.HabitStatsCreateNestedOneWithoutHabitInput
   outbox?: Prisma.HabitNotificationOutboxCreateNestedManyWithoutHabitInput
   copingPlans?: Prisma.CopingPlanCreateNestedManyWithoutHabitInput
   milestones?: Prisma.HabitMilestoneCreateNestedManyWithoutHabitInput
+  automaticitySurveys?: Prisma.AutomaticitySurveyCreateNestedManyWithoutHabitInput
 }
 
 export type TrackedHabitUncheckedCreateWithoutTriggersInput = {
@@ -1903,12 +2043,15 @@ export type TrackedHabitUncheckedCreateWithoutTriggersInput = {
   updatedAt?: Date | string
   archivedAt?: Date | string | null
   breakProfile?: Prisma.HabitBreakProfileUncheckedCreateNestedOneWithoutHabitInput
+  buildProfile?: Prisma.HabitBuildProfileUncheckedCreateNestedOneWithoutHabitInput
+  replacedByProfiles?: Prisma.HabitBuildProfileUncheckedCreateNestedManyWithoutReplacesHabitInput
   events?: Prisma.HabitEventUncheckedCreateNestedManyWithoutHabitInput
   checkins?: Prisma.HabitCheckinUncheckedCreateNestedManyWithoutHabitInput
   stats?: Prisma.HabitStatsUncheckedCreateNestedOneWithoutHabitInput
   outbox?: Prisma.HabitNotificationOutboxUncheckedCreateNestedManyWithoutHabitInput
   copingPlans?: Prisma.CopingPlanUncheckedCreateNestedManyWithoutHabitInput
   milestones?: Prisma.HabitMilestoneUncheckedCreateNestedManyWithoutHabitInput
+  automaticitySurveys?: Prisma.AutomaticitySurveyUncheckedCreateNestedManyWithoutHabitInput
 }
 
 export type TrackedHabitCreateOrConnectWithoutTriggersInput = {
@@ -1949,12 +2092,15 @@ export type TrackedHabitUpdateWithoutTriggersInput = {
   user?: Prisma.UserUpdateOneRequiredWithoutTrackedHabitsNestedInput
   area?: Prisma.AreaUpdateOneWithoutTrackedHabitsNestedInput
   breakProfile?: Prisma.HabitBreakProfileUpdateOneWithoutHabitNestedInput
+  buildProfile?: Prisma.HabitBuildProfileUpdateOneWithoutHabitNestedInput
+  replacedByProfiles?: Prisma.HabitBuildProfileUpdateManyWithoutReplacesHabitNestedInput
   events?: Prisma.HabitEventUpdateManyWithoutHabitNestedInput
   checkins?: Prisma.HabitCheckinUpdateManyWithoutHabitNestedInput
   stats?: Prisma.HabitStatsUpdateOneWithoutHabitNestedInput
   outbox?: Prisma.HabitNotificationOutboxUpdateManyWithoutHabitNestedInput
   copingPlans?: Prisma.CopingPlanUpdateManyWithoutHabitNestedInput
   milestones?: Prisma.HabitMilestoneUpdateManyWithoutHabitNestedInput
+  automaticitySurveys?: Prisma.AutomaticitySurveyUpdateManyWithoutHabitNestedInput
 }
 
 export type TrackedHabitUncheckedUpdateWithoutTriggersInput = {
@@ -1979,12 +2125,15 @@ export type TrackedHabitUncheckedUpdateWithoutTriggersInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   breakProfile?: Prisma.HabitBreakProfileUncheckedUpdateOneWithoutHabitNestedInput
+  buildProfile?: Prisma.HabitBuildProfileUncheckedUpdateOneWithoutHabitNestedInput
+  replacedByProfiles?: Prisma.HabitBuildProfileUncheckedUpdateManyWithoutReplacesHabitNestedInput
   events?: Prisma.HabitEventUncheckedUpdateManyWithoutHabitNestedInput
   checkins?: Prisma.HabitCheckinUncheckedUpdateManyWithoutHabitNestedInput
   stats?: Prisma.HabitStatsUncheckedUpdateOneWithoutHabitNestedInput
   outbox?: Prisma.HabitNotificationOutboxUncheckedUpdateManyWithoutHabitNestedInput
   copingPlans?: Prisma.CopingPlanUncheckedUpdateManyWithoutHabitNestedInput
   milestones?: Prisma.HabitMilestoneUncheckedUpdateManyWithoutHabitNestedInput
+  automaticitySurveys?: Prisma.AutomaticitySurveyUncheckedUpdateManyWithoutHabitNestedInput
 }
 
 export type TrackedHabitCreateWithoutCopingPlansInput = {
@@ -2009,12 +2158,15 @@ export type TrackedHabitCreateWithoutCopingPlansInput = {
   user: Prisma.UserCreateNestedOneWithoutTrackedHabitsInput
   area?: Prisma.AreaCreateNestedOneWithoutTrackedHabitsInput
   breakProfile?: Prisma.HabitBreakProfileCreateNestedOneWithoutHabitInput
+  buildProfile?: Prisma.HabitBuildProfileCreateNestedOneWithoutHabitInput
+  replacedByProfiles?: Prisma.HabitBuildProfileCreateNestedManyWithoutReplacesHabitInput
   events?: Prisma.HabitEventCreateNestedManyWithoutHabitInput
   checkins?: Prisma.HabitCheckinCreateNestedManyWithoutHabitInput
   stats?: Prisma.HabitStatsCreateNestedOneWithoutHabitInput
   outbox?: Prisma.HabitNotificationOutboxCreateNestedManyWithoutHabitInput
   triggers?: Prisma.HabitTriggerCreateNestedManyWithoutHabitInput
   milestones?: Prisma.HabitMilestoneCreateNestedManyWithoutHabitInput
+  automaticitySurveys?: Prisma.AutomaticitySurveyCreateNestedManyWithoutHabitInput
 }
 
 export type TrackedHabitUncheckedCreateWithoutCopingPlansInput = {
@@ -2039,12 +2191,15 @@ export type TrackedHabitUncheckedCreateWithoutCopingPlansInput = {
   updatedAt?: Date | string
   archivedAt?: Date | string | null
   breakProfile?: Prisma.HabitBreakProfileUncheckedCreateNestedOneWithoutHabitInput
+  buildProfile?: Prisma.HabitBuildProfileUncheckedCreateNestedOneWithoutHabitInput
+  replacedByProfiles?: Prisma.HabitBuildProfileUncheckedCreateNestedManyWithoutReplacesHabitInput
   events?: Prisma.HabitEventUncheckedCreateNestedManyWithoutHabitInput
   checkins?: Prisma.HabitCheckinUncheckedCreateNestedManyWithoutHabitInput
   stats?: Prisma.HabitStatsUncheckedCreateNestedOneWithoutHabitInput
   outbox?: Prisma.HabitNotificationOutboxUncheckedCreateNestedManyWithoutHabitInput
   triggers?: Prisma.HabitTriggerUncheckedCreateNestedManyWithoutHabitInput
   milestones?: Prisma.HabitMilestoneUncheckedCreateNestedManyWithoutHabitInput
+  automaticitySurveys?: Prisma.AutomaticitySurveyUncheckedCreateNestedManyWithoutHabitInput
 }
 
 export type TrackedHabitCreateOrConnectWithoutCopingPlansInput = {
@@ -2085,12 +2240,15 @@ export type TrackedHabitUpdateWithoutCopingPlansInput = {
   user?: Prisma.UserUpdateOneRequiredWithoutTrackedHabitsNestedInput
   area?: Prisma.AreaUpdateOneWithoutTrackedHabitsNestedInput
   breakProfile?: Prisma.HabitBreakProfileUpdateOneWithoutHabitNestedInput
+  buildProfile?: Prisma.HabitBuildProfileUpdateOneWithoutHabitNestedInput
+  replacedByProfiles?: Prisma.HabitBuildProfileUpdateManyWithoutReplacesHabitNestedInput
   events?: Prisma.HabitEventUpdateManyWithoutHabitNestedInput
   checkins?: Prisma.HabitCheckinUpdateManyWithoutHabitNestedInput
   stats?: Prisma.HabitStatsUpdateOneWithoutHabitNestedInput
   outbox?: Prisma.HabitNotificationOutboxUpdateManyWithoutHabitNestedInput
   triggers?: Prisma.HabitTriggerUpdateManyWithoutHabitNestedInput
   milestones?: Prisma.HabitMilestoneUpdateManyWithoutHabitNestedInput
+  automaticitySurveys?: Prisma.AutomaticitySurveyUpdateManyWithoutHabitNestedInput
 }
 
 export type TrackedHabitUncheckedUpdateWithoutCopingPlansInput = {
@@ -2115,12 +2273,15 @@ export type TrackedHabitUncheckedUpdateWithoutCopingPlansInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   breakProfile?: Prisma.HabitBreakProfileUncheckedUpdateOneWithoutHabitNestedInput
+  buildProfile?: Prisma.HabitBuildProfileUncheckedUpdateOneWithoutHabitNestedInput
+  replacedByProfiles?: Prisma.HabitBuildProfileUncheckedUpdateManyWithoutReplacesHabitNestedInput
   events?: Prisma.HabitEventUncheckedUpdateManyWithoutHabitNestedInput
   checkins?: Prisma.HabitCheckinUncheckedUpdateManyWithoutHabitNestedInput
   stats?: Prisma.HabitStatsUncheckedUpdateOneWithoutHabitNestedInput
   outbox?: Prisma.HabitNotificationOutboxUncheckedUpdateManyWithoutHabitNestedInput
   triggers?: Prisma.HabitTriggerUncheckedUpdateManyWithoutHabitNestedInput
   milestones?: Prisma.HabitMilestoneUncheckedUpdateManyWithoutHabitNestedInput
+  automaticitySurveys?: Prisma.AutomaticitySurveyUncheckedUpdateManyWithoutHabitNestedInput
 }
 
 export type TrackedHabitCreateWithoutMilestonesInput = {
@@ -2145,12 +2306,15 @@ export type TrackedHabitCreateWithoutMilestonesInput = {
   user: Prisma.UserCreateNestedOneWithoutTrackedHabitsInput
   area?: Prisma.AreaCreateNestedOneWithoutTrackedHabitsInput
   breakProfile?: Prisma.HabitBreakProfileCreateNestedOneWithoutHabitInput
+  buildProfile?: Prisma.HabitBuildProfileCreateNestedOneWithoutHabitInput
+  replacedByProfiles?: Prisma.HabitBuildProfileCreateNestedManyWithoutReplacesHabitInput
   events?: Prisma.HabitEventCreateNestedManyWithoutHabitInput
   checkins?: Prisma.HabitCheckinCreateNestedManyWithoutHabitInput
   stats?: Prisma.HabitStatsCreateNestedOneWithoutHabitInput
   outbox?: Prisma.HabitNotificationOutboxCreateNestedManyWithoutHabitInput
   triggers?: Prisma.HabitTriggerCreateNestedManyWithoutHabitInput
   copingPlans?: Prisma.CopingPlanCreateNestedManyWithoutHabitInput
+  automaticitySurveys?: Prisma.AutomaticitySurveyCreateNestedManyWithoutHabitInput
 }
 
 export type TrackedHabitUncheckedCreateWithoutMilestonesInput = {
@@ -2175,12 +2339,15 @@ export type TrackedHabitUncheckedCreateWithoutMilestonesInput = {
   updatedAt?: Date | string
   archivedAt?: Date | string | null
   breakProfile?: Prisma.HabitBreakProfileUncheckedCreateNestedOneWithoutHabitInput
+  buildProfile?: Prisma.HabitBuildProfileUncheckedCreateNestedOneWithoutHabitInput
+  replacedByProfiles?: Prisma.HabitBuildProfileUncheckedCreateNestedManyWithoutReplacesHabitInput
   events?: Prisma.HabitEventUncheckedCreateNestedManyWithoutHabitInput
   checkins?: Prisma.HabitCheckinUncheckedCreateNestedManyWithoutHabitInput
   stats?: Prisma.HabitStatsUncheckedCreateNestedOneWithoutHabitInput
   outbox?: Prisma.HabitNotificationOutboxUncheckedCreateNestedManyWithoutHabitInput
   triggers?: Prisma.HabitTriggerUncheckedCreateNestedManyWithoutHabitInput
   copingPlans?: Prisma.CopingPlanUncheckedCreateNestedManyWithoutHabitInput
+  automaticitySurveys?: Prisma.AutomaticitySurveyUncheckedCreateNestedManyWithoutHabitInput
 }
 
 export type TrackedHabitCreateOrConnectWithoutMilestonesInput = {
@@ -2221,12 +2388,15 @@ export type TrackedHabitUpdateWithoutMilestonesInput = {
   user?: Prisma.UserUpdateOneRequiredWithoutTrackedHabitsNestedInput
   area?: Prisma.AreaUpdateOneWithoutTrackedHabitsNestedInput
   breakProfile?: Prisma.HabitBreakProfileUpdateOneWithoutHabitNestedInput
+  buildProfile?: Prisma.HabitBuildProfileUpdateOneWithoutHabitNestedInput
+  replacedByProfiles?: Prisma.HabitBuildProfileUpdateManyWithoutReplacesHabitNestedInput
   events?: Prisma.HabitEventUpdateManyWithoutHabitNestedInput
   checkins?: Prisma.HabitCheckinUpdateManyWithoutHabitNestedInput
   stats?: Prisma.HabitStatsUpdateOneWithoutHabitNestedInput
   outbox?: Prisma.HabitNotificationOutboxUpdateManyWithoutHabitNestedInput
   triggers?: Prisma.HabitTriggerUpdateManyWithoutHabitNestedInput
   copingPlans?: Prisma.CopingPlanUpdateManyWithoutHabitNestedInput
+  automaticitySurveys?: Prisma.AutomaticitySurveyUpdateManyWithoutHabitNestedInput
 }
 
 export type TrackedHabitUncheckedUpdateWithoutMilestonesInput = {
@@ -2251,12 +2421,459 @@ export type TrackedHabitUncheckedUpdateWithoutMilestonesInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   breakProfile?: Prisma.HabitBreakProfileUncheckedUpdateOneWithoutHabitNestedInput
+  buildProfile?: Prisma.HabitBuildProfileUncheckedUpdateOneWithoutHabitNestedInput
+  replacedByProfiles?: Prisma.HabitBuildProfileUncheckedUpdateManyWithoutReplacesHabitNestedInput
   events?: Prisma.HabitEventUncheckedUpdateManyWithoutHabitNestedInput
   checkins?: Prisma.HabitCheckinUncheckedUpdateManyWithoutHabitNestedInput
   stats?: Prisma.HabitStatsUncheckedUpdateOneWithoutHabitNestedInput
   outbox?: Prisma.HabitNotificationOutboxUncheckedUpdateManyWithoutHabitNestedInput
   triggers?: Prisma.HabitTriggerUncheckedUpdateManyWithoutHabitNestedInput
   copingPlans?: Prisma.CopingPlanUncheckedUpdateManyWithoutHabitNestedInput
+  automaticitySurveys?: Prisma.AutomaticitySurveyUncheckedUpdateManyWithoutHabitNestedInput
+}
+
+export type TrackedHabitCreateWithoutBuildProfileInput = {
+  id?: string
+  kind: $Enums.HabitKind
+  mode?: $Enums.HabitMode | null
+  name: string
+  displayAlias?: string | null
+  category?: string | null
+  status?: $Enums.HabitStatus
+  stage?: $Enums.HabitStage
+  identityStatement?: string | null
+  timezone: string
+  checkinLocalTime: string
+  startedAt: Date | string
+  currentWindowStart: Date | string
+  nextCheckinAt?: Date | string | null
+  privacyLevel?: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  archivedAt?: Date | string | null
+  user: Prisma.UserCreateNestedOneWithoutTrackedHabitsInput
+  area?: Prisma.AreaCreateNestedOneWithoutTrackedHabitsInput
+  breakProfile?: Prisma.HabitBreakProfileCreateNestedOneWithoutHabitInput
+  replacedByProfiles?: Prisma.HabitBuildProfileCreateNestedManyWithoutReplacesHabitInput
+  events?: Prisma.HabitEventCreateNestedManyWithoutHabitInput
+  checkins?: Prisma.HabitCheckinCreateNestedManyWithoutHabitInput
+  stats?: Prisma.HabitStatsCreateNestedOneWithoutHabitInput
+  outbox?: Prisma.HabitNotificationOutboxCreateNestedManyWithoutHabitInput
+  triggers?: Prisma.HabitTriggerCreateNestedManyWithoutHabitInput
+  copingPlans?: Prisma.CopingPlanCreateNestedManyWithoutHabitInput
+  milestones?: Prisma.HabitMilestoneCreateNestedManyWithoutHabitInput
+  automaticitySurveys?: Prisma.AutomaticitySurveyCreateNestedManyWithoutHabitInput
+}
+
+export type TrackedHabitUncheckedCreateWithoutBuildProfileInput = {
+  id?: string
+  userId: string
+  areaId?: string | null
+  kind: $Enums.HabitKind
+  mode?: $Enums.HabitMode | null
+  name: string
+  displayAlias?: string | null
+  category?: string | null
+  status?: $Enums.HabitStatus
+  stage?: $Enums.HabitStage
+  identityStatement?: string | null
+  timezone: string
+  checkinLocalTime: string
+  startedAt: Date | string
+  currentWindowStart: Date | string
+  nextCheckinAt?: Date | string | null
+  privacyLevel?: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  archivedAt?: Date | string | null
+  breakProfile?: Prisma.HabitBreakProfileUncheckedCreateNestedOneWithoutHabitInput
+  replacedByProfiles?: Prisma.HabitBuildProfileUncheckedCreateNestedManyWithoutReplacesHabitInput
+  events?: Prisma.HabitEventUncheckedCreateNestedManyWithoutHabitInput
+  checkins?: Prisma.HabitCheckinUncheckedCreateNestedManyWithoutHabitInput
+  stats?: Prisma.HabitStatsUncheckedCreateNestedOneWithoutHabitInput
+  outbox?: Prisma.HabitNotificationOutboxUncheckedCreateNestedManyWithoutHabitInput
+  triggers?: Prisma.HabitTriggerUncheckedCreateNestedManyWithoutHabitInput
+  copingPlans?: Prisma.CopingPlanUncheckedCreateNestedManyWithoutHabitInput
+  milestones?: Prisma.HabitMilestoneUncheckedCreateNestedManyWithoutHabitInput
+  automaticitySurveys?: Prisma.AutomaticitySurveyUncheckedCreateNestedManyWithoutHabitInput
+}
+
+export type TrackedHabitCreateOrConnectWithoutBuildProfileInput = {
+  where: Prisma.TrackedHabitWhereUniqueInput
+  create: Prisma.XOR<Prisma.TrackedHabitCreateWithoutBuildProfileInput, Prisma.TrackedHabitUncheckedCreateWithoutBuildProfileInput>
+}
+
+export type TrackedHabitCreateWithoutReplacedByProfilesInput = {
+  id?: string
+  kind: $Enums.HabitKind
+  mode?: $Enums.HabitMode | null
+  name: string
+  displayAlias?: string | null
+  category?: string | null
+  status?: $Enums.HabitStatus
+  stage?: $Enums.HabitStage
+  identityStatement?: string | null
+  timezone: string
+  checkinLocalTime: string
+  startedAt: Date | string
+  currentWindowStart: Date | string
+  nextCheckinAt?: Date | string | null
+  privacyLevel?: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  archivedAt?: Date | string | null
+  user: Prisma.UserCreateNestedOneWithoutTrackedHabitsInput
+  area?: Prisma.AreaCreateNestedOneWithoutTrackedHabitsInput
+  breakProfile?: Prisma.HabitBreakProfileCreateNestedOneWithoutHabitInput
+  buildProfile?: Prisma.HabitBuildProfileCreateNestedOneWithoutHabitInput
+  events?: Prisma.HabitEventCreateNestedManyWithoutHabitInput
+  checkins?: Prisma.HabitCheckinCreateNestedManyWithoutHabitInput
+  stats?: Prisma.HabitStatsCreateNestedOneWithoutHabitInput
+  outbox?: Prisma.HabitNotificationOutboxCreateNestedManyWithoutHabitInput
+  triggers?: Prisma.HabitTriggerCreateNestedManyWithoutHabitInput
+  copingPlans?: Prisma.CopingPlanCreateNestedManyWithoutHabitInput
+  milestones?: Prisma.HabitMilestoneCreateNestedManyWithoutHabitInput
+  automaticitySurveys?: Prisma.AutomaticitySurveyCreateNestedManyWithoutHabitInput
+}
+
+export type TrackedHabitUncheckedCreateWithoutReplacedByProfilesInput = {
+  id?: string
+  userId: string
+  areaId?: string | null
+  kind: $Enums.HabitKind
+  mode?: $Enums.HabitMode | null
+  name: string
+  displayAlias?: string | null
+  category?: string | null
+  status?: $Enums.HabitStatus
+  stage?: $Enums.HabitStage
+  identityStatement?: string | null
+  timezone: string
+  checkinLocalTime: string
+  startedAt: Date | string
+  currentWindowStart: Date | string
+  nextCheckinAt?: Date | string | null
+  privacyLevel?: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  archivedAt?: Date | string | null
+  breakProfile?: Prisma.HabitBreakProfileUncheckedCreateNestedOneWithoutHabitInput
+  buildProfile?: Prisma.HabitBuildProfileUncheckedCreateNestedOneWithoutHabitInput
+  events?: Prisma.HabitEventUncheckedCreateNestedManyWithoutHabitInput
+  checkins?: Prisma.HabitCheckinUncheckedCreateNestedManyWithoutHabitInput
+  stats?: Prisma.HabitStatsUncheckedCreateNestedOneWithoutHabitInput
+  outbox?: Prisma.HabitNotificationOutboxUncheckedCreateNestedManyWithoutHabitInput
+  triggers?: Prisma.HabitTriggerUncheckedCreateNestedManyWithoutHabitInput
+  copingPlans?: Prisma.CopingPlanUncheckedCreateNestedManyWithoutHabitInput
+  milestones?: Prisma.HabitMilestoneUncheckedCreateNestedManyWithoutHabitInput
+  automaticitySurveys?: Prisma.AutomaticitySurveyUncheckedCreateNestedManyWithoutHabitInput
+}
+
+export type TrackedHabitCreateOrConnectWithoutReplacedByProfilesInput = {
+  where: Prisma.TrackedHabitWhereUniqueInput
+  create: Prisma.XOR<Prisma.TrackedHabitCreateWithoutReplacedByProfilesInput, Prisma.TrackedHabitUncheckedCreateWithoutReplacedByProfilesInput>
+}
+
+export type TrackedHabitUpsertWithoutBuildProfileInput = {
+  update: Prisma.XOR<Prisma.TrackedHabitUpdateWithoutBuildProfileInput, Prisma.TrackedHabitUncheckedUpdateWithoutBuildProfileInput>
+  create: Prisma.XOR<Prisma.TrackedHabitCreateWithoutBuildProfileInput, Prisma.TrackedHabitUncheckedCreateWithoutBuildProfileInput>
+  where?: Prisma.TrackedHabitWhereInput
+}
+
+export type TrackedHabitUpdateToOneWithWhereWithoutBuildProfileInput = {
+  where?: Prisma.TrackedHabitWhereInput
+  data: Prisma.XOR<Prisma.TrackedHabitUpdateWithoutBuildProfileInput, Prisma.TrackedHabitUncheckedUpdateWithoutBuildProfileInput>
+}
+
+export type TrackedHabitUpdateWithoutBuildProfileInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  kind?: Prisma.EnumHabitKindFieldUpdateOperationsInput | $Enums.HabitKind
+  mode?: Prisma.NullableEnumHabitModeFieldUpdateOperationsInput | $Enums.HabitMode | null
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  displayAlias?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  category?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumHabitStatusFieldUpdateOperationsInput | $Enums.HabitStatus
+  stage?: Prisma.EnumHabitStageFieldUpdateOperationsInput | $Enums.HabitStage
+  identityStatement?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  timezone?: Prisma.StringFieldUpdateOperationsInput | string
+  checkinLocalTime?: Prisma.StringFieldUpdateOperationsInput | string
+  startedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  currentWindowStart?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  nextCheckinAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  privacyLevel?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  user?: Prisma.UserUpdateOneRequiredWithoutTrackedHabitsNestedInput
+  area?: Prisma.AreaUpdateOneWithoutTrackedHabitsNestedInput
+  breakProfile?: Prisma.HabitBreakProfileUpdateOneWithoutHabitNestedInput
+  replacedByProfiles?: Prisma.HabitBuildProfileUpdateManyWithoutReplacesHabitNestedInput
+  events?: Prisma.HabitEventUpdateManyWithoutHabitNestedInput
+  checkins?: Prisma.HabitCheckinUpdateManyWithoutHabitNestedInput
+  stats?: Prisma.HabitStatsUpdateOneWithoutHabitNestedInput
+  outbox?: Prisma.HabitNotificationOutboxUpdateManyWithoutHabitNestedInput
+  triggers?: Prisma.HabitTriggerUpdateManyWithoutHabitNestedInput
+  copingPlans?: Prisma.CopingPlanUpdateManyWithoutHabitNestedInput
+  milestones?: Prisma.HabitMilestoneUpdateManyWithoutHabitNestedInput
+  automaticitySurveys?: Prisma.AutomaticitySurveyUpdateManyWithoutHabitNestedInput
+}
+
+export type TrackedHabitUncheckedUpdateWithoutBuildProfileInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  userId?: Prisma.StringFieldUpdateOperationsInput | string
+  areaId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  kind?: Prisma.EnumHabitKindFieldUpdateOperationsInput | $Enums.HabitKind
+  mode?: Prisma.NullableEnumHabitModeFieldUpdateOperationsInput | $Enums.HabitMode | null
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  displayAlias?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  category?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumHabitStatusFieldUpdateOperationsInput | $Enums.HabitStatus
+  stage?: Prisma.EnumHabitStageFieldUpdateOperationsInput | $Enums.HabitStage
+  identityStatement?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  timezone?: Prisma.StringFieldUpdateOperationsInput | string
+  checkinLocalTime?: Prisma.StringFieldUpdateOperationsInput | string
+  startedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  currentWindowStart?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  nextCheckinAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  privacyLevel?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  breakProfile?: Prisma.HabitBreakProfileUncheckedUpdateOneWithoutHabitNestedInput
+  replacedByProfiles?: Prisma.HabitBuildProfileUncheckedUpdateManyWithoutReplacesHabitNestedInput
+  events?: Prisma.HabitEventUncheckedUpdateManyWithoutHabitNestedInput
+  checkins?: Prisma.HabitCheckinUncheckedUpdateManyWithoutHabitNestedInput
+  stats?: Prisma.HabitStatsUncheckedUpdateOneWithoutHabitNestedInput
+  outbox?: Prisma.HabitNotificationOutboxUncheckedUpdateManyWithoutHabitNestedInput
+  triggers?: Prisma.HabitTriggerUncheckedUpdateManyWithoutHabitNestedInput
+  copingPlans?: Prisma.CopingPlanUncheckedUpdateManyWithoutHabitNestedInput
+  milestones?: Prisma.HabitMilestoneUncheckedUpdateManyWithoutHabitNestedInput
+  automaticitySurveys?: Prisma.AutomaticitySurveyUncheckedUpdateManyWithoutHabitNestedInput
+}
+
+export type TrackedHabitUpsertWithoutReplacedByProfilesInput = {
+  update: Prisma.XOR<Prisma.TrackedHabitUpdateWithoutReplacedByProfilesInput, Prisma.TrackedHabitUncheckedUpdateWithoutReplacedByProfilesInput>
+  create: Prisma.XOR<Prisma.TrackedHabitCreateWithoutReplacedByProfilesInput, Prisma.TrackedHabitUncheckedCreateWithoutReplacedByProfilesInput>
+  where?: Prisma.TrackedHabitWhereInput
+}
+
+export type TrackedHabitUpdateToOneWithWhereWithoutReplacedByProfilesInput = {
+  where?: Prisma.TrackedHabitWhereInput
+  data: Prisma.XOR<Prisma.TrackedHabitUpdateWithoutReplacedByProfilesInput, Prisma.TrackedHabitUncheckedUpdateWithoutReplacedByProfilesInput>
+}
+
+export type TrackedHabitUpdateWithoutReplacedByProfilesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  kind?: Prisma.EnumHabitKindFieldUpdateOperationsInput | $Enums.HabitKind
+  mode?: Prisma.NullableEnumHabitModeFieldUpdateOperationsInput | $Enums.HabitMode | null
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  displayAlias?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  category?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumHabitStatusFieldUpdateOperationsInput | $Enums.HabitStatus
+  stage?: Prisma.EnumHabitStageFieldUpdateOperationsInput | $Enums.HabitStage
+  identityStatement?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  timezone?: Prisma.StringFieldUpdateOperationsInput | string
+  checkinLocalTime?: Prisma.StringFieldUpdateOperationsInput | string
+  startedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  currentWindowStart?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  nextCheckinAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  privacyLevel?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  user?: Prisma.UserUpdateOneRequiredWithoutTrackedHabitsNestedInput
+  area?: Prisma.AreaUpdateOneWithoutTrackedHabitsNestedInput
+  breakProfile?: Prisma.HabitBreakProfileUpdateOneWithoutHabitNestedInput
+  buildProfile?: Prisma.HabitBuildProfileUpdateOneWithoutHabitNestedInput
+  events?: Prisma.HabitEventUpdateManyWithoutHabitNestedInput
+  checkins?: Prisma.HabitCheckinUpdateManyWithoutHabitNestedInput
+  stats?: Prisma.HabitStatsUpdateOneWithoutHabitNestedInput
+  outbox?: Prisma.HabitNotificationOutboxUpdateManyWithoutHabitNestedInput
+  triggers?: Prisma.HabitTriggerUpdateManyWithoutHabitNestedInput
+  copingPlans?: Prisma.CopingPlanUpdateManyWithoutHabitNestedInput
+  milestones?: Prisma.HabitMilestoneUpdateManyWithoutHabitNestedInput
+  automaticitySurveys?: Prisma.AutomaticitySurveyUpdateManyWithoutHabitNestedInput
+}
+
+export type TrackedHabitUncheckedUpdateWithoutReplacedByProfilesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  userId?: Prisma.StringFieldUpdateOperationsInput | string
+  areaId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  kind?: Prisma.EnumHabitKindFieldUpdateOperationsInput | $Enums.HabitKind
+  mode?: Prisma.NullableEnumHabitModeFieldUpdateOperationsInput | $Enums.HabitMode | null
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  displayAlias?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  category?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumHabitStatusFieldUpdateOperationsInput | $Enums.HabitStatus
+  stage?: Prisma.EnumHabitStageFieldUpdateOperationsInput | $Enums.HabitStage
+  identityStatement?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  timezone?: Prisma.StringFieldUpdateOperationsInput | string
+  checkinLocalTime?: Prisma.StringFieldUpdateOperationsInput | string
+  startedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  currentWindowStart?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  nextCheckinAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  privacyLevel?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  breakProfile?: Prisma.HabitBreakProfileUncheckedUpdateOneWithoutHabitNestedInput
+  buildProfile?: Prisma.HabitBuildProfileUncheckedUpdateOneWithoutHabitNestedInput
+  events?: Prisma.HabitEventUncheckedUpdateManyWithoutHabitNestedInput
+  checkins?: Prisma.HabitCheckinUncheckedUpdateManyWithoutHabitNestedInput
+  stats?: Prisma.HabitStatsUncheckedUpdateOneWithoutHabitNestedInput
+  outbox?: Prisma.HabitNotificationOutboxUncheckedUpdateManyWithoutHabitNestedInput
+  triggers?: Prisma.HabitTriggerUncheckedUpdateManyWithoutHabitNestedInput
+  copingPlans?: Prisma.CopingPlanUncheckedUpdateManyWithoutHabitNestedInput
+  milestones?: Prisma.HabitMilestoneUncheckedUpdateManyWithoutHabitNestedInput
+  automaticitySurveys?: Prisma.AutomaticitySurveyUncheckedUpdateManyWithoutHabitNestedInput
+}
+
+export type TrackedHabitCreateWithoutAutomaticitySurveysInput = {
+  id?: string
+  kind: $Enums.HabitKind
+  mode?: $Enums.HabitMode | null
+  name: string
+  displayAlias?: string | null
+  category?: string | null
+  status?: $Enums.HabitStatus
+  stage?: $Enums.HabitStage
+  identityStatement?: string | null
+  timezone: string
+  checkinLocalTime: string
+  startedAt: Date | string
+  currentWindowStart: Date | string
+  nextCheckinAt?: Date | string | null
+  privacyLevel?: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  archivedAt?: Date | string | null
+  user: Prisma.UserCreateNestedOneWithoutTrackedHabitsInput
+  area?: Prisma.AreaCreateNestedOneWithoutTrackedHabitsInput
+  breakProfile?: Prisma.HabitBreakProfileCreateNestedOneWithoutHabitInput
+  buildProfile?: Prisma.HabitBuildProfileCreateNestedOneWithoutHabitInput
+  replacedByProfiles?: Prisma.HabitBuildProfileCreateNestedManyWithoutReplacesHabitInput
+  events?: Prisma.HabitEventCreateNestedManyWithoutHabitInput
+  checkins?: Prisma.HabitCheckinCreateNestedManyWithoutHabitInput
+  stats?: Prisma.HabitStatsCreateNestedOneWithoutHabitInput
+  outbox?: Prisma.HabitNotificationOutboxCreateNestedManyWithoutHabitInput
+  triggers?: Prisma.HabitTriggerCreateNestedManyWithoutHabitInput
+  copingPlans?: Prisma.CopingPlanCreateNestedManyWithoutHabitInput
+  milestones?: Prisma.HabitMilestoneCreateNestedManyWithoutHabitInput
+}
+
+export type TrackedHabitUncheckedCreateWithoutAutomaticitySurveysInput = {
+  id?: string
+  userId: string
+  areaId?: string | null
+  kind: $Enums.HabitKind
+  mode?: $Enums.HabitMode | null
+  name: string
+  displayAlias?: string | null
+  category?: string | null
+  status?: $Enums.HabitStatus
+  stage?: $Enums.HabitStage
+  identityStatement?: string | null
+  timezone: string
+  checkinLocalTime: string
+  startedAt: Date | string
+  currentWindowStart: Date | string
+  nextCheckinAt?: Date | string | null
+  privacyLevel?: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  archivedAt?: Date | string | null
+  breakProfile?: Prisma.HabitBreakProfileUncheckedCreateNestedOneWithoutHabitInput
+  buildProfile?: Prisma.HabitBuildProfileUncheckedCreateNestedOneWithoutHabitInput
+  replacedByProfiles?: Prisma.HabitBuildProfileUncheckedCreateNestedManyWithoutReplacesHabitInput
+  events?: Prisma.HabitEventUncheckedCreateNestedManyWithoutHabitInput
+  checkins?: Prisma.HabitCheckinUncheckedCreateNestedManyWithoutHabitInput
+  stats?: Prisma.HabitStatsUncheckedCreateNestedOneWithoutHabitInput
+  outbox?: Prisma.HabitNotificationOutboxUncheckedCreateNestedManyWithoutHabitInput
+  triggers?: Prisma.HabitTriggerUncheckedCreateNestedManyWithoutHabitInput
+  copingPlans?: Prisma.CopingPlanUncheckedCreateNestedManyWithoutHabitInput
+  milestones?: Prisma.HabitMilestoneUncheckedCreateNestedManyWithoutHabitInput
+}
+
+export type TrackedHabitCreateOrConnectWithoutAutomaticitySurveysInput = {
+  where: Prisma.TrackedHabitWhereUniqueInput
+  create: Prisma.XOR<Prisma.TrackedHabitCreateWithoutAutomaticitySurveysInput, Prisma.TrackedHabitUncheckedCreateWithoutAutomaticitySurveysInput>
+}
+
+export type TrackedHabitUpsertWithoutAutomaticitySurveysInput = {
+  update: Prisma.XOR<Prisma.TrackedHabitUpdateWithoutAutomaticitySurveysInput, Prisma.TrackedHabitUncheckedUpdateWithoutAutomaticitySurveysInput>
+  create: Prisma.XOR<Prisma.TrackedHabitCreateWithoutAutomaticitySurveysInput, Prisma.TrackedHabitUncheckedCreateWithoutAutomaticitySurveysInput>
+  where?: Prisma.TrackedHabitWhereInput
+}
+
+export type TrackedHabitUpdateToOneWithWhereWithoutAutomaticitySurveysInput = {
+  where?: Prisma.TrackedHabitWhereInput
+  data: Prisma.XOR<Prisma.TrackedHabitUpdateWithoutAutomaticitySurveysInput, Prisma.TrackedHabitUncheckedUpdateWithoutAutomaticitySurveysInput>
+}
+
+export type TrackedHabitUpdateWithoutAutomaticitySurveysInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  kind?: Prisma.EnumHabitKindFieldUpdateOperationsInput | $Enums.HabitKind
+  mode?: Prisma.NullableEnumHabitModeFieldUpdateOperationsInput | $Enums.HabitMode | null
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  displayAlias?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  category?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumHabitStatusFieldUpdateOperationsInput | $Enums.HabitStatus
+  stage?: Prisma.EnumHabitStageFieldUpdateOperationsInput | $Enums.HabitStage
+  identityStatement?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  timezone?: Prisma.StringFieldUpdateOperationsInput | string
+  checkinLocalTime?: Prisma.StringFieldUpdateOperationsInput | string
+  startedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  currentWindowStart?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  nextCheckinAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  privacyLevel?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  user?: Prisma.UserUpdateOneRequiredWithoutTrackedHabitsNestedInput
+  area?: Prisma.AreaUpdateOneWithoutTrackedHabitsNestedInput
+  breakProfile?: Prisma.HabitBreakProfileUpdateOneWithoutHabitNestedInput
+  buildProfile?: Prisma.HabitBuildProfileUpdateOneWithoutHabitNestedInput
+  replacedByProfiles?: Prisma.HabitBuildProfileUpdateManyWithoutReplacesHabitNestedInput
+  events?: Prisma.HabitEventUpdateManyWithoutHabitNestedInput
+  checkins?: Prisma.HabitCheckinUpdateManyWithoutHabitNestedInput
+  stats?: Prisma.HabitStatsUpdateOneWithoutHabitNestedInput
+  outbox?: Prisma.HabitNotificationOutboxUpdateManyWithoutHabitNestedInput
+  triggers?: Prisma.HabitTriggerUpdateManyWithoutHabitNestedInput
+  copingPlans?: Prisma.CopingPlanUpdateManyWithoutHabitNestedInput
+  milestones?: Prisma.HabitMilestoneUpdateManyWithoutHabitNestedInput
+}
+
+export type TrackedHabitUncheckedUpdateWithoutAutomaticitySurveysInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  userId?: Prisma.StringFieldUpdateOperationsInput | string
+  areaId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  kind?: Prisma.EnumHabitKindFieldUpdateOperationsInput | $Enums.HabitKind
+  mode?: Prisma.NullableEnumHabitModeFieldUpdateOperationsInput | $Enums.HabitMode | null
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  displayAlias?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  category?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumHabitStatusFieldUpdateOperationsInput | $Enums.HabitStatus
+  stage?: Prisma.EnumHabitStageFieldUpdateOperationsInput | $Enums.HabitStage
+  identityStatement?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  timezone?: Prisma.StringFieldUpdateOperationsInput | string
+  checkinLocalTime?: Prisma.StringFieldUpdateOperationsInput | string
+  startedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  currentWindowStart?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  nextCheckinAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  privacyLevel?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  breakProfile?: Prisma.HabitBreakProfileUncheckedUpdateOneWithoutHabitNestedInput
+  buildProfile?: Prisma.HabitBuildProfileUncheckedUpdateOneWithoutHabitNestedInput
+  replacedByProfiles?: Prisma.HabitBuildProfileUncheckedUpdateManyWithoutReplacesHabitNestedInput
+  events?: Prisma.HabitEventUncheckedUpdateManyWithoutHabitNestedInput
+  checkins?: Prisma.HabitCheckinUncheckedUpdateManyWithoutHabitNestedInput
+  stats?: Prisma.HabitStatsUncheckedUpdateOneWithoutHabitNestedInput
+  outbox?: Prisma.HabitNotificationOutboxUncheckedUpdateManyWithoutHabitNestedInput
+  triggers?: Prisma.HabitTriggerUncheckedUpdateManyWithoutHabitNestedInput
+  copingPlans?: Prisma.CopingPlanUncheckedUpdateManyWithoutHabitNestedInput
+  milestones?: Prisma.HabitMilestoneUncheckedUpdateManyWithoutHabitNestedInput
 }
 
 export type TrackedHabitCreateManyUserInput = {
@@ -2302,6 +2919,8 @@ export type TrackedHabitUpdateWithoutUserInput = {
   archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   area?: Prisma.AreaUpdateOneWithoutTrackedHabitsNestedInput
   breakProfile?: Prisma.HabitBreakProfileUpdateOneWithoutHabitNestedInput
+  buildProfile?: Prisma.HabitBuildProfileUpdateOneWithoutHabitNestedInput
+  replacedByProfiles?: Prisma.HabitBuildProfileUpdateManyWithoutReplacesHabitNestedInput
   events?: Prisma.HabitEventUpdateManyWithoutHabitNestedInput
   checkins?: Prisma.HabitCheckinUpdateManyWithoutHabitNestedInput
   stats?: Prisma.HabitStatsUpdateOneWithoutHabitNestedInput
@@ -2309,6 +2928,7 @@ export type TrackedHabitUpdateWithoutUserInput = {
   triggers?: Prisma.HabitTriggerUpdateManyWithoutHabitNestedInput
   copingPlans?: Prisma.CopingPlanUpdateManyWithoutHabitNestedInput
   milestones?: Prisma.HabitMilestoneUpdateManyWithoutHabitNestedInput
+  automaticitySurveys?: Prisma.AutomaticitySurveyUpdateManyWithoutHabitNestedInput
 }
 
 export type TrackedHabitUncheckedUpdateWithoutUserInput = {
@@ -2332,6 +2952,8 @@ export type TrackedHabitUncheckedUpdateWithoutUserInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   breakProfile?: Prisma.HabitBreakProfileUncheckedUpdateOneWithoutHabitNestedInput
+  buildProfile?: Prisma.HabitBuildProfileUncheckedUpdateOneWithoutHabitNestedInput
+  replacedByProfiles?: Prisma.HabitBuildProfileUncheckedUpdateManyWithoutReplacesHabitNestedInput
   events?: Prisma.HabitEventUncheckedUpdateManyWithoutHabitNestedInput
   checkins?: Prisma.HabitCheckinUncheckedUpdateManyWithoutHabitNestedInput
   stats?: Prisma.HabitStatsUncheckedUpdateOneWithoutHabitNestedInput
@@ -2339,6 +2961,7 @@ export type TrackedHabitUncheckedUpdateWithoutUserInput = {
   triggers?: Prisma.HabitTriggerUncheckedUpdateManyWithoutHabitNestedInput
   copingPlans?: Prisma.CopingPlanUncheckedUpdateManyWithoutHabitNestedInput
   milestones?: Prisma.HabitMilestoneUncheckedUpdateManyWithoutHabitNestedInput
+  automaticitySurveys?: Prisma.AutomaticitySurveyUncheckedUpdateManyWithoutHabitNestedInput
 }
 
 export type TrackedHabitUncheckedUpdateManyWithoutUserInput = {
@@ -2406,6 +3029,8 @@ export type TrackedHabitUpdateWithoutAreaInput = {
   archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   user?: Prisma.UserUpdateOneRequiredWithoutTrackedHabitsNestedInput
   breakProfile?: Prisma.HabitBreakProfileUpdateOneWithoutHabitNestedInput
+  buildProfile?: Prisma.HabitBuildProfileUpdateOneWithoutHabitNestedInput
+  replacedByProfiles?: Prisma.HabitBuildProfileUpdateManyWithoutReplacesHabitNestedInput
   events?: Prisma.HabitEventUpdateManyWithoutHabitNestedInput
   checkins?: Prisma.HabitCheckinUpdateManyWithoutHabitNestedInput
   stats?: Prisma.HabitStatsUpdateOneWithoutHabitNestedInput
@@ -2413,6 +3038,7 @@ export type TrackedHabitUpdateWithoutAreaInput = {
   triggers?: Prisma.HabitTriggerUpdateManyWithoutHabitNestedInput
   copingPlans?: Prisma.CopingPlanUpdateManyWithoutHabitNestedInput
   milestones?: Prisma.HabitMilestoneUpdateManyWithoutHabitNestedInput
+  automaticitySurveys?: Prisma.AutomaticitySurveyUpdateManyWithoutHabitNestedInput
 }
 
 export type TrackedHabitUncheckedUpdateWithoutAreaInput = {
@@ -2436,6 +3062,8 @@ export type TrackedHabitUncheckedUpdateWithoutAreaInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   breakProfile?: Prisma.HabitBreakProfileUncheckedUpdateOneWithoutHabitNestedInput
+  buildProfile?: Prisma.HabitBuildProfileUncheckedUpdateOneWithoutHabitNestedInput
+  replacedByProfiles?: Prisma.HabitBuildProfileUncheckedUpdateManyWithoutReplacesHabitNestedInput
   events?: Prisma.HabitEventUncheckedUpdateManyWithoutHabitNestedInput
   checkins?: Prisma.HabitCheckinUncheckedUpdateManyWithoutHabitNestedInput
   stats?: Prisma.HabitStatsUncheckedUpdateOneWithoutHabitNestedInput
@@ -2443,6 +3071,7 @@ export type TrackedHabitUncheckedUpdateWithoutAreaInput = {
   triggers?: Prisma.HabitTriggerUncheckedUpdateManyWithoutHabitNestedInput
   copingPlans?: Prisma.CopingPlanUncheckedUpdateManyWithoutHabitNestedInput
   milestones?: Prisma.HabitMilestoneUncheckedUpdateManyWithoutHabitNestedInput
+  automaticitySurveys?: Prisma.AutomaticitySurveyUncheckedUpdateManyWithoutHabitNestedInput
 }
 
 export type TrackedHabitUncheckedUpdateManyWithoutAreaInput = {
@@ -2473,21 +3102,25 @@ export type TrackedHabitUncheckedUpdateManyWithoutAreaInput = {
  */
 
 export type TrackedHabitCountOutputType = {
+  replacedByProfiles: number
   events: number
   checkins: number
   outbox: number
   triggers: number
   copingPlans: number
   milestones: number
+  automaticitySurveys: number
 }
 
 export type TrackedHabitCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  replacedByProfiles?: boolean | TrackedHabitCountOutputTypeCountReplacedByProfilesArgs
   events?: boolean | TrackedHabitCountOutputTypeCountEventsArgs
   checkins?: boolean | TrackedHabitCountOutputTypeCountCheckinsArgs
   outbox?: boolean | TrackedHabitCountOutputTypeCountOutboxArgs
   triggers?: boolean | TrackedHabitCountOutputTypeCountTriggersArgs
   copingPlans?: boolean | TrackedHabitCountOutputTypeCountCopingPlansArgs
   milestones?: boolean | TrackedHabitCountOutputTypeCountMilestonesArgs
+  automaticitySurveys?: boolean | TrackedHabitCountOutputTypeCountAutomaticitySurveysArgs
 }
 
 /**
@@ -2498,6 +3131,13 @@ export type TrackedHabitCountOutputTypeDefaultArgs<ExtArgs extends runtime.Types
    * Select specific fields to fetch from the TrackedHabitCountOutputType
    */
   select?: Prisma.TrackedHabitCountOutputTypeSelect<ExtArgs> | null
+}
+
+/**
+ * TrackedHabitCountOutputType without action
+ */
+export type TrackedHabitCountOutputTypeCountReplacedByProfilesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.HabitBuildProfileWhereInput
 }
 
 /**
@@ -2542,6 +3182,13 @@ export type TrackedHabitCountOutputTypeCountMilestonesArgs<ExtArgs extends runti
   where?: Prisma.HabitMilestoneWhereInput
 }
 
+/**
+ * TrackedHabitCountOutputType without action
+ */
+export type TrackedHabitCountOutputTypeCountAutomaticitySurveysArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.AutomaticitySurveyWhereInput
+}
+
 
 export type TrackedHabitSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -2567,6 +3214,8 @@ export type TrackedHabitSelect<ExtArgs extends runtime.Types.Extensions.Internal
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   area?: boolean | Prisma.TrackedHabit$areaArgs<ExtArgs>
   breakProfile?: boolean | Prisma.TrackedHabit$breakProfileArgs<ExtArgs>
+  buildProfile?: boolean | Prisma.TrackedHabit$buildProfileArgs<ExtArgs>
+  replacedByProfiles?: boolean | Prisma.TrackedHabit$replacedByProfilesArgs<ExtArgs>
   events?: boolean | Prisma.TrackedHabit$eventsArgs<ExtArgs>
   checkins?: boolean | Prisma.TrackedHabit$checkinsArgs<ExtArgs>
   stats?: boolean | Prisma.TrackedHabit$statsArgs<ExtArgs>
@@ -2574,6 +3223,7 @@ export type TrackedHabitSelect<ExtArgs extends runtime.Types.Extensions.Internal
   triggers?: boolean | Prisma.TrackedHabit$triggersArgs<ExtArgs>
   copingPlans?: boolean | Prisma.TrackedHabit$copingPlansArgs<ExtArgs>
   milestones?: boolean | Prisma.TrackedHabit$milestonesArgs<ExtArgs>
+  automaticitySurveys?: boolean | Prisma.TrackedHabit$automaticitySurveysArgs<ExtArgs>
   _count?: boolean | Prisma.TrackedHabitCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["trackedHabit"]>
 
@@ -2655,6 +3305,8 @@ export type TrackedHabitInclude<ExtArgs extends runtime.Types.Extensions.Interna
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   area?: boolean | Prisma.TrackedHabit$areaArgs<ExtArgs>
   breakProfile?: boolean | Prisma.TrackedHabit$breakProfileArgs<ExtArgs>
+  buildProfile?: boolean | Prisma.TrackedHabit$buildProfileArgs<ExtArgs>
+  replacedByProfiles?: boolean | Prisma.TrackedHabit$replacedByProfilesArgs<ExtArgs>
   events?: boolean | Prisma.TrackedHabit$eventsArgs<ExtArgs>
   checkins?: boolean | Prisma.TrackedHabit$checkinsArgs<ExtArgs>
   stats?: boolean | Prisma.TrackedHabit$statsArgs<ExtArgs>
@@ -2662,6 +3314,7 @@ export type TrackedHabitInclude<ExtArgs extends runtime.Types.Extensions.Interna
   triggers?: boolean | Prisma.TrackedHabit$triggersArgs<ExtArgs>
   copingPlans?: boolean | Prisma.TrackedHabit$copingPlansArgs<ExtArgs>
   milestones?: boolean | Prisma.TrackedHabit$milestonesArgs<ExtArgs>
+  automaticitySurveys?: boolean | Prisma.TrackedHabit$automaticitySurveysArgs<ExtArgs>
   _count?: boolean | Prisma.TrackedHabitCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type TrackedHabitIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -2679,6 +3332,8 @@ export type $TrackedHabitPayload<ExtArgs extends runtime.Types.Extensions.Intern
     user: Prisma.$UserPayload<ExtArgs>
     area: Prisma.$AreaPayload<ExtArgs> | null
     breakProfile: Prisma.$HabitBreakProfilePayload<ExtArgs> | null
+    buildProfile: Prisma.$HabitBuildProfilePayload<ExtArgs> | null
+    replacedByProfiles: Prisma.$HabitBuildProfilePayload<ExtArgs>[]
     events: Prisma.$HabitEventPayload<ExtArgs>[]
     checkins: Prisma.$HabitCheckinPayload<ExtArgs>[]
     stats: Prisma.$HabitStatsPayload<ExtArgs> | null
@@ -2686,6 +3341,7 @@ export type $TrackedHabitPayload<ExtArgs extends runtime.Types.Extensions.Intern
     triggers: Prisma.$HabitTriggerPayload<ExtArgs>[]
     copingPlans: Prisma.$CopingPlanPayload<ExtArgs>[]
     milestones: Prisma.$HabitMilestonePayload<ExtArgs>[]
+    automaticitySurveys: Prisma.$AutomaticitySurveyPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -3105,6 +3761,8 @@ export interface Prisma__TrackedHabitClient<T, Null = never, ExtArgs extends run
   user<T extends Prisma.UserDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.UserDefaultArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   area<T extends Prisma.TrackedHabit$areaArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.TrackedHabit$areaArgs<ExtArgs>>): Prisma.Prisma__AreaClient<runtime.Types.Result.GetResult<Prisma.$AreaPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   breakProfile<T extends Prisma.TrackedHabit$breakProfileArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.TrackedHabit$breakProfileArgs<ExtArgs>>): Prisma.Prisma__HabitBreakProfileClient<runtime.Types.Result.GetResult<Prisma.$HabitBreakProfilePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  buildProfile<T extends Prisma.TrackedHabit$buildProfileArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.TrackedHabit$buildProfileArgs<ExtArgs>>): Prisma.Prisma__HabitBuildProfileClient<runtime.Types.Result.GetResult<Prisma.$HabitBuildProfilePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  replacedByProfiles<T extends Prisma.TrackedHabit$replacedByProfilesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.TrackedHabit$replacedByProfilesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$HabitBuildProfilePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   events<T extends Prisma.TrackedHabit$eventsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.TrackedHabit$eventsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$HabitEventPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   checkins<T extends Prisma.TrackedHabit$checkinsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.TrackedHabit$checkinsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$HabitCheckinPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   stats<T extends Prisma.TrackedHabit$statsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.TrackedHabit$statsArgs<ExtArgs>>): Prisma.Prisma__HabitStatsClient<runtime.Types.Result.GetResult<Prisma.$HabitStatsPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
@@ -3112,6 +3770,7 @@ export interface Prisma__TrackedHabitClient<T, Null = never, ExtArgs extends run
   triggers<T extends Prisma.TrackedHabit$triggersArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.TrackedHabit$triggersArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$HabitTriggerPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   copingPlans<T extends Prisma.TrackedHabit$copingPlansArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.TrackedHabit$copingPlansArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$CopingPlanPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   milestones<T extends Prisma.TrackedHabit$milestonesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.TrackedHabit$milestonesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$HabitMilestonePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  automaticitySurveys<T extends Prisma.TrackedHabit$automaticitySurveysArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.TrackedHabit$automaticitySurveysArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AutomaticitySurveyPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -3600,6 +4259,49 @@ export type TrackedHabit$breakProfileArgs<ExtArgs extends runtime.Types.Extensio
 }
 
 /**
+ * TrackedHabit.buildProfile
+ */
+export type TrackedHabit$buildProfileArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the HabitBuildProfile
+   */
+  select?: Prisma.HabitBuildProfileSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the HabitBuildProfile
+   */
+  omit?: Prisma.HabitBuildProfileOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.HabitBuildProfileInclude<ExtArgs> | null
+  where?: Prisma.HabitBuildProfileWhereInput
+}
+
+/**
+ * TrackedHabit.replacedByProfiles
+ */
+export type TrackedHabit$replacedByProfilesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the HabitBuildProfile
+   */
+  select?: Prisma.HabitBuildProfileSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the HabitBuildProfile
+   */
+  omit?: Prisma.HabitBuildProfileOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.HabitBuildProfileInclude<ExtArgs> | null
+  where?: Prisma.HabitBuildProfileWhereInput
+  orderBy?: Prisma.HabitBuildProfileOrderByWithRelationInput | Prisma.HabitBuildProfileOrderByWithRelationInput[]
+  cursor?: Prisma.HabitBuildProfileWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.HabitBuildProfileScalarFieldEnum | Prisma.HabitBuildProfileScalarFieldEnum[]
+}
+
+/**
  * TrackedHabit.events
  */
 export type TrackedHabit$eventsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -3760,6 +4462,30 @@ export type TrackedHabit$milestonesArgs<ExtArgs extends runtime.Types.Extensions
   take?: number
   skip?: number
   distinct?: Prisma.HabitMilestoneScalarFieldEnum | Prisma.HabitMilestoneScalarFieldEnum[]
+}
+
+/**
+ * TrackedHabit.automaticitySurveys
+ */
+export type TrackedHabit$automaticitySurveysArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the AutomaticitySurvey
+   */
+  select?: Prisma.AutomaticitySurveySelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the AutomaticitySurvey
+   */
+  omit?: Prisma.AutomaticitySurveyOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.AutomaticitySurveyInclude<ExtArgs> | null
+  where?: Prisma.AutomaticitySurveyWhereInput
+  orderBy?: Prisma.AutomaticitySurveyOrderByWithRelationInput | Prisma.AutomaticitySurveyOrderByWithRelationInput[]
+  cursor?: Prisma.AutomaticitySurveyWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.AutomaticitySurveyScalarFieldEnum | Prisma.AutomaticitySurveyScalarFieldEnum[]
 }
 
 /**

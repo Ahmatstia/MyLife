@@ -88,7 +88,9 @@ export const ModelName = {
   CopingPlan: 'CopingPlan',
   HabitEventTrigger: 'HabitEventTrigger',
   HabitMilestone: 'HabitMilestone',
-  SupportResource: 'SupportResource'
+  SupportResource: 'SupportResource',
+  HabitBuildProfile: 'HabitBuildProfile',
+  AutomaticitySurvey: 'AutomaticitySurvey'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -675,6 +677,10 @@ export const HabitStatsScalarFieldEnum = {
   totalLapses: 'totalLapses',
   urgesResisted: 'urgesResisted',
   cleanRate30d: 'cleanRate30d',
+  consistency30d: 'consistency30d',
+  resilientStreak: 'resilientStreak',
+  moneySavedEst: 'moneySavedEst',
+  minutesSavedEst: 'minutesSavedEst',
   relapsePattern: 'relapsePattern',
   recomputedAt: 'recomputedAt'
 } as const
@@ -780,6 +786,35 @@ export const SupportResourceScalarFieldEnum = {
 } as const
 
 export type SupportResourceScalarFieldEnum = (typeof SupportResourceScalarFieldEnum)[keyof typeof SupportResourceScalarFieldEnum]
+
+
+export const HabitBuildProfileScalarFieldEnum = {
+  habitId: 'habitId',
+  anchorText: 'anchorText',
+  tinyBehavior: 'tinyBehavior',
+  celebrationText: 'celebrationText',
+  versions: 'versions',
+  scheduleType: 'scheduleType',
+  daysOfWeek: 'daysOfWeek',
+  timesPerWeek: 'timesPerWeek',
+  restDays: 'restDays',
+  replacesHabitId: 'replacesHabitId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type HabitBuildProfileScalarFieldEnum = (typeof HabitBuildProfileScalarFieldEnum)[keyof typeof HabitBuildProfileScalarFieldEnum]
+
+
+export const AutomaticitySurveyScalarFieldEnum = {
+  id: 'id',
+  habitId: 'habitId',
+  answeredAt: 'answeredAt',
+  score: 'score',
+  createdAt: 'createdAt'
+} as const
+
+export type AutomaticitySurveyScalarFieldEnum = (typeof AutomaticitySurveyScalarFieldEnum)[keyof typeof AutomaticitySurveyScalarFieldEnum]
 
 
 export const SortOrder = {

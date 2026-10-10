@@ -434,7 +434,9 @@ export const ModelName = {
   CopingPlan: 'CopingPlan',
   HabitEventTrigger: 'HabitEventTrigger',
   HabitMilestone: 'HabitMilestone',
-  SupportResource: 'SupportResource'
+  SupportResource: 'SupportResource',
+  HabitBuildProfile: 'HabitBuildProfile',
+  AutomaticitySurvey: 'AutomaticitySurvey'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -450,7 +452,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "userPreference" | "area" | "goal" | "objective" | "project" | "stage" | "milestone" | "task" | "session" | "dailyFocus" | "review" | "calendarEvent" | "activity" | "capture" | "notification" | "lifeIdentity" | "lifeVision" | "lifeChapter" | "chapterFocusArea" | "lifeReflection" | "habit" | "habitTask" | "habitPhase" | "habitLog" | "habitStreak" | "trackedHabit" | "habitBreakProfile" | "habitEvent" | "habitCheckin" | "habitStats" | "habitNotificationOutbox" | "trigger" | "habitTrigger" | "copingPlan" | "habitEventTrigger" | "habitMilestone" | "supportResource"
+    modelProps: "user" | "userPreference" | "area" | "goal" | "objective" | "project" | "stage" | "milestone" | "task" | "session" | "dailyFocus" | "review" | "calendarEvent" | "activity" | "capture" | "notification" | "lifeIdentity" | "lifeVision" | "lifeChapter" | "chapterFocusArea" | "lifeReflection" | "habit" | "habitTask" | "habitPhase" | "habitLog" | "habitStreak" | "trackedHabit" | "habitBreakProfile" | "habitEvent" | "habitCheckin" | "habitStats" | "habitNotificationOutbox" | "trigger" | "habitTrigger" | "copingPlan" | "habitEventTrigger" | "habitMilestone" | "supportResource" | "habitBuildProfile" | "automaticitySurvey"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -3266,6 +3268,154 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    HabitBuildProfile: {
+      payload: Prisma.$HabitBuildProfilePayload<ExtArgs>
+      fields: Prisma.HabitBuildProfileFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.HabitBuildProfileFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$HabitBuildProfilePayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.HabitBuildProfileFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$HabitBuildProfilePayload>
+        }
+        findFirst: {
+          args: Prisma.HabitBuildProfileFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$HabitBuildProfilePayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.HabitBuildProfileFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$HabitBuildProfilePayload>
+        }
+        findMany: {
+          args: Prisma.HabitBuildProfileFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$HabitBuildProfilePayload>[]
+        }
+        create: {
+          args: Prisma.HabitBuildProfileCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$HabitBuildProfilePayload>
+        }
+        createMany: {
+          args: Prisma.HabitBuildProfileCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.HabitBuildProfileCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$HabitBuildProfilePayload>[]
+        }
+        delete: {
+          args: Prisma.HabitBuildProfileDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$HabitBuildProfilePayload>
+        }
+        update: {
+          args: Prisma.HabitBuildProfileUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$HabitBuildProfilePayload>
+        }
+        deleteMany: {
+          args: Prisma.HabitBuildProfileDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.HabitBuildProfileUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.HabitBuildProfileUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$HabitBuildProfilePayload>[]
+        }
+        upsert: {
+          args: Prisma.HabitBuildProfileUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$HabitBuildProfilePayload>
+        }
+        aggregate: {
+          args: Prisma.HabitBuildProfileAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateHabitBuildProfile>
+        }
+        groupBy: {
+          args: Prisma.HabitBuildProfileGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.HabitBuildProfileGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.HabitBuildProfileCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.HabitBuildProfileCountAggregateOutputType> | number
+        }
+      }
+    }
+    AutomaticitySurvey: {
+      payload: Prisma.$AutomaticitySurveyPayload<ExtArgs>
+      fields: Prisma.AutomaticitySurveyFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.AutomaticitySurveyFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AutomaticitySurveyPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.AutomaticitySurveyFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AutomaticitySurveyPayload>
+        }
+        findFirst: {
+          args: Prisma.AutomaticitySurveyFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AutomaticitySurveyPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.AutomaticitySurveyFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AutomaticitySurveyPayload>
+        }
+        findMany: {
+          args: Prisma.AutomaticitySurveyFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AutomaticitySurveyPayload>[]
+        }
+        create: {
+          args: Prisma.AutomaticitySurveyCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AutomaticitySurveyPayload>
+        }
+        createMany: {
+          args: Prisma.AutomaticitySurveyCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.AutomaticitySurveyCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AutomaticitySurveyPayload>[]
+        }
+        delete: {
+          args: Prisma.AutomaticitySurveyDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AutomaticitySurveyPayload>
+        }
+        update: {
+          args: Prisma.AutomaticitySurveyUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AutomaticitySurveyPayload>
+        }
+        deleteMany: {
+          args: Prisma.AutomaticitySurveyDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.AutomaticitySurveyUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.AutomaticitySurveyUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AutomaticitySurveyPayload>[]
+        }
+        upsert: {
+          args: Prisma.AutomaticitySurveyUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AutomaticitySurveyPayload>
+        }
+        aggregate: {
+          args: Prisma.AutomaticitySurveyAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateAutomaticitySurvey>
+        }
+        groupBy: {
+          args: Prisma.AutomaticitySurveyGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AutomaticitySurveyGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.AutomaticitySurveyCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AutomaticitySurveyCountAggregateOutputType> | number
+        }
+      }
+    }
   }
 } & {
   other: {
@@ -3873,6 +4023,10 @@ export const HabitStatsScalarFieldEnum = {
   totalLapses: 'totalLapses',
   urgesResisted: 'urgesResisted',
   cleanRate30d: 'cleanRate30d',
+  consistency30d: 'consistency30d',
+  resilientStreak: 'resilientStreak',
+  moneySavedEst: 'moneySavedEst',
+  minutesSavedEst: 'minutesSavedEst',
   relapsePattern: 'relapsePattern',
   recomputedAt: 'recomputedAt'
 } as const
@@ -3978,6 +4132,35 @@ export const SupportResourceScalarFieldEnum = {
 } as const
 
 export type SupportResourceScalarFieldEnum = (typeof SupportResourceScalarFieldEnum)[keyof typeof SupportResourceScalarFieldEnum]
+
+
+export const HabitBuildProfileScalarFieldEnum = {
+  habitId: 'habitId',
+  anchorText: 'anchorText',
+  tinyBehavior: 'tinyBehavior',
+  celebrationText: 'celebrationText',
+  versions: 'versions',
+  scheduleType: 'scheduleType',
+  daysOfWeek: 'daysOfWeek',
+  timesPerWeek: 'timesPerWeek',
+  restDays: 'restDays',
+  replacesHabitId: 'replacesHabitId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type HabitBuildProfileScalarFieldEnum = (typeof HabitBuildProfileScalarFieldEnum)[keyof typeof HabitBuildProfileScalarFieldEnum]
+
+
+export const AutomaticitySurveyScalarFieldEnum = {
+  id: 'id',
+  habitId: 'habitId',
+  answeredAt: 'answeredAt',
+  score: 'score',
+  createdAt: 'createdAt'
+} as const
+
+export type AutomaticitySurveyScalarFieldEnum = (typeof AutomaticitySurveyScalarFieldEnum)[keyof typeof AutomaticitySurveyScalarFieldEnum]
 
 
 export const SortOrder = {
@@ -4488,6 +4671,20 @@ export type EnumTriggerCategoryFieldRefInput<$PrismaModel> = FieldRefInputType<$
 export type ListEnumTriggerCategoryFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'TriggerCategory[]'>
     
 
+
+/**
+ * Reference to a field of type 'HabitScheduleType'
+ */
+export type EnumHabitScheduleTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'HabitScheduleType'>
+    
+
+
+/**
+ * Reference to a field of type 'HabitScheduleType[]'
+ */
+export type ListEnumHabitScheduleTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'HabitScheduleType[]'>
+    
+
 /**
  * Batch Payload for updateMany & deleteMany & createMany
  */
@@ -4677,6 +4874,8 @@ export type GlobalOmitConfig = {
   habitEventTrigger?: Prisma.HabitEventTriggerOmit
   habitMilestone?: Prisma.HabitMilestoneOmit
   supportResource?: Prisma.SupportResourceOmit
+  habitBuildProfile?: Prisma.HabitBuildProfileOmit
+  automaticitySurvey?: Prisma.AutomaticitySurveyOmit
 }
 
 /* Types for Logging */

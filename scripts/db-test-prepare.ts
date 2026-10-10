@@ -99,6 +99,31 @@ async function applyHabitsConstraints(testUrl: string) {
     END $$;
 
     CREATE INDEX IF NOT EXISTS idx_trigger_builtin ON "Trigger" ("category") WHERE "userId" IS NULL;
+
+    -- Phase 3 Constraints
+    -- 12. chk_hbp_schedule_type
+    DO $$ BEGIN
+      IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname = 'chk_hbp_schedule_type') THEN
+        ALTER TABLE "HabitBuildProfile" ADD CONSTRAINT chk_hbp_schedule_type
+          CHECK ("scheduleType"::text IN ('DAILY', 'DAYS_OF_WEEK', 'TIMES_PER_WEEK'));
+      END IF;
+    END $$;
+
+    -- 13. chk_hbp_times_per_week
+    DO $$ BEGIN
+      IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname = 'chk_hbp_times_per_week') THEN
+        ALTER TABLE "HabitBuildProfile" ADD CONSTRAINT chk_hbp_times_per_week
+          CHECK ("timesPerWeek" IS NULL OR ("timesPerWeek" BETWEEN 1 AND 7));
+      END IF;
+    END $$;
+
+    -- 14. chk_as_score
+    DO $$ BEGIN
+      IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname = 'chk_as_score') THEN
+        ALTER TABLE "AutomaticitySurvey" ADD CONSTRAINT chk_as_score
+          CHECK (score BETWEEN 1 AND 7);
+      END IF;
+    END $$;
   `;
 
   await client.query(constraintsSql);

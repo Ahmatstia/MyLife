@@ -33,6 +33,10 @@ export type HabitStatsAvgAggregateOutputType = {
   totalLapses: number | null
   urgesResisted: number | null
   cleanRate30d: runtime.Decimal | null
+  consistency30d: runtime.Decimal | null
+  resilientStreak: number | null
+  moneySavedEst: runtime.Decimal | null
+  minutesSavedEst: number | null
 }
 
 export type HabitStatsSumAggregateOutputType = {
@@ -42,6 +46,10 @@ export type HabitStatsSumAggregateOutputType = {
   totalLapses: number | null
   urgesResisted: number | null
   cleanRate30d: runtime.Decimal | null
+  consistency30d: runtime.Decimal | null
+  resilientStreak: number | null
+  moneySavedEst: runtime.Decimal | null
+  minutesSavedEst: number | null
 }
 
 export type HabitStatsMinAggregateOutputType = {
@@ -53,6 +61,10 @@ export type HabitStatsMinAggregateOutputType = {
   totalLapses: number | null
   urgesResisted: number | null
   cleanRate30d: runtime.Decimal | null
+  consistency30d: runtime.Decimal | null
+  resilientStreak: number | null
+  moneySavedEst: runtime.Decimal | null
+  minutesSavedEst: number | null
   relapsePattern: boolean | null
   recomputedAt: Date | null
 }
@@ -66,6 +78,10 @@ export type HabitStatsMaxAggregateOutputType = {
   totalLapses: number | null
   urgesResisted: number | null
   cleanRate30d: runtime.Decimal | null
+  consistency30d: runtime.Decimal | null
+  resilientStreak: number | null
+  moneySavedEst: runtime.Decimal | null
+  minutesSavedEst: number | null
   relapsePattern: boolean | null
   recomputedAt: Date | null
 }
@@ -79,6 +95,10 @@ export type HabitStatsCountAggregateOutputType = {
   totalLapses: number
   urgesResisted: number
   cleanRate30d: number
+  consistency30d: number
+  resilientStreak: number
+  moneySavedEst: number
+  minutesSavedEst: number
   relapsePattern: number
   recomputedAt: number
   _all: number
@@ -92,6 +112,10 @@ export type HabitStatsAvgAggregateInputType = {
   totalLapses?: true
   urgesResisted?: true
   cleanRate30d?: true
+  consistency30d?: true
+  resilientStreak?: true
+  moneySavedEst?: true
+  minutesSavedEst?: true
 }
 
 export type HabitStatsSumAggregateInputType = {
@@ -101,6 +125,10 @@ export type HabitStatsSumAggregateInputType = {
   totalLapses?: true
   urgesResisted?: true
   cleanRate30d?: true
+  consistency30d?: true
+  resilientStreak?: true
+  moneySavedEst?: true
+  minutesSavedEst?: true
 }
 
 export type HabitStatsMinAggregateInputType = {
@@ -112,6 +140,10 @@ export type HabitStatsMinAggregateInputType = {
   totalLapses?: true
   urgesResisted?: true
   cleanRate30d?: true
+  consistency30d?: true
+  resilientStreak?: true
+  moneySavedEst?: true
+  minutesSavedEst?: true
   relapsePattern?: true
   recomputedAt?: true
 }
@@ -125,6 +157,10 @@ export type HabitStatsMaxAggregateInputType = {
   totalLapses?: true
   urgesResisted?: true
   cleanRate30d?: true
+  consistency30d?: true
+  resilientStreak?: true
+  moneySavedEst?: true
+  minutesSavedEst?: true
   relapsePattern?: true
   recomputedAt?: true
 }
@@ -138,6 +174,10 @@ export type HabitStatsCountAggregateInputType = {
   totalLapses?: true
   urgesResisted?: true
   cleanRate30d?: true
+  consistency30d?: true
+  resilientStreak?: true
+  moneySavedEst?: true
+  minutesSavedEst?: true
   relapsePattern?: true
   recomputedAt?: true
   _all?: true
@@ -238,6 +278,10 @@ export type HabitStatsGroupByOutputType = {
   totalLapses: number
   urgesResisted: number
   cleanRate30d: runtime.Decimal | null
+  consistency30d: runtime.Decimal | null
+  resilientStreak: number
+  moneySavedEst: runtime.Decimal | null
+  minutesSavedEst: number | null
   relapsePattern: boolean
   recomputedAt: Date
   _count: HabitStatsCountAggregateOutputType | null
@@ -274,6 +318,10 @@ export type HabitStatsWhereInput = {
   totalLapses?: Prisma.IntFilter<"HabitStats"> | number
   urgesResisted?: Prisma.IntFilter<"HabitStats"> | number
   cleanRate30d?: Prisma.DecimalNullableFilter<"HabitStats"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  consistency30d?: Prisma.DecimalNullableFilter<"HabitStats"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  resilientStreak?: Prisma.IntFilter<"HabitStats"> | number
+  moneySavedEst?: Prisma.DecimalNullableFilter<"HabitStats"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  minutesSavedEst?: Prisma.IntNullableFilter<"HabitStats"> | number | null
   relapsePattern?: Prisma.BoolFilter<"HabitStats"> | boolean
   recomputedAt?: Prisma.DateTimeFilter<"HabitStats"> | Date | string
   habit?: Prisma.XOR<Prisma.TrackedHabitScalarRelationFilter, Prisma.TrackedHabitWhereInput>
@@ -288,6 +336,10 @@ export type HabitStatsOrderByWithRelationInput = {
   totalLapses?: Prisma.SortOrder
   urgesResisted?: Prisma.SortOrder
   cleanRate30d?: Prisma.SortOrderInput | Prisma.SortOrder
+  consistency30d?: Prisma.SortOrderInput | Prisma.SortOrder
+  resilientStreak?: Prisma.SortOrder
+  moneySavedEst?: Prisma.SortOrderInput | Prisma.SortOrder
+  minutesSavedEst?: Prisma.SortOrderInput | Prisma.SortOrder
   relapsePattern?: Prisma.SortOrder
   recomputedAt?: Prisma.SortOrder
   habit?: Prisma.TrackedHabitOrderByWithRelationInput
@@ -305,6 +357,10 @@ export type HabitStatsWhereUniqueInput = Prisma.AtLeast<{
   totalLapses?: Prisma.IntFilter<"HabitStats"> | number
   urgesResisted?: Prisma.IntFilter<"HabitStats"> | number
   cleanRate30d?: Prisma.DecimalNullableFilter<"HabitStats"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  consistency30d?: Prisma.DecimalNullableFilter<"HabitStats"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  resilientStreak?: Prisma.IntFilter<"HabitStats"> | number
+  moneySavedEst?: Prisma.DecimalNullableFilter<"HabitStats"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  minutesSavedEst?: Prisma.IntNullableFilter<"HabitStats"> | number | null
   relapsePattern?: Prisma.BoolFilter<"HabitStats"> | boolean
   recomputedAt?: Prisma.DateTimeFilter<"HabitStats"> | Date | string
   habit?: Prisma.XOR<Prisma.TrackedHabitScalarRelationFilter, Prisma.TrackedHabitWhereInput>
@@ -319,6 +375,10 @@ export type HabitStatsOrderByWithAggregationInput = {
   totalLapses?: Prisma.SortOrder
   urgesResisted?: Prisma.SortOrder
   cleanRate30d?: Prisma.SortOrderInput | Prisma.SortOrder
+  consistency30d?: Prisma.SortOrderInput | Prisma.SortOrder
+  resilientStreak?: Prisma.SortOrder
+  moneySavedEst?: Prisma.SortOrderInput | Prisma.SortOrder
+  minutesSavedEst?: Prisma.SortOrderInput | Prisma.SortOrder
   relapsePattern?: Prisma.SortOrder
   recomputedAt?: Prisma.SortOrder
   _count?: Prisma.HabitStatsCountOrderByAggregateInput
@@ -340,6 +400,10 @@ export type HabitStatsScalarWhereWithAggregatesInput = {
   totalLapses?: Prisma.IntWithAggregatesFilter<"HabitStats"> | number
   urgesResisted?: Prisma.IntWithAggregatesFilter<"HabitStats"> | number
   cleanRate30d?: Prisma.DecimalNullableWithAggregatesFilter<"HabitStats"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  consistency30d?: Prisma.DecimalNullableWithAggregatesFilter<"HabitStats"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  resilientStreak?: Prisma.IntWithAggregatesFilter<"HabitStats"> | number
+  moneySavedEst?: Prisma.DecimalNullableWithAggregatesFilter<"HabitStats"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  minutesSavedEst?: Prisma.IntNullableWithAggregatesFilter<"HabitStats"> | number | null
   relapsePattern?: Prisma.BoolWithAggregatesFilter<"HabitStats"> | boolean
   recomputedAt?: Prisma.DateTimeWithAggregatesFilter<"HabitStats"> | Date | string
 }
@@ -352,6 +416,10 @@ export type HabitStatsCreateInput = {
   totalLapses?: number
   urgesResisted?: number
   cleanRate30d?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  consistency30d?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  resilientStreak?: number
+  moneySavedEst?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  minutesSavedEst?: number | null
   relapsePattern?: boolean
   recomputedAt?: Date | string
   habit: Prisma.TrackedHabitCreateNestedOneWithoutStatsInput
@@ -366,6 +434,10 @@ export type HabitStatsUncheckedCreateInput = {
   totalLapses?: number
   urgesResisted?: number
   cleanRate30d?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  consistency30d?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  resilientStreak?: number
+  moneySavedEst?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  minutesSavedEst?: number | null
   relapsePattern?: boolean
   recomputedAt?: Date | string
 }
@@ -378,6 +450,10 @@ export type HabitStatsUpdateInput = {
   totalLapses?: Prisma.IntFieldUpdateOperationsInput | number
   urgesResisted?: Prisma.IntFieldUpdateOperationsInput | number
   cleanRate30d?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  consistency30d?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  resilientStreak?: Prisma.IntFieldUpdateOperationsInput | number
+  moneySavedEst?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  minutesSavedEst?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   relapsePattern?: Prisma.BoolFieldUpdateOperationsInput | boolean
   recomputedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   habit?: Prisma.TrackedHabitUpdateOneRequiredWithoutStatsNestedInput
@@ -392,6 +468,10 @@ export type HabitStatsUncheckedUpdateInput = {
   totalLapses?: Prisma.IntFieldUpdateOperationsInput | number
   urgesResisted?: Prisma.IntFieldUpdateOperationsInput | number
   cleanRate30d?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  consistency30d?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  resilientStreak?: Prisma.IntFieldUpdateOperationsInput | number
+  moneySavedEst?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  minutesSavedEst?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   relapsePattern?: Prisma.BoolFieldUpdateOperationsInput | boolean
   recomputedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -405,6 +485,10 @@ export type HabitStatsCreateManyInput = {
   totalLapses?: number
   urgesResisted?: number
   cleanRate30d?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  consistency30d?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  resilientStreak?: number
+  moneySavedEst?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  minutesSavedEst?: number | null
   relapsePattern?: boolean
   recomputedAt?: Date | string
 }
@@ -417,6 +501,10 @@ export type HabitStatsUpdateManyMutationInput = {
   totalLapses?: Prisma.IntFieldUpdateOperationsInput | number
   urgesResisted?: Prisma.IntFieldUpdateOperationsInput | number
   cleanRate30d?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  consistency30d?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  resilientStreak?: Prisma.IntFieldUpdateOperationsInput | number
+  moneySavedEst?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  minutesSavedEst?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   relapsePattern?: Prisma.BoolFieldUpdateOperationsInput | boolean
   recomputedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -430,6 +518,10 @@ export type HabitStatsUncheckedUpdateManyInput = {
   totalLapses?: Prisma.IntFieldUpdateOperationsInput | number
   urgesResisted?: Prisma.IntFieldUpdateOperationsInput | number
   cleanRate30d?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  consistency30d?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  resilientStreak?: Prisma.IntFieldUpdateOperationsInput | number
+  moneySavedEst?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  minutesSavedEst?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   relapsePattern?: Prisma.BoolFieldUpdateOperationsInput | boolean
   recomputedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -448,6 +540,10 @@ export type HabitStatsCountOrderByAggregateInput = {
   totalLapses?: Prisma.SortOrder
   urgesResisted?: Prisma.SortOrder
   cleanRate30d?: Prisma.SortOrder
+  consistency30d?: Prisma.SortOrder
+  resilientStreak?: Prisma.SortOrder
+  moneySavedEst?: Prisma.SortOrder
+  minutesSavedEst?: Prisma.SortOrder
   relapsePattern?: Prisma.SortOrder
   recomputedAt?: Prisma.SortOrder
 }
@@ -459,6 +555,10 @@ export type HabitStatsAvgOrderByAggregateInput = {
   totalLapses?: Prisma.SortOrder
   urgesResisted?: Prisma.SortOrder
   cleanRate30d?: Prisma.SortOrder
+  consistency30d?: Prisma.SortOrder
+  resilientStreak?: Prisma.SortOrder
+  moneySavedEst?: Prisma.SortOrder
+  minutesSavedEst?: Prisma.SortOrder
 }
 
 export type HabitStatsMaxOrderByAggregateInput = {
@@ -470,6 +570,10 @@ export type HabitStatsMaxOrderByAggregateInput = {
   totalLapses?: Prisma.SortOrder
   urgesResisted?: Prisma.SortOrder
   cleanRate30d?: Prisma.SortOrder
+  consistency30d?: Prisma.SortOrder
+  resilientStreak?: Prisma.SortOrder
+  moneySavedEst?: Prisma.SortOrder
+  minutesSavedEst?: Prisma.SortOrder
   relapsePattern?: Prisma.SortOrder
   recomputedAt?: Prisma.SortOrder
 }
@@ -483,6 +587,10 @@ export type HabitStatsMinOrderByAggregateInput = {
   totalLapses?: Prisma.SortOrder
   urgesResisted?: Prisma.SortOrder
   cleanRate30d?: Prisma.SortOrder
+  consistency30d?: Prisma.SortOrder
+  resilientStreak?: Prisma.SortOrder
+  moneySavedEst?: Prisma.SortOrder
+  minutesSavedEst?: Prisma.SortOrder
   relapsePattern?: Prisma.SortOrder
   recomputedAt?: Prisma.SortOrder
 }
@@ -494,6 +602,10 @@ export type HabitStatsSumOrderByAggregateInput = {
   totalLapses?: Prisma.SortOrder
   urgesResisted?: Prisma.SortOrder
   cleanRate30d?: Prisma.SortOrder
+  consistency30d?: Prisma.SortOrder
+  resilientStreak?: Prisma.SortOrder
+  moneySavedEst?: Prisma.SortOrder
+  minutesSavedEst?: Prisma.SortOrder
 }
 
 export type HabitStatsCreateNestedOneWithoutHabitInput = {
@@ -536,6 +648,10 @@ export type HabitStatsCreateWithoutHabitInput = {
   totalLapses?: number
   urgesResisted?: number
   cleanRate30d?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  consistency30d?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  resilientStreak?: number
+  moneySavedEst?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  minutesSavedEst?: number | null
   relapsePattern?: boolean
   recomputedAt?: Date | string
 }
@@ -548,6 +664,10 @@ export type HabitStatsUncheckedCreateWithoutHabitInput = {
   totalLapses?: number
   urgesResisted?: number
   cleanRate30d?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  consistency30d?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  resilientStreak?: number
+  moneySavedEst?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  minutesSavedEst?: number | null
   relapsePattern?: boolean
   recomputedAt?: Date | string
 }
@@ -576,6 +696,10 @@ export type HabitStatsUpdateWithoutHabitInput = {
   totalLapses?: Prisma.IntFieldUpdateOperationsInput | number
   urgesResisted?: Prisma.IntFieldUpdateOperationsInput | number
   cleanRate30d?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  consistency30d?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  resilientStreak?: Prisma.IntFieldUpdateOperationsInput | number
+  moneySavedEst?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  minutesSavedEst?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   relapsePattern?: Prisma.BoolFieldUpdateOperationsInput | boolean
   recomputedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -588,6 +712,10 @@ export type HabitStatsUncheckedUpdateWithoutHabitInput = {
   totalLapses?: Prisma.IntFieldUpdateOperationsInput | number
   urgesResisted?: Prisma.IntFieldUpdateOperationsInput | number
   cleanRate30d?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  consistency30d?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  resilientStreak?: Prisma.IntFieldUpdateOperationsInput | number
+  moneySavedEst?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  minutesSavedEst?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   relapsePattern?: Prisma.BoolFieldUpdateOperationsInput | boolean
   recomputedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -603,6 +731,10 @@ export type HabitStatsSelect<ExtArgs extends runtime.Types.Extensions.InternalAr
   totalLapses?: boolean
   urgesResisted?: boolean
   cleanRate30d?: boolean
+  consistency30d?: boolean
+  resilientStreak?: boolean
+  moneySavedEst?: boolean
+  minutesSavedEst?: boolean
   relapsePattern?: boolean
   recomputedAt?: boolean
   habit?: boolean | Prisma.TrackedHabitDefaultArgs<ExtArgs>
@@ -617,6 +749,10 @@ export type HabitStatsSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Ex
   totalLapses?: boolean
   urgesResisted?: boolean
   cleanRate30d?: boolean
+  consistency30d?: boolean
+  resilientStreak?: boolean
+  moneySavedEst?: boolean
+  minutesSavedEst?: boolean
   relapsePattern?: boolean
   recomputedAt?: boolean
   habit?: boolean | Prisma.TrackedHabitDefaultArgs<ExtArgs>
@@ -631,6 +767,10 @@ export type HabitStatsSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Ex
   totalLapses?: boolean
   urgesResisted?: boolean
   cleanRate30d?: boolean
+  consistency30d?: boolean
+  resilientStreak?: boolean
+  moneySavedEst?: boolean
+  minutesSavedEst?: boolean
   relapsePattern?: boolean
   recomputedAt?: boolean
   habit?: boolean | Prisma.TrackedHabitDefaultArgs<ExtArgs>
@@ -645,11 +785,15 @@ export type HabitStatsSelectScalar = {
   totalLapses?: boolean
   urgesResisted?: boolean
   cleanRate30d?: boolean
+  consistency30d?: boolean
+  resilientStreak?: boolean
+  moneySavedEst?: boolean
+  minutesSavedEst?: boolean
   relapsePattern?: boolean
   recomputedAt?: boolean
 }
 
-export type HabitStatsOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"habitId" | "lastLapseAt" | "currentStreakDays" | "longestStreakDays" | "confirmedCleanDays" | "totalLapses" | "urgesResisted" | "cleanRate30d" | "relapsePattern" | "recomputedAt", ExtArgs["result"]["habitStats"]>
+export type HabitStatsOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"habitId" | "lastLapseAt" | "currentStreakDays" | "longestStreakDays" | "confirmedCleanDays" | "totalLapses" | "urgesResisted" | "cleanRate30d" | "consistency30d" | "resilientStreak" | "moneySavedEst" | "minutesSavedEst" | "relapsePattern" | "recomputedAt", ExtArgs["result"]["habitStats"]>
 export type HabitStatsInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   habit?: boolean | Prisma.TrackedHabitDefaultArgs<ExtArgs>
 }
@@ -674,6 +818,10 @@ export type $HabitStatsPayload<ExtArgs extends runtime.Types.Extensions.Internal
     totalLapses: number
     urgesResisted: number
     cleanRate30d: runtime.Decimal | null
+    consistency30d: runtime.Decimal | null
+    resilientStreak: number
+    moneySavedEst: runtime.Decimal | null
+    minutesSavedEst: number | null
     relapsePattern: boolean
     recomputedAt: Date
   }, ExtArgs["result"]["habitStats"]>
@@ -1108,6 +1256,10 @@ export interface HabitStatsFieldRefs {
   readonly totalLapses: Prisma.FieldRef<"HabitStats", 'Int'>
   readonly urgesResisted: Prisma.FieldRef<"HabitStats", 'Int'>
   readonly cleanRate30d: Prisma.FieldRef<"HabitStats", 'Decimal'>
+  readonly consistency30d: Prisma.FieldRef<"HabitStats", 'Decimal'>
+  readonly resilientStreak: Prisma.FieldRef<"HabitStats", 'Int'>
+  readonly moneySavedEst: Prisma.FieldRef<"HabitStats", 'Decimal'>
+  readonly minutesSavedEst: Prisma.FieldRef<"HabitStats", 'Int'>
   readonly relapsePattern: Prisma.FieldRef<"HabitStats", 'Boolean'>
   readonly recomputedAt: Prisma.FieldRef<"HabitStats", 'DateTime'>
 }

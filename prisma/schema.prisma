@@ -818,6 +818,12 @@ enum HabitMode {
   REDUCE
 }
 
+enum HabitScheduleType {
+  DAILY
+  DAYS_OF_WEEK
+  TIMES_PER_WEEK
+}
+
 enum HabitStatus {
   ACTIVE
   PAUSED
@@ -875,14 +881,17 @@ model TrackedHabit {
   updatedAt          DateTime    @updatedAt @db.Timestamptz(3)
   archivedAt         DateTime?   @db.Timestamptz(3)
 
-  breakProfile HabitBreakProfile?
-  events       HabitEvent[]
-  checkins     HabitCheckin[]
-  stats        HabitStats?
-  outbox       HabitNotificationOutbox[]
-  triggers     HabitTrigger[]
-  copingPlans  CopingPlan[]
-  milestones   HabitMilestone[]
+  breakProfile        HabitBreakProfile?
+  buildProfile        HabitBuildProfile?   @relation("HabitBuildProfileHabit")
+  replacedByProfiles  HabitBuildProfile[]  @relation("HabitReplaces")
+  events              HabitEvent[]
+  checkins            HabitCheckin[]
+  stats               HabitStats?
+  outbox              HabitNotificationOutbox[]
+  triggers            HabitTrigger[]
+  copingPlans         CopingPlan[]
+  milestones          HabitMilestone[]
+  automaticitySurveys AutomaticitySurvey[]
 
   @@index([userId, status])
 }
@@ -967,6 +976,10 @@ model HabitStats {
   totalLapses        Int          @default(0)
   urgesResisted      Int          @default(0)
   cleanRate30d       Decimal?     @db.Decimal(5, 2)
+  consistency30d     Decimal?     @db.Decimal(5, 2)
+  resilientStreak    Int          @default(0)
+  moneySavedEst      Decimal?     @db.Decimal(14, 2)
+  minutesSavedEst    Int?
   relapsePattern     Boolean      @default(false)
   recomputedAt       DateTime     @default(now()) @db.Timestamptz(3)
 }
@@ -1097,6 +1110,36 @@ model SupportResource {
   updatedAt   DateTime @updatedAt @db.Timestamptz(3)
 
   @@index([country, category])
+}
+
+model HabitBuildProfile {
+  habitId         String            @id
+  habit           TrackedHabit      @relation("HabitBuildProfileHabit", fields: [habitId], references: [id], onDelete: Cascade)
+  anchorText      String?
+  tinyBehavior    String
+  celebrationText String?
+  versions        Json              @default("{}") // {"tiny": "..", "standard": "..", "stretch": ".."}
+  scheduleType    HabitScheduleType @default(DAILY)
+  daysOfWeek      Int[]             @default([])   // 1=Senin .. 7=Minggu
+  timesPerWeek    Int?
+  restDays        Int[]             @default([])
+  replacesHabitId String?
+  replacesHabit   TrackedHabit?     @relation("HabitReplaces", fields: [replacesHabitId], references: [id], onDelete: SetNull)
+  createdAt       DateTime          @default(now()) @db.Timestamptz(3)
+  updatedAt       DateTime          @updatedAt @db.Timestamptz(3)
+
+  @@index([replacesHabitId])
+}
+
+model AutomaticitySurvey {
+  id         String       @id @default(cuid())
+  habitId    String
+  habit      TrackedHabit @relation(fields: [habitId], references: [id], onDelete: Cascade)
+  answeredAt DateTime     @default(now()) @db.Timestamptz(3)
+  score      Int          // 1 to 7
+  createdAt  DateTime     @default(now()) @db.Timestamptz(3)
+
+  @@index([habitId, answeredAt])
 }
 
 

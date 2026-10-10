@@ -231,3 +231,13 @@ export type HabitMilestone = Prisma.HabitMilestoneModel
  * 
  */
 export type SupportResource = Prisma.SupportResourceModel
+/**
+ * Model HabitBuildProfile
+ * 
+ */
+export type HabitBuildProfile = Prisma.HabitBuildProfileModel
+/**
+ * Model AutomaticitySurvey
+ * 
+ */
+export type AutomaticitySurvey = Prisma.AutomaticitySurveyModel

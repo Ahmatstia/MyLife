@@ -220,6 +220,15 @@ export const HabitMode = {
 export type HabitMode = (typeof HabitMode)[keyof typeof HabitMode]
 
 
+export const HabitScheduleType = {
+  DAILY: 'DAILY',
+  DAYS_OF_WEEK: 'DAYS_OF_WEEK',
+  TIMES_PER_WEEK: 'TIMES_PER_WEEK'
+} as const
+
+export type HabitScheduleType = (typeof HabitScheduleType)[keyof typeof HabitScheduleType]
+
+
 export const HabitStatus = {
   ACTIVE: 'ACTIVE',
   PAUSED: 'PAUSED',
