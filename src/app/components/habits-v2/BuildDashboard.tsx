@@ -8,6 +8,7 @@ import { HabitInsightsModal } from "./HabitInsightsModal";
 import { HabitRemindersModal } from "./HabitRemindersModal";
 import { WeeklyReflectionModal } from "./WeeklyReflectionModal";
 import { DeleteHabitModal } from "./DeleteHabitModal";
+import { EditHabitModal } from "./EditHabitModal";
 
 interface BuildDashboardData {
   habit: {
@@ -81,6 +82,7 @@ export function BuildDashboard({ habitId, onBack }: BuildDashboardProps) {
   const [showReminders, setShowReminders] = useState(false);
   const [showReflection, setShowReflection] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [showEditModal, setShowEditModal] = useState(false);
   const [showSurveyModal, setShowSurveyModal] = useState(false);
   const [surveyInfo, setSurveyInfo] = useState<{
     surveys: Array<{ id: string; score: number; answeredAt: string }>;
@@ -334,6 +336,15 @@ export function BuildDashboard({ habitId, onBack }: BuildDashboardProps) {
             className="inline-flex items-center gap-1.5 rounded-xl border border-white/10 bg-white/5 hover:bg-white/10 px-3 py-1.5 text-xs font-semibold text-slate-300 transition-colors shadow-sm"
           >
             📑 Refleksi
+          </button>
+          <button
+            id="dashboard-edit-btn"
+            type="button"
+            onClick={() => setShowEditModal(true)}
+            className="inline-flex items-center gap-1.5 rounded-xl border border-emerald-500/20 bg-emerald-500/10 hover:bg-emerald-500/20 px-3 py-1.5 text-xs font-semibold text-emerald-300 transition-colors shadow-sm"
+            title="Ubah rincian kebiasaan"
+          >
+            ✏️ Ubah
           </button>
           <button
             type="button"
@@ -592,6 +603,18 @@ export function BuildDashboard({ habitId, onBack }: BuildDashboardProps) {
         habitName={habit.name}
         onClose={() => setShowReflection(false)}
       />
+
+      {/* MODAL: Edit Habit */}
+      {showEditModal && (
+        <EditHabitModal
+          habitId={habit.id}
+          onSuccess={() => {
+            setShowEditModal(false);
+            fetchDashboard();
+          }}
+          onClose={() => setShowEditModal(false)}
+        />
+      )}
 
       {/* MODAL: Delete Habit (Fase 5) */}
       {showDeleteModal && (

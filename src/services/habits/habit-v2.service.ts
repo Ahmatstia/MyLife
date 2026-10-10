@@ -1,6 +1,6 @@
 import { DateTime } from "luxon";
 import { prisma } from "@/lib/prisma";
-import type { HabitStatus } from "@/generated/prisma/client";
+import type { HabitStatus, Prisma } from "@/generated/prisma/client";
 import { SystemClock, type Clock } from "@/lib/habits/clock";
 import { nextCheckinAfter } from "@/lib/habits/window";
 import {
@@ -203,6 +203,9 @@ export async function getTrackedHabitService(
   if (!habit) {
     throw new HabitsError("Kebiasaan tidak ditemukan", "NOT_FOUND", 404);
   }
+  if (habit.breakProfile?.futureSelfNote) {
+    habit.breakProfile.futureSelfNote = decryptText(habit.breakProfile.futureSelfNote);
+  }
   return habit;
 }
 
@@ -247,24 +250,56 @@ export async function updateTrackedHabitService(
     nextCheckinAt = nextCheckinAfter(fromTime, tz, time);
   }
 
-  const { reduceDailyLimit, reduceStepPercent, reduceStepEveryDays, ...habitFields } = input;
+  const {
+    reduceDailyLimit,
+    reduceStepPercent,
+    reduceStepEveryDays,
+    whyReasons,
+    futureSelfNote,
+    costPerOccurrence,
+    minutesPerOccurrence,
+    currency,
+    tinyBehavior,
+    anchorText,
+    celebrationText,
+    ...habitFields
+  } = input;
 
   return prisma.$transaction(async (tx) => {
-    if (
-      existing.kind === "BREAK" &&
-      (reduceDailyLimit !== undefined || reduceStepPercent !== undefined || reduceStepEveryDays !== undefined)
-    ) {
-      await tx.habitBreakProfile.update({
-        where: { habitId },
-        data: {
-          ...(reduceDailyLimit !== undefined ? { reduceDailyLimit } : {}),
-          ...(reduceStepPercent !== undefined ? { reduceStepPercent } : {}),
-          ...(reduceStepEveryDays !== undefined ? { reduceStepEveryDays } : {}),
-        },
-      });
+    if (existing.kind === "BREAK") {
+      const breakData: Prisma.HabitBreakProfileUpdateInput = {};
+      if (reduceDailyLimit !== undefined) breakData.reduceDailyLimit = reduceDailyLimit;
+      if (reduceStepPercent !== undefined) breakData.reduceStepPercent = reduceStepPercent;
+      if (reduceStepEveryDays !== undefined) breakData.reduceStepEveryDays = reduceStepEveryDays;
+      if (whyReasons !== undefined) breakData.whyReasons = whyReasons;
+      if (futureSelfNote !== undefined) {
+        breakData.futureSelfNote = futureSelfNote ? encryptText(futureSelfNote) : null;
+      }
+      if (costPerOccurrence !== undefined) breakData.costPerOccurrence = costPerOccurrence;
+      if (minutesPerOccurrence !== undefined) breakData.minutesPerOccurrence = minutesPerOccurrence;
+      if (currency !== undefined) breakData.currency = currency;
+
+      if (Object.keys(breakData).length > 0) {
+        await tx.habitBreakProfile.update({
+          where: { habitId },
+          data: breakData,
+        });
+      }
+    } else if (existing.kind === "BUILD") {
+      const buildData: Prisma.HabitBuildProfileUpdateInput = {};
+      if (tinyBehavior !== undefined && tinyBehavior !== null) buildData.tinyBehavior = tinyBehavior;
+      if (anchorText !== undefined) buildData.anchorText = anchorText;
+      if (celebrationText !== undefined) buildData.celebrationText = celebrationText;
+
+      if (Object.keys(buildData).length > 0) {
+        await tx.habitBuildProfile.update({
+          where: { habitId },
+          data: buildData,
+        });
+      }
     }
 
-    return tx.trackedHabit.update({
+    const updated = await tx.trackedHabit.update({
       where: { id: habitId },
       data: {
         ...habitFields,
@@ -276,6 +311,12 @@ export async function updateTrackedHabitService(
         stats: true,
       },
     });
+
+    if (updated.breakProfile?.futureSelfNote) {
+      updated.breakProfile.futureSelfNote = decryptText(updated.breakProfile.futureSelfNote);
+    }
+
+    return updated;
   });
 }
 

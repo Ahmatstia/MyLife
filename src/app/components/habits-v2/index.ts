@@ -17,3 +17,4 @@ export * from "./HabitRemindersModal";
 export * from "./WeeklyReflectionModal";
 export * from "./PendingCheckinWidget";
 export * from "./DeleteHabitModal";
+export * from "./EditHabitModal";

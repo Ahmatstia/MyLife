@@ -119,6 +119,14 @@ export const updateTrackedHabitSchema = z.object({
   reduceDailyLimit: z.number().int().nonnegative().optional().nullable(),
   reduceStepPercent: z.number().int().min(1).max(100).optional().nullable(),
   reduceStepEveryDays: z.number().int().positive().optional().nullable(),
+  costPerOccurrence: z.number().nonnegative().optional().nullable(),
+  minutesPerOccurrence: z.number().int().positive().optional().nullable(),
+  currency: z.string().trim().optional(),
+  whyReasons: z.array(z.string().trim().min(1)).optional(),
+  futureSelfNote: z.string().trim().max(1000).optional().nullable(),
+  tinyBehavior: z.string().trim().max(255).optional().nullable(),
+  anchorText: z.string().trim().max(255).optional().nullable(),
+  celebrationText: z.string().trim().max(255).optional().nullable(),
 });
 
 export const switchHabitModeSchema = z.object({

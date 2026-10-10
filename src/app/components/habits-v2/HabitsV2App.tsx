@@ -5,6 +5,8 @@ import { HabitCardV2, type TrackedHabitItem } from "./HabitCardV2";
 import { BreakDashboard } from "./BreakDashboard";
 import { BuildDashboard } from "./BuildDashboard";
 import { CreateHabitWizard } from "./CreateHabitWizard";
+import { DeleteHabitModal } from "./DeleteHabitModal";
+import { EditHabitModal } from "./EditHabitModal";
 
 interface PendingCheckinItem {
   id: string;
@@ -34,6 +36,8 @@ export function HabitsV2App({
   const [selectedHabitId, setSelectedHabitId] = useState<string | null>(
     () => initialHabitId || null,
   );
+  const [editingHabitId, setEditingHabitId] = useState<string | null>(null);
+  const [deletingHabit, setDeletingHabit] = useState<{ id: string; name: string } | null>(null);
   const [habits, setHabits] = useState<TrackedHabitItem[]>([]);
   const [pendingCheckins, setPendingCheckins] = useState<PendingCheckinItem[]>([]);
   const [loading, setLoading] = useState(true);
@@ -253,9 +257,41 @@ export function HabitsV2App({
                 setSelectedHabitId(id);
                 setView("DASHBOARD");
               }}
+              onEdit={(h) => setEditingHabitId(h.id)}
+              onDelete={(h) =>
+                setDeletingHabit({
+                  id: h.id,
+                  name: h.displayAlias || h.name,
+                })
+              }
             />
           ))}
         </div>
+      )}
+
+      {/* Modal Edit Kebiasaan */}
+      {editingHabitId && (
+        <EditHabitModal
+          habitId={editingHabitId}
+          onSuccess={() => {
+            setEditingHabitId(null);
+            loadData();
+          }}
+          onClose={() => setEditingHabitId(null)}
+        />
+      )}
+
+      {/* Modal Hapus / Arsipkan Kebiasaan */}
+      {deletingHabit && (
+        <DeleteHabitModal
+          habitId={deletingHabit.id}
+          habitName={deletingHabit.name}
+          onSuccess={() => {
+            setDeletingHabit(null);
+            loadData();
+          }}
+          onClose={() => setDeletingHabit(null)}
+        />
       )}
     </div>
   );

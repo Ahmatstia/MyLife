@@ -31,9 +31,11 @@ export interface TrackedHabitItem {
 interface HabitCardV2Props {
   habit: TrackedHabitItem;
   onSelect: (habitId: string) => void;
+  onEdit?: (habit: TrackedHabitItem) => void;
+  onDelete?: (habit: TrackedHabitItem) => void;
 }
 
-export function HabitCardV2({ habit, onSelect }: HabitCardV2Props) {
+export function HabitCardV2({ habit, onSelect, onEdit, onDelete }: HabitCardV2Props) {
   const isBuild = habit.kind === "BUILD";
 
   // Hitung live timer dari lastLapseAt atau startedAt (hanya untuk BREAK)
@@ -129,13 +131,46 @@ export function HabitCardV2({ habit, onSelect }: HabitCardV2Props) {
           )}
         </div>
 
-        {/* Pending Badge */}
-        {habit.hasPendingCheckin && (
-          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-amber-500/20 border border-amber-500/40 text-amber-300 text-xs font-semibold animate-pulse shrink-0">
-            <span className="h-2 w-2 rounded-full bg-amber-400" />
-            Check-in Menunggu
-          </span>
-        )}
+        {/* Action Buttons & Pending Badge */}
+        <div className="flex flex-col items-end gap-2 shrink-0">
+          <div className="flex items-center gap-1">
+            {onEdit && (
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onEdit(habit);
+                }}
+                className="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-white/10 transition-colors"
+                title="Ubah Kebiasaan"
+                aria-label={`Ubah kebiasaan ${displayName}`}
+              >
+                <span className="material-symbols-outlined text-base">edit</span>
+              </button>
+            )}
+            {onDelete && (
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onDelete(habit);
+                }}
+                className="p-1.5 rounded-lg text-slate-400 hover:text-rose-400 hover:bg-rose-500/10 transition-colors"
+                title="Kelola / Hapus Kebiasaan"
+                aria-label={`Hapus kebiasaan ${displayName}`}
+              >
+                <span className="material-symbols-outlined text-base">delete</span>
+              </button>
+            )}
+          </div>
+
+          {habit.hasPendingCheckin && (
+            <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-amber-500/20 border border-amber-500/40 text-amber-300 text-xs font-semibold animate-pulse">
+              <span className="h-2 w-2 rounded-full bg-amber-400" />
+              Check-in Menunggu
+            </span>
+          )}
+        </div>
       </div>
 
       {/* Hero Section */}
