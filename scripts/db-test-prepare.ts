@@ -86,8 +86,9 @@ async function applyHabitsConstraints(testUrl: string) {
   `;
 
   await client.query(constraintsSql);
+  await client.query("ALTER TYPE \"NotificationType\" ADD VALUE IF NOT EXISTS 'HABIT_CHECKIN';");
   await client.end();
-  console.log("[db:test:prepare] ✓ Custom CHECK constraints dan partial indexes berhasil diterapkan.");
+  console.log("[db:test:prepare] ✓ Custom CHECK constraints, enum values, dan partial indexes berhasil diterapkan.");
 }
 
 async function main() {

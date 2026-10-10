@@ -170,7 +170,8 @@ export const NotificationType = {
   WEEKLY_REVIEW_REMINDER: 'WEEKLY_REVIEW_REMINDER',
   CALENDAR_EVENT: 'CALENDAR_EVENT',
   MILESTONE_DEADLINE: 'MILESTONE_DEADLINE',
-  SYSTEM: 'SYSTEM'
+  SYSTEM: 'SYSTEM',
+  HABIT_CHECKIN: 'HABIT_CHECKIN'
 } as const
 
 export type NotificationType = (typeof NotificationType)[keyof typeof NotificationType]

@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { runGlobalReminderCycle } from "@/services/reminder.service";
+import { tickHabitsScheduler } from "@/services/habits/scheduler.service";
 
 // GET /api/cron/reminder
 // Cron endpoint untuk menjalankan reminder cycle.
@@ -24,10 +25,21 @@ export async function GET(request: Request) {
   try {
     const result = await runGlobalReminderCycle();
 
+    // Integrasi habit scheduler v2 (Langkah 1.5)
+    // Dibungkus try/catch agar kegagalan scheduler habit tidak menjatuhkan reminder lama
+    let habitsResult = null;
+    try {
+      habitsResult = await tickHabitsScheduler();
+    } catch (habitError) {
+      const hMsg = habitError instanceof Error ? habitError.message : "Unknown habit scheduler error";
+      console.error("[cron/reminder] Habit scheduler tick error:", hMsg);
+    }
+
     return NextResponse.json({
       success: true,
       data: {
         ...result,
+        habits: habitsResult,
         timestamp: new Date().toISOString(),
       },
     });

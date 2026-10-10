@@ -8,7 +8,7 @@ export type NotificationItem = {
   id: string;
   title: string;
   message: string;
-  type: "TASK_DUE" | "DAILY_FOCUS_REMINDER" | "WEEKLY_REVIEW_REMINDER" | "CALENDAR_EVENT" | "MILESTONE_DEADLINE" | "SYSTEM";
+  type: "TASK_DUE" | "DAILY_FOCUS_REMINDER" | "WEEKLY_REVIEW_REMINDER" | "CALENDAR_EVENT" | "MILESTONE_DEADLINE" | "SYSTEM" | "HABIT_CHECKIN";
   severity: "INFO" | "WARNING" | "URGENT";
   isRead: boolean;
   readAt: string | null;

@@ -128,6 +128,7 @@ enum NotificationType {
   CALENDAR_EVENT
   MILESTONE_DEADLINE
   SYSTEM
+  HABIT_CHECKIN
 }
 
 enum NotificationSeverity {
