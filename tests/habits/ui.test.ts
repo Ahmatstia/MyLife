@@ -77,6 +77,7 @@ describe("Habits v2 UI Logic & Contract Tests (Langkah 1.6)", () => {
       expect(files).toContain("DebriefModal.tsx");
       expect(files).toContain("RelapseResetPlanModal.tsx");
       expect(files).toContain("SafetyNoticeModal.tsx");
+      expect(files).toContain("MilestoneCelebrationModal.tsx");
       expect(files).toContain("index.ts");
     });
 

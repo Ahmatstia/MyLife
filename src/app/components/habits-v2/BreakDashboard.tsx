@@ -7,6 +7,7 @@ import { RecoveryModal } from "./RecoveryModal";
 import { SosUrgeSurfingModal } from "./SosUrgeSurfingModal";
 import { DebriefModal } from "./DebriefModal";
 import { RelapseResetPlanModal } from "./RelapseResetPlanModal";
+import { MilestoneCelebrationModal } from "./MilestoneCelebrationModal";
 
 interface DashboardData {
   habit: {
@@ -69,6 +70,12 @@ export function BreakDashboard({ habitId, onBack }: BreakDashboardProps) {
   const [showDebrief, setShowDebrief] = useState(false);
   const [debriefEventId, setDebriefEventId] = useState<string | null>(null);
   const [showRelapseModal, setShowRelapseModal] = useState(false);
+  const [uncelebratedMilestone, setUncelebratedMilestone] = useState<{
+    id: string;
+    code: string;
+    title: string;
+    description?: string | null;
+  } | null>(null);
   const [actionLoading, setActionLoading] = useState(false);
 
   const fetchDashboard = useCallback(async () => {
@@ -79,6 +86,16 @@ export function BreakDashboard({ habitId, onBack }: BreakDashboardProps) {
         throw new Error(json.error?.message || "Tidak dapat memuat dashboard.");
       }
       setData(json.data);
+
+      try {
+        const msRes = await fetch(`/api/tracked-habits/${habitId}/milestones`);
+        const msJson = await msRes.json();
+        if (msRes.ok && msJson.success && msJson.data?.uncelebrated?.length > 0) {
+          setUncelebratedMilestone(msJson.data.uncelebrated[0]);
+        }
+      } catch {
+        // silent fallback
+      }
     } catch (err) {
       setError(err instanceof Error ? err.message : "Terjadi kesalahan.");
     }
@@ -545,6 +562,17 @@ export function BreakDashboard({ habitId, onBack }: BreakDashboardProps) {
         }}
         onSuccess={() => {
           setShowRelapseModal(false);
+          fetchDashboard();
+        }}
+      />
+
+      {/* MODAL: Milestone Celebration */}
+      <MilestoneCelebrationModal
+        isOpen={Boolean(uncelebratedMilestone)}
+        habitId={habit.id}
+        milestone={uncelebratedMilestone}
+        onClose={() => {
+          setUncelebratedMilestone(null);
           fetchDashboard();
         }}
       />

@@ -7,3 +7,4 @@ export * from "./trigger.service";
 export * from "./coping-plan.service";
 export * from "./relapse.service";
 export * from "./safety.service";
+export * from "./milestone.service";

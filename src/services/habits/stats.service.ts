@@ -3,6 +3,7 @@ import { Prisma, type HabitStats } from "@/generated/prisma/client";
 import { SystemClock, type Clock } from "@/lib/habits/clock";
 import { computeStats } from "@/lib/habits/streak";
 import { detectRelapsePattern } from "@/lib/habits/relapse";
+import { evaluateMilestones } from "@/lib/habits/milestones/evaluator";
 import { upsertHabitStats } from "@/repositories/habits/habit-stats.repository";
 import type { DbClient } from "@/repositories/habits/tracked-habit.repository";
 
@@ -63,6 +64,40 @@ export async function recomputeHabitStats(
     relapseRule,
     now,
   );
+
+  // Evaluasi dan simpan milestones baru yang tercapai
+  const existingMilestones = await client.habitMilestone.findMany({
+    where: { habitId },
+    select: { code: true },
+  });
+  const existingCodes = new Set(existingMilestones.map((m) => m.code));
+
+  const hasDebrief = events.some((e) => {
+    if (!e.meta || typeof e.meta !== "object") return false;
+    return Boolean((e.meta as Record<string, unknown>).debrief);
+  });
+
+  const newMilestones = evaluateMilestones({
+    currentStreakDays: computed.currentStreakDays,
+    longestStreakDays: computed.longestStreakDays,
+    urgesResisted: computed.urgesResisted,
+    totalLapses: computed.totalLapses,
+    hasDebrief,
+    existingCodes,
+    now,
+  });
+
+  if (newMilestones.length > 0) {
+    await client.habitMilestone.createMany({
+      data: newMilestones.map((nm) => ({
+        habitId,
+        code: nm.code,
+        title: nm.title,
+        achievedAt: nm.achievedAt,
+      })),
+      skipDuplicates: true,
+    });
+  }
 
   return upsertHabitStats(
     habitId,

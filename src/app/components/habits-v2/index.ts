@@ -9,3 +9,4 @@ export * from "./SosUrgeSurfingModal";
 export * from "./DebriefModal";
 export * from "./RelapseResetPlanModal";
 export * from "./SafetyNoticeModal";
+export * from "./MilestoneCelebrationModal";
