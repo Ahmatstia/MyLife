@@ -128,6 +128,11 @@ export type LifeReflection = Prisma.LifeReflectionModel
  */
 export type Habit = Prisma.HabitModel
 /**
+ * Model HabitTask
+ * 
+ */
+export type HabitTask = Prisma.HabitTaskModel
+/**
  * Model HabitPhase
  * 
  */

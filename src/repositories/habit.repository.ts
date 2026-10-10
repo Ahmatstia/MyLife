@@ -18,6 +18,8 @@ export function createHabit(
     whyQuit?: string | null;
     cue?: string | null;
     reward?: string | null;
+    checkInTime?: string;
+    targetDays?: number | null;
   },
 ) {
   return prisma.habit.create({
@@ -35,6 +37,8 @@ export function createHabit(
       whyQuit: data.whyQuit ?? null,
       cue: data.cue ?? null,
       reward: data.reward ?? null,
+      checkInTime: data.checkInTime ?? "06:00",
+      targetDays: data.targetDays ?? null,
     },
   });
 }
@@ -45,6 +49,7 @@ export function findHabit(userId: string, id: string) {
     include: {
       area: { select: { id: true, name: true, color: true } },
       phases: { orderBy: { order: "asc" } },
+      tasks: { orderBy: { order: "asc" } },
       streaks: { where: { isCurrent: true }, take: 1 },
       logs: {
         orderBy: { date: "desc" },
@@ -91,6 +96,8 @@ export function updateHabit(
     whyQuit?: string | null;
     cue?: string | null;
     reward?: string | null;
+    checkInTime?: string;
+    targetDays?: number | null;
   },
 ) {
   return prisma.habit.updateMany({
@@ -109,6 +116,8 @@ export function updateHabit(
       ...(data.whyQuit !== undefined && { whyQuit: data.whyQuit }),
       ...(data.cue !== undefined && { cue: data.cue }),
       ...(data.reward !== undefined && { reward: data.reward }),
+      ...(data.checkInTime !== undefined && { checkInTime: data.checkInTime }),
+      ...(data.targetDays !== undefined && { targetDays: data.targetDays }),
     },
   });
 }
@@ -281,5 +290,67 @@ export function breakStreak(userId: string, habitId: string) {
   return prisma.habitStreak.updateMany({
     where: { userId, habitId, isCurrent: true },
     data: { isCurrent: false, endDate: new Date() },
+  });
+}
+
+// ─── HabitTask CRUD ──────────────────────────────────────────────────────────
+
+export function createHabitTask(
+  userId: string,
+  habitId: string,
+  data: {
+    title: string;
+    description?: string | null;
+    category?: string;
+    isCompleted?: boolean;
+    order?: number;
+  },
+) {
+  return prisma.habitTask.create({
+    data: {
+      userId,
+      habitId,
+      title: data.title,
+      description: data.description ?? null,
+      category: data.category ?? "ACTION",
+      isCompleted: data.isCompleted ?? false,
+      order: data.order ?? 0,
+    },
+  });
+}
+
+export function findHabitTasks(userId: string, habitId: string) {
+  return prisma.habitTask.findMany({
+    where: { userId, habitId },
+    orderBy: { order: "asc" },
+  });
+}
+
+export function updateHabitTask(
+  userId: string,
+  id: string,
+  data: {
+    title?: string;
+    description?: string | null;
+    category?: string;
+    isCompleted?: boolean;
+    order?: number;
+  },
+) {
+  return prisma.habitTask.updateMany({
+    where: { id, userId },
+    data: {
+      ...(data.title !== undefined && { title: data.title }),
+      ...(data.description !== undefined && { description: data.description }),
+      ...(data.category !== undefined && { category: data.category }),
+      ...(data.isCompleted !== undefined && { isCompleted: data.isCompleted }),
+      ...(data.order !== undefined && { order: data.order }),
+    },
+  });
+}
+
+export function deleteHabitTask(userId: string, id: string) {
+  return prisma.habitTask.deleteMany({
+    where: { id, userId },
   });
 }

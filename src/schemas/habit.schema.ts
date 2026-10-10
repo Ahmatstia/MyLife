@@ -20,6 +20,13 @@ export const createHabitSchema = z.object({
     z.string().trim().min(1).optional().nullable(),
   ),
 
+  // Evaluation & Target
+  checkInTime: z.string().regex(/^([01]\d|2[0-3]):[0-5]\d$/, "Format jam harus HH:mm").default("06:00"),
+  targetDays: z.preprocess(
+    (v) => (v === "" || v === undefined || v === null ? null : Number(v)),
+    z.number().int().min(1).max(3650).optional().nullable(),
+  ),
+
   // BAD habit fields
   triggerNotes: z.preprocess(
     (v) => (v === "" ? null : v),
@@ -94,3 +101,23 @@ export const createHabitLogSchema = z.object({
 });
 
 export type CreateHabitLogInput = z.infer<typeof createHabitLogSchema>;
+
+// ─── HabitTask ────────────────────────────────────────────────────────────────
+
+export const habitTaskCategorySchema = z.enum(["ACTION", "BARRIER", "REPLACEMENT", "PROTOCOL"]);
+
+export const createHabitTaskSchema = z.object({
+  title: z.string().trim().min(1, "Judul tugas / aksi wajib diisi").max(200),
+  description: z.preprocess(
+    (v) => (v === "" ? null : v),
+    z.string().trim().max(1000).optional().nullable(),
+  ),
+  category: habitTaskCategorySchema.default("ACTION"),
+  isCompleted: z.boolean().default(false),
+  order: z.number().int().min(0).default(0),
+});
+
+export const updateHabitTaskSchema = createHabitTaskSchema.partial();
+
+export type CreateHabitTaskInput = z.infer<typeof createHabitTaskSchema>;
+export type UpdateHabitTaskInput = z.infer<typeof updateHabitTaskSchema>;

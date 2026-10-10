@@ -50,12 +50,16 @@ export function HabitsManager({ initialHabits, areas }: HabitsManagerProps) {
         toast("Kebiasaan berhasil ditambahkan! 🎉", "success");
         setHabits((prev) => [...prev, json.data]);
         setShowForm(false);
-        refresh();
+        if (json.data?.id) {
+          router.push(`/habits/${json.data.id}`);
+        } else {
+          refresh();
+        }
       } catch (e) {
         toast((e as Error).message || "Gagal membuat kebiasaan.", "error");
       }
     },
-    [toast, refresh],
+    [toast, refresh, router],
   );
 
   const handleUpdate = useCallback(

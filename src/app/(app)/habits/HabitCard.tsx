@@ -59,8 +59,19 @@ export type HabitWithRelations = {
   startDate: string | Date;
   createdAt: string | Date;
   updatedAt: string | Date;
+  checkInTime: string;
+  targetDays: number | null;
   area: { id: string; name: string; color: string } | null;
   phases: HabitPhase[];
+  tasks: Array<{
+    id: string;
+    habitId?: string;
+    title: string;
+    description: string | null;
+    isCompleted: boolean;
+    category: string;
+    order: number;
+  }>;
   streaks: HabitStreak[];
   logs: HabitLog[];
 };
@@ -153,10 +164,15 @@ export function HabitCard({ habit, onCheckIn, onEdit, onDelete, isPending }: Hab
             </div>
 
             <div className="min-w-0">
-              <h3 className="font-bold text-white text-base leading-tight truncate">{habit.title}</h3>
+              <Link href={`/habits/${habit.id}`} className="block group/link">
+                <h3 className="font-bold text-white text-base leading-tight truncate group-hover/link:text-[#a78bfa] transition-colors">{habit.title}</h3>
+              </Link>
               <div className="flex items-center gap-2 mt-1 flex-wrap">
                 <span className={`text-[10px] font-semibold px-1.5 py-0.5 rounded border ${diff.color}`}>
                   {diff.label}
+                </span>
+                <span className="text-[10px] font-semibold px-1.5 py-0.5 rounded border border-white/10 bg-white/5 text-[#cbd5e1] flex items-center gap-1">
+                  ⏰ {habit.checkInTime || "06:00"}
                 </span>
                 {habit.area && (
                   <span className="text-[10px] text-[#94a3b8] flex items-center gap-1">

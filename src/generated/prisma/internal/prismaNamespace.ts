@@ -419,6 +419,7 @@ export const ModelName = {
   ChapterFocusArea: 'ChapterFocusArea',
   LifeReflection: 'LifeReflection',
   Habit: 'Habit',
+  HabitTask: 'HabitTask',
   HabitPhase: 'HabitPhase',
   HabitLog: 'HabitLog',
   HabitStreak: 'HabitStreak'
@@ -437,7 +438,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "userPreference" | "area" | "goal" | "objective" | "project" | "stage" | "milestone" | "task" | "session" | "dailyFocus" | "review" | "calendarEvent" | "activity" | "capture" | "notification" | "lifeIdentity" | "lifeVision" | "lifeChapter" | "chapterFocusArea" | "lifeReflection" | "habit" | "habitPhase" | "habitLog" | "habitStreak"
+    modelProps: "user" | "userPreference" | "area" | "goal" | "objective" | "project" | "stage" | "milestone" | "task" | "session" | "dailyFocus" | "review" | "calendarEvent" | "activity" | "capture" | "notification" | "lifeIdentity" | "lifeVision" | "lifeChapter" | "chapterFocusArea" | "lifeReflection" | "habit" | "habitTask" | "habitPhase" | "habitLog" | "habitStreak"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -2069,6 +2070,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    HabitTask: {
+      payload: Prisma.$HabitTaskPayload<ExtArgs>
+      fields: Prisma.HabitTaskFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.HabitTaskFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$HabitTaskPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.HabitTaskFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$HabitTaskPayload>
+        }
+        findFirst: {
+          args: Prisma.HabitTaskFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$HabitTaskPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.HabitTaskFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$HabitTaskPayload>
+        }
+        findMany: {
+          args: Prisma.HabitTaskFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$HabitTaskPayload>[]
+        }
+        create: {
+          args: Prisma.HabitTaskCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$HabitTaskPayload>
+        }
+        createMany: {
+          args: Prisma.HabitTaskCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.HabitTaskCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$HabitTaskPayload>[]
+        }
+        delete: {
+          args: Prisma.HabitTaskDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$HabitTaskPayload>
+        }
+        update: {
+          args: Prisma.HabitTaskUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$HabitTaskPayload>
+        }
+        deleteMany: {
+          args: Prisma.HabitTaskDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.HabitTaskUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.HabitTaskUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$HabitTaskPayload>[]
+        }
+        upsert: {
+          args: Prisma.HabitTaskUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$HabitTaskPayload>
+        }
+        aggregate: {
+          args: Prisma.HabitTaskAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateHabitTask>
+        }
+        groupBy: {
+          args: Prisma.HabitTaskGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.HabitTaskGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.HabitTaskCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.HabitTaskCountAggregateOutputType> | number
+        }
+      }
+    }
     HabitPhase: {
       payload: Prisma.$HabitPhasePayload<ExtArgs>
       fields: Prisma.HabitPhaseFieldRefs
@@ -2719,6 +2794,8 @@ export const HabitScalarFieldEnum = {
   icon: 'icon',
   areaId: 'areaId',
   isActive: 'isActive',
+  checkInTime: 'checkInTime',
+  targetDays: 'targetDays',
   triggerNotes: 'triggerNotes',
   replacementHabit: 'replacementHabit',
   whyQuit: 'whyQuit',
@@ -2730,6 +2807,22 @@ export const HabitScalarFieldEnum = {
 } as const
 
 export type HabitScalarFieldEnum = (typeof HabitScalarFieldEnum)[keyof typeof HabitScalarFieldEnum]
+
+
+export const HabitTaskScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  habitId: 'habitId',
+  title: 'title',
+  description: 'description',
+  isCompleted: 'isCompleted',
+  category: 'category',
+  order: 'order',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type HabitTaskScalarFieldEnum = (typeof HabitTaskScalarFieldEnum)[keyof typeof HabitTaskScalarFieldEnum]
 
 
 export const HabitPhaseScalarFieldEnum = {
@@ -3340,6 +3433,7 @@ export type GlobalOmitConfig = {
   chapterFocusArea?: Prisma.ChapterFocusAreaOmit
   lifeReflection?: Prisma.LifeReflectionOmit
   habit?: Prisma.HabitOmit
+  habitTask?: Prisma.HabitTaskOmit
   habitPhase?: Prisma.HabitPhaseOmit
   habitLog?: Prisma.HabitLogOmit
   habitStreak?: Prisma.HabitStreakOmit

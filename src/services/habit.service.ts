@@ -8,6 +8,10 @@ import {
   updateHabitPhase as updateHabitPhaseRecord,
   deleteHabitPhase as deleteHabitPhaseRecord,
   findHabitPhases,
+  createHabitTask as createHabitTaskRecord,
+  findHabitTasks as findHabitTasksRecord,
+  updateHabitTask as updateHabitTaskRecord,
+  deleteHabitTask as deleteHabitTaskRecord,
   upsertHabitLog,
   findHabitLogs,
   findTodayLog,
@@ -23,15 +27,20 @@ import {
   createHabitPhaseSchema,
   updateHabitPhaseSchema,
   createHabitLogSchema,
+  createHabitTaskSchema,
+  updateHabitTaskSchema,
   type CreateHabitInput,
   type UpdateHabitInput,
   type CreateHabitPhaseInput,
   type UpdateHabitPhaseInput,
   type CreateHabitLogInput,
+  type CreateHabitTaskInput,
+  type UpdateHabitTaskInput,
 } from "@/schemas/habit.schema";
 import { requireUserId } from "@/lib/ownership";
 import { prisma } from "@/lib/prisma";
-import type { HabitStreak, HabitLog, HabitPhase, HabitType } from "@/generated/prisma/client";
+import type { HabitStreak, HabitLog, HabitPhase, HabitTask, HabitType } from "@/generated/prisma/client";
+export type { HabitStreak, HabitLog, HabitPhase, HabitTask, HabitType };
 
 
 export class HabitServiceError extends Error {
@@ -148,6 +157,40 @@ export async function getHabitPhases(habitId: string, userId?: string) {
   const habit = await findHabitRecord(owner, habitId);
   if (!habit) throw new HabitServiceError("Kebiasaan tidak ditemukan.", "HABIT_NOT_FOUND");
   return findHabitPhases(habitId);
+}
+
+// ─── HabitTask Management ─────────────────────────────────────────────────────
+
+export async function addHabitTask(habitId: string, input: CreateHabitTaskInput, userId?: string) {
+  const owner = requireUserId(userId);
+  const habit = await findHabitRecord(owner, habitId);
+  if (!habit) throw new HabitServiceError("Kebiasaan tidak ditemukan.", "HABIT_NOT_FOUND");
+
+  const parsed = createHabitTaskSchema.parse(input);
+  return createHabitTaskRecord(owner, habitId, parsed);
+}
+
+export async function getHabitTasks(habitId: string, userId?: string) {
+  const owner = requireUserId(userId);
+  const habit = await findHabitRecord(owner, habitId);
+  if (!habit) throw new HabitServiceError("Kebiasaan tidak ditemukan.", "HABIT_NOT_FOUND");
+  return findHabitTasksRecord(owner, habitId);
+}
+
+export async function editHabitTask(habitId: string, taskId: string, input: UpdateHabitTaskInput, userId?: string) {
+  const owner = requireUserId(userId);
+  const habit = await findHabitRecord(owner, habitId);
+  if (!habit) throw new HabitServiceError("Kebiasaan tidak ditemukan.", "HABIT_NOT_FOUND");
+
+  const parsed = updateHabitTaskSchema.parse(input);
+  return updateHabitTaskRecord(owner, taskId, parsed);
+}
+
+export async function removeHabitTask(habitId: string, taskId: string, userId?: string) {
+  const owner = requireUserId(userId);
+  const habit = await findHabitRecord(owner, habitId);
+  if (!habit) throw new HabitServiceError("Kebiasaan tidak ditemukan.", "HABIT_NOT_FOUND");
+  return deleteHabitTaskRecord(owner, taskId);
 }
 
 // ─── Daily Check-In (Core Logic) ─────────────────────────────────────────────

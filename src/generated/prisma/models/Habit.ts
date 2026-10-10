@@ -20,8 +20,18 @@ export type HabitModel = runtime.Types.Result.DefaultSelection<Prisma.$HabitPayl
 
 export type AggregateHabit = {
   _count: HabitCountAggregateOutputType | null
+  _avg: HabitAvgAggregateOutputType | null
+  _sum: HabitSumAggregateOutputType | null
   _min: HabitMinAggregateOutputType | null
   _max: HabitMaxAggregateOutputType | null
+}
+
+export type HabitAvgAggregateOutputType = {
+  targetDays: number | null
+}
+
+export type HabitSumAggregateOutputType = {
+  targetDays: number | null
 }
 
 export type HabitMinAggregateOutputType = {
@@ -35,6 +45,8 @@ export type HabitMinAggregateOutputType = {
   icon: string | null
   areaId: string | null
   isActive: boolean | null
+  checkInTime: string | null
+  targetDays: number | null
   triggerNotes: string | null
   replacementHabit: string | null
   whyQuit: string | null
@@ -56,6 +68,8 @@ export type HabitMaxAggregateOutputType = {
   icon: string | null
   areaId: string | null
   isActive: boolean | null
+  checkInTime: string | null
+  targetDays: number | null
   triggerNotes: string | null
   replacementHabit: string | null
   whyQuit: string | null
@@ -77,6 +91,8 @@ export type HabitCountAggregateOutputType = {
   icon: number
   areaId: number
   isActive: number
+  checkInTime: number
+  targetDays: number
   triggerNotes: number
   replacementHabit: number
   whyQuit: number
@@ -89,6 +105,14 @@ export type HabitCountAggregateOutputType = {
 }
 
 
+export type HabitAvgAggregateInputType = {
+  targetDays?: true
+}
+
+export type HabitSumAggregateInputType = {
+  targetDays?: true
+}
+
 export type HabitMinAggregateInputType = {
   id?: true
   userId?: true
@@ -100,6 +124,8 @@ export type HabitMinAggregateInputType = {
   icon?: true
   areaId?: true
   isActive?: true
+  checkInTime?: true
+  targetDays?: true
   triggerNotes?: true
   replacementHabit?: true
   whyQuit?: true
@@ -121,6 +147,8 @@ export type HabitMaxAggregateInputType = {
   icon?: true
   areaId?: true
   isActive?: true
+  checkInTime?: true
+  targetDays?: true
   triggerNotes?: true
   replacementHabit?: true
   whyQuit?: true
@@ -142,6 +170,8 @@ export type HabitCountAggregateInputType = {
   icon?: true
   areaId?: true
   isActive?: true
+  checkInTime?: true
+  targetDays?: true
   triggerNotes?: true
   replacementHabit?: true
   whyQuit?: true
@@ -191,6 +221,18 @@ export type HabitAggregateArgs<ExtArgs extends runtime.Types.Extensions.Internal
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
    * 
+   * Select which fields to average
+  **/
+  _avg?: HabitAvgAggregateInputType
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+   * 
+   * Select which fields to sum
+  **/
+  _sum?: HabitSumAggregateInputType
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+   * 
    * Select which fields to find the minimum value
   **/
   _min?: HabitMinAggregateInputType
@@ -221,6 +263,8 @@ export type HabitGroupByArgs<ExtArgs extends runtime.Types.Extensions.InternalAr
   take?: number
   skip?: number
   _count?: HabitCountAggregateInputType | true
+  _avg?: HabitAvgAggregateInputType
+  _sum?: HabitSumAggregateInputType
   _min?: HabitMinAggregateInputType
   _max?: HabitMaxAggregateInputType
 }
@@ -236,6 +280,8 @@ export type HabitGroupByOutputType = {
   icon: string
   areaId: string | null
   isActive: boolean
+  checkInTime: string
+  targetDays: number | null
   triggerNotes: string | null
   replacementHabit: string | null
   whyQuit: string | null
@@ -245,6 +291,8 @@ export type HabitGroupByOutputType = {
   createdAt: Date
   updatedAt: Date
   _count: HabitCountAggregateOutputType | null
+  _avg: HabitAvgAggregateOutputType | null
+  _sum: HabitSumAggregateOutputType | null
   _min: HabitMinAggregateOutputType | null
   _max: HabitMaxAggregateOutputType | null
 }
@@ -278,6 +326,8 @@ export type HabitWhereInput = {
   icon?: Prisma.StringFilter<"Habit"> | string
   areaId?: Prisma.StringNullableFilter<"Habit"> | string | null
   isActive?: Prisma.BoolFilter<"Habit"> | boolean
+  checkInTime?: Prisma.StringFilter<"Habit"> | string
+  targetDays?: Prisma.IntNullableFilter<"Habit"> | number | null
   triggerNotes?: Prisma.StringNullableFilter<"Habit"> | string | null
   replacementHabit?: Prisma.StringNullableFilter<"Habit"> | string | null
   whyQuit?: Prisma.StringNullableFilter<"Habit"> | string | null
@@ -289,6 +339,7 @@ export type HabitWhereInput = {
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   area?: Prisma.XOR<Prisma.AreaNullableScalarRelationFilter, Prisma.AreaWhereInput> | null
   phases?: Prisma.HabitPhaseListRelationFilter
+  tasks?: Prisma.HabitTaskListRelationFilter
   logs?: Prisma.HabitLogListRelationFilter
   streaks?: Prisma.HabitStreakListRelationFilter
 }
@@ -304,6 +355,8 @@ export type HabitOrderByWithRelationInput = {
   icon?: Prisma.SortOrder
   areaId?: Prisma.SortOrderInput | Prisma.SortOrder
   isActive?: Prisma.SortOrder
+  checkInTime?: Prisma.SortOrder
+  targetDays?: Prisma.SortOrderInput | Prisma.SortOrder
   triggerNotes?: Prisma.SortOrderInput | Prisma.SortOrder
   replacementHabit?: Prisma.SortOrderInput | Prisma.SortOrder
   whyQuit?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -315,6 +368,7 @@ export type HabitOrderByWithRelationInput = {
   user?: Prisma.UserOrderByWithRelationInput
   area?: Prisma.AreaOrderByWithRelationInput
   phases?: Prisma.HabitPhaseOrderByRelationAggregateInput
+  tasks?: Prisma.HabitTaskOrderByRelationAggregateInput
   logs?: Prisma.HabitLogOrderByRelationAggregateInput
   streaks?: Prisma.HabitStreakOrderByRelationAggregateInput
 }
@@ -333,6 +387,8 @@ export type HabitWhereUniqueInput = Prisma.AtLeast<{
   icon?: Prisma.StringFilter<"Habit"> | string
   areaId?: Prisma.StringNullableFilter<"Habit"> | string | null
   isActive?: Prisma.BoolFilter<"Habit"> | boolean
+  checkInTime?: Prisma.StringFilter<"Habit"> | string
+  targetDays?: Prisma.IntNullableFilter<"Habit"> | number | null
   triggerNotes?: Prisma.StringNullableFilter<"Habit"> | string | null
   replacementHabit?: Prisma.StringNullableFilter<"Habit"> | string | null
   whyQuit?: Prisma.StringNullableFilter<"Habit"> | string | null
@@ -344,6 +400,7 @@ export type HabitWhereUniqueInput = Prisma.AtLeast<{
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   area?: Prisma.XOR<Prisma.AreaNullableScalarRelationFilter, Prisma.AreaWhereInput> | null
   phases?: Prisma.HabitPhaseListRelationFilter
+  tasks?: Prisma.HabitTaskListRelationFilter
   logs?: Prisma.HabitLogListRelationFilter
   streaks?: Prisma.HabitStreakListRelationFilter
 }, "id">
@@ -359,6 +416,8 @@ export type HabitOrderByWithAggregationInput = {
   icon?: Prisma.SortOrder
   areaId?: Prisma.SortOrderInput | Prisma.SortOrder
   isActive?: Prisma.SortOrder
+  checkInTime?: Prisma.SortOrder
+  targetDays?: Prisma.SortOrderInput | Prisma.SortOrder
   triggerNotes?: Prisma.SortOrderInput | Prisma.SortOrder
   replacementHabit?: Prisma.SortOrderInput | Prisma.SortOrder
   whyQuit?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -368,8 +427,10 @@ export type HabitOrderByWithAggregationInput = {
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   _count?: Prisma.HabitCountOrderByAggregateInput
+  _avg?: Prisma.HabitAvgOrderByAggregateInput
   _max?: Prisma.HabitMaxOrderByAggregateInput
   _min?: Prisma.HabitMinOrderByAggregateInput
+  _sum?: Prisma.HabitSumOrderByAggregateInput
 }
 
 export type HabitScalarWhereWithAggregatesInput = {
@@ -386,6 +447,8 @@ export type HabitScalarWhereWithAggregatesInput = {
   icon?: Prisma.StringWithAggregatesFilter<"Habit"> | string
   areaId?: Prisma.StringNullableWithAggregatesFilter<"Habit"> | string | null
   isActive?: Prisma.BoolWithAggregatesFilter<"Habit"> | boolean
+  checkInTime?: Prisma.StringWithAggregatesFilter<"Habit"> | string
+  targetDays?: Prisma.IntNullableWithAggregatesFilter<"Habit"> | number | null
   triggerNotes?: Prisma.StringNullableWithAggregatesFilter<"Habit"> | string | null
   replacementHabit?: Prisma.StringNullableWithAggregatesFilter<"Habit"> | string | null
   whyQuit?: Prisma.StringNullableWithAggregatesFilter<"Habit"> | string | null
@@ -405,6 +468,8 @@ export type HabitCreateInput = {
   color?: string
   icon?: string
   isActive?: boolean
+  checkInTime?: string
+  targetDays?: number | null
   triggerNotes?: string | null
   replacementHabit?: string | null
   whyQuit?: string | null
@@ -416,6 +481,7 @@ export type HabitCreateInput = {
   user: Prisma.UserCreateNestedOneWithoutHabitsInput
   area?: Prisma.AreaCreateNestedOneWithoutHabitsInput
   phases?: Prisma.HabitPhaseCreateNestedManyWithoutHabitInput
+  tasks?: Prisma.HabitTaskCreateNestedManyWithoutHabitInput
   logs?: Prisma.HabitLogCreateNestedManyWithoutHabitInput
   streaks?: Prisma.HabitStreakCreateNestedManyWithoutHabitInput
 }
@@ -431,6 +497,8 @@ export type HabitUncheckedCreateInput = {
   icon?: string
   areaId?: string | null
   isActive?: boolean
+  checkInTime?: string
+  targetDays?: number | null
   triggerNotes?: string | null
   replacementHabit?: string | null
   whyQuit?: string | null
@@ -440,6 +508,7 @@ export type HabitUncheckedCreateInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   phases?: Prisma.HabitPhaseUncheckedCreateNestedManyWithoutHabitInput
+  tasks?: Prisma.HabitTaskUncheckedCreateNestedManyWithoutHabitInput
   logs?: Prisma.HabitLogUncheckedCreateNestedManyWithoutHabitInput
   streaks?: Prisma.HabitStreakUncheckedCreateNestedManyWithoutHabitInput
 }
@@ -453,6 +522,8 @@ export type HabitUpdateInput = {
   color?: Prisma.StringFieldUpdateOperationsInput | string
   icon?: Prisma.StringFieldUpdateOperationsInput | string
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  checkInTime?: Prisma.StringFieldUpdateOperationsInput | string
+  targetDays?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   triggerNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   replacementHabit?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   whyQuit?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -464,6 +535,7 @@ export type HabitUpdateInput = {
   user?: Prisma.UserUpdateOneRequiredWithoutHabitsNestedInput
   area?: Prisma.AreaUpdateOneWithoutHabitsNestedInput
   phases?: Prisma.HabitPhaseUpdateManyWithoutHabitNestedInput
+  tasks?: Prisma.HabitTaskUpdateManyWithoutHabitNestedInput
   logs?: Prisma.HabitLogUpdateManyWithoutHabitNestedInput
   streaks?: Prisma.HabitStreakUpdateManyWithoutHabitNestedInput
 }
@@ -479,6 +551,8 @@ export type HabitUncheckedUpdateInput = {
   icon?: Prisma.StringFieldUpdateOperationsInput | string
   areaId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  checkInTime?: Prisma.StringFieldUpdateOperationsInput | string
+  targetDays?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   triggerNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   replacementHabit?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   whyQuit?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -488,6 +562,7 @@ export type HabitUncheckedUpdateInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   phases?: Prisma.HabitPhaseUncheckedUpdateManyWithoutHabitNestedInput
+  tasks?: Prisma.HabitTaskUncheckedUpdateManyWithoutHabitNestedInput
   logs?: Prisma.HabitLogUncheckedUpdateManyWithoutHabitNestedInput
   streaks?: Prisma.HabitStreakUncheckedUpdateManyWithoutHabitNestedInput
 }
@@ -503,6 +578,8 @@ export type HabitCreateManyInput = {
   icon?: string
   areaId?: string | null
   isActive?: boolean
+  checkInTime?: string
+  targetDays?: number | null
   triggerNotes?: string | null
   replacementHabit?: string | null
   whyQuit?: string | null
@@ -522,6 +599,8 @@ export type HabitUpdateManyMutationInput = {
   color?: Prisma.StringFieldUpdateOperationsInput | string
   icon?: Prisma.StringFieldUpdateOperationsInput | string
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  checkInTime?: Prisma.StringFieldUpdateOperationsInput | string
+  targetDays?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   triggerNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   replacementHabit?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   whyQuit?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -543,6 +622,8 @@ export type HabitUncheckedUpdateManyInput = {
   icon?: Prisma.StringFieldUpdateOperationsInput | string
   areaId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  checkInTime?: Prisma.StringFieldUpdateOperationsInput | string
+  targetDays?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   triggerNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   replacementHabit?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   whyQuit?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -574,6 +655,8 @@ export type HabitCountOrderByAggregateInput = {
   icon?: Prisma.SortOrder
   areaId?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
+  checkInTime?: Prisma.SortOrder
+  targetDays?: Prisma.SortOrder
   triggerNotes?: Prisma.SortOrder
   replacementHabit?: Prisma.SortOrder
   whyQuit?: Prisma.SortOrder
@@ -582,6 +665,10 @@ export type HabitCountOrderByAggregateInput = {
   startDate?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+}
+
+export type HabitAvgOrderByAggregateInput = {
+  targetDays?: Prisma.SortOrder
 }
 
 export type HabitMaxOrderByAggregateInput = {
@@ -595,6 +682,8 @@ export type HabitMaxOrderByAggregateInput = {
   icon?: Prisma.SortOrder
   areaId?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
+  checkInTime?: Prisma.SortOrder
+  targetDays?: Prisma.SortOrder
   triggerNotes?: Prisma.SortOrder
   replacementHabit?: Prisma.SortOrder
   whyQuit?: Prisma.SortOrder
@@ -616,6 +705,8 @@ export type HabitMinOrderByAggregateInput = {
   icon?: Prisma.SortOrder
   areaId?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
+  checkInTime?: Prisma.SortOrder
+  targetDays?: Prisma.SortOrder
   triggerNotes?: Prisma.SortOrder
   replacementHabit?: Prisma.SortOrder
   whyQuit?: Prisma.SortOrder
@@ -624,6 +715,10 @@ export type HabitMinOrderByAggregateInput = {
   startDate?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+}
+
+export type HabitSumOrderByAggregateInput = {
+  targetDays?: Prisma.SortOrder
 }
 
 export type HabitScalarRelationFilter = {
@@ -723,6 +818,20 @@ export type EnumHabitDifficultyFieldUpdateOperationsInput = {
   set?: $Enums.HabitDifficulty
 }
 
+export type HabitCreateNestedOneWithoutTasksInput = {
+  create?: Prisma.XOR<Prisma.HabitCreateWithoutTasksInput, Prisma.HabitUncheckedCreateWithoutTasksInput>
+  connectOrCreate?: Prisma.HabitCreateOrConnectWithoutTasksInput
+  connect?: Prisma.HabitWhereUniqueInput
+}
+
+export type HabitUpdateOneRequiredWithoutTasksNestedInput = {
+  create?: Prisma.XOR<Prisma.HabitCreateWithoutTasksInput, Prisma.HabitUncheckedCreateWithoutTasksInput>
+  connectOrCreate?: Prisma.HabitCreateOrConnectWithoutTasksInput
+  upsert?: Prisma.HabitUpsertWithoutTasksInput
+  connect?: Prisma.HabitWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.HabitUpdateToOneWithWhereWithoutTasksInput, Prisma.HabitUpdateWithoutTasksInput>, Prisma.HabitUncheckedUpdateWithoutTasksInput>
+}
+
 export type HabitCreateNestedOneWithoutPhasesInput = {
   create?: Prisma.XOR<Prisma.HabitCreateWithoutPhasesInput, Prisma.HabitUncheckedCreateWithoutPhasesInput>
   connectOrCreate?: Prisma.HabitCreateOrConnectWithoutPhasesInput
@@ -774,6 +883,8 @@ export type HabitCreateWithoutUserInput = {
   color?: string
   icon?: string
   isActive?: boolean
+  checkInTime?: string
+  targetDays?: number | null
   triggerNotes?: string | null
   replacementHabit?: string | null
   whyQuit?: string | null
@@ -784,6 +895,7 @@ export type HabitCreateWithoutUserInput = {
   updatedAt?: Date | string
   area?: Prisma.AreaCreateNestedOneWithoutHabitsInput
   phases?: Prisma.HabitPhaseCreateNestedManyWithoutHabitInput
+  tasks?: Prisma.HabitTaskCreateNestedManyWithoutHabitInput
   logs?: Prisma.HabitLogCreateNestedManyWithoutHabitInput
   streaks?: Prisma.HabitStreakCreateNestedManyWithoutHabitInput
 }
@@ -798,6 +910,8 @@ export type HabitUncheckedCreateWithoutUserInput = {
   icon?: string
   areaId?: string | null
   isActive?: boolean
+  checkInTime?: string
+  targetDays?: number | null
   triggerNotes?: string | null
   replacementHabit?: string | null
   whyQuit?: string | null
@@ -807,6 +921,7 @@ export type HabitUncheckedCreateWithoutUserInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   phases?: Prisma.HabitPhaseUncheckedCreateNestedManyWithoutHabitInput
+  tasks?: Prisma.HabitTaskUncheckedCreateNestedManyWithoutHabitInput
   logs?: Prisma.HabitLogUncheckedCreateNestedManyWithoutHabitInput
   streaks?: Prisma.HabitStreakUncheckedCreateNestedManyWithoutHabitInput
 }
@@ -851,6 +966,8 @@ export type HabitScalarWhereInput = {
   icon?: Prisma.StringFilter<"Habit"> | string
   areaId?: Prisma.StringNullableFilter<"Habit"> | string | null
   isActive?: Prisma.BoolFilter<"Habit"> | boolean
+  checkInTime?: Prisma.StringFilter<"Habit"> | string
+  targetDays?: Prisma.IntNullableFilter<"Habit"> | number | null
   triggerNotes?: Prisma.StringNullableFilter<"Habit"> | string | null
   replacementHabit?: Prisma.StringNullableFilter<"Habit"> | string | null
   whyQuit?: Prisma.StringNullableFilter<"Habit"> | string | null
@@ -870,6 +987,8 @@ export type HabitCreateWithoutAreaInput = {
   color?: string
   icon?: string
   isActive?: boolean
+  checkInTime?: string
+  targetDays?: number | null
   triggerNotes?: string | null
   replacementHabit?: string | null
   whyQuit?: string | null
@@ -880,6 +999,7 @@ export type HabitCreateWithoutAreaInput = {
   updatedAt?: Date | string
   user: Prisma.UserCreateNestedOneWithoutHabitsInput
   phases?: Prisma.HabitPhaseCreateNestedManyWithoutHabitInput
+  tasks?: Prisma.HabitTaskCreateNestedManyWithoutHabitInput
   logs?: Prisma.HabitLogCreateNestedManyWithoutHabitInput
   streaks?: Prisma.HabitStreakCreateNestedManyWithoutHabitInput
 }
@@ -894,6 +1014,8 @@ export type HabitUncheckedCreateWithoutAreaInput = {
   color?: string
   icon?: string
   isActive?: boolean
+  checkInTime?: string
+  targetDays?: number | null
   triggerNotes?: string | null
   replacementHabit?: string | null
   whyQuit?: string | null
@@ -903,6 +1025,7 @@ export type HabitUncheckedCreateWithoutAreaInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   phases?: Prisma.HabitPhaseUncheckedCreateNestedManyWithoutHabitInput
+  tasks?: Prisma.HabitTaskUncheckedCreateNestedManyWithoutHabitInput
   logs?: Prisma.HabitLogUncheckedCreateNestedManyWithoutHabitInput
   streaks?: Prisma.HabitStreakUncheckedCreateNestedManyWithoutHabitInput
 }
@@ -933,7 +1056,7 @@ export type HabitUpdateManyWithWhereWithoutAreaInput = {
   data: Prisma.XOR<Prisma.HabitUpdateManyMutationInput, Prisma.HabitUncheckedUpdateManyWithoutAreaInput>
 }
 
-export type HabitCreateWithoutPhasesInput = {
+export type HabitCreateWithoutTasksInput = {
   id?: string
   title: string
   description?: string | null
@@ -942,6 +1065,8 @@ export type HabitCreateWithoutPhasesInput = {
   color?: string
   icon?: string
   isActive?: boolean
+  checkInTime?: string
+  targetDays?: number | null
   triggerNotes?: string | null
   replacementHabit?: string | null
   whyQuit?: string | null
@@ -952,6 +1077,127 @@ export type HabitCreateWithoutPhasesInput = {
   updatedAt?: Date | string
   user: Prisma.UserCreateNestedOneWithoutHabitsInput
   area?: Prisma.AreaCreateNestedOneWithoutHabitsInput
+  phases?: Prisma.HabitPhaseCreateNestedManyWithoutHabitInput
+  logs?: Prisma.HabitLogCreateNestedManyWithoutHabitInput
+  streaks?: Prisma.HabitStreakCreateNestedManyWithoutHabitInput
+}
+
+export type HabitUncheckedCreateWithoutTasksInput = {
+  id?: string
+  userId: string
+  title: string
+  description?: string | null
+  type?: $Enums.HabitType
+  difficulty?: $Enums.HabitDifficulty
+  color?: string
+  icon?: string
+  areaId?: string | null
+  isActive?: boolean
+  checkInTime?: string
+  targetDays?: number | null
+  triggerNotes?: string | null
+  replacementHabit?: string | null
+  whyQuit?: string | null
+  cue?: string | null
+  reward?: string | null
+  startDate?: Date | string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  phases?: Prisma.HabitPhaseUncheckedCreateNestedManyWithoutHabitInput
+  logs?: Prisma.HabitLogUncheckedCreateNestedManyWithoutHabitInput
+  streaks?: Prisma.HabitStreakUncheckedCreateNestedManyWithoutHabitInput
+}
+
+export type HabitCreateOrConnectWithoutTasksInput = {
+  where: Prisma.HabitWhereUniqueInput
+  create: Prisma.XOR<Prisma.HabitCreateWithoutTasksInput, Prisma.HabitUncheckedCreateWithoutTasksInput>
+}
+
+export type HabitUpsertWithoutTasksInput = {
+  update: Prisma.XOR<Prisma.HabitUpdateWithoutTasksInput, Prisma.HabitUncheckedUpdateWithoutTasksInput>
+  create: Prisma.XOR<Prisma.HabitCreateWithoutTasksInput, Prisma.HabitUncheckedCreateWithoutTasksInput>
+  where?: Prisma.HabitWhereInput
+}
+
+export type HabitUpdateToOneWithWhereWithoutTasksInput = {
+  where?: Prisma.HabitWhereInput
+  data: Prisma.XOR<Prisma.HabitUpdateWithoutTasksInput, Prisma.HabitUncheckedUpdateWithoutTasksInput>
+}
+
+export type HabitUpdateWithoutTasksInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  title?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  type?: Prisma.EnumHabitTypeFieldUpdateOperationsInput | $Enums.HabitType
+  difficulty?: Prisma.EnumHabitDifficultyFieldUpdateOperationsInput | $Enums.HabitDifficulty
+  color?: Prisma.StringFieldUpdateOperationsInput | string
+  icon?: Prisma.StringFieldUpdateOperationsInput | string
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  checkInTime?: Prisma.StringFieldUpdateOperationsInput | string
+  targetDays?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  triggerNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  replacementHabit?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  whyQuit?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cue?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  reward?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  user?: Prisma.UserUpdateOneRequiredWithoutHabitsNestedInput
+  area?: Prisma.AreaUpdateOneWithoutHabitsNestedInput
+  phases?: Prisma.HabitPhaseUpdateManyWithoutHabitNestedInput
+  logs?: Prisma.HabitLogUpdateManyWithoutHabitNestedInput
+  streaks?: Prisma.HabitStreakUpdateManyWithoutHabitNestedInput
+}
+
+export type HabitUncheckedUpdateWithoutTasksInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  userId?: Prisma.StringFieldUpdateOperationsInput | string
+  title?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  type?: Prisma.EnumHabitTypeFieldUpdateOperationsInput | $Enums.HabitType
+  difficulty?: Prisma.EnumHabitDifficultyFieldUpdateOperationsInput | $Enums.HabitDifficulty
+  color?: Prisma.StringFieldUpdateOperationsInput | string
+  icon?: Prisma.StringFieldUpdateOperationsInput | string
+  areaId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  checkInTime?: Prisma.StringFieldUpdateOperationsInput | string
+  targetDays?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  triggerNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  replacementHabit?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  whyQuit?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cue?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  reward?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  phases?: Prisma.HabitPhaseUncheckedUpdateManyWithoutHabitNestedInput
+  logs?: Prisma.HabitLogUncheckedUpdateManyWithoutHabitNestedInput
+  streaks?: Prisma.HabitStreakUncheckedUpdateManyWithoutHabitNestedInput
+}
+
+export type HabitCreateWithoutPhasesInput = {
+  id?: string
+  title: string
+  description?: string | null
+  type?: $Enums.HabitType
+  difficulty?: $Enums.HabitDifficulty
+  color?: string
+  icon?: string
+  isActive?: boolean
+  checkInTime?: string
+  targetDays?: number | null
+  triggerNotes?: string | null
+  replacementHabit?: string | null
+  whyQuit?: string | null
+  cue?: string | null
+  reward?: string | null
+  startDate?: Date | string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  user: Prisma.UserCreateNestedOneWithoutHabitsInput
+  area?: Prisma.AreaCreateNestedOneWithoutHabitsInput
+  tasks?: Prisma.HabitTaskCreateNestedManyWithoutHabitInput
   logs?: Prisma.HabitLogCreateNestedManyWithoutHabitInput
   streaks?: Prisma.HabitStreakCreateNestedManyWithoutHabitInput
 }
@@ -967,6 +1213,8 @@ export type HabitUncheckedCreateWithoutPhasesInput = {
   icon?: string
   areaId?: string | null
   isActive?: boolean
+  checkInTime?: string
+  targetDays?: number | null
   triggerNotes?: string | null
   replacementHabit?: string | null
   whyQuit?: string | null
@@ -975,6 +1223,7 @@ export type HabitUncheckedCreateWithoutPhasesInput = {
   startDate?: Date | string
   createdAt?: Date | string
   updatedAt?: Date | string
+  tasks?: Prisma.HabitTaskUncheckedCreateNestedManyWithoutHabitInput
   logs?: Prisma.HabitLogUncheckedCreateNestedManyWithoutHabitInput
   streaks?: Prisma.HabitStreakUncheckedCreateNestedManyWithoutHabitInput
 }
@@ -1004,6 +1253,8 @@ export type HabitUpdateWithoutPhasesInput = {
   color?: Prisma.StringFieldUpdateOperationsInput | string
   icon?: Prisma.StringFieldUpdateOperationsInput | string
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  checkInTime?: Prisma.StringFieldUpdateOperationsInput | string
+  targetDays?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   triggerNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   replacementHabit?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   whyQuit?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1014,6 +1265,7 @@ export type HabitUpdateWithoutPhasesInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   user?: Prisma.UserUpdateOneRequiredWithoutHabitsNestedInput
   area?: Prisma.AreaUpdateOneWithoutHabitsNestedInput
+  tasks?: Prisma.HabitTaskUpdateManyWithoutHabitNestedInput
   logs?: Prisma.HabitLogUpdateManyWithoutHabitNestedInput
   streaks?: Prisma.HabitStreakUpdateManyWithoutHabitNestedInput
 }
@@ -1029,6 +1281,8 @@ export type HabitUncheckedUpdateWithoutPhasesInput = {
   icon?: Prisma.StringFieldUpdateOperationsInput | string
   areaId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  checkInTime?: Prisma.StringFieldUpdateOperationsInput | string
+  targetDays?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   triggerNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   replacementHabit?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   whyQuit?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1037,6 +1291,7 @@ export type HabitUncheckedUpdateWithoutPhasesInput = {
   startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  tasks?: Prisma.HabitTaskUncheckedUpdateManyWithoutHabitNestedInput
   logs?: Prisma.HabitLogUncheckedUpdateManyWithoutHabitNestedInput
   streaks?: Prisma.HabitStreakUncheckedUpdateManyWithoutHabitNestedInput
 }
@@ -1050,6 +1305,8 @@ export type HabitCreateWithoutLogsInput = {
   color?: string
   icon?: string
   isActive?: boolean
+  checkInTime?: string
+  targetDays?: number | null
   triggerNotes?: string | null
   replacementHabit?: string | null
   whyQuit?: string | null
@@ -1061,6 +1318,7 @@ export type HabitCreateWithoutLogsInput = {
   user: Prisma.UserCreateNestedOneWithoutHabitsInput
   area?: Prisma.AreaCreateNestedOneWithoutHabitsInput
   phases?: Prisma.HabitPhaseCreateNestedManyWithoutHabitInput
+  tasks?: Prisma.HabitTaskCreateNestedManyWithoutHabitInput
   streaks?: Prisma.HabitStreakCreateNestedManyWithoutHabitInput
 }
 
@@ -1075,6 +1333,8 @@ export type HabitUncheckedCreateWithoutLogsInput = {
   icon?: string
   areaId?: string | null
   isActive?: boolean
+  checkInTime?: string
+  targetDays?: number | null
   triggerNotes?: string | null
   replacementHabit?: string | null
   whyQuit?: string | null
@@ -1084,6 +1344,7 @@ export type HabitUncheckedCreateWithoutLogsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   phases?: Prisma.HabitPhaseUncheckedCreateNestedManyWithoutHabitInput
+  tasks?: Prisma.HabitTaskUncheckedCreateNestedManyWithoutHabitInput
   streaks?: Prisma.HabitStreakUncheckedCreateNestedManyWithoutHabitInput
 }
 
@@ -1112,6 +1373,8 @@ export type HabitUpdateWithoutLogsInput = {
   color?: Prisma.StringFieldUpdateOperationsInput | string
   icon?: Prisma.StringFieldUpdateOperationsInput | string
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  checkInTime?: Prisma.StringFieldUpdateOperationsInput | string
+  targetDays?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   triggerNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   replacementHabit?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   whyQuit?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1123,6 +1386,7 @@ export type HabitUpdateWithoutLogsInput = {
   user?: Prisma.UserUpdateOneRequiredWithoutHabitsNestedInput
   area?: Prisma.AreaUpdateOneWithoutHabitsNestedInput
   phases?: Prisma.HabitPhaseUpdateManyWithoutHabitNestedInput
+  tasks?: Prisma.HabitTaskUpdateManyWithoutHabitNestedInput
   streaks?: Prisma.HabitStreakUpdateManyWithoutHabitNestedInput
 }
 
@@ -1137,6 +1401,8 @@ export type HabitUncheckedUpdateWithoutLogsInput = {
   icon?: Prisma.StringFieldUpdateOperationsInput | string
   areaId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  checkInTime?: Prisma.StringFieldUpdateOperationsInput | string
+  targetDays?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   triggerNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   replacementHabit?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   whyQuit?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1146,6 +1412,7 @@ export type HabitUncheckedUpdateWithoutLogsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   phases?: Prisma.HabitPhaseUncheckedUpdateManyWithoutHabitNestedInput
+  tasks?: Prisma.HabitTaskUncheckedUpdateManyWithoutHabitNestedInput
   streaks?: Prisma.HabitStreakUncheckedUpdateManyWithoutHabitNestedInput
 }
 
@@ -1158,6 +1425,8 @@ export type HabitCreateWithoutStreaksInput = {
   color?: string
   icon?: string
   isActive?: boolean
+  checkInTime?: string
+  targetDays?: number | null
   triggerNotes?: string | null
   replacementHabit?: string | null
   whyQuit?: string | null
@@ -1169,6 +1438,7 @@ export type HabitCreateWithoutStreaksInput = {
   user: Prisma.UserCreateNestedOneWithoutHabitsInput
   area?: Prisma.AreaCreateNestedOneWithoutHabitsInput
   phases?: Prisma.HabitPhaseCreateNestedManyWithoutHabitInput
+  tasks?: Prisma.HabitTaskCreateNestedManyWithoutHabitInput
   logs?: Prisma.HabitLogCreateNestedManyWithoutHabitInput
 }
 
@@ -1183,6 +1453,8 @@ export type HabitUncheckedCreateWithoutStreaksInput = {
   icon?: string
   areaId?: string | null
   isActive?: boolean
+  checkInTime?: string
+  targetDays?: number | null
   triggerNotes?: string | null
   replacementHabit?: string | null
   whyQuit?: string | null
@@ -1192,6 +1464,7 @@ export type HabitUncheckedCreateWithoutStreaksInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   phases?: Prisma.HabitPhaseUncheckedCreateNestedManyWithoutHabitInput
+  tasks?: Prisma.HabitTaskUncheckedCreateNestedManyWithoutHabitInput
   logs?: Prisma.HabitLogUncheckedCreateNestedManyWithoutHabitInput
 }
 
@@ -1220,6 +1493,8 @@ export type HabitUpdateWithoutStreaksInput = {
   color?: Prisma.StringFieldUpdateOperationsInput | string
   icon?: Prisma.StringFieldUpdateOperationsInput | string
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  checkInTime?: Prisma.StringFieldUpdateOperationsInput | string
+  targetDays?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   triggerNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   replacementHabit?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   whyQuit?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1231,6 +1506,7 @@ export type HabitUpdateWithoutStreaksInput = {
   user?: Prisma.UserUpdateOneRequiredWithoutHabitsNestedInput
   area?: Prisma.AreaUpdateOneWithoutHabitsNestedInput
   phases?: Prisma.HabitPhaseUpdateManyWithoutHabitNestedInput
+  tasks?: Prisma.HabitTaskUpdateManyWithoutHabitNestedInput
   logs?: Prisma.HabitLogUpdateManyWithoutHabitNestedInput
 }
 
@@ -1245,6 +1521,8 @@ export type HabitUncheckedUpdateWithoutStreaksInput = {
   icon?: Prisma.StringFieldUpdateOperationsInput | string
   areaId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  checkInTime?: Prisma.StringFieldUpdateOperationsInput | string
+  targetDays?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   triggerNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   replacementHabit?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   whyQuit?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1254,6 +1532,7 @@ export type HabitUncheckedUpdateWithoutStreaksInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   phases?: Prisma.HabitPhaseUncheckedUpdateManyWithoutHabitNestedInput
+  tasks?: Prisma.HabitTaskUncheckedUpdateManyWithoutHabitNestedInput
   logs?: Prisma.HabitLogUncheckedUpdateManyWithoutHabitNestedInput
 }
 
@@ -1267,6 +1546,8 @@ export type HabitCreateManyUserInput = {
   icon?: string
   areaId?: string | null
   isActive?: boolean
+  checkInTime?: string
+  targetDays?: number | null
   triggerNotes?: string | null
   replacementHabit?: string | null
   whyQuit?: string | null
@@ -1286,6 +1567,8 @@ export type HabitUpdateWithoutUserInput = {
   color?: Prisma.StringFieldUpdateOperationsInput | string
   icon?: Prisma.StringFieldUpdateOperationsInput | string
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  checkInTime?: Prisma.StringFieldUpdateOperationsInput | string
+  targetDays?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   triggerNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   replacementHabit?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   whyQuit?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1296,6 +1579,7 @@ export type HabitUpdateWithoutUserInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   area?: Prisma.AreaUpdateOneWithoutHabitsNestedInput
   phases?: Prisma.HabitPhaseUpdateManyWithoutHabitNestedInput
+  tasks?: Prisma.HabitTaskUpdateManyWithoutHabitNestedInput
   logs?: Prisma.HabitLogUpdateManyWithoutHabitNestedInput
   streaks?: Prisma.HabitStreakUpdateManyWithoutHabitNestedInput
 }
@@ -1310,6 +1594,8 @@ export type HabitUncheckedUpdateWithoutUserInput = {
   icon?: Prisma.StringFieldUpdateOperationsInput | string
   areaId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  checkInTime?: Prisma.StringFieldUpdateOperationsInput | string
+  targetDays?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   triggerNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   replacementHabit?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   whyQuit?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1319,6 +1605,7 @@ export type HabitUncheckedUpdateWithoutUserInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   phases?: Prisma.HabitPhaseUncheckedUpdateManyWithoutHabitNestedInput
+  tasks?: Prisma.HabitTaskUncheckedUpdateManyWithoutHabitNestedInput
   logs?: Prisma.HabitLogUncheckedUpdateManyWithoutHabitNestedInput
   streaks?: Prisma.HabitStreakUncheckedUpdateManyWithoutHabitNestedInput
 }
@@ -1333,6 +1620,8 @@ export type HabitUncheckedUpdateManyWithoutUserInput = {
   icon?: Prisma.StringFieldUpdateOperationsInput | string
   areaId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  checkInTime?: Prisma.StringFieldUpdateOperationsInput | string
+  targetDays?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   triggerNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   replacementHabit?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   whyQuit?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1353,6 +1642,8 @@ export type HabitCreateManyAreaInput = {
   color?: string
   icon?: string
   isActive?: boolean
+  checkInTime?: string
+  targetDays?: number | null
   triggerNotes?: string | null
   replacementHabit?: string | null
   whyQuit?: string | null
@@ -1372,6 +1663,8 @@ export type HabitUpdateWithoutAreaInput = {
   color?: Prisma.StringFieldUpdateOperationsInput | string
   icon?: Prisma.StringFieldUpdateOperationsInput | string
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  checkInTime?: Prisma.StringFieldUpdateOperationsInput | string
+  targetDays?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   triggerNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   replacementHabit?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   whyQuit?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1382,6 +1675,7 @@ export type HabitUpdateWithoutAreaInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   user?: Prisma.UserUpdateOneRequiredWithoutHabitsNestedInput
   phases?: Prisma.HabitPhaseUpdateManyWithoutHabitNestedInput
+  tasks?: Prisma.HabitTaskUpdateManyWithoutHabitNestedInput
   logs?: Prisma.HabitLogUpdateManyWithoutHabitNestedInput
   streaks?: Prisma.HabitStreakUpdateManyWithoutHabitNestedInput
 }
@@ -1396,6 +1690,8 @@ export type HabitUncheckedUpdateWithoutAreaInput = {
   color?: Prisma.StringFieldUpdateOperationsInput | string
   icon?: Prisma.StringFieldUpdateOperationsInput | string
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  checkInTime?: Prisma.StringFieldUpdateOperationsInput | string
+  targetDays?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   triggerNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   replacementHabit?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   whyQuit?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1405,6 +1701,7 @@ export type HabitUncheckedUpdateWithoutAreaInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   phases?: Prisma.HabitPhaseUncheckedUpdateManyWithoutHabitNestedInput
+  tasks?: Prisma.HabitTaskUncheckedUpdateManyWithoutHabitNestedInput
   logs?: Prisma.HabitLogUncheckedUpdateManyWithoutHabitNestedInput
   streaks?: Prisma.HabitStreakUncheckedUpdateManyWithoutHabitNestedInput
 }
@@ -1419,6 +1716,8 @@ export type HabitUncheckedUpdateManyWithoutAreaInput = {
   color?: Prisma.StringFieldUpdateOperationsInput | string
   icon?: Prisma.StringFieldUpdateOperationsInput | string
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  checkInTime?: Prisma.StringFieldUpdateOperationsInput | string
+  targetDays?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   triggerNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   replacementHabit?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   whyQuit?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1436,12 +1735,14 @@ export type HabitUncheckedUpdateManyWithoutAreaInput = {
 
 export type HabitCountOutputType = {
   phases: number
+  tasks: number
   logs: number
   streaks: number
 }
 
 export type HabitCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   phases?: boolean | HabitCountOutputTypeCountPhasesArgs
+  tasks?: boolean | HabitCountOutputTypeCountTasksArgs
   logs?: boolean | HabitCountOutputTypeCountLogsArgs
   streaks?: boolean | HabitCountOutputTypeCountStreaksArgs
 }
@@ -1461,6 +1762,13 @@ export type HabitCountOutputTypeDefaultArgs<ExtArgs extends runtime.Types.Extens
  */
 export type HabitCountOutputTypeCountPhasesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   where?: Prisma.HabitPhaseWhereInput
+}
+
+/**
+ * HabitCountOutputType without action
+ */
+export type HabitCountOutputTypeCountTasksArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.HabitTaskWhereInput
 }
 
 /**
@@ -1489,6 +1797,8 @@ export type HabitSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   icon?: boolean
   areaId?: boolean
   isActive?: boolean
+  checkInTime?: boolean
+  targetDays?: boolean
   triggerNotes?: boolean
   replacementHabit?: boolean
   whyQuit?: boolean
@@ -1500,6 +1810,7 @@ export type HabitSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   area?: boolean | Prisma.Habit$areaArgs<ExtArgs>
   phases?: boolean | Prisma.Habit$phasesArgs<ExtArgs>
+  tasks?: boolean | Prisma.Habit$tasksArgs<ExtArgs>
   logs?: boolean | Prisma.Habit$logsArgs<ExtArgs>
   streaks?: boolean | Prisma.Habit$streaksArgs<ExtArgs>
   _count?: boolean | Prisma.HabitCountOutputTypeDefaultArgs<ExtArgs>
@@ -1516,6 +1827,8 @@ export type HabitSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensi
   icon?: boolean
   areaId?: boolean
   isActive?: boolean
+  checkInTime?: boolean
+  targetDays?: boolean
   triggerNotes?: boolean
   replacementHabit?: boolean
   whyQuit?: boolean
@@ -1539,6 +1852,8 @@ export type HabitSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensi
   icon?: boolean
   areaId?: boolean
   isActive?: boolean
+  checkInTime?: boolean
+  targetDays?: boolean
   triggerNotes?: boolean
   replacementHabit?: boolean
   whyQuit?: boolean
@@ -1562,6 +1877,8 @@ export type HabitSelectScalar = {
   icon?: boolean
   areaId?: boolean
   isActive?: boolean
+  checkInTime?: boolean
+  targetDays?: boolean
   triggerNotes?: boolean
   replacementHabit?: boolean
   whyQuit?: boolean
@@ -1572,11 +1889,12 @@ export type HabitSelectScalar = {
   updatedAt?: boolean
 }
 
-export type HabitOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "userId" | "title" | "description" | "type" | "difficulty" | "color" | "icon" | "areaId" | "isActive" | "triggerNotes" | "replacementHabit" | "whyQuit" | "cue" | "reward" | "startDate" | "createdAt" | "updatedAt", ExtArgs["result"]["habit"]>
+export type HabitOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "userId" | "title" | "description" | "type" | "difficulty" | "color" | "icon" | "areaId" | "isActive" | "checkInTime" | "targetDays" | "triggerNotes" | "replacementHabit" | "whyQuit" | "cue" | "reward" | "startDate" | "createdAt" | "updatedAt", ExtArgs["result"]["habit"]>
 export type HabitInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   area?: boolean | Prisma.Habit$areaArgs<ExtArgs>
   phases?: boolean | Prisma.Habit$phasesArgs<ExtArgs>
+  tasks?: boolean | Prisma.Habit$tasksArgs<ExtArgs>
   logs?: boolean | Prisma.Habit$logsArgs<ExtArgs>
   streaks?: boolean | Prisma.Habit$streaksArgs<ExtArgs>
   _count?: boolean | Prisma.HabitCountOutputTypeDefaultArgs<ExtArgs>
@@ -1596,6 +1914,7 @@ export type $HabitPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs 
     user: Prisma.$UserPayload<ExtArgs>
     area: Prisma.$AreaPayload<ExtArgs> | null
     phases: Prisma.$HabitPhasePayload<ExtArgs>[]
+    tasks: Prisma.$HabitTaskPayload<ExtArgs>[]
     logs: Prisma.$HabitLogPayload<ExtArgs>[]
     streaks: Prisma.$HabitStreakPayload<ExtArgs>[]
   }
@@ -1610,6 +1929,8 @@ export type $HabitPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs 
     icon: string
     areaId: string | null
     isActive: boolean
+    checkInTime: string
+    targetDays: number | null
     triggerNotes: string | null
     replacementHabit: string | null
     whyQuit: string | null
@@ -2015,6 +2336,7 @@ export interface Prisma__HabitClient<T, Null = never, ExtArgs extends runtime.Ty
   user<T extends Prisma.UserDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.UserDefaultArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   area<T extends Prisma.Habit$areaArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Habit$areaArgs<ExtArgs>>): Prisma.Prisma__AreaClient<runtime.Types.Result.GetResult<Prisma.$AreaPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   phases<T extends Prisma.Habit$phasesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Habit$phasesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$HabitPhasePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  tasks<T extends Prisma.Habit$tasksArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Habit$tasksArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$HabitTaskPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   logs<T extends Prisma.Habit$logsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Habit$logsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$HabitLogPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   streaks<T extends Prisma.Habit$streaksArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Habit$streaksArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$HabitStreakPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
@@ -2056,6 +2378,8 @@ export interface HabitFieldRefs {
   readonly icon: Prisma.FieldRef<"Habit", 'String'>
   readonly areaId: Prisma.FieldRef<"Habit", 'String'>
   readonly isActive: Prisma.FieldRef<"Habit", 'Boolean'>
+  readonly checkInTime: Prisma.FieldRef<"Habit", 'String'>
+  readonly targetDays: Prisma.FieldRef<"Habit", 'Int'>
   readonly triggerNotes: Prisma.FieldRef<"Habit", 'String'>
   readonly replacementHabit: Prisma.FieldRef<"Habit", 'String'>
   readonly whyQuit: Prisma.FieldRef<"Habit", 'String'>
@@ -2505,6 +2829,30 @@ export type Habit$phasesArgs<ExtArgs extends runtime.Types.Extensions.InternalAr
   take?: number
   skip?: number
   distinct?: Prisma.HabitPhaseScalarFieldEnum | Prisma.HabitPhaseScalarFieldEnum[]
+}
+
+/**
+ * Habit.tasks
+ */
+export type Habit$tasksArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the HabitTask
+   */
+  select?: Prisma.HabitTaskSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the HabitTask
+   */
+  omit?: Prisma.HabitTaskOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.HabitTaskInclude<ExtArgs> | null
+  where?: Prisma.HabitTaskWhereInput
+  orderBy?: Prisma.HabitTaskOrderByWithRelationInput | Prisma.HabitTaskOrderByWithRelationInput[]
+  cursor?: Prisma.HabitTaskWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.HabitTaskScalarFieldEnum | Prisma.HabitTaskScalarFieldEnum[]
 }
 
 /**

@@ -73,6 +73,7 @@ export const ModelName = {
   ChapterFocusArea: 'ChapterFocusArea',
   LifeReflection: 'LifeReflection',
   Habit: 'Habit',
+  HabitTask: 'HabitTask',
   HabitPhase: 'HabitPhase',
   HabitLog: 'HabitLog',
   HabitStreak: 'HabitStreak'
@@ -483,6 +484,8 @@ export const HabitScalarFieldEnum = {
   icon: 'icon',
   areaId: 'areaId',
   isActive: 'isActive',
+  checkInTime: 'checkInTime',
+  targetDays: 'targetDays',
   triggerNotes: 'triggerNotes',
   replacementHabit: 'replacementHabit',
   whyQuit: 'whyQuit',
@@ -494,6 +497,22 @@ export const HabitScalarFieldEnum = {
 } as const
 
 export type HabitScalarFieldEnum = (typeof HabitScalarFieldEnum)[keyof typeof HabitScalarFieldEnum]
+
+
+export const HabitTaskScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  habitId: 'habitId',
+  title: 'title',
+  description: 'description',
+  isCompleted: 'isCompleted',
+  category: 'category',
+  order: 'order',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type HabitTaskScalarFieldEnum = (typeof HabitTaskScalarFieldEnum)[keyof typeof HabitTaskScalarFieldEnum]
 
 
 export const HabitPhaseScalarFieldEnum = {
