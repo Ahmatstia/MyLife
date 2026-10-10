@@ -23,26 +23,64 @@ export const createTrackedHabitSchema = z.object({
     .union([z.string().datetime(), z.date()])
     .optional()
     .transform((val) => (val ? new Date(val) : undefined)),
-  privacyLevel: z.number().int().min(0).max(2).default(1),
-  areaId: z.string().cuid().optional().nullable(),
+    privacyLevel: z.number().int().min(0).max(2).default(1),
+    areaId: z.string().cuid().optional().nullable(),
+    identityStatement: z.string().trim().max(500).optional().nullable(),
 
-  // Profile data untuk kebiasaan BREAK
-  whyReasons: z.array(z.string().trim().min(1)).min(1, "Minimal sertakan 1 alasan berhenti"),
-  futureSelfNote: z.string().trim().max(1000).optional().nullable(),
-  baselinePerDay: z.number().positive().optional().nullable(),
-  costPerOccurrence: z.number().nonnegative().optional().nullable(),
-  currency: z.string().trim().default("IDR"),
-  minutesPerOccurrence: z.number().int().positive().optional().nullable(),
-  relapseLapseCount: z.number().int().positive().default(3),
-  relapseWindowDays: z.number().int().positive().default(7),
-  highRiskCategory: z.boolean().default(false),
-  safetyAck: z.boolean().optional(),
-  safetyAckAt: z
-    .union([z.string().datetime(), z.date()])
-    .optional()
-    .transform((val) => (val ? new Date(val) : undefined)),
-  environmentChecklist: z.array(z.string()).default([]),
-});
+    // Profile data untuk kebiasaan BREAK
+    whyReasons: z.array(z.string().trim().min(1)).optional().default([]),
+    futureSelfNote: z.string().trim().max(1000).optional().nullable(),
+    baselinePerDay: z.number().positive().optional().nullable(),
+    costPerOccurrence: z.number().nonnegative().optional().nullable(),
+    currency: z.string().trim().default("IDR"),
+    minutesPerOccurrence: z.number().int().positive().optional().nullable(),
+    relapseLapseCount: z.number().int().positive().default(3),
+    relapseWindowDays: z.number().int().positive().default(7),
+    highRiskCategory: z.boolean().default(false),
+    safetyAck: z.boolean().optional(),
+    safetyAckAt: z
+      .union([z.string().datetime(), z.date()])
+      .optional()
+      .transform((val) => (val ? new Date(val) : undefined)),
+    environmentChecklist: z.array(z.string()).default([]),
+
+    // Profile data untuk kebiasaan BUILD (Metode ABC - Tiny Habits)
+    tinyBehavior: z.string().trim().max(255).optional().nullable(),
+    anchorText: z.string().trim().max(255).optional().nullable(),
+    celebrationText: z.string().trim().max(255).optional().nullable(),
+    versions: z
+      .object({
+        tiny: z.string().trim().optional(),
+        standard: z.string().trim().optional(),
+        stretch: z.string().trim().optional(),
+      })
+      .optional()
+      .default({}),
+    scheduleType: z.enum(["DAILY", "DAYS_OF_WEEK", "TIMES_PER_WEEK"]).default("DAILY"),
+    daysOfWeek: z.array(z.number().int().min(1).max(7)).default([]),
+    timesPerWeek: z.number().int().min(1).max(7).optional().nullable(),
+    restDays: z.array(z.number().int().min(1).max(7)).default([]),
+    replacesHabitId: z.string().optional().nullable(),
+  })
+  .superRefine((data, ctx) => {
+    if (data.kind === "BREAK") {
+      if (!data.whyReasons || data.whyReasons.length === 0) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: "Minimal sertakan 1 alasan berhenti untuk kebiasaan Break.",
+          path: ["whyReasons"],
+        });
+      }
+    } else if (data.kind === "BUILD") {
+      if (!data.tinyBehavior || data.tinyBehavior.trim().length === 0) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: "Perilaku tiny wajib diisi untuk kebiasaan Build.",
+          path: ["tinyBehavior"],
+        });
+      }
+    }
+  });
 
 export const updateTrackedHabitSchema = z.object({
   name: z.string().trim().min(1).max(100).optional(),

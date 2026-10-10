@@ -10,3 +10,5 @@ export * from "./DebriefModal";
 export * from "./RelapseResetPlanModal";
 export * from "./SafetyNoticeModal";
 export * from "./MilestoneCelebrationModal";
+export * from "./BuildDashboard";
+export * from "./AutomaticitySurveyModal";

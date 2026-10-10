@@ -26,6 +26,7 @@ export async function findTrackedHabitById(
     where: { id, userId },
     include: {
       breakProfile: true,
+      buildProfile: true,
       stats: true,
     },
   });
@@ -43,6 +44,7 @@ export async function findTrackedHabitsByUser(
     },
     include: {
       breakProfile: true,
+      buildProfile: true,
       stats: true,
     },
     orderBy: { createdAt: "desc" },

@@ -47,11 +47,21 @@ export async function createTrackedHabitService(
 
   const input = parsed.data;
 
-  // Fase 1: Hanya mendukung kebiasaan BREAK dengan mode ABSTAIN
-  if (input.kind !== "BREAK" || input.mode !== "ABSTAIN") {
+  // Validasi jenis kebiasaan:
+  // - BREAK: saat ini hanya mode ABSTAIN (mode REDUCE di Langkah 3.4)
+  // - BUILD: mode harus null
+  if (input.kind === "BREAK" && input.mode !== "ABSTAIN") {
     throw new HabitsError(
-      "Saat ini hanya kebiasaan BREAK dengan mode ABSTAIN yang didukung (Fase 1).",
+      "Saat ini untuk kebiasaan BREAK hanya mode ABSTAIN yang didukung (mode REDUCE aktif di Langkah 3.4).",
       "NOT_SUPPORTED_YET",
+      400,
+    );
+  }
+
+  if (input.kind === "BUILD" && input.mode != null) {
+    throw new HabitsError(
+      "Kebiasaan BUILD tidak memerlukan mode (mode harus bernilai null).",
+      "VALIDATION_ERROR",
       400,
     );
   }
@@ -73,7 +83,7 @@ export async function createTrackedHabitService(
         displayAlias: input.displayAlias,
         category: input.category,
         kind: input.kind,
-        mode: input.mode,
+        mode: input.kind === "BUILD" ? null : input.mode,
         status: "ACTIVE",
         stage: "PREPARATION",
         timezone: input.timezone,
@@ -83,39 +93,60 @@ export async function createTrackedHabitService(
         nextCheckinAt,
         privacyLevel: input.privacyLevel,
         areaId: input.areaId,
+        identityStatement: input.identityStatement,
       },
     });
 
-    // Validasi T-19: Kategori berisiko tinggi wajib mengakui layar keselamatan
-    if (input.highRiskCategory && !input.safetyAck && !input.safetyAckAt) {
-      throw new HabitsError(
-        "Kebiasaan dengan kategori berisiko tinggi memerlukan konfirmasi layar keselamatan sebelum dapat diaktifkan.",
-        "SAFETY_ACK_REQUIRED",
-        400,
-      );
+    let breakProfile = null;
+    let buildProfile = null;
+
+    if (input.kind === "BREAK") {
+      // Validasi T-19: Kategori berisiko tinggi wajib mengakui layar keselamatan
+      if (input.highRiskCategory && !input.safetyAck && !input.safetyAckAt) {
+        throw new HabitsError(
+          "Kebiasaan dengan kategori berisiko tinggi memerlukan konfirmasi layar keselamatan sebelum dapat diaktifkan.",
+          "SAFETY_ACK_REQUIRED",
+          400,
+        );
+      }
+
+      const safetyAckAt = input.highRiskCategory
+        ? (input.safetyAckAt ?? (input.safetyAck ? clock.now() : null))
+        : null;
+
+      breakProfile = await tx.habitBreakProfile.create({
+        data: {
+          habitId: habit.id,
+          whyReasons: input.whyReasons ?? [],
+          futureSelfNote: input.futureSelfNote,
+          baselinePerDay: input.baselinePerDay,
+          costPerOccurrence: input.costPerOccurrence,
+          currency: input.currency ?? "IDR",
+          minutesPerOccurrence: input.minutesPerOccurrence,
+          relapseLapseCount: input.relapseLapseCount ?? 3,
+          relapseWindowDays: input.relapseWindowDays ?? 7,
+          highRiskCategory: input.highRiskCategory ?? false,
+          safetyAckAt,
+          environmentChecklist: input.environmentChecklist ?? [],
+        },
+      });
+    } else {
+      // BUILD
+      buildProfile = await tx.habitBuildProfile.create({
+        data: {
+          habitId: habit.id,
+          anchorText: input.anchorText,
+          tinyBehavior: input.tinyBehavior!,
+          celebrationText: input.celebrationText,
+          versions: input.versions ?? {},
+          scheduleType: input.scheduleType ?? "DAILY",
+          daysOfWeek: input.daysOfWeek ?? [],
+          timesPerWeek: input.timesPerWeek,
+          restDays: input.restDays ?? [],
+          replacesHabitId: input.replacesHabitId,
+        },
+      });
     }
-
-    const safetyAckAt = input.highRiskCategory
-      ? (input.safetyAckAt ?? (input.safetyAck ? clock.now() : null))
-      : null;
-
-    // 2. Buat HabitBreakProfile
-    const breakProfile = await tx.habitBreakProfile.create({
-      data: {
-        habitId: habit.id,
-        whyReasons: input.whyReasons,
-        futureSelfNote: input.futureSelfNote,
-        baselinePerDay: input.baselinePerDay,
-        costPerOccurrence: input.costPerOccurrence,
-        currency: input.currency,
-        minutesPerOccurrence: input.minutesPerOccurrence,
-        relapseLapseCount: input.relapseLapseCount,
-        relapseWindowDays: input.relapseWindowDays,
-        highRiskCategory: input.highRiskCategory,
-        safetyAckAt,
-        environmentChecklist: input.environmentChecklist,
-      },
-    });
 
     // 3. Buat HabitStats awal
     const stats = await tx.habitStats.create({
@@ -126,6 +157,9 @@ export async function createTrackedHabitService(
         confirmedCleanDays: 0,
         totalLapses: 0,
         urgesResisted: 0,
+        cleanRate30d: null,
+        consistency30d: null,
+        resilientStreak: 0,
         relapsePattern: false,
       },
     });
@@ -133,6 +167,7 @@ export async function createTrackedHabitService(
     return {
       ...habit,
       breakProfile,
+      buildProfile,
       stats,
     };
   });
@@ -233,6 +268,7 @@ export async function setHabitStatusService(
     },
     include: {
       breakProfile: true,
+      buildProfile: true,
       stats: true,
     },
   });

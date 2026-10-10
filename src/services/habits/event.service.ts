@@ -19,9 +19,19 @@ export async function logHabitEventService(
   userId: string,
   habitId: string,
   rawInput: LogHabitEventInput,
-  idempotencyKey?: string | null,
+  idempotencyKey?: string | null | Clock,
   clock: Clock = new SystemClock(),
 ) {
+  let resolvedIdempotencyKey: string | null = null;
+  let resolvedClock = clock;
+
+  if (idempotencyKey && typeof idempotencyKey === "object" && "now" in idempotencyKey) {
+    resolvedClock = idempotencyKey as Clock;
+    resolvedIdempotencyKey = null;
+  } else if (typeof idempotencyKey === "string") {
+    resolvedIdempotencyKey = idempotencyKey;
+  }
+
   const parsed = logHabitEventSchema.safeParse(rawInput);
   if (!parsed.success) {
     throw new HabitsError(
@@ -32,7 +42,7 @@ export async function logHabitEventService(
   }
 
   const input = parsed.data;
-  const now = clock.now();
+  const now = resolvedClock.now();
   const occurredAt = input.occurredAt ?? now;
 
   return prisma.$transaction(async (tx) => {
@@ -73,12 +83,12 @@ export async function logHabitEventService(
     }
 
     // 4. Pemeriksaan Idempotensi
-    if (idempotencyKey) {
+    if (resolvedIdempotencyKey) {
       const existing = await tx.habitEvent.findUnique({
         where: {
           userId_idempotencyKey: {
             userId,
-            idempotencyKey,
+            idempotencyKey: resolvedIdempotencyKey,
           },
         },
       });
@@ -117,7 +127,7 @@ export async function logHabitEventService(
           note: input.note,
           meta: metaRecord as Prisma.InputJsonValue,
           source: input.source,
-          idempotencyKey: idempotencyKey ?? null,
+          idempotencyKey: resolvedIdempotencyKey ?? null,
         },
       });
 
@@ -195,7 +205,7 @@ export async function logHabitEventService(
           note: input.note,
           meta: metaRecord as Prisma.InputJsonValue,
           source: input.source,
-          idempotencyKey: idempotencyKey ?? null,
+          idempotencyKey: resolvedIdempotencyKey ?? null,
         },
       });
 
@@ -208,6 +218,32 @@ export async function logHabitEventService(
           },
           data: {
             status: "LAPSED",
+          },
+        });
+      }
+
+      if (input.type === "COMPLETION") {
+        await tx.habitCheckin.updateMany({
+          where: {
+            habitId,
+            windowStart: { lte: occurredAt },
+            windowEnd: { gt: occurredAt },
+          },
+          data: {
+            status: "DONE",
+          },
+        });
+      }
+
+      if (input.type === "SKIP") {
+        await tx.habitCheckin.updateMany({
+          where: {
+            habitId,
+            windowStart: { lte: occurredAt },
+            windowEnd: { gt: occurredAt },
+          },
+          data: {
+            status: "SKIPPED",
           },
         });
       }

@@ -3,6 +3,7 @@
 import React, { useEffect, useState, useCallback } from "react";
 import { HabitCardV2, type TrackedHabitItem } from "./HabitCardV2";
 import { BreakDashboard } from "./BreakDashboard";
+import { BuildDashboard } from "./BuildDashboard";
 import { CreateHabitWizard } from "./CreateHabitWizard";
 
 interface PendingCheckinItem {
@@ -13,6 +14,7 @@ interface PendingCheckinItem {
   habit: {
     id: string;
     name: string;
+    kind?: "BREAK" | "BUILD";
     displayAlias?: string | null;
   };
 }
@@ -104,6 +106,8 @@ export function HabitsV2App({ userTimezone = "Asia/Jakarta" }: HabitsV2AppProps)
     };
   }, []);
 
+  const selectedHabit = habits.find((h) => h.id === selectedHabitId);
+
   if (view === "WIZARD") {
     return (
       <div className="py-6">
@@ -123,14 +127,25 @@ export function HabitsV2App({ userTimezone = "Asia/Jakarta" }: HabitsV2AppProps)
   if (view === "DASHBOARD" && selectedHabitId) {
     return (
       <div className="py-6">
-        <BreakDashboard
-          habitId={selectedHabitId}
-          onBack={() => {
-            setView("LIST");
-            setSelectedHabitId(null);
-            loadData();
-          }}
-        />
+        {selectedHabit?.kind === "BUILD" ? (
+          <BuildDashboard
+            habitId={selectedHabitId}
+            onBack={() => {
+              setView("LIST");
+              setSelectedHabitId(null);
+              loadData();
+            }}
+          />
+        ) : (
+          <BreakDashboard
+            habitId={selectedHabitId}
+            onBack={() => {
+              setView("LIST");
+              setSelectedHabitId(null);
+              loadData();
+            }}
+          />
+        )}
       </div>
     );
   }
@@ -144,25 +159,25 @@ export function HabitsV2App({ userTimezone = "Asia/Jakarta" }: HabitsV2AppProps)
             <h1 className="text-2xl font-black text-white tracking-tight sm:text-3xl">
               Habits Tracker
             </h1>
-            <span className="px-2 py-0.5 rounded-full bg-indigo-500/20 border border-indigo-500/40 text-[10px] font-bold text-indigo-300">
-              v2 • Break &amp; Abstain
+            <span className="px-2 py-0.5 rounded-full bg-emerald-500/20 border border-emerald-500/40 text-[10px] font-bold text-emerald-300">
+              v2 • Build &amp; Break
             </span>
           </div>
           <p className="text-xs text-slate-400">
-            Hentikan kebiasaan destruktif dengan pemantauan presisi dan pendekatan psikologis tanpa menghakimi.
+            Bangun kebiasaan positif dengan metode Tiny Habits atau hentikan kebiasaan lama tanpa rasa bersalah.
           </p>
         </div>
 
         <button
           type="button"
           onClick={() => setView("WIZARD")}
-          className="inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-indigo-600 to-emerald-600 hover:from-indigo-500 hover:to-emerald-500 px-5 py-2.5 text-xs font-bold text-white shadow-lg transition-all focus:outline-none focus:ring-2 focus:ring-indigo-400"
+          className="inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-emerald-600 to-indigo-600 hover:from-emerald-500 hover:to-indigo-500 px-5 py-2.5 text-xs font-bold text-white shadow-lg transition-all focus:outline-none focus:ring-2 focus:ring-emerald-400"
         >
-          + Tambah Kebiasaan Break
+          + Buat Kebiasaan Baru
         </button>
       </div>
 
-      {/* Global Pending Check-ins Alert (jika ada) */}
+      {/* Global Pending Check-ins Alert */}
       {pendingCheckins.length > 0 && (
         <div className="rounded-2xl border border-amber-500/30 bg-amber-500/10 p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div className="flex items-center gap-2.5 text-xs text-amber-200">
@@ -197,7 +212,7 @@ export function HabitsV2App({ userTimezone = "Asia/Jakarta" }: HabitsV2AppProps)
       {loading ? (
         <div className="flex h-48 items-center justify-center text-slate-400">
           <div className="flex flex-col items-center gap-2">
-            <div className="h-8 w-8 animate-spin rounded-full border-2 border-indigo-500 border-t-transparent" />
+            <div className="h-8 w-8 animate-spin rounded-full border-2 border-emerald-500 border-t-transparent" />
             <span className="text-xs">Memuat daftar kebiasaan...</span>
           </div>
         </div>
@@ -207,15 +222,15 @@ export function HabitsV2App({ userTimezone = "Asia/Jakarta" }: HabitsV2AppProps)
             🌱
           </div>
           <h3 className="text-base font-bold text-white mb-1">
-            Belum Ada Kebiasaan Break
+            Belum Ada Kebiasaan yang Dilacak
           </h3>
           <p className="text-xs text-slate-400 max-w-sm mx-auto mb-5 leading-relaxed">
-            Mulai langkah pemulihan pertamamu dengan mencatat kebiasaan yang ingin dihentikan secara bertahap.
+            Mulai langkah perbaikan dirimu dengan membangun kebiasaan baru yang mudah atau menghentikan kebiasaan lama.
           </p>
           <button
             type="button"
             onClick={() => setView("WIZARD")}
-            className="rounded-xl bg-indigo-600 hover:bg-indigo-500 px-5 py-2.5 text-xs font-bold text-white shadow-md transition-colors"
+            className="rounded-xl bg-emerald-600 hover:bg-emerald-500 px-5 py-2.5 text-xs font-bold text-white shadow-md transition-colors"
           >
             Mulai Buat Kebiasaan
           </button>

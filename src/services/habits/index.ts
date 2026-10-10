@@ -8,3 +8,4 @@ export * from "./coping-plan.service";
 export * from "./relapse.service";
 export * from "./safety.service";
 export * from "./milestone.service";
+export * from "./automaticity-survey.service";
