@@ -16,12 +16,14 @@ export interface MigrationOptions {
 export interface HabitStreakComparison {
   habitId: string;
   title: string;
+  kind?: "BREAK" | "BUILD";
   legacyStreakDays: number;
   newStreakDays: number;
   streakDiff: number;
   totalLogs: number;
   cleanCheckins: number;
   lapseEvents: number;
+  completionEvents?: number;
 }
 
 export interface MigrationReport {
@@ -30,9 +32,11 @@ export interface MigrationReport {
   totalLegacyHabits: number;
   badHabitsCount: number;
   goodHabitsDeferredCount: number;
+  goodHabitsProcessedCount?: number;
   totalLogsProcessed: number;
   cleanCheckinsCreated: number;
   lapseEventsCreated: number;
+  completionEventsCreated?: number;
   streakComparisons: HabitStreakComparison[];
   exportFilePath?: string;
 }
@@ -83,7 +87,7 @@ export async function runHabitsLegacyMigration(
 
   console.log(`Ditemukan ${legacyHabits.length} kebiasaan lama:`);
   console.log(`- ${badHabits.length} kebiasaan BAD (Break/Abstain) siap diproses`);
-  console.log(`- ${goodHabits.length} kebiasaan GOOD (Build) ditunda hingga Fase 3`);
+  console.log(`- ${goodHabits.length} kebiasaan GOOD (Build) siap diproses`);
 
   // JALUR B: Ekspor cadangan JSON
   if (mode === "B") {
@@ -346,21 +350,234 @@ export async function runHabitsLegacyMigration(
     }
   }
 
+  // Migrasi Habit(GOOD) -> TrackedHabit(BUILD) (Langkah 3.7)
+  let goodHabitsProcessedCount = 0;
+  let completionEventsCreated = 0;
+
+  for (const habit of goodHabits) {
+    const timezone = habit.user.preference?.timezone || "Asia/Jakarta";
+    const checkinTime = habit.checkInTime || "20:00";
+    const { hour: chHour, minute: chMinute } = parseCheckinTime(checkinTime);
+
+    const startedAt = habit.startDate || habit.createdAt;
+    const currentWindowStart = startedAt;
+    const nextCheckinAt = nextCheckinAfter(currentWindowStart, timezone, checkinTime);
+
+    const anchorText = habit.cue?.trim() || undefined;
+    const tinyBehavior = habit.description?.trim() || habit.title;
+    const celebrationText = habit.reward?.trim() || undefined;
+
+    const buildProfileData = {
+      anchorText,
+      tinyBehavior,
+      celebrationText,
+      scheduleType: "DAILY" as const,
+      daysOfWeek: [1, 2, 3, 4, 5, 6, 7],
+      versions: {},
+    };
+
+    const eventsToCreate: Array<{
+      type: "COMPLETION";
+      occurredAt: Date;
+      quantity: number;
+      source: "BACKFILL";
+      mood: number | null;
+      note: string | null;
+      meta: Record<string, unknown>;
+    }> = [];
+
+    const checkinsToCreate: Array<{
+      windowStart: Date;
+      windowEnd: Date;
+      periodDate: Date;
+      status: "DONE" | "MISSED";
+      mood: number | null;
+      note: string | null;
+    }> = [];
+
+    for (const log of habit.logs) {
+      totalLogsProcessed++;
+      const logDateDt = DateTime.fromJSDate(log.date, { zone: timezone }).startOf("day");
+      const windowEnd = logDateDt.set({ hour: chHour, minute: chMinute, second: 0, millisecond: 0 });
+      const windowStart = windowEnd.minus({ days: 1 });
+
+      if (log.isSuccess) {
+        cleanCheckinsCreated++;
+        completionEventsCreated++;
+        checkinsToCreate.push({
+          windowStart: windowStart.toJSDate(),
+          windowEnd: windowEnd.toJSDate(),
+          periodDate: logDateDt.toJSDate(),
+          status: "DONE",
+          mood: log.mood,
+          note: log.notes,
+        });
+
+        const eventTime = windowStart.plus({ hours: 12 });
+
+        eventsToCreate.push({
+          type: "COMPLETION",
+          occurredAt: eventTime.toJSDate(),
+          quantity: 1,
+          source: "BACKFILL",
+          mood: log.mood,
+          note: log.notes,
+          meta: {
+            legacyLogId: log.id,
+          },
+        });
+      } else {
+        checkinsToCreate.push({
+          windowStart: windowStart.toJSDate(),
+          windowEnd: windowEnd.toJSDate(),
+          periodDate: logDateDt.toJSDate(),
+          status: "MISSED",
+          mood: log.mood,
+          note: log.notes,
+        });
+      }
+    }
+
+    const now = new Date();
+    const computed = computeStats(
+      checkinsToCreate.map((c) => ({
+        windowStart: c.windowStart,
+        windowEnd: c.windowEnd,
+        status: c.status,
+      })),
+      eventsToCreate.map((e) => ({
+        type: e.type,
+        occurredAt: e.occurredAt,
+        deletedAt: null,
+        outcome: null,
+        quantity: e.quantity,
+      })),
+      {
+        kind: "BUILD",
+        mode: null,
+        buildProfile: buildProfileData,
+        timezone,
+      },
+      now,
+    );
+
+    const legacyCurrentStreak = habit.streaks.find((s) => s.isCurrent)?.days ?? 0;
+    const streakDiff = computed.currentStreakDays - legacyCurrentStreak;
+
+    streakComparisons.push({
+      habitId: habit.id,
+      title: habit.title,
+      kind: "BUILD",
+      legacyStreakDays: legacyCurrentStreak,
+      newStreakDays: computed.currentStreakDays,
+      streakDiff,
+      totalLogs: habit.logs.length,
+      cleanCheckins: checkinsToCreate.filter((c) => c.status === "DONE").length,
+      lapseEvents: 0,
+      completionEvents: eventsToCreate.length,
+    });
+
+    if (!dryRun) {
+      await client.$transaction(async (tx) => {
+        const tracked = await tx.trackedHabit.create({
+          data: {
+            userId: habit.userId,
+            name: habit.title,
+            kind: "BUILD",
+            mode: null,
+            status: habit.isActive ? "ACTIVE" : "PAUSED",
+            stage: "ACTION",
+            timezone,
+            checkinLocalTime: checkinTime,
+            startedAt,
+            currentWindowStart,
+            nextCheckinAt,
+            privacyLevel: 1,
+            buildProfile: {
+              create: {
+                anchorText: buildProfileData.anchorText,
+                tinyBehavior: buildProfileData.tinyBehavior,
+                celebrationText: buildProfileData.celebrationText,
+                scheduleType: buildProfileData.scheduleType,
+                daysOfWeek: buildProfileData.daysOfWeek,
+                versions: buildProfileData.versions,
+              },
+            },
+          },
+        });
+
+        for (const c of checkinsToCreate) {
+          await tx.habitCheckin.upsert({
+            where: {
+              habitId_periodDate: {
+                habitId: tracked.id,
+                periodDate: c.periodDate,
+              },
+            },
+            update: {},
+            create: {
+              habitId: tracked.id,
+              windowStart: c.windowStart,
+              windowEnd: c.windowEnd,
+              periodDate: c.periodDate,
+              status: c.status,
+              mood: c.mood,
+              note: c.note,
+            },
+          });
+        }
+
+        for (const e of eventsToCreate) {
+          await tx.habitEvent.create({
+            data: {
+              habitId: tracked.id,
+              userId: habit.userId,
+              type: e.type,
+              occurredAt: e.occurredAt,
+              quantity: e.quantity,
+              source: e.source,
+              mood: e.mood,
+              note: e.note,
+              meta: e.meta as Prisma.InputJsonValue,
+            },
+          });
+        }
+
+        await tx.habitStats.create({
+          data: {
+            habitId: tracked.id,
+            currentStreakDays: computed.currentStreakDays,
+            longestStreakDays: computed.longestStreakDays,
+            confirmedCleanDays: computed.confirmedCleanDays,
+            consistency30d: computed.consistency30d,
+            resilientStreak: computed.resilientStreak,
+            totalLapses: 0,
+            urgesResisted: 0,
+          },
+        });
+      });
+    }
+
+    goodHabitsProcessedCount++;
+  }
+
   // Ringkasan Laporan
   console.log("\n----------------------------------------------------------");
   console.log("LAPORAN HASIL MIGRASI KEBIASAAN LAMA (JALUR A)");
   console.log("----------------------------------------------------------");
   console.log(`Total Kebiasaan Lama: ${legacyHabits.length}`);
   console.log(`Kebiasaan BAD Diproses: ${badHabits.length}`);
-  console.log(`Kebiasaan GOOD Ditunda: ${goodHabits.length}`);
+  console.log(`Kebiasaan GOOD Diproses: ${goodHabitsProcessedCount}`);
   console.log(`Total Log Diproses: ${totalLogsProcessed}`);
-  console.log(`  - Checkin CLEAN dibuat: ${cleanCheckinsCreated}`);
+  console.log(`  - Checkin CLEAN / COMPLETED dibuat: ${cleanCheckinsCreated}`);
   console.log(`  - Event LAPSE dibuat: ${lapseEventsCreated}`);
+  console.log(`  - Event COMPLETION dibuat: ${completionEventsCreated}`);
   console.log("\nRingkasan Selisih Streak:");
   for (const s of streakComparisons) {
     const diffSign = s.streakDiff > 0 ? `+${s.streakDiff}` : `${s.streakDiff}`;
+    const extraLabel = s.kind === "BUILD" ? `[BUILD]` : `[BREAK]`;
     console.log(
-      `  • [${s.title}] (ID: ${s.habitId}): Legacy=${s.legacyStreakDays}d -> New=${s.newStreakDays}d (Selisih: ${diffSign}) | Logs: ${s.totalLogs} (${s.cleanCheckins} check-ins, ${s.lapseEvents} lapse)`
+      `  • ${extraLabel} [${s.title}] (ID: ${s.habitId}): Legacy=${s.legacyStreakDays}d -> New=${s.newStreakDays}d (Selisih: ${diffSign}) | Logs: ${s.totalLogs} (${s.cleanCheckins} check-ins, ${s.lapseEvents} lapse, ${s.completionEvents ?? 0} completion)`
     );
   }
   console.log("----------------------------------------------------------\n");
@@ -370,10 +587,12 @@ export async function runHabitsLegacyMigration(
     dryRun,
     totalLegacyHabits: legacyHabits.length,
     badHabitsCount: badHabits.length,
-    goodHabitsDeferredCount: goodHabits.length,
+    goodHabitsDeferredCount: 0,
+    goodHabitsProcessedCount,
     totalLogsProcessed,
     cleanCheckinsCreated,
     lapseEventsCreated,
+    completionEventsCreated,
     streakComparisons,
   };
 }

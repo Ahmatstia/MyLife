@@ -154,16 +154,40 @@ describe("Legacy Habits Migration Script Tests (Langkah 1.7)", () => {
         ],
       });
 
-      // 2. Buat Habit GOOD lama (harus ditunda dan tidak dimigrasikan ke Break)
+      // 2. Buat Habit GOOD lama (Langkah 3.7: dimigrasikan ke Build)
       const goodHabit = await prisma.habit.create({
         data: {
           userId: testUserId,
           title: "Olahraga Pagi 15 Menit",
+          description: "Lari santai keliling komplek",
           type: "GOOD",
           checkInTime: "07:00",
+          cue: "Setelah bangun tidur jam 6",
+          reward: "Sarapan bubur ayam hangat",
         },
       });
       goodHabitId = goodHabit.id;
+
+      await prisma.habitLog.createMany({
+        data: [
+          {
+            userId: testUserId,
+            habitId: goodHabit.id,
+            date: new Date("2026-10-01T00:00:00.000Z"),
+            isSuccess: true,
+            mood: 5,
+            notes: "Jogging 15 menit selesai",
+          },
+          {
+            userId: testUserId,
+            habitId: goodHabit.id,
+            date: new Date("2026-10-02T00:00:00.000Z"),
+            isSuccess: false,
+            mood: 3,
+            notes: "Hujan deras pagi ini",
+          },
+        ],
+      });
     });
 
     it("menjalankan dry-run dan melaporkan selisih streak tanpa menulis ke DB baru", async () => {
@@ -179,7 +203,7 @@ describe("Legacy Habits Migration Script Tests (Langkah 1.7)", () => {
       expect(report.mode).toBe("A");
       expect(report.dryRun).toBe(true);
       expect(report.badHabitsCount).toBeGreaterThanOrEqual(1);
-      expect(report.goodHabitsDeferredCount).toBeGreaterThanOrEqual(1);
+      expect(report.goodHabitsProcessedCount).toBeGreaterThanOrEqual(1);
 
       // Cari perbandingan streak untuk kebiasaan uji
       const comparison = report.streakComparisons.find((s) => s.habitId === badHabitId);
@@ -251,14 +275,41 @@ describe("Legacy Habits Migration Script Tests (Langkah 1.7)", () => {
       expect(tracked!.stats!.confirmedCleanDays).toBe(2);
       expect(tracked!.stats!.totalLapses).toBe(1);
 
-      // Verifikasi kebiasaan GOOD tidak dibuat di TrackedHabit
+      // Verifikasi kebiasaan GOOD berhasil dimigrasikan ke TrackedHabit(BUILD) (Langkah 3.7)
       const goodTracked = await prisma.trackedHabit.findFirst({
         where: {
           userId: testUserId,
           name: "Olahraga Pagi 15 Menit",
         },
+        include: {
+          buildProfile: true,
+          checkins: true,
+          events: true,
+          stats: true,
+        },
       });
-      expect(goodTracked).toBeNull();
+      expect(goodTracked).not.toBeNull();
+      expect(goodTracked!.kind).toBe("BUILD");
+      expect(goodTracked!.checkinLocalTime).toBe("07:00");
+      expect(goodTracked!.buildProfile).toBeDefined();
+      expect(goodTracked!.buildProfile?.anchorText).toBe("Setelah bangun tidur jam 6");
+      expect(goodTracked!.buildProfile?.tinyBehavior).toBe("Lari santai keliling komplek");
+      expect(goodTracked!.buildProfile?.celebrationText).toBe("Sarapan bubur ayam hangat");
+      expect(goodTracked!.buildProfile?.scheduleType).toBe("DAILY");
+
+      // Verifikasi checkin Build (1 DONE, 1 MISSED)
+      expect(goodTracked!.checkins.length).toBe(2);
+      expect(goodTracked!.checkins.filter((c) => c.status === "DONE").length).toBe(1);
+      expect(goodTracked!.checkins.filter((c) => c.status === "MISSED").length).toBe(1);
+
+      // Verifikasi event COMPLETION
+      expect(goodTracked!.events.length).toBe(1);
+      expect(goodTracked!.events[0].type).toBe("COMPLETION");
+      expect(goodTracked!.events[0].source).toBe("BACKFILL");
+
+      // Verifikasi stats Build
+      expect(goodTracked!.stats).toBeDefined();
+      expect(goodTracked!.stats!.confirmedCleanDays).toBe(1);
       expect(goodHabitId).toBeDefined();
     });
   });
