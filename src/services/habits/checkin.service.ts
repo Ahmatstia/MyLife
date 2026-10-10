@@ -201,6 +201,8 @@ export async function listPendingCheckinsForUserService(userId: string) {
           displayAlias: true,
           timezone: true,
           checkinLocalTime: true,
+          kind: true,
+          privacyLevel: true,
         },
       },
     },

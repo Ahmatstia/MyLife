@@ -17,6 +17,7 @@ import {
   acquireHabitAdvisoryLock,
 } from "@/repositories/habits/tracked-habit.repository";
 import { recomputeHabitStats } from "./stats.service";
+import { encryptText, decryptText } from "@/lib/habits/safety/crypto";
 
 export class HabitsError extends Error {
   constructor(
@@ -97,6 +98,7 @@ export async function createTrackedHabitService(
         nextCheckinAt,
         privacyLevel: input.privacyLevel,
         areaId: input.areaId,
+        goalId: input.goalId,
         identityStatement: input.identityStatement,
       },
     });
@@ -122,7 +124,7 @@ export async function createTrackedHabitService(
         data: {
           habitId: habit.id,
           whyReasons: input.whyReasons ?? [],
-          futureSelfNote: input.futureSelfNote,
+          futureSelfNote: encryptText(input.futureSelfNote),
           baselinePerDay: input.baselinePerDay,
           costPerOccurrence: input.costPerOccurrence,
           currency: input.currency ?? "IDR",
@@ -383,6 +385,43 @@ export async function setHabitStatusService(
   });
 }
 
+/**
+ * Langkah 5.2: Hapus kebiasaan (soft-delete ARCHIVED atau hard delete permanen)
+ */
+export async function deleteTrackedHabitService(
+  userId: string,
+  habitId: string,
+  options?: boolean | { hard?: boolean },
+  client = prisma,
+  clock: Clock = new SystemClock(),
+) {
+  const isHard = typeof options === "boolean" ? options : (options?.hard ?? false);
+  const existing = await client.trackedHabit.findFirst({
+    where: { id: habitId, userId },
+  });
+
+  if (!existing) {
+    throw new HabitsError("Kebiasaan tidak ditemukan", "NOT_FOUND", 404);
+  }
+
+  if (isHard) {
+    await client.trackedHabit.delete({
+      where: { id: habitId },
+    });
+    return { success: true, hard: true, hardDeleted: true, deletedHabitId: habitId };
+  }
+
+  const archived = await client.trackedHabit.update({
+    where: { id: habitId },
+    data: {
+      status: "ARCHIVED",
+      archivedAt: clock.now(),
+    },
+  });
+
+  return { success: true, hard: false, hardDeleted: false, habit: archived };
+}
+
 export async function getTrackedHabitDashboardService(
   userId: string,
   habitId: string,
@@ -421,6 +460,10 @@ export async function getTrackedHabitDashboardService(
   const activeRelapsePrompt = Boolean(
     habit.stats?.relapsePattern && (!relapseAckAt || lastLapseAt > relapseAckAt),
   );
+
+  if (habit.breakProfile?.futureSelfNote) {
+    habit.breakProfile.futureSelfNote = decryptText(habit.breakProfile.futureSelfNote);
+  }
 
   return {
     habit,

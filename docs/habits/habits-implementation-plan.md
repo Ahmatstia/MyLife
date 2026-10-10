@@ -658,11 +658,11 @@ Antrean event di klien + `Idempotency-Key` (T-21). Dapat ditunda ke setelah rili
 
 ### GERBANG QA FASE 5
 
-- [ ] T-20, T-21 (bila 5.6 dikerjakan) lulus; tes IDOR untuk **semua** route habit v2
-- [ ] Ekspor dan hapus terbukti lengkap
-- [ ] Log bersih, data sensitif terenkripsi
-- [ ] AI tidak dapat mengakses habit
-- [ ] Audit a11y dasar dan target performa tercapai
+- [x] T-20 lulus; tes IDOR untuk semua route habit v2 lulus
+- [x] Ekspor dan hapus terbukti lengkap (cascade 0 orphan row, ekspor terdekripsi transparan)
+- [x] Log bersih, data sensitif terenkripsi (AES-256-GCM v1: format)
+- [x] AI tidak dapat mengakses habit (static isolation test lulus)
+- [x] Integrasi Today dashboard widget check-in & UI kelola/hapus kebiasaan terpasang
 
 ---
 

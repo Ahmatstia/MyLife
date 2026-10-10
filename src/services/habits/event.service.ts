@@ -12,6 +12,7 @@ import { recomputeHabitStats } from "./stats.service";
 import { HabitsError } from "./habit-v2.service";
 import { detectCrisisKeywords } from "@/lib/habits/safety/crisis";
 import { dailyLimit } from "@/lib/habits/reduce";
+import { encryptText, decryptText } from "@/lib/habits/safety/crypto";
 
 const FIVE_MINUTES_MS = 5 * 60 * 1000;
 const SEVEN_DAYS_MS = 7 * 24 * 60 * 60 * 1000;
@@ -95,7 +96,12 @@ export async function logHabitEventService(
       });
       if (existing) {
         // Idempoten: kembalikan event yang sudah ada tanpa menduplikasi
-        return existing;
+        return {
+          ...existing,
+          note: decryptText(existing.note),
+          locationLabel: decryptText(existing.locationLabel),
+          withWhom: decryptText(existing.withWhom),
+        };
       }
     }
 
@@ -123,9 +129,9 @@ export async function logHabitEventService(
           severity: input.severity,
           mood: input.mood,
           halt: input.halt,
-          locationLabel: input.locationLabel,
-          withWhom: input.withWhom,
-          note: input.note,
+          locationLabel: encryptText(input.locationLabel),
+          withWhom: encryptText(input.withWhom),
+          note: encryptText(input.note),
           meta: metaRecord as Prisma.InputJsonValue,
           source: input.source,
           idempotencyKey: resolvedIdempotencyKey ?? null,
@@ -142,9 +148,9 @@ export async function logHabitEventService(
           severity: input.severity ?? "SLIP",
           mood: input.mood,
           halt: input.halt,
-          locationLabel: input.locationLabel,
-          withWhom: input.withWhom,
-          note: input.note,
+          locationLabel: encryptText(input.locationLabel),
+          withWhom: encryptText(input.withWhom),
+          note: encryptText(input.note),
           meta: {
             ...metaRecord,
             relatedEventId: urgeEvent.id,
@@ -201,9 +207,9 @@ export async function logHabitEventService(
           severity: input.severity,
           mood: input.mood,
           halt: input.halt,
-          locationLabel: input.locationLabel,
-          withWhom: input.withWhom,
-          note: input.note,
+          locationLabel: encryptText(input.locationLabel),
+          withWhom: encryptText(input.withWhom),
+          note: encryptText(input.note),
           meta: metaRecord as Prisma.InputJsonValue,
           source: input.source,
           idempotencyKey: resolvedIdempotencyKey ?? null,
@@ -324,7 +330,12 @@ export async function logHabitEventService(
     // 6. Hitung ulang statistik kebiasaan
     await recomputeHabitStats(habitId, tx, clock);
 
-    return event;
+    return {
+      ...event,
+      note: decryptText(event.note),
+      locationLabel: decryptText(event.locationLabel),
+      withWhom: decryptText(event.withWhom),
+    };
   });
 }
 
@@ -442,7 +453,7 @@ export async function updateHabitEventService(
     const updated = await tx.habitEvent.update({
       where: { id: eventId },
       data: {
-        note: input.note !== undefined ? input.note : event.note,
+        note: input.note !== undefined ? encryptText(input.note) : event.note,
         mood: input.mood !== undefined ? input.mood : event.mood,
         halt: input.halt !== undefined ? input.halt : event.halt,
         severity: input.severity !== undefined ? input.severity : event.severity,
@@ -464,6 +475,11 @@ export async function updateHabitEventService(
     // 4. Hitung ulang statistik jika severity atau data relevan berubah
     await recomputeHabitStats(habitId, tx, clock);
 
-    return updated;
+    return {
+      ...updated,
+      note: decryptText(updated.note),
+      locationLabel: decryptText(updated.locationLabel),
+      withWhom: decryptText(updated.withWhom),
+    };
   });
 }

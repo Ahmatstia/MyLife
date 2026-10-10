@@ -25,6 +25,7 @@ export const createTrackedHabitSchema = z.object({
     .transform((val) => (val ? new Date(val) : undefined)),
     privacyLevel: z.number().int().min(0).max(2).default(1),
     areaId: z.string().cuid().optional().nullable(),
+    goalId: z.string().cuid().optional().nullable(),
     identityStatement: z.string().trim().max(500).optional().nullable(),
 
     // Profile data untuk kebiasaan BREAK
@@ -113,6 +114,7 @@ export const updateTrackedHabitSchema = z.object({
   timezone: z.string().refine((tz) => IANAZone.isValidZone(tz)).optional(),
   privacyLevel: z.number().int().min(0).max(2).optional(),
   areaId: z.string().cuid().optional().nullable(),
+  goalId: z.string().cuid().optional().nullable(),
   identityStatement: z.string().trim().max(500).optional().nullable(),
   reduceDailyLimit: z.number().int().nonnegative().optional().nullable(),
   reduceStepPercent: z.number().int().min(1).max(100).optional().nullable(),

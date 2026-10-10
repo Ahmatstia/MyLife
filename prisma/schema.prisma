@@ -260,6 +260,7 @@ model Goal {
   objectives  Objective[]
   reviews     Review[]
   tasks       Task[]
+  trackedHabits TrackedHabit[]
 
   @@index([userId, status])
   @@index([userId, areaId])
@@ -863,6 +864,8 @@ model TrackedHabit {
   user               User        @relation(fields: [userId], references: [id], onDelete: Cascade)
   areaId             String?
   area               Area?       @relation(fields: [areaId], references: [id], onDelete: SetNull)
+  goalId             String?
+  goal               Goal?       @relation(fields: [goalId], references: [id], onDelete: SetNull)
   kind               HabitKind
   mode               HabitMode?
   name               String
@@ -896,6 +899,7 @@ model TrackedHabit {
   reflections         HabitReflection[]
 
   @@index([userId, status])
+  @@index([userId, goalId])
 }
 
 model HabitBreakProfile {

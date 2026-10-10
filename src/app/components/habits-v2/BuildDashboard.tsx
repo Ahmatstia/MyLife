@@ -7,6 +7,7 @@ import { MilestoneCelebrationModal } from "./MilestoneCelebrationModal";
 import { HabitInsightsModal } from "./HabitInsightsModal";
 import { HabitRemindersModal } from "./HabitRemindersModal";
 import { WeeklyReflectionModal } from "./WeeklyReflectionModal";
+import { DeleteHabitModal } from "./DeleteHabitModal";
 
 interface BuildDashboardData {
   habit: {
@@ -79,6 +80,7 @@ export function BuildDashboard({ habitId, onBack }: BuildDashboardProps) {
   const [showInsights, setShowInsights] = useState(false);
   const [showReminders, setShowReminders] = useState(false);
   const [showReflection, setShowReflection] = useState(false);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [showSurveyModal, setShowSurveyModal] = useState(false);
   const [surveyInfo, setSurveyInfo] = useState<{
     surveys: Array<{ id: string; score: number; answeredAt: string }>;
@@ -333,6 +335,14 @@ export function BuildDashboard({ habitId, onBack }: BuildDashboardProps) {
           >
             📑 Refleksi
           </button>
+          <button
+            type="button"
+            onClick={() => setShowDeleteModal(true)}
+            className="inline-flex items-center gap-1.5 rounded-xl border border-rose-500/20 bg-rose-500/10 hover:bg-rose-500/20 px-3 py-1.5 text-xs font-semibold text-rose-300 transition-colors shadow-sm"
+            title="Kelola atau hapus kebiasaan"
+          >
+            🗑 Kelola
+          </button>
           <div className="flex items-center gap-2 text-xs text-slate-400 bg-white/5 px-3 py-1.5 rounded-xl border border-white/10">
             <span>⏰ Evaluasi: <strong className="text-white">{habit.checkinLocalTime}</strong></span>
           </div>
@@ -582,6 +592,16 @@ export function BuildDashboard({ habitId, onBack }: BuildDashboardProps) {
         habitName={habit.name}
         onClose={() => setShowReflection(false)}
       />
+
+      {/* MODAL: Delete Habit (Fase 5) */}
+      {showDeleteModal && (
+        <DeleteHabitModal
+          habitId={habit.id}
+          habitName={habit.name}
+          onSuccess={onBack}
+          onClose={() => setShowDeleteModal(false)}
+        />
+      )}
     </div>
   );
 }

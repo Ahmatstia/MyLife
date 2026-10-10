@@ -15,3 +15,5 @@ export * from "./AutomaticitySurveyModal";
 export * from "./HabitInsightsModal";
 export * from "./HabitRemindersModal";
 export * from "./WeeklyReflectionModal";
+export * from "./PendingCheckinWidget";
+export * from "./DeleteHabitModal";

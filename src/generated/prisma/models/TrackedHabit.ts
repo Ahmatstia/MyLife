@@ -38,6 +38,7 @@ export type TrackedHabitMinAggregateOutputType = {
   id: string | null
   userId: string | null
   areaId: string | null
+  goalId: string | null
   kind: $Enums.HabitKind | null
   mode: $Enums.HabitMode | null
   name: string | null
@@ -61,6 +62,7 @@ export type TrackedHabitMaxAggregateOutputType = {
   id: string | null
   userId: string | null
   areaId: string | null
+  goalId: string | null
   kind: $Enums.HabitKind | null
   mode: $Enums.HabitMode | null
   name: string | null
@@ -84,6 +86,7 @@ export type TrackedHabitCountAggregateOutputType = {
   id: number
   userId: number
   areaId: number
+  goalId: number
   kind: number
   mode: number
   name: number
@@ -117,6 +120,7 @@ export type TrackedHabitMinAggregateInputType = {
   id?: true
   userId?: true
   areaId?: true
+  goalId?: true
   kind?: true
   mode?: true
   name?: true
@@ -140,6 +144,7 @@ export type TrackedHabitMaxAggregateInputType = {
   id?: true
   userId?: true
   areaId?: true
+  goalId?: true
   kind?: true
   mode?: true
   name?: true
@@ -163,6 +168,7 @@ export type TrackedHabitCountAggregateInputType = {
   id?: true
   userId?: true
   areaId?: true
+  goalId?: true
   kind?: true
   mode?: true
   name?: true
@@ -273,6 +279,7 @@ export type TrackedHabitGroupByOutputType = {
   id: string
   userId: string
   areaId: string | null
+  goalId: string | null
   kind: $Enums.HabitKind
   mode: $Enums.HabitMode | null
   name: string
@@ -319,6 +326,7 @@ export type TrackedHabitWhereInput = {
   id?: Prisma.StringFilter<"TrackedHabit"> | string
   userId?: Prisma.StringFilter<"TrackedHabit"> | string
   areaId?: Prisma.StringNullableFilter<"TrackedHabit"> | string | null
+  goalId?: Prisma.StringNullableFilter<"TrackedHabit"> | string | null
   kind?: Prisma.EnumHabitKindFilter<"TrackedHabit"> | $Enums.HabitKind
   mode?: Prisma.EnumHabitModeNullableFilter<"TrackedHabit"> | $Enums.HabitMode | null
   name?: Prisma.StringFilter<"TrackedHabit"> | string
@@ -338,6 +346,7 @@ export type TrackedHabitWhereInput = {
   archivedAt?: Prisma.DateTimeNullableFilter<"TrackedHabit"> | Date | string | null
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   area?: Prisma.XOR<Prisma.AreaNullableScalarRelationFilter, Prisma.AreaWhereInput> | null
+  goal?: Prisma.XOR<Prisma.GoalNullableScalarRelationFilter, Prisma.GoalWhereInput> | null
   breakProfile?: Prisma.XOR<Prisma.HabitBreakProfileNullableScalarRelationFilter, Prisma.HabitBreakProfileWhereInput> | null
   buildProfile?: Prisma.XOR<Prisma.HabitBuildProfileNullableScalarRelationFilter, Prisma.HabitBuildProfileWhereInput> | null
   replacedByProfiles?: Prisma.HabitBuildProfileListRelationFilter
@@ -357,6 +366,7 @@ export type TrackedHabitOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   userId?: Prisma.SortOrder
   areaId?: Prisma.SortOrderInput | Prisma.SortOrder
+  goalId?: Prisma.SortOrderInput | Prisma.SortOrder
   kind?: Prisma.SortOrder
   mode?: Prisma.SortOrderInput | Prisma.SortOrder
   name?: Prisma.SortOrder
@@ -376,6 +386,7 @@ export type TrackedHabitOrderByWithRelationInput = {
   archivedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   user?: Prisma.UserOrderByWithRelationInput
   area?: Prisma.AreaOrderByWithRelationInput
+  goal?: Prisma.GoalOrderByWithRelationInput
   breakProfile?: Prisma.HabitBreakProfileOrderByWithRelationInput
   buildProfile?: Prisma.HabitBuildProfileOrderByWithRelationInput
   replacedByProfiles?: Prisma.HabitBuildProfileOrderByRelationAggregateInput
@@ -398,6 +409,7 @@ export type TrackedHabitWhereUniqueInput = Prisma.AtLeast<{
   NOT?: Prisma.TrackedHabitWhereInput | Prisma.TrackedHabitWhereInput[]
   userId?: Prisma.StringFilter<"TrackedHabit"> | string
   areaId?: Prisma.StringNullableFilter<"TrackedHabit"> | string | null
+  goalId?: Prisma.StringNullableFilter<"TrackedHabit"> | string | null
   kind?: Prisma.EnumHabitKindFilter<"TrackedHabit"> | $Enums.HabitKind
   mode?: Prisma.EnumHabitModeNullableFilter<"TrackedHabit"> | $Enums.HabitMode | null
   name?: Prisma.StringFilter<"TrackedHabit"> | string
@@ -417,6 +429,7 @@ export type TrackedHabitWhereUniqueInput = Prisma.AtLeast<{
   archivedAt?: Prisma.DateTimeNullableFilter<"TrackedHabit"> | Date | string | null
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   area?: Prisma.XOR<Prisma.AreaNullableScalarRelationFilter, Prisma.AreaWhereInput> | null
+  goal?: Prisma.XOR<Prisma.GoalNullableScalarRelationFilter, Prisma.GoalWhereInput> | null
   breakProfile?: Prisma.XOR<Prisma.HabitBreakProfileNullableScalarRelationFilter, Prisma.HabitBreakProfileWhereInput> | null
   buildProfile?: Prisma.XOR<Prisma.HabitBuildProfileNullableScalarRelationFilter, Prisma.HabitBuildProfileWhereInput> | null
   replacedByProfiles?: Prisma.HabitBuildProfileListRelationFilter
@@ -436,6 +449,7 @@ export type TrackedHabitOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   userId?: Prisma.SortOrder
   areaId?: Prisma.SortOrderInput | Prisma.SortOrder
+  goalId?: Prisma.SortOrderInput | Prisma.SortOrder
   kind?: Prisma.SortOrder
   mode?: Prisma.SortOrderInput | Prisma.SortOrder
   name?: Prisma.SortOrder
@@ -467,6 +481,7 @@ export type TrackedHabitScalarWhereWithAggregatesInput = {
   id?: Prisma.StringWithAggregatesFilter<"TrackedHabit"> | string
   userId?: Prisma.StringWithAggregatesFilter<"TrackedHabit"> | string
   areaId?: Prisma.StringNullableWithAggregatesFilter<"TrackedHabit"> | string | null
+  goalId?: Prisma.StringNullableWithAggregatesFilter<"TrackedHabit"> | string | null
   kind?: Prisma.EnumHabitKindWithAggregatesFilter<"TrackedHabit"> | $Enums.HabitKind
   mode?: Prisma.EnumHabitModeNullableWithAggregatesFilter<"TrackedHabit"> | $Enums.HabitMode | null
   name?: Prisma.StringWithAggregatesFilter<"TrackedHabit"> | string
@@ -507,6 +522,7 @@ export type TrackedHabitCreateInput = {
   archivedAt?: Date | string | null
   user: Prisma.UserCreateNestedOneWithoutTrackedHabitsInput
   area?: Prisma.AreaCreateNestedOneWithoutTrackedHabitsInput
+  goal?: Prisma.GoalCreateNestedOneWithoutTrackedHabitsInput
   breakProfile?: Prisma.HabitBreakProfileCreateNestedOneWithoutHabitInput
   buildProfile?: Prisma.HabitBuildProfileCreateNestedOneWithoutHabitInput
   replacedByProfiles?: Prisma.HabitBuildProfileCreateNestedManyWithoutReplacesHabitInput
@@ -526,6 +542,7 @@ export type TrackedHabitUncheckedCreateInput = {
   id?: string
   userId: string
   areaId?: string | null
+  goalId?: string | null
   kind: $Enums.HabitKind
   mode?: $Enums.HabitMode | null
   name: string
@@ -579,6 +596,7 @@ export type TrackedHabitUpdateInput = {
   archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   user?: Prisma.UserUpdateOneRequiredWithoutTrackedHabitsNestedInput
   area?: Prisma.AreaUpdateOneWithoutTrackedHabitsNestedInput
+  goal?: Prisma.GoalUpdateOneWithoutTrackedHabitsNestedInput
   breakProfile?: Prisma.HabitBreakProfileUpdateOneWithoutHabitNestedInput
   buildProfile?: Prisma.HabitBuildProfileUpdateOneWithoutHabitNestedInput
   replacedByProfiles?: Prisma.HabitBuildProfileUpdateManyWithoutReplacesHabitNestedInput
@@ -598,6 +616,7 @@ export type TrackedHabitUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   userId?: Prisma.StringFieldUpdateOperationsInput | string
   areaId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  goalId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   kind?: Prisma.EnumHabitKindFieldUpdateOperationsInput | $Enums.HabitKind
   mode?: Prisma.NullableEnumHabitModeFieldUpdateOperationsInput | $Enums.HabitMode | null
   name?: Prisma.StringFieldUpdateOperationsInput | string
@@ -634,6 +653,7 @@ export type TrackedHabitCreateManyInput = {
   id?: string
   userId: string
   areaId?: string | null
+  goalId?: string | null
   kind: $Enums.HabitKind
   mode?: $Enums.HabitMode | null
   name: string
@@ -678,6 +698,7 @@ export type TrackedHabitUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   userId?: Prisma.StringFieldUpdateOperationsInput | string
   areaId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  goalId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   kind?: Prisma.EnumHabitKindFieldUpdateOperationsInput | $Enums.HabitKind
   mode?: Prisma.NullableEnumHabitModeFieldUpdateOperationsInput | $Enums.HabitMode | null
   name?: Prisma.StringFieldUpdateOperationsInput | string
@@ -711,6 +732,7 @@ export type TrackedHabitCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   userId?: Prisma.SortOrder
   areaId?: Prisma.SortOrder
+  goalId?: Prisma.SortOrder
   kind?: Prisma.SortOrder
   mode?: Prisma.SortOrder
   name?: Prisma.SortOrder
@@ -738,6 +760,7 @@ export type TrackedHabitMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
   userId?: Prisma.SortOrder
   areaId?: Prisma.SortOrder
+  goalId?: Prisma.SortOrder
   kind?: Prisma.SortOrder
   mode?: Prisma.SortOrder
   name?: Prisma.SortOrder
@@ -761,6 +784,7 @@ export type TrackedHabitMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
   userId?: Prisma.SortOrder
   areaId?: Prisma.SortOrder
+  goalId?: Prisma.SortOrder
   kind?: Prisma.SortOrder
   mode?: Prisma.SortOrder
   name?: Prisma.SortOrder
@@ -875,6 +899,48 @@ export type TrackedHabitUncheckedUpdateManyWithoutAreaNestedInput = {
   connect?: Prisma.TrackedHabitWhereUniqueInput | Prisma.TrackedHabitWhereUniqueInput[]
   update?: Prisma.TrackedHabitUpdateWithWhereUniqueWithoutAreaInput | Prisma.TrackedHabitUpdateWithWhereUniqueWithoutAreaInput[]
   updateMany?: Prisma.TrackedHabitUpdateManyWithWhereWithoutAreaInput | Prisma.TrackedHabitUpdateManyWithWhereWithoutAreaInput[]
+  deleteMany?: Prisma.TrackedHabitScalarWhereInput | Prisma.TrackedHabitScalarWhereInput[]
+}
+
+export type TrackedHabitCreateNestedManyWithoutGoalInput = {
+  create?: Prisma.XOR<Prisma.TrackedHabitCreateWithoutGoalInput, Prisma.TrackedHabitUncheckedCreateWithoutGoalInput> | Prisma.TrackedHabitCreateWithoutGoalInput[] | Prisma.TrackedHabitUncheckedCreateWithoutGoalInput[]
+  connectOrCreate?: Prisma.TrackedHabitCreateOrConnectWithoutGoalInput | Prisma.TrackedHabitCreateOrConnectWithoutGoalInput[]
+  createMany?: Prisma.TrackedHabitCreateManyGoalInputEnvelope
+  connect?: Prisma.TrackedHabitWhereUniqueInput | Prisma.TrackedHabitWhereUniqueInput[]
+}
+
+export type TrackedHabitUncheckedCreateNestedManyWithoutGoalInput = {
+  create?: Prisma.XOR<Prisma.TrackedHabitCreateWithoutGoalInput, Prisma.TrackedHabitUncheckedCreateWithoutGoalInput> | Prisma.TrackedHabitCreateWithoutGoalInput[] | Prisma.TrackedHabitUncheckedCreateWithoutGoalInput[]
+  connectOrCreate?: Prisma.TrackedHabitCreateOrConnectWithoutGoalInput | Prisma.TrackedHabitCreateOrConnectWithoutGoalInput[]
+  createMany?: Prisma.TrackedHabitCreateManyGoalInputEnvelope
+  connect?: Prisma.TrackedHabitWhereUniqueInput | Prisma.TrackedHabitWhereUniqueInput[]
+}
+
+export type TrackedHabitUpdateManyWithoutGoalNestedInput = {
+  create?: Prisma.XOR<Prisma.TrackedHabitCreateWithoutGoalInput, Prisma.TrackedHabitUncheckedCreateWithoutGoalInput> | Prisma.TrackedHabitCreateWithoutGoalInput[] | Prisma.TrackedHabitUncheckedCreateWithoutGoalInput[]
+  connectOrCreate?: Prisma.TrackedHabitCreateOrConnectWithoutGoalInput | Prisma.TrackedHabitCreateOrConnectWithoutGoalInput[]
+  upsert?: Prisma.TrackedHabitUpsertWithWhereUniqueWithoutGoalInput | Prisma.TrackedHabitUpsertWithWhereUniqueWithoutGoalInput[]
+  createMany?: Prisma.TrackedHabitCreateManyGoalInputEnvelope
+  set?: Prisma.TrackedHabitWhereUniqueInput | Prisma.TrackedHabitWhereUniqueInput[]
+  disconnect?: Prisma.TrackedHabitWhereUniqueInput | Prisma.TrackedHabitWhereUniqueInput[]
+  delete?: Prisma.TrackedHabitWhereUniqueInput | Prisma.TrackedHabitWhereUniqueInput[]
+  connect?: Prisma.TrackedHabitWhereUniqueInput | Prisma.TrackedHabitWhereUniqueInput[]
+  update?: Prisma.TrackedHabitUpdateWithWhereUniqueWithoutGoalInput | Prisma.TrackedHabitUpdateWithWhereUniqueWithoutGoalInput[]
+  updateMany?: Prisma.TrackedHabitUpdateManyWithWhereWithoutGoalInput | Prisma.TrackedHabitUpdateManyWithWhereWithoutGoalInput[]
+  deleteMany?: Prisma.TrackedHabitScalarWhereInput | Prisma.TrackedHabitScalarWhereInput[]
+}
+
+export type TrackedHabitUncheckedUpdateManyWithoutGoalNestedInput = {
+  create?: Prisma.XOR<Prisma.TrackedHabitCreateWithoutGoalInput, Prisma.TrackedHabitUncheckedCreateWithoutGoalInput> | Prisma.TrackedHabitCreateWithoutGoalInput[] | Prisma.TrackedHabitUncheckedCreateWithoutGoalInput[]
+  connectOrCreate?: Prisma.TrackedHabitCreateOrConnectWithoutGoalInput | Prisma.TrackedHabitCreateOrConnectWithoutGoalInput[]
+  upsert?: Prisma.TrackedHabitUpsertWithWhereUniqueWithoutGoalInput | Prisma.TrackedHabitUpsertWithWhereUniqueWithoutGoalInput[]
+  createMany?: Prisma.TrackedHabitCreateManyGoalInputEnvelope
+  set?: Prisma.TrackedHabitWhereUniqueInput | Prisma.TrackedHabitWhereUniqueInput[]
+  disconnect?: Prisma.TrackedHabitWhereUniqueInput | Prisma.TrackedHabitWhereUniqueInput[]
+  delete?: Prisma.TrackedHabitWhereUniqueInput | Prisma.TrackedHabitWhereUniqueInput[]
+  connect?: Prisma.TrackedHabitWhereUniqueInput | Prisma.TrackedHabitWhereUniqueInput[]
+  update?: Prisma.TrackedHabitUpdateWithWhereUniqueWithoutGoalInput | Prisma.TrackedHabitUpdateWithWhereUniqueWithoutGoalInput[]
+  updateMany?: Prisma.TrackedHabitUpdateManyWithWhereWithoutGoalInput | Prisma.TrackedHabitUpdateManyWithWhereWithoutGoalInput[]
   deleteMany?: Prisma.TrackedHabitScalarWhereInput | Prisma.TrackedHabitScalarWhereInput[]
 }
 
@@ -1100,6 +1166,7 @@ export type TrackedHabitCreateWithoutUserInput = {
   updatedAt?: Date | string
   archivedAt?: Date | string | null
   area?: Prisma.AreaCreateNestedOneWithoutTrackedHabitsInput
+  goal?: Prisma.GoalCreateNestedOneWithoutTrackedHabitsInput
   breakProfile?: Prisma.HabitBreakProfileCreateNestedOneWithoutHabitInput
   buildProfile?: Prisma.HabitBuildProfileCreateNestedOneWithoutHabitInput
   replacedByProfiles?: Prisma.HabitBuildProfileCreateNestedManyWithoutReplacesHabitInput
@@ -1118,6 +1185,7 @@ export type TrackedHabitCreateWithoutUserInput = {
 export type TrackedHabitUncheckedCreateWithoutUserInput = {
   id?: string
   areaId?: string | null
+  goalId?: string | null
   kind: $Enums.HabitKind
   mode?: $Enums.HabitMode | null
   name: string
@@ -1183,6 +1251,7 @@ export type TrackedHabitScalarWhereInput = {
   id?: Prisma.StringFilter<"TrackedHabit"> | string
   userId?: Prisma.StringFilter<"TrackedHabit"> | string
   areaId?: Prisma.StringNullableFilter<"TrackedHabit"> | string | null
+  goalId?: Prisma.StringNullableFilter<"TrackedHabit"> | string | null
   kind?: Prisma.EnumHabitKindFilter<"TrackedHabit"> | $Enums.HabitKind
   mode?: Prisma.EnumHabitModeNullableFilter<"TrackedHabit"> | $Enums.HabitMode | null
   name?: Prisma.StringFilter<"TrackedHabit"> | string
@@ -1222,6 +1291,7 @@ export type TrackedHabitCreateWithoutAreaInput = {
   updatedAt?: Date | string
   archivedAt?: Date | string | null
   user: Prisma.UserCreateNestedOneWithoutTrackedHabitsInput
+  goal?: Prisma.GoalCreateNestedOneWithoutTrackedHabitsInput
   breakProfile?: Prisma.HabitBreakProfileCreateNestedOneWithoutHabitInput
   buildProfile?: Prisma.HabitBuildProfileCreateNestedOneWithoutHabitInput
   replacedByProfiles?: Prisma.HabitBuildProfileCreateNestedManyWithoutReplacesHabitInput
@@ -1240,6 +1310,7 @@ export type TrackedHabitCreateWithoutAreaInput = {
 export type TrackedHabitUncheckedCreateWithoutAreaInput = {
   id?: string
   userId: string
+  goalId?: string | null
   kind: $Enums.HabitKind
   mode?: $Enums.HabitMode | null
   name: string
@@ -1298,6 +1369,104 @@ export type TrackedHabitUpdateManyWithWhereWithoutAreaInput = {
   data: Prisma.XOR<Prisma.TrackedHabitUpdateManyMutationInput, Prisma.TrackedHabitUncheckedUpdateManyWithoutAreaInput>
 }
 
+export type TrackedHabitCreateWithoutGoalInput = {
+  id?: string
+  kind: $Enums.HabitKind
+  mode?: $Enums.HabitMode | null
+  name: string
+  displayAlias?: string | null
+  category?: string | null
+  status?: $Enums.HabitStatus
+  stage?: $Enums.HabitStage
+  identityStatement?: string | null
+  timezone: string
+  checkinLocalTime: string
+  startedAt: Date | string
+  currentWindowStart: Date | string
+  nextCheckinAt?: Date | string | null
+  privacyLevel?: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  archivedAt?: Date | string | null
+  user: Prisma.UserCreateNestedOneWithoutTrackedHabitsInput
+  area?: Prisma.AreaCreateNestedOneWithoutTrackedHabitsInput
+  breakProfile?: Prisma.HabitBreakProfileCreateNestedOneWithoutHabitInput
+  buildProfile?: Prisma.HabitBuildProfileCreateNestedOneWithoutHabitInput
+  replacedByProfiles?: Prisma.HabitBuildProfileCreateNestedManyWithoutReplacesHabitInput
+  events?: Prisma.HabitEventCreateNestedManyWithoutHabitInput
+  checkins?: Prisma.HabitCheckinCreateNestedManyWithoutHabitInput
+  stats?: Prisma.HabitStatsCreateNestedOneWithoutHabitInput
+  outbox?: Prisma.HabitNotificationOutboxCreateNestedManyWithoutHabitInput
+  triggers?: Prisma.HabitTriggerCreateNestedManyWithoutHabitInput
+  copingPlans?: Prisma.CopingPlanCreateNestedManyWithoutHabitInput
+  milestones?: Prisma.HabitMilestoneCreateNestedManyWithoutHabitInput
+  automaticitySurveys?: Prisma.AutomaticitySurveyCreateNestedManyWithoutHabitInput
+  reminders?: Prisma.HabitReminderCreateNestedManyWithoutHabitInput
+  reflections?: Prisma.HabitReflectionCreateNestedManyWithoutHabitInput
+}
+
+export type TrackedHabitUncheckedCreateWithoutGoalInput = {
+  id?: string
+  userId: string
+  areaId?: string | null
+  kind: $Enums.HabitKind
+  mode?: $Enums.HabitMode | null
+  name: string
+  displayAlias?: string | null
+  category?: string | null
+  status?: $Enums.HabitStatus
+  stage?: $Enums.HabitStage
+  identityStatement?: string | null
+  timezone: string
+  checkinLocalTime: string
+  startedAt: Date | string
+  currentWindowStart: Date | string
+  nextCheckinAt?: Date | string | null
+  privacyLevel?: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  archivedAt?: Date | string | null
+  breakProfile?: Prisma.HabitBreakProfileUncheckedCreateNestedOneWithoutHabitInput
+  buildProfile?: Prisma.HabitBuildProfileUncheckedCreateNestedOneWithoutHabitInput
+  replacedByProfiles?: Prisma.HabitBuildProfileUncheckedCreateNestedManyWithoutReplacesHabitInput
+  events?: Prisma.HabitEventUncheckedCreateNestedManyWithoutHabitInput
+  checkins?: Prisma.HabitCheckinUncheckedCreateNestedManyWithoutHabitInput
+  stats?: Prisma.HabitStatsUncheckedCreateNestedOneWithoutHabitInput
+  outbox?: Prisma.HabitNotificationOutboxUncheckedCreateNestedManyWithoutHabitInput
+  triggers?: Prisma.HabitTriggerUncheckedCreateNestedManyWithoutHabitInput
+  copingPlans?: Prisma.CopingPlanUncheckedCreateNestedManyWithoutHabitInput
+  milestones?: Prisma.HabitMilestoneUncheckedCreateNestedManyWithoutHabitInput
+  automaticitySurveys?: Prisma.AutomaticitySurveyUncheckedCreateNestedManyWithoutHabitInput
+  reminders?: Prisma.HabitReminderUncheckedCreateNestedManyWithoutHabitInput
+  reflections?: Prisma.HabitReflectionUncheckedCreateNestedManyWithoutHabitInput
+}
+
+export type TrackedHabitCreateOrConnectWithoutGoalInput = {
+  where: Prisma.TrackedHabitWhereUniqueInput
+  create: Prisma.XOR<Prisma.TrackedHabitCreateWithoutGoalInput, Prisma.TrackedHabitUncheckedCreateWithoutGoalInput>
+}
+
+export type TrackedHabitCreateManyGoalInputEnvelope = {
+  data: Prisma.TrackedHabitCreateManyGoalInput | Prisma.TrackedHabitCreateManyGoalInput[]
+  skipDuplicates?: boolean
+}
+
+export type TrackedHabitUpsertWithWhereUniqueWithoutGoalInput = {
+  where: Prisma.TrackedHabitWhereUniqueInput
+  update: Prisma.XOR<Prisma.TrackedHabitUpdateWithoutGoalInput, Prisma.TrackedHabitUncheckedUpdateWithoutGoalInput>
+  create: Prisma.XOR<Prisma.TrackedHabitCreateWithoutGoalInput, Prisma.TrackedHabitUncheckedCreateWithoutGoalInput>
+}
+
+export type TrackedHabitUpdateWithWhereUniqueWithoutGoalInput = {
+  where: Prisma.TrackedHabitWhereUniqueInput
+  data: Prisma.XOR<Prisma.TrackedHabitUpdateWithoutGoalInput, Prisma.TrackedHabitUncheckedUpdateWithoutGoalInput>
+}
+
+export type TrackedHabitUpdateManyWithWhereWithoutGoalInput = {
+  where: Prisma.TrackedHabitScalarWhereInput
+  data: Prisma.XOR<Prisma.TrackedHabitUpdateManyMutationInput, Prisma.TrackedHabitUncheckedUpdateManyWithoutGoalInput>
+}
+
 export type TrackedHabitCreateWithoutBreakProfileInput = {
   id?: string
   kind: $Enums.HabitKind
@@ -1319,6 +1488,7 @@ export type TrackedHabitCreateWithoutBreakProfileInput = {
   archivedAt?: Date | string | null
   user: Prisma.UserCreateNestedOneWithoutTrackedHabitsInput
   area?: Prisma.AreaCreateNestedOneWithoutTrackedHabitsInput
+  goal?: Prisma.GoalCreateNestedOneWithoutTrackedHabitsInput
   buildProfile?: Prisma.HabitBuildProfileCreateNestedOneWithoutHabitInput
   replacedByProfiles?: Prisma.HabitBuildProfileCreateNestedManyWithoutReplacesHabitInput
   events?: Prisma.HabitEventCreateNestedManyWithoutHabitInput
@@ -1337,6 +1507,7 @@ export type TrackedHabitUncheckedCreateWithoutBreakProfileInput = {
   id?: string
   userId: string
   areaId?: string | null
+  goalId?: string | null
   kind: $Enums.HabitKind
   mode?: $Enums.HabitMode | null
   name: string
@@ -1405,6 +1576,7 @@ export type TrackedHabitUpdateWithoutBreakProfileInput = {
   archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   user?: Prisma.UserUpdateOneRequiredWithoutTrackedHabitsNestedInput
   area?: Prisma.AreaUpdateOneWithoutTrackedHabitsNestedInput
+  goal?: Prisma.GoalUpdateOneWithoutTrackedHabitsNestedInput
   buildProfile?: Prisma.HabitBuildProfileUpdateOneWithoutHabitNestedInput
   replacedByProfiles?: Prisma.HabitBuildProfileUpdateManyWithoutReplacesHabitNestedInput
   events?: Prisma.HabitEventUpdateManyWithoutHabitNestedInput
@@ -1423,6 +1595,7 @@ export type TrackedHabitUncheckedUpdateWithoutBreakProfileInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   userId?: Prisma.StringFieldUpdateOperationsInput | string
   areaId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  goalId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   kind?: Prisma.EnumHabitKindFieldUpdateOperationsInput | $Enums.HabitKind
   mode?: Prisma.NullableEnumHabitModeFieldUpdateOperationsInput | $Enums.HabitMode | null
   name?: Prisma.StringFieldUpdateOperationsInput | string
@@ -1475,6 +1648,7 @@ export type TrackedHabitCreateWithoutEventsInput = {
   archivedAt?: Date | string | null
   user: Prisma.UserCreateNestedOneWithoutTrackedHabitsInput
   area?: Prisma.AreaCreateNestedOneWithoutTrackedHabitsInput
+  goal?: Prisma.GoalCreateNestedOneWithoutTrackedHabitsInput
   breakProfile?: Prisma.HabitBreakProfileCreateNestedOneWithoutHabitInput
   buildProfile?: Prisma.HabitBuildProfileCreateNestedOneWithoutHabitInput
   replacedByProfiles?: Prisma.HabitBuildProfileCreateNestedManyWithoutReplacesHabitInput
@@ -1493,6 +1667,7 @@ export type TrackedHabitUncheckedCreateWithoutEventsInput = {
   id?: string
   userId: string
   areaId?: string | null
+  goalId?: string | null
   kind: $Enums.HabitKind
   mode?: $Enums.HabitMode | null
   name: string
@@ -1561,6 +1736,7 @@ export type TrackedHabitUpdateWithoutEventsInput = {
   archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   user?: Prisma.UserUpdateOneRequiredWithoutTrackedHabitsNestedInput
   area?: Prisma.AreaUpdateOneWithoutTrackedHabitsNestedInput
+  goal?: Prisma.GoalUpdateOneWithoutTrackedHabitsNestedInput
   breakProfile?: Prisma.HabitBreakProfileUpdateOneWithoutHabitNestedInput
   buildProfile?: Prisma.HabitBuildProfileUpdateOneWithoutHabitNestedInput
   replacedByProfiles?: Prisma.HabitBuildProfileUpdateManyWithoutReplacesHabitNestedInput
@@ -1579,6 +1755,7 @@ export type TrackedHabitUncheckedUpdateWithoutEventsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   userId?: Prisma.StringFieldUpdateOperationsInput | string
   areaId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  goalId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   kind?: Prisma.EnumHabitKindFieldUpdateOperationsInput | $Enums.HabitKind
   mode?: Prisma.NullableEnumHabitModeFieldUpdateOperationsInput | $Enums.HabitMode | null
   name?: Prisma.StringFieldUpdateOperationsInput | string
@@ -1631,6 +1808,7 @@ export type TrackedHabitCreateWithoutCheckinsInput = {
   archivedAt?: Date | string | null
   user: Prisma.UserCreateNestedOneWithoutTrackedHabitsInput
   area?: Prisma.AreaCreateNestedOneWithoutTrackedHabitsInput
+  goal?: Prisma.GoalCreateNestedOneWithoutTrackedHabitsInput
   breakProfile?: Prisma.HabitBreakProfileCreateNestedOneWithoutHabitInput
   buildProfile?: Prisma.HabitBuildProfileCreateNestedOneWithoutHabitInput
   replacedByProfiles?: Prisma.HabitBuildProfileCreateNestedManyWithoutReplacesHabitInput
@@ -1649,6 +1827,7 @@ export type TrackedHabitUncheckedCreateWithoutCheckinsInput = {
   id?: string
   userId: string
   areaId?: string | null
+  goalId?: string | null
   kind: $Enums.HabitKind
   mode?: $Enums.HabitMode | null
   name: string
@@ -1717,6 +1896,7 @@ export type TrackedHabitUpdateWithoutCheckinsInput = {
   archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   user?: Prisma.UserUpdateOneRequiredWithoutTrackedHabitsNestedInput
   area?: Prisma.AreaUpdateOneWithoutTrackedHabitsNestedInput
+  goal?: Prisma.GoalUpdateOneWithoutTrackedHabitsNestedInput
   breakProfile?: Prisma.HabitBreakProfileUpdateOneWithoutHabitNestedInput
   buildProfile?: Prisma.HabitBuildProfileUpdateOneWithoutHabitNestedInput
   replacedByProfiles?: Prisma.HabitBuildProfileUpdateManyWithoutReplacesHabitNestedInput
@@ -1735,6 +1915,7 @@ export type TrackedHabitUncheckedUpdateWithoutCheckinsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   userId?: Prisma.StringFieldUpdateOperationsInput | string
   areaId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  goalId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   kind?: Prisma.EnumHabitKindFieldUpdateOperationsInput | $Enums.HabitKind
   mode?: Prisma.NullableEnumHabitModeFieldUpdateOperationsInput | $Enums.HabitMode | null
   name?: Prisma.StringFieldUpdateOperationsInput | string
@@ -1787,6 +1968,7 @@ export type TrackedHabitCreateWithoutStatsInput = {
   archivedAt?: Date | string | null
   user: Prisma.UserCreateNestedOneWithoutTrackedHabitsInput
   area?: Prisma.AreaCreateNestedOneWithoutTrackedHabitsInput
+  goal?: Prisma.GoalCreateNestedOneWithoutTrackedHabitsInput
   breakProfile?: Prisma.HabitBreakProfileCreateNestedOneWithoutHabitInput
   buildProfile?: Prisma.HabitBuildProfileCreateNestedOneWithoutHabitInput
   replacedByProfiles?: Prisma.HabitBuildProfileCreateNestedManyWithoutReplacesHabitInput
@@ -1805,6 +1987,7 @@ export type TrackedHabitUncheckedCreateWithoutStatsInput = {
   id?: string
   userId: string
   areaId?: string | null
+  goalId?: string | null
   kind: $Enums.HabitKind
   mode?: $Enums.HabitMode | null
   name: string
@@ -1873,6 +2056,7 @@ export type TrackedHabitUpdateWithoutStatsInput = {
   archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   user?: Prisma.UserUpdateOneRequiredWithoutTrackedHabitsNestedInput
   area?: Prisma.AreaUpdateOneWithoutTrackedHabitsNestedInput
+  goal?: Prisma.GoalUpdateOneWithoutTrackedHabitsNestedInput
   breakProfile?: Prisma.HabitBreakProfileUpdateOneWithoutHabitNestedInput
   buildProfile?: Prisma.HabitBuildProfileUpdateOneWithoutHabitNestedInput
   replacedByProfiles?: Prisma.HabitBuildProfileUpdateManyWithoutReplacesHabitNestedInput
@@ -1891,6 +2075,7 @@ export type TrackedHabitUncheckedUpdateWithoutStatsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   userId?: Prisma.StringFieldUpdateOperationsInput | string
   areaId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  goalId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   kind?: Prisma.EnumHabitKindFieldUpdateOperationsInput | $Enums.HabitKind
   mode?: Prisma.NullableEnumHabitModeFieldUpdateOperationsInput | $Enums.HabitMode | null
   name?: Prisma.StringFieldUpdateOperationsInput | string
@@ -1943,6 +2128,7 @@ export type TrackedHabitCreateWithoutOutboxInput = {
   archivedAt?: Date | string | null
   user: Prisma.UserCreateNestedOneWithoutTrackedHabitsInput
   area?: Prisma.AreaCreateNestedOneWithoutTrackedHabitsInput
+  goal?: Prisma.GoalCreateNestedOneWithoutTrackedHabitsInput
   breakProfile?: Prisma.HabitBreakProfileCreateNestedOneWithoutHabitInput
   buildProfile?: Prisma.HabitBuildProfileCreateNestedOneWithoutHabitInput
   replacedByProfiles?: Prisma.HabitBuildProfileCreateNestedManyWithoutReplacesHabitInput
@@ -1961,6 +2147,7 @@ export type TrackedHabitUncheckedCreateWithoutOutboxInput = {
   id?: string
   userId: string
   areaId?: string | null
+  goalId?: string | null
   kind: $Enums.HabitKind
   mode?: $Enums.HabitMode | null
   name: string
@@ -2029,6 +2216,7 @@ export type TrackedHabitUpdateWithoutOutboxInput = {
   archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   user?: Prisma.UserUpdateOneRequiredWithoutTrackedHabitsNestedInput
   area?: Prisma.AreaUpdateOneWithoutTrackedHabitsNestedInput
+  goal?: Prisma.GoalUpdateOneWithoutTrackedHabitsNestedInput
   breakProfile?: Prisma.HabitBreakProfileUpdateOneWithoutHabitNestedInput
   buildProfile?: Prisma.HabitBuildProfileUpdateOneWithoutHabitNestedInput
   replacedByProfiles?: Prisma.HabitBuildProfileUpdateManyWithoutReplacesHabitNestedInput
@@ -2047,6 +2235,7 @@ export type TrackedHabitUncheckedUpdateWithoutOutboxInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   userId?: Prisma.StringFieldUpdateOperationsInput | string
   areaId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  goalId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   kind?: Prisma.EnumHabitKindFieldUpdateOperationsInput | $Enums.HabitKind
   mode?: Prisma.NullableEnumHabitModeFieldUpdateOperationsInput | $Enums.HabitMode | null
   name?: Prisma.StringFieldUpdateOperationsInput | string
@@ -2099,6 +2288,7 @@ export type TrackedHabitCreateWithoutTriggersInput = {
   archivedAt?: Date | string | null
   user: Prisma.UserCreateNestedOneWithoutTrackedHabitsInput
   area?: Prisma.AreaCreateNestedOneWithoutTrackedHabitsInput
+  goal?: Prisma.GoalCreateNestedOneWithoutTrackedHabitsInput
   breakProfile?: Prisma.HabitBreakProfileCreateNestedOneWithoutHabitInput
   buildProfile?: Prisma.HabitBuildProfileCreateNestedOneWithoutHabitInput
   replacedByProfiles?: Prisma.HabitBuildProfileCreateNestedManyWithoutReplacesHabitInput
@@ -2117,6 +2307,7 @@ export type TrackedHabitUncheckedCreateWithoutTriggersInput = {
   id?: string
   userId: string
   areaId?: string | null
+  goalId?: string | null
   kind: $Enums.HabitKind
   mode?: $Enums.HabitMode | null
   name: string
@@ -2185,6 +2376,7 @@ export type TrackedHabitUpdateWithoutTriggersInput = {
   archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   user?: Prisma.UserUpdateOneRequiredWithoutTrackedHabitsNestedInput
   area?: Prisma.AreaUpdateOneWithoutTrackedHabitsNestedInput
+  goal?: Prisma.GoalUpdateOneWithoutTrackedHabitsNestedInput
   breakProfile?: Prisma.HabitBreakProfileUpdateOneWithoutHabitNestedInput
   buildProfile?: Prisma.HabitBuildProfileUpdateOneWithoutHabitNestedInput
   replacedByProfiles?: Prisma.HabitBuildProfileUpdateManyWithoutReplacesHabitNestedInput
@@ -2203,6 +2395,7 @@ export type TrackedHabitUncheckedUpdateWithoutTriggersInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   userId?: Prisma.StringFieldUpdateOperationsInput | string
   areaId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  goalId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   kind?: Prisma.EnumHabitKindFieldUpdateOperationsInput | $Enums.HabitKind
   mode?: Prisma.NullableEnumHabitModeFieldUpdateOperationsInput | $Enums.HabitMode | null
   name?: Prisma.StringFieldUpdateOperationsInput | string
@@ -2255,6 +2448,7 @@ export type TrackedHabitCreateWithoutCopingPlansInput = {
   archivedAt?: Date | string | null
   user: Prisma.UserCreateNestedOneWithoutTrackedHabitsInput
   area?: Prisma.AreaCreateNestedOneWithoutTrackedHabitsInput
+  goal?: Prisma.GoalCreateNestedOneWithoutTrackedHabitsInput
   breakProfile?: Prisma.HabitBreakProfileCreateNestedOneWithoutHabitInput
   buildProfile?: Prisma.HabitBuildProfileCreateNestedOneWithoutHabitInput
   replacedByProfiles?: Prisma.HabitBuildProfileCreateNestedManyWithoutReplacesHabitInput
@@ -2273,6 +2467,7 @@ export type TrackedHabitUncheckedCreateWithoutCopingPlansInput = {
   id?: string
   userId: string
   areaId?: string | null
+  goalId?: string | null
   kind: $Enums.HabitKind
   mode?: $Enums.HabitMode | null
   name: string
@@ -2341,6 +2536,7 @@ export type TrackedHabitUpdateWithoutCopingPlansInput = {
   archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   user?: Prisma.UserUpdateOneRequiredWithoutTrackedHabitsNestedInput
   area?: Prisma.AreaUpdateOneWithoutTrackedHabitsNestedInput
+  goal?: Prisma.GoalUpdateOneWithoutTrackedHabitsNestedInput
   breakProfile?: Prisma.HabitBreakProfileUpdateOneWithoutHabitNestedInput
   buildProfile?: Prisma.HabitBuildProfileUpdateOneWithoutHabitNestedInput
   replacedByProfiles?: Prisma.HabitBuildProfileUpdateManyWithoutReplacesHabitNestedInput
@@ -2359,6 +2555,7 @@ export type TrackedHabitUncheckedUpdateWithoutCopingPlansInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   userId?: Prisma.StringFieldUpdateOperationsInput | string
   areaId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  goalId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   kind?: Prisma.EnumHabitKindFieldUpdateOperationsInput | $Enums.HabitKind
   mode?: Prisma.NullableEnumHabitModeFieldUpdateOperationsInput | $Enums.HabitMode | null
   name?: Prisma.StringFieldUpdateOperationsInput | string
@@ -2411,6 +2608,7 @@ export type TrackedHabitCreateWithoutMilestonesInput = {
   archivedAt?: Date | string | null
   user: Prisma.UserCreateNestedOneWithoutTrackedHabitsInput
   area?: Prisma.AreaCreateNestedOneWithoutTrackedHabitsInput
+  goal?: Prisma.GoalCreateNestedOneWithoutTrackedHabitsInput
   breakProfile?: Prisma.HabitBreakProfileCreateNestedOneWithoutHabitInput
   buildProfile?: Prisma.HabitBuildProfileCreateNestedOneWithoutHabitInput
   replacedByProfiles?: Prisma.HabitBuildProfileCreateNestedManyWithoutReplacesHabitInput
@@ -2429,6 +2627,7 @@ export type TrackedHabitUncheckedCreateWithoutMilestonesInput = {
   id?: string
   userId: string
   areaId?: string | null
+  goalId?: string | null
   kind: $Enums.HabitKind
   mode?: $Enums.HabitMode | null
   name: string
@@ -2497,6 +2696,7 @@ export type TrackedHabitUpdateWithoutMilestonesInput = {
   archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   user?: Prisma.UserUpdateOneRequiredWithoutTrackedHabitsNestedInput
   area?: Prisma.AreaUpdateOneWithoutTrackedHabitsNestedInput
+  goal?: Prisma.GoalUpdateOneWithoutTrackedHabitsNestedInput
   breakProfile?: Prisma.HabitBreakProfileUpdateOneWithoutHabitNestedInput
   buildProfile?: Prisma.HabitBuildProfileUpdateOneWithoutHabitNestedInput
   replacedByProfiles?: Prisma.HabitBuildProfileUpdateManyWithoutReplacesHabitNestedInput
@@ -2515,6 +2715,7 @@ export type TrackedHabitUncheckedUpdateWithoutMilestonesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   userId?: Prisma.StringFieldUpdateOperationsInput | string
   areaId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  goalId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   kind?: Prisma.EnumHabitKindFieldUpdateOperationsInput | $Enums.HabitKind
   mode?: Prisma.NullableEnumHabitModeFieldUpdateOperationsInput | $Enums.HabitMode | null
   name?: Prisma.StringFieldUpdateOperationsInput | string
@@ -2567,6 +2768,7 @@ export type TrackedHabitCreateWithoutBuildProfileInput = {
   archivedAt?: Date | string | null
   user: Prisma.UserCreateNestedOneWithoutTrackedHabitsInput
   area?: Prisma.AreaCreateNestedOneWithoutTrackedHabitsInput
+  goal?: Prisma.GoalCreateNestedOneWithoutTrackedHabitsInput
   breakProfile?: Prisma.HabitBreakProfileCreateNestedOneWithoutHabitInput
   replacedByProfiles?: Prisma.HabitBuildProfileCreateNestedManyWithoutReplacesHabitInput
   events?: Prisma.HabitEventCreateNestedManyWithoutHabitInput
@@ -2585,6 +2787,7 @@ export type TrackedHabitUncheckedCreateWithoutBuildProfileInput = {
   id?: string
   userId: string
   areaId?: string | null
+  goalId?: string | null
   kind: $Enums.HabitKind
   mode?: $Enums.HabitMode | null
   name: string
@@ -2642,6 +2845,7 @@ export type TrackedHabitCreateWithoutReplacedByProfilesInput = {
   archivedAt?: Date | string | null
   user: Prisma.UserCreateNestedOneWithoutTrackedHabitsInput
   area?: Prisma.AreaCreateNestedOneWithoutTrackedHabitsInput
+  goal?: Prisma.GoalCreateNestedOneWithoutTrackedHabitsInput
   breakProfile?: Prisma.HabitBreakProfileCreateNestedOneWithoutHabitInput
   buildProfile?: Prisma.HabitBuildProfileCreateNestedOneWithoutHabitInput
   events?: Prisma.HabitEventCreateNestedManyWithoutHabitInput
@@ -2660,6 +2864,7 @@ export type TrackedHabitUncheckedCreateWithoutReplacedByProfilesInput = {
   id?: string
   userId: string
   areaId?: string | null
+  goalId?: string | null
   kind: $Enums.HabitKind
   mode?: $Enums.HabitMode | null
   name: string
@@ -2728,6 +2933,7 @@ export type TrackedHabitUpdateWithoutBuildProfileInput = {
   archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   user?: Prisma.UserUpdateOneRequiredWithoutTrackedHabitsNestedInput
   area?: Prisma.AreaUpdateOneWithoutTrackedHabitsNestedInput
+  goal?: Prisma.GoalUpdateOneWithoutTrackedHabitsNestedInput
   breakProfile?: Prisma.HabitBreakProfileUpdateOneWithoutHabitNestedInput
   replacedByProfiles?: Prisma.HabitBuildProfileUpdateManyWithoutReplacesHabitNestedInput
   events?: Prisma.HabitEventUpdateManyWithoutHabitNestedInput
@@ -2746,6 +2952,7 @@ export type TrackedHabitUncheckedUpdateWithoutBuildProfileInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   userId?: Prisma.StringFieldUpdateOperationsInput | string
   areaId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  goalId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   kind?: Prisma.EnumHabitKindFieldUpdateOperationsInput | $Enums.HabitKind
   mode?: Prisma.NullableEnumHabitModeFieldUpdateOperationsInput | $Enums.HabitMode | null
   name?: Prisma.StringFieldUpdateOperationsInput | string
@@ -2809,6 +3016,7 @@ export type TrackedHabitUpdateWithoutReplacedByProfilesInput = {
   archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   user?: Prisma.UserUpdateOneRequiredWithoutTrackedHabitsNestedInput
   area?: Prisma.AreaUpdateOneWithoutTrackedHabitsNestedInput
+  goal?: Prisma.GoalUpdateOneWithoutTrackedHabitsNestedInput
   breakProfile?: Prisma.HabitBreakProfileUpdateOneWithoutHabitNestedInput
   buildProfile?: Prisma.HabitBuildProfileUpdateOneWithoutHabitNestedInput
   events?: Prisma.HabitEventUpdateManyWithoutHabitNestedInput
@@ -2827,6 +3035,7 @@ export type TrackedHabitUncheckedUpdateWithoutReplacedByProfilesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   userId?: Prisma.StringFieldUpdateOperationsInput | string
   areaId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  goalId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   kind?: Prisma.EnumHabitKindFieldUpdateOperationsInput | $Enums.HabitKind
   mode?: Prisma.NullableEnumHabitModeFieldUpdateOperationsInput | $Enums.HabitMode | null
   name?: Prisma.StringFieldUpdateOperationsInput | string
@@ -2879,6 +3088,7 @@ export type TrackedHabitCreateWithoutAutomaticitySurveysInput = {
   archivedAt?: Date | string | null
   user: Prisma.UserCreateNestedOneWithoutTrackedHabitsInput
   area?: Prisma.AreaCreateNestedOneWithoutTrackedHabitsInput
+  goal?: Prisma.GoalCreateNestedOneWithoutTrackedHabitsInput
   breakProfile?: Prisma.HabitBreakProfileCreateNestedOneWithoutHabitInput
   buildProfile?: Prisma.HabitBuildProfileCreateNestedOneWithoutHabitInput
   replacedByProfiles?: Prisma.HabitBuildProfileCreateNestedManyWithoutReplacesHabitInput
@@ -2897,6 +3107,7 @@ export type TrackedHabitUncheckedCreateWithoutAutomaticitySurveysInput = {
   id?: string
   userId: string
   areaId?: string | null
+  goalId?: string | null
   kind: $Enums.HabitKind
   mode?: $Enums.HabitMode | null
   name: string
@@ -2965,6 +3176,7 @@ export type TrackedHabitUpdateWithoutAutomaticitySurveysInput = {
   archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   user?: Prisma.UserUpdateOneRequiredWithoutTrackedHabitsNestedInput
   area?: Prisma.AreaUpdateOneWithoutTrackedHabitsNestedInput
+  goal?: Prisma.GoalUpdateOneWithoutTrackedHabitsNestedInput
   breakProfile?: Prisma.HabitBreakProfileUpdateOneWithoutHabitNestedInput
   buildProfile?: Prisma.HabitBuildProfileUpdateOneWithoutHabitNestedInput
   replacedByProfiles?: Prisma.HabitBuildProfileUpdateManyWithoutReplacesHabitNestedInput
@@ -2983,6 +3195,7 @@ export type TrackedHabitUncheckedUpdateWithoutAutomaticitySurveysInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   userId?: Prisma.StringFieldUpdateOperationsInput | string
   areaId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  goalId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   kind?: Prisma.EnumHabitKindFieldUpdateOperationsInput | $Enums.HabitKind
   mode?: Prisma.NullableEnumHabitModeFieldUpdateOperationsInput | $Enums.HabitMode | null
   name?: Prisma.StringFieldUpdateOperationsInput | string
@@ -3035,6 +3248,7 @@ export type TrackedHabitCreateWithoutRemindersInput = {
   archivedAt?: Date | string | null
   user: Prisma.UserCreateNestedOneWithoutTrackedHabitsInput
   area?: Prisma.AreaCreateNestedOneWithoutTrackedHabitsInput
+  goal?: Prisma.GoalCreateNestedOneWithoutTrackedHabitsInput
   breakProfile?: Prisma.HabitBreakProfileCreateNestedOneWithoutHabitInput
   buildProfile?: Prisma.HabitBuildProfileCreateNestedOneWithoutHabitInput
   replacedByProfiles?: Prisma.HabitBuildProfileCreateNestedManyWithoutReplacesHabitInput
@@ -3053,6 +3267,7 @@ export type TrackedHabitUncheckedCreateWithoutRemindersInput = {
   id?: string
   userId: string
   areaId?: string | null
+  goalId?: string | null
   kind: $Enums.HabitKind
   mode?: $Enums.HabitMode | null
   name: string
@@ -3121,6 +3336,7 @@ export type TrackedHabitUpdateWithoutRemindersInput = {
   archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   user?: Prisma.UserUpdateOneRequiredWithoutTrackedHabitsNestedInput
   area?: Prisma.AreaUpdateOneWithoutTrackedHabitsNestedInput
+  goal?: Prisma.GoalUpdateOneWithoutTrackedHabitsNestedInput
   breakProfile?: Prisma.HabitBreakProfileUpdateOneWithoutHabitNestedInput
   buildProfile?: Prisma.HabitBuildProfileUpdateOneWithoutHabitNestedInput
   replacedByProfiles?: Prisma.HabitBuildProfileUpdateManyWithoutReplacesHabitNestedInput
@@ -3139,6 +3355,7 @@ export type TrackedHabitUncheckedUpdateWithoutRemindersInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   userId?: Prisma.StringFieldUpdateOperationsInput | string
   areaId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  goalId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   kind?: Prisma.EnumHabitKindFieldUpdateOperationsInput | $Enums.HabitKind
   mode?: Prisma.NullableEnumHabitModeFieldUpdateOperationsInput | $Enums.HabitMode | null
   name?: Prisma.StringFieldUpdateOperationsInput | string
@@ -3191,6 +3408,7 @@ export type TrackedHabitCreateWithoutReflectionsInput = {
   archivedAt?: Date | string | null
   user: Prisma.UserCreateNestedOneWithoutTrackedHabitsInput
   area?: Prisma.AreaCreateNestedOneWithoutTrackedHabitsInput
+  goal?: Prisma.GoalCreateNestedOneWithoutTrackedHabitsInput
   breakProfile?: Prisma.HabitBreakProfileCreateNestedOneWithoutHabitInput
   buildProfile?: Prisma.HabitBuildProfileCreateNestedOneWithoutHabitInput
   replacedByProfiles?: Prisma.HabitBuildProfileCreateNestedManyWithoutReplacesHabitInput
@@ -3209,6 +3427,7 @@ export type TrackedHabitUncheckedCreateWithoutReflectionsInput = {
   id?: string
   userId: string
   areaId?: string | null
+  goalId?: string | null
   kind: $Enums.HabitKind
   mode?: $Enums.HabitMode | null
   name: string
@@ -3277,6 +3496,7 @@ export type TrackedHabitUpdateWithoutReflectionsInput = {
   archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   user?: Prisma.UserUpdateOneRequiredWithoutTrackedHabitsNestedInput
   area?: Prisma.AreaUpdateOneWithoutTrackedHabitsNestedInput
+  goal?: Prisma.GoalUpdateOneWithoutTrackedHabitsNestedInput
   breakProfile?: Prisma.HabitBreakProfileUpdateOneWithoutHabitNestedInput
   buildProfile?: Prisma.HabitBuildProfileUpdateOneWithoutHabitNestedInput
   replacedByProfiles?: Prisma.HabitBuildProfileUpdateManyWithoutReplacesHabitNestedInput
@@ -3295,6 +3515,7 @@ export type TrackedHabitUncheckedUpdateWithoutReflectionsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   userId?: Prisma.StringFieldUpdateOperationsInput | string
   areaId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  goalId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   kind?: Prisma.EnumHabitKindFieldUpdateOperationsInput | $Enums.HabitKind
   mode?: Prisma.NullableEnumHabitModeFieldUpdateOperationsInput | $Enums.HabitMode | null
   name?: Prisma.StringFieldUpdateOperationsInput | string
@@ -3329,6 +3550,7 @@ export type TrackedHabitUncheckedUpdateWithoutReflectionsInput = {
 export type TrackedHabitCreateManyUserInput = {
   id?: string
   areaId?: string | null
+  goalId?: string | null
   kind: $Enums.HabitKind
   mode?: $Enums.HabitMode | null
   name: string
@@ -3368,6 +3590,7 @@ export type TrackedHabitUpdateWithoutUserInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   area?: Prisma.AreaUpdateOneWithoutTrackedHabitsNestedInput
+  goal?: Prisma.GoalUpdateOneWithoutTrackedHabitsNestedInput
   breakProfile?: Prisma.HabitBreakProfileUpdateOneWithoutHabitNestedInput
   buildProfile?: Prisma.HabitBuildProfileUpdateOneWithoutHabitNestedInput
   replacedByProfiles?: Prisma.HabitBuildProfileUpdateManyWithoutReplacesHabitNestedInput
@@ -3386,6 +3609,7 @@ export type TrackedHabitUpdateWithoutUserInput = {
 export type TrackedHabitUncheckedUpdateWithoutUserInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   areaId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  goalId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   kind?: Prisma.EnumHabitKindFieldUpdateOperationsInput | $Enums.HabitKind
   mode?: Prisma.NullableEnumHabitModeFieldUpdateOperationsInput | $Enums.HabitMode | null
   name?: Prisma.StringFieldUpdateOperationsInput | string
@@ -3421,6 +3645,7 @@ export type TrackedHabitUncheckedUpdateWithoutUserInput = {
 export type TrackedHabitUncheckedUpdateManyWithoutUserInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   areaId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  goalId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   kind?: Prisma.EnumHabitKindFieldUpdateOperationsInput | $Enums.HabitKind
   mode?: Prisma.NullableEnumHabitModeFieldUpdateOperationsInput | $Enums.HabitMode | null
   name?: Prisma.StringFieldUpdateOperationsInput | string
@@ -3443,6 +3668,7 @@ export type TrackedHabitUncheckedUpdateManyWithoutUserInput = {
 export type TrackedHabitCreateManyAreaInput = {
   id?: string
   userId: string
+  goalId?: string | null
   kind: $Enums.HabitKind
   mode?: $Enums.HabitMode | null
   name: string
@@ -3482,6 +3708,7 @@ export type TrackedHabitUpdateWithoutAreaInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   user?: Prisma.UserUpdateOneRequiredWithoutTrackedHabitsNestedInput
+  goal?: Prisma.GoalUpdateOneWithoutTrackedHabitsNestedInput
   breakProfile?: Prisma.HabitBreakProfileUpdateOneWithoutHabitNestedInput
   buildProfile?: Prisma.HabitBuildProfileUpdateOneWithoutHabitNestedInput
   replacedByProfiles?: Prisma.HabitBuildProfileUpdateManyWithoutReplacesHabitNestedInput
@@ -3500,6 +3727,7 @@ export type TrackedHabitUpdateWithoutAreaInput = {
 export type TrackedHabitUncheckedUpdateWithoutAreaInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   userId?: Prisma.StringFieldUpdateOperationsInput | string
+  goalId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   kind?: Prisma.EnumHabitKindFieldUpdateOperationsInput | $Enums.HabitKind
   mode?: Prisma.NullableEnumHabitModeFieldUpdateOperationsInput | $Enums.HabitMode | null
   name?: Prisma.StringFieldUpdateOperationsInput | string
@@ -3535,6 +3763,125 @@ export type TrackedHabitUncheckedUpdateWithoutAreaInput = {
 export type TrackedHabitUncheckedUpdateManyWithoutAreaInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   userId?: Prisma.StringFieldUpdateOperationsInput | string
+  goalId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  kind?: Prisma.EnumHabitKindFieldUpdateOperationsInput | $Enums.HabitKind
+  mode?: Prisma.NullableEnumHabitModeFieldUpdateOperationsInput | $Enums.HabitMode | null
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  displayAlias?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  category?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumHabitStatusFieldUpdateOperationsInput | $Enums.HabitStatus
+  stage?: Prisma.EnumHabitStageFieldUpdateOperationsInput | $Enums.HabitStage
+  identityStatement?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  timezone?: Prisma.StringFieldUpdateOperationsInput | string
+  checkinLocalTime?: Prisma.StringFieldUpdateOperationsInput | string
+  startedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  currentWindowStart?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  nextCheckinAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  privacyLevel?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+}
+
+export type TrackedHabitCreateManyGoalInput = {
+  id?: string
+  userId: string
+  areaId?: string | null
+  kind: $Enums.HabitKind
+  mode?: $Enums.HabitMode | null
+  name: string
+  displayAlias?: string | null
+  category?: string | null
+  status?: $Enums.HabitStatus
+  stage?: $Enums.HabitStage
+  identityStatement?: string | null
+  timezone: string
+  checkinLocalTime: string
+  startedAt: Date | string
+  currentWindowStart: Date | string
+  nextCheckinAt?: Date | string | null
+  privacyLevel?: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  archivedAt?: Date | string | null
+}
+
+export type TrackedHabitUpdateWithoutGoalInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  kind?: Prisma.EnumHabitKindFieldUpdateOperationsInput | $Enums.HabitKind
+  mode?: Prisma.NullableEnumHabitModeFieldUpdateOperationsInput | $Enums.HabitMode | null
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  displayAlias?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  category?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumHabitStatusFieldUpdateOperationsInput | $Enums.HabitStatus
+  stage?: Prisma.EnumHabitStageFieldUpdateOperationsInput | $Enums.HabitStage
+  identityStatement?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  timezone?: Prisma.StringFieldUpdateOperationsInput | string
+  checkinLocalTime?: Prisma.StringFieldUpdateOperationsInput | string
+  startedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  currentWindowStart?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  nextCheckinAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  privacyLevel?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  user?: Prisma.UserUpdateOneRequiredWithoutTrackedHabitsNestedInput
+  area?: Prisma.AreaUpdateOneWithoutTrackedHabitsNestedInput
+  breakProfile?: Prisma.HabitBreakProfileUpdateOneWithoutHabitNestedInput
+  buildProfile?: Prisma.HabitBuildProfileUpdateOneWithoutHabitNestedInput
+  replacedByProfiles?: Prisma.HabitBuildProfileUpdateManyWithoutReplacesHabitNestedInput
+  events?: Prisma.HabitEventUpdateManyWithoutHabitNestedInput
+  checkins?: Prisma.HabitCheckinUpdateManyWithoutHabitNestedInput
+  stats?: Prisma.HabitStatsUpdateOneWithoutHabitNestedInput
+  outbox?: Prisma.HabitNotificationOutboxUpdateManyWithoutHabitNestedInput
+  triggers?: Prisma.HabitTriggerUpdateManyWithoutHabitNestedInput
+  copingPlans?: Prisma.CopingPlanUpdateManyWithoutHabitNestedInput
+  milestones?: Prisma.HabitMilestoneUpdateManyWithoutHabitNestedInput
+  automaticitySurveys?: Prisma.AutomaticitySurveyUpdateManyWithoutHabitNestedInput
+  reminders?: Prisma.HabitReminderUpdateManyWithoutHabitNestedInput
+  reflections?: Prisma.HabitReflectionUpdateManyWithoutHabitNestedInput
+}
+
+export type TrackedHabitUncheckedUpdateWithoutGoalInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  userId?: Prisma.StringFieldUpdateOperationsInput | string
+  areaId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  kind?: Prisma.EnumHabitKindFieldUpdateOperationsInput | $Enums.HabitKind
+  mode?: Prisma.NullableEnumHabitModeFieldUpdateOperationsInput | $Enums.HabitMode | null
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  displayAlias?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  category?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumHabitStatusFieldUpdateOperationsInput | $Enums.HabitStatus
+  stage?: Prisma.EnumHabitStageFieldUpdateOperationsInput | $Enums.HabitStage
+  identityStatement?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  timezone?: Prisma.StringFieldUpdateOperationsInput | string
+  checkinLocalTime?: Prisma.StringFieldUpdateOperationsInput | string
+  startedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  currentWindowStart?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  nextCheckinAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  privacyLevel?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  breakProfile?: Prisma.HabitBreakProfileUncheckedUpdateOneWithoutHabitNestedInput
+  buildProfile?: Prisma.HabitBuildProfileUncheckedUpdateOneWithoutHabitNestedInput
+  replacedByProfiles?: Prisma.HabitBuildProfileUncheckedUpdateManyWithoutReplacesHabitNestedInput
+  events?: Prisma.HabitEventUncheckedUpdateManyWithoutHabitNestedInput
+  checkins?: Prisma.HabitCheckinUncheckedUpdateManyWithoutHabitNestedInput
+  stats?: Prisma.HabitStatsUncheckedUpdateOneWithoutHabitNestedInput
+  outbox?: Prisma.HabitNotificationOutboxUncheckedUpdateManyWithoutHabitNestedInput
+  triggers?: Prisma.HabitTriggerUncheckedUpdateManyWithoutHabitNestedInput
+  copingPlans?: Prisma.CopingPlanUncheckedUpdateManyWithoutHabitNestedInput
+  milestones?: Prisma.HabitMilestoneUncheckedUpdateManyWithoutHabitNestedInput
+  automaticitySurveys?: Prisma.AutomaticitySurveyUncheckedUpdateManyWithoutHabitNestedInput
+  reminders?: Prisma.HabitReminderUncheckedUpdateManyWithoutHabitNestedInput
+  reflections?: Prisma.HabitReflectionUncheckedUpdateManyWithoutHabitNestedInput
+}
+
+export type TrackedHabitUncheckedUpdateManyWithoutGoalInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  userId?: Prisma.StringFieldUpdateOperationsInput | string
+  areaId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   kind?: Prisma.EnumHabitKindFieldUpdateOperationsInput | $Enums.HabitKind
   mode?: Prisma.NullableEnumHabitModeFieldUpdateOperationsInput | $Enums.HabitMode | null
   name?: Prisma.StringFieldUpdateOperationsInput | string
@@ -3670,6 +4017,7 @@ export type TrackedHabitSelect<ExtArgs extends runtime.Types.Extensions.Internal
   id?: boolean
   userId?: boolean
   areaId?: boolean
+  goalId?: boolean
   kind?: boolean
   mode?: boolean
   name?: boolean
@@ -3689,6 +4037,7 @@ export type TrackedHabitSelect<ExtArgs extends runtime.Types.Extensions.Internal
   archivedAt?: boolean
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   area?: boolean | Prisma.TrackedHabit$areaArgs<ExtArgs>
+  goal?: boolean | Prisma.TrackedHabit$goalArgs<ExtArgs>
   breakProfile?: boolean | Prisma.TrackedHabit$breakProfileArgs<ExtArgs>
   buildProfile?: boolean | Prisma.TrackedHabit$buildProfileArgs<ExtArgs>
   replacedByProfiles?: boolean | Prisma.TrackedHabit$replacedByProfilesArgs<ExtArgs>
@@ -3709,6 +4058,7 @@ export type TrackedHabitSelectCreateManyAndReturn<ExtArgs extends runtime.Types.
   id?: boolean
   userId?: boolean
   areaId?: boolean
+  goalId?: boolean
   kind?: boolean
   mode?: boolean
   name?: boolean
@@ -3728,12 +4078,14 @@ export type TrackedHabitSelectCreateManyAndReturn<ExtArgs extends runtime.Types.
   archivedAt?: boolean
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   area?: boolean | Prisma.TrackedHabit$areaArgs<ExtArgs>
+  goal?: boolean | Prisma.TrackedHabit$goalArgs<ExtArgs>
 }, ExtArgs["result"]["trackedHabit"]>
 
 export type TrackedHabitSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   userId?: boolean
   areaId?: boolean
+  goalId?: boolean
   kind?: boolean
   mode?: boolean
   name?: boolean
@@ -3753,12 +4105,14 @@ export type TrackedHabitSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.
   archivedAt?: boolean
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   area?: boolean | Prisma.TrackedHabit$areaArgs<ExtArgs>
+  goal?: boolean | Prisma.TrackedHabit$goalArgs<ExtArgs>
 }, ExtArgs["result"]["trackedHabit"]>
 
 export type TrackedHabitSelectScalar = {
   id?: boolean
   userId?: boolean
   areaId?: boolean
+  goalId?: boolean
   kind?: boolean
   mode?: boolean
   name?: boolean
@@ -3778,10 +4132,11 @@ export type TrackedHabitSelectScalar = {
   archivedAt?: boolean
 }
 
-export type TrackedHabitOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "userId" | "areaId" | "kind" | "mode" | "name" | "displayAlias" | "category" | "status" | "stage" | "identityStatement" | "timezone" | "checkinLocalTime" | "startedAt" | "currentWindowStart" | "nextCheckinAt" | "privacyLevel" | "createdAt" | "updatedAt" | "archivedAt", ExtArgs["result"]["trackedHabit"]>
+export type TrackedHabitOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "userId" | "areaId" | "goalId" | "kind" | "mode" | "name" | "displayAlias" | "category" | "status" | "stage" | "identityStatement" | "timezone" | "checkinLocalTime" | "startedAt" | "currentWindowStart" | "nextCheckinAt" | "privacyLevel" | "createdAt" | "updatedAt" | "archivedAt", ExtArgs["result"]["trackedHabit"]>
 export type TrackedHabitInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   area?: boolean | Prisma.TrackedHabit$areaArgs<ExtArgs>
+  goal?: boolean | Prisma.TrackedHabit$goalArgs<ExtArgs>
   breakProfile?: boolean | Prisma.TrackedHabit$breakProfileArgs<ExtArgs>
   buildProfile?: boolean | Prisma.TrackedHabit$buildProfileArgs<ExtArgs>
   replacedByProfiles?: boolean | Prisma.TrackedHabit$replacedByProfilesArgs<ExtArgs>
@@ -3800,10 +4155,12 @@ export type TrackedHabitInclude<ExtArgs extends runtime.Types.Extensions.Interna
 export type TrackedHabitIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   area?: boolean | Prisma.TrackedHabit$areaArgs<ExtArgs>
+  goal?: boolean | Prisma.TrackedHabit$goalArgs<ExtArgs>
 }
 export type TrackedHabitIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   area?: boolean | Prisma.TrackedHabit$areaArgs<ExtArgs>
+  goal?: boolean | Prisma.TrackedHabit$goalArgs<ExtArgs>
 }
 
 export type $TrackedHabitPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -3811,6 +4168,7 @@ export type $TrackedHabitPayload<ExtArgs extends runtime.Types.Extensions.Intern
   objects: {
     user: Prisma.$UserPayload<ExtArgs>
     area: Prisma.$AreaPayload<ExtArgs> | null
+    goal: Prisma.$GoalPayload<ExtArgs> | null
     breakProfile: Prisma.$HabitBreakProfilePayload<ExtArgs> | null
     buildProfile: Prisma.$HabitBuildProfilePayload<ExtArgs> | null
     replacedByProfiles: Prisma.$HabitBuildProfilePayload<ExtArgs>[]
@@ -3829,6 +4187,7 @@ export type $TrackedHabitPayload<ExtArgs extends runtime.Types.Extensions.Intern
     id: string
     userId: string
     areaId: string | null
+    goalId: string | null
     kind: $Enums.HabitKind
     mode: $Enums.HabitMode | null
     name: string
@@ -4242,6 +4601,7 @@ export interface Prisma__TrackedHabitClient<T, Null = never, ExtArgs extends run
   readonly [Symbol.toStringTag]: "PrismaPromise"
   user<T extends Prisma.UserDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.UserDefaultArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   area<T extends Prisma.TrackedHabit$areaArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.TrackedHabit$areaArgs<ExtArgs>>): Prisma.Prisma__AreaClient<runtime.Types.Result.GetResult<Prisma.$AreaPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  goal<T extends Prisma.TrackedHabit$goalArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.TrackedHabit$goalArgs<ExtArgs>>): Prisma.Prisma__GoalClient<runtime.Types.Result.GetResult<Prisma.$GoalPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   breakProfile<T extends Prisma.TrackedHabit$breakProfileArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.TrackedHabit$breakProfileArgs<ExtArgs>>): Prisma.Prisma__HabitBreakProfileClient<runtime.Types.Result.GetResult<Prisma.$HabitBreakProfilePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   buildProfile<T extends Prisma.TrackedHabit$buildProfileArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.TrackedHabit$buildProfileArgs<ExtArgs>>): Prisma.Prisma__HabitBuildProfileClient<runtime.Types.Result.GetResult<Prisma.$HabitBuildProfilePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   replacedByProfiles<T extends Prisma.TrackedHabit$replacedByProfilesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.TrackedHabit$replacedByProfilesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$HabitBuildProfilePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
@@ -4287,6 +4647,7 @@ export interface TrackedHabitFieldRefs {
   readonly id: Prisma.FieldRef<"TrackedHabit", 'String'>
   readonly userId: Prisma.FieldRef<"TrackedHabit", 'String'>
   readonly areaId: Prisma.FieldRef<"TrackedHabit", 'String'>
+  readonly goalId: Prisma.FieldRef<"TrackedHabit", 'String'>
   readonly kind: Prisma.FieldRef<"TrackedHabit", 'HabitKind'>
   readonly mode: Prisma.FieldRef<"TrackedHabit", 'HabitMode'>
   readonly name: Prisma.FieldRef<"TrackedHabit", 'String'>
@@ -4721,6 +5082,25 @@ export type TrackedHabit$areaArgs<ExtArgs extends runtime.Types.Extensions.Inter
    */
   include?: Prisma.AreaInclude<ExtArgs> | null
   where?: Prisma.AreaWhereInput
+}
+
+/**
+ * TrackedHabit.goal
+ */
+export type TrackedHabit$goalArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Goal
+   */
+  select?: Prisma.GoalSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Goal
+   */
+  omit?: Prisma.GoalOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.GoalInclude<ExtArgs> | null
+  where?: Prisma.GoalWhereInput
 }
 
 /**

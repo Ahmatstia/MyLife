@@ -4075,6 +4075,7 @@ export const TrackedHabitScalarFieldEnum = {
   id: 'id',
   userId: 'userId',
   areaId: 'areaId',
+  goalId: 'goalId',
   kind: 'kind',
   mode: 'mode',
   name: 'name',

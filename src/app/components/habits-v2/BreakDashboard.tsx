@@ -12,6 +12,7 @@ import { MilestoneCelebrationModal } from "./MilestoneCelebrationModal";
 import { HabitInsightsModal } from "./HabitInsightsModal";
 import { HabitRemindersModal } from "./HabitRemindersModal";
 import { WeeklyReflectionModal } from "./WeeklyReflectionModal";
+import { DeleteHabitModal } from "./DeleteHabitModal";
 
 function formatSavingsMoney(val: number | string | null | undefined): string {
   if (val == null) return "Rp 0";
@@ -120,6 +121,7 @@ export function BreakDashboard({ habitId, onBack }: BreakDashboardProps) {
   const [showInsights, setShowInsights] = useState(false);
   const [showReminders, setShowReminders] = useState(false);
   const [showReflection, setShowReflection] = useState(false);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [uncelebratedMilestone, setUncelebratedMilestone] = useState<{
     id: string;
     code: string;
@@ -368,6 +370,15 @@ export function BreakDashboard({ habitId, onBack }: BreakDashboardProps) {
             className="inline-flex items-center gap-1.5 rounded-xl border border-white/10 bg-white/5 hover:bg-white/10 px-3 py-1.5 text-xs font-semibold text-slate-300 transition-colors shadow-sm"
           >
             📑 Refleksi
+          </button>
+          <button
+            id="dashboard-delete-btn"
+            type="button"
+            onClick={() => setShowDeleteModal(true)}
+            className="inline-flex items-center gap-1.5 rounded-xl border border-rose-500/20 bg-rose-500/10 hover:bg-rose-500/20 px-3 py-1.5 text-xs font-semibold text-rose-300 transition-colors shadow-sm"
+            title="Kelola atau hapus kebiasaan"
+          >
+            🗑 Kelola
           </button>
           {isReduce && (
             <span className="px-2.5 py-1 rounded-full bg-indigo-500/10 border border-indigo-500/20 text-indigo-300 text-xs font-semibold">
@@ -1011,6 +1022,16 @@ export function BreakDashboard({ habitId, onBack }: BreakDashboardProps) {
         habitName={displayName}
         onClose={() => setShowReflection(false)}
       />
+
+      {/* MODAL: Delete Habit (Fase 5) */}
+      {showDeleteModal && (
+        <DeleteHabitModal
+          habitId={habit.id}
+          habitName={displayName}
+          onSuccess={onBack}
+          onClose={() => setShowDeleteModal(false)}
+        />
+      )}
     </div>
   );
 }
