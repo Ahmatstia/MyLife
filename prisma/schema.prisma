@@ -904,6 +904,7 @@ model HabitBreakProfile {
   relapseWindowDays    Int          @default(7)
   highRiskCategory     Boolean      @default(false)
   safetyAckAt          DateTime?    @db.Timestamptz(3)
+  relapseAckAt         DateTime?    @db.Timestamptz(3)
   environmentChecklist Json         @default("[]")
 }
 

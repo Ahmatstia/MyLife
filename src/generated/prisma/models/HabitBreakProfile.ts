@@ -62,6 +62,7 @@ export type HabitBreakProfileMinAggregateOutputType = {
   relapseWindowDays: number | null
   highRiskCategory: boolean | null
   safetyAckAt: Date | null
+  relapseAckAt: Date | null
 }
 
 export type HabitBreakProfileMaxAggregateOutputType = {
@@ -78,6 +79,7 @@ export type HabitBreakProfileMaxAggregateOutputType = {
   relapseWindowDays: number | null
   highRiskCategory: boolean | null
   safetyAckAt: Date | null
+  relapseAckAt: Date | null
 }
 
 export type HabitBreakProfileCountAggregateOutputType = {
@@ -96,6 +98,7 @@ export type HabitBreakProfileCountAggregateOutputType = {
   relapseWindowDays: number
   highRiskCategory: number
   safetyAckAt: number
+  relapseAckAt: number
   environmentChecklist: number
   _all: number
 }
@@ -137,6 +140,7 @@ export type HabitBreakProfileMinAggregateInputType = {
   relapseWindowDays?: true
   highRiskCategory?: true
   safetyAckAt?: true
+  relapseAckAt?: true
 }
 
 export type HabitBreakProfileMaxAggregateInputType = {
@@ -153,6 +157,7 @@ export type HabitBreakProfileMaxAggregateInputType = {
   relapseWindowDays?: true
   highRiskCategory?: true
   safetyAckAt?: true
+  relapseAckAt?: true
 }
 
 export type HabitBreakProfileCountAggregateInputType = {
@@ -171,6 +176,7 @@ export type HabitBreakProfileCountAggregateInputType = {
   relapseWindowDays?: true
   highRiskCategory?: true
   safetyAckAt?: true
+  relapseAckAt?: true
   environmentChecklist?: true
   _all?: true
 }
@@ -277,6 +283,7 @@ export type HabitBreakProfileGroupByOutputType = {
   relapseWindowDays: number
   highRiskCategory: boolean
   safetyAckAt: Date | null
+  relapseAckAt: Date | null
   environmentChecklist: runtime.JsonValue
   _count: HabitBreakProfileCountAggregateOutputType | null
   _avg: HabitBreakProfileAvgAggregateOutputType | null
@@ -319,6 +326,7 @@ export type HabitBreakProfileWhereInput = {
   relapseWindowDays?: Prisma.IntFilter<"HabitBreakProfile"> | number
   highRiskCategory?: Prisma.BoolFilter<"HabitBreakProfile"> | boolean
   safetyAckAt?: Prisma.DateTimeNullableFilter<"HabitBreakProfile"> | Date | string | null
+  relapseAckAt?: Prisma.DateTimeNullableFilter<"HabitBreakProfile"> | Date | string | null
   environmentChecklist?: Prisma.JsonFilter<"HabitBreakProfile">
   habit?: Prisma.XOR<Prisma.TrackedHabitScalarRelationFilter, Prisma.TrackedHabitWhereInput>
 }
@@ -339,6 +347,7 @@ export type HabitBreakProfileOrderByWithRelationInput = {
   relapseWindowDays?: Prisma.SortOrder
   highRiskCategory?: Prisma.SortOrder
   safetyAckAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  relapseAckAt?: Prisma.SortOrderInput | Prisma.SortOrder
   environmentChecklist?: Prisma.SortOrder
   habit?: Prisma.TrackedHabitOrderByWithRelationInput
 }
@@ -362,6 +371,7 @@ export type HabitBreakProfileWhereUniqueInput = Prisma.AtLeast<{
   relapseWindowDays?: Prisma.IntFilter<"HabitBreakProfile"> | number
   highRiskCategory?: Prisma.BoolFilter<"HabitBreakProfile"> | boolean
   safetyAckAt?: Prisma.DateTimeNullableFilter<"HabitBreakProfile"> | Date | string | null
+  relapseAckAt?: Prisma.DateTimeNullableFilter<"HabitBreakProfile"> | Date | string | null
   environmentChecklist?: Prisma.JsonFilter<"HabitBreakProfile">
   habit?: Prisma.XOR<Prisma.TrackedHabitScalarRelationFilter, Prisma.TrackedHabitWhereInput>
 }, "habitId">
@@ -382,6 +392,7 @@ export type HabitBreakProfileOrderByWithAggregationInput = {
   relapseWindowDays?: Prisma.SortOrder
   highRiskCategory?: Prisma.SortOrder
   safetyAckAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  relapseAckAt?: Prisma.SortOrderInput | Prisma.SortOrder
   environmentChecklist?: Prisma.SortOrder
   _count?: Prisma.HabitBreakProfileCountOrderByAggregateInput
   _avg?: Prisma.HabitBreakProfileAvgOrderByAggregateInput
@@ -409,6 +420,7 @@ export type HabitBreakProfileScalarWhereWithAggregatesInput = {
   relapseWindowDays?: Prisma.IntWithAggregatesFilter<"HabitBreakProfile"> | number
   highRiskCategory?: Prisma.BoolWithAggregatesFilter<"HabitBreakProfile"> | boolean
   safetyAckAt?: Prisma.DateTimeNullableWithAggregatesFilter<"HabitBreakProfile"> | Date | string | null
+  relapseAckAt?: Prisma.DateTimeNullableWithAggregatesFilter<"HabitBreakProfile"> | Date | string | null
   environmentChecklist?: Prisma.JsonWithAggregatesFilter<"HabitBreakProfile">
 }
 
@@ -427,6 +439,7 @@ export type HabitBreakProfileCreateInput = {
   relapseWindowDays?: number
   highRiskCategory?: boolean
   safetyAckAt?: Date | string | null
+  relapseAckAt?: Date | string | null
   environmentChecklist?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   habit: Prisma.TrackedHabitCreateNestedOneWithoutBreakProfileInput
 }
@@ -447,6 +460,7 @@ export type HabitBreakProfileUncheckedCreateInput = {
   relapseWindowDays?: number
   highRiskCategory?: boolean
   safetyAckAt?: Date | string | null
+  relapseAckAt?: Date | string | null
   environmentChecklist?: Prisma.JsonNullValueInput | runtime.InputJsonValue
 }
 
@@ -465,6 +479,7 @@ export type HabitBreakProfileUpdateInput = {
   relapseWindowDays?: Prisma.IntFieldUpdateOperationsInput | number
   highRiskCategory?: Prisma.BoolFieldUpdateOperationsInput | boolean
   safetyAckAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  relapseAckAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   environmentChecklist?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   habit?: Prisma.TrackedHabitUpdateOneRequiredWithoutBreakProfileNestedInput
 }
@@ -485,6 +500,7 @@ export type HabitBreakProfileUncheckedUpdateInput = {
   relapseWindowDays?: Prisma.IntFieldUpdateOperationsInput | number
   highRiskCategory?: Prisma.BoolFieldUpdateOperationsInput | boolean
   safetyAckAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  relapseAckAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   environmentChecklist?: Prisma.JsonNullValueInput | runtime.InputJsonValue
 }
 
@@ -504,6 +520,7 @@ export type HabitBreakProfileCreateManyInput = {
   relapseWindowDays?: number
   highRiskCategory?: boolean
   safetyAckAt?: Date | string | null
+  relapseAckAt?: Date | string | null
   environmentChecklist?: Prisma.JsonNullValueInput | runtime.InputJsonValue
 }
 
@@ -522,6 +539,7 @@ export type HabitBreakProfileUpdateManyMutationInput = {
   relapseWindowDays?: Prisma.IntFieldUpdateOperationsInput | number
   highRiskCategory?: Prisma.BoolFieldUpdateOperationsInput | boolean
   safetyAckAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  relapseAckAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   environmentChecklist?: Prisma.JsonNullValueInput | runtime.InputJsonValue
 }
 
@@ -541,6 +559,7 @@ export type HabitBreakProfileUncheckedUpdateManyInput = {
   relapseWindowDays?: Prisma.IntFieldUpdateOperationsInput | number
   highRiskCategory?: Prisma.BoolFieldUpdateOperationsInput | boolean
   safetyAckAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  relapseAckAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   environmentChecklist?: Prisma.JsonNullValueInput | runtime.InputJsonValue
 }
 
@@ -565,6 +584,7 @@ export type HabitBreakProfileCountOrderByAggregateInput = {
   relapseWindowDays?: Prisma.SortOrder
   highRiskCategory?: Prisma.SortOrder
   safetyAckAt?: Prisma.SortOrder
+  relapseAckAt?: Prisma.SortOrder
   environmentChecklist?: Prisma.SortOrder
 }
 
@@ -593,6 +613,7 @@ export type HabitBreakProfileMaxOrderByAggregateInput = {
   relapseWindowDays?: Prisma.SortOrder
   highRiskCategory?: Prisma.SortOrder
   safetyAckAt?: Prisma.SortOrder
+  relapseAckAt?: Prisma.SortOrder
 }
 
 export type HabitBreakProfileMinOrderByAggregateInput = {
@@ -609,6 +630,7 @@ export type HabitBreakProfileMinOrderByAggregateInput = {
   relapseWindowDays?: Prisma.SortOrder
   highRiskCategory?: Prisma.SortOrder
   safetyAckAt?: Prisma.SortOrder
+  relapseAckAt?: Prisma.SortOrder
 }
 
 export type HabitBreakProfileSumOrderByAggregateInput = {
@@ -677,6 +699,7 @@ export type HabitBreakProfileCreateWithoutHabitInput = {
   relapseWindowDays?: number
   highRiskCategory?: boolean
   safetyAckAt?: Date | string | null
+  relapseAckAt?: Date | string | null
   environmentChecklist?: Prisma.JsonNullValueInput | runtime.InputJsonValue
 }
 
@@ -695,6 +718,7 @@ export type HabitBreakProfileUncheckedCreateWithoutHabitInput = {
   relapseWindowDays?: number
   highRiskCategory?: boolean
   safetyAckAt?: Date | string | null
+  relapseAckAt?: Date | string | null
   environmentChecklist?: Prisma.JsonNullValueInput | runtime.InputJsonValue
 }
 
@@ -729,6 +753,7 @@ export type HabitBreakProfileUpdateWithoutHabitInput = {
   relapseWindowDays?: Prisma.IntFieldUpdateOperationsInput | number
   highRiskCategory?: Prisma.BoolFieldUpdateOperationsInput | boolean
   safetyAckAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  relapseAckAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   environmentChecklist?: Prisma.JsonNullValueInput | runtime.InputJsonValue
 }
 
@@ -747,6 +772,7 @@ export type HabitBreakProfileUncheckedUpdateWithoutHabitInput = {
   relapseWindowDays?: Prisma.IntFieldUpdateOperationsInput | number
   highRiskCategory?: Prisma.BoolFieldUpdateOperationsInput | boolean
   safetyAckAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  relapseAckAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   environmentChecklist?: Prisma.JsonNullValueInput | runtime.InputJsonValue
 }
 
@@ -768,6 +794,7 @@ export type HabitBreakProfileSelect<ExtArgs extends runtime.Types.Extensions.Int
   relapseWindowDays?: boolean
   highRiskCategory?: boolean
   safetyAckAt?: boolean
+  relapseAckAt?: boolean
   environmentChecklist?: boolean
   habit?: boolean | Prisma.TrackedHabitDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["habitBreakProfile"]>
@@ -788,6 +815,7 @@ export type HabitBreakProfileSelectCreateManyAndReturn<ExtArgs extends runtime.T
   relapseWindowDays?: boolean
   highRiskCategory?: boolean
   safetyAckAt?: boolean
+  relapseAckAt?: boolean
   environmentChecklist?: boolean
   habit?: boolean | Prisma.TrackedHabitDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["habitBreakProfile"]>
@@ -808,6 +836,7 @@ export type HabitBreakProfileSelectUpdateManyAndReturn<ExtArgs extends runtime.T
   relapseWindowDays?: boolean
   highRiskCategory?: boolean
   safetyAckAt?: boolean
+  relapseAckAt?: boolean
   environmentChecklist?: boolean
   habit?: boolean | Prisma.TrackedHabitDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["habitBreakProfile"]>
@@ -828,10 +857,11 @@ export type HabitBreakProfileSelectScalar = {
   relapseWindowDays?: boolean
   highRiskCategory?: boolean
   safetyAckAt?: boolean
+  relapseAckAt?: boolean
   environmentChecklist?: boolean
 }
 
-export type HabitBreakProfileOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"habitId" | "whyReasons" | "futureSelfNote" | "rewardAnalysis" | "baselinePerDay" | "costPerOccurrence" | "currency" | "minutesPerOccurrence" | "reduceDailyLimit" | "reduceStepPercent" | "reduceStepEveryDays" | "relapseLapseCount" | "relapseWindowDays" | "highRiskCategory" | "safetyAckAt" | "environmentChecklist", ExtArgs["result"]["habitBreakProfile"]>
+export type HabitBreakProfileOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"habitId" | "whyReasons" | "futureSelfNote" | "rewardAnalysis" | "baselinePerDay" | "costPerOccurrence" | "currency" | "minutesPerOccurrence" | "reduceDailyLimit" | "reduceStepPercent" | "reduceStepEveryDays" | "relapseLapseCount" | "relapseWindowDays" | "highRiskCategory" | "safetyAckAt" | "relapseAckAt" | "environmentChecklist", ExtArgs["result"]["habitBreakProfile"]>
 export type HabitBreakProfileInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   habit?: boolean | Prisma.TrackedHabitDefaultArgs<ExtArgs>
 }
@@ -863,6 +893,7 @@ export type $HabitBreakProfilePayload<ExtArgs extends runtime.Types.Extensions.I
     relapseWindowDays: number
     highRiskCategory: boolean
     safetyAckAt: Date | null
+    relapseAckAt: Date | null
     environmentChecklist: runtime.JsonValue
   }, ExtArgs["result"]["habitBreakProfile"]>
   composites: {}
@@ -1303,6 +1334,7 @@ export interface HabitBreakProfileFieldRefs {
   readonly relapseWindowDays: Prisma.FieldRef<"HabitBreakProfile", 'Int'>
   readonly highRiskCategory: Prisma.FieldRef<"HabitBreakProfile", 'Boolean'>
   readonly safetyAckAt: Prisma.FieldRef<"HabitBreakProfile", 'DateTime'>
+  readonly relapseAckAt: Prisma.FieldRef<"HabitBreakProfile", 'DateTime'>
   readonly environmentChecklist: Prisma.FieldRef<"HabitBreakProfile", 'Json'>
 }
     

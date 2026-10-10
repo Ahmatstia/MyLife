@@ -6,6 +6,7 @@ import { LogLapseModal } from "./LogLapseModal";
 import { RecoveryModal } from "./RecoveryModal";
 import { SosUrgeSurfingModal } from "./SosUrgeSurfingModal";
 import { DebriefModal } from "./DebriefModal";
+import { RelapseResetPlanModal } from "./RelapseResetPlanModal";
 
 interface DashboardData {
   habit: {
@@ -22,6 +23,8 @@ interface DashboardData {
       whyReasons?: string[];
       futureSelfNote?: string | null;
       costPerOccurrence?: number | null;
+      highRiskCategory?: boolean;
+      relapseAckAt?: string | null;
     } | null;
   };
   stats?: {
@@ -32,7 +35,9 @@ interface DashboardData {
     lastLapseAt?: string | null;
     totalLapses: number;
     urgesResisted: number;
+    relapsePattern?: boolean;
   } | null;
+  activeRelapsePrompt?: boolean;
   pendingCheckins: Array<{
     id: string;
     periodDate: string;
@@ -63,6 +68,7 @@ export function BreakDashboard({ habitId, onBack }: BreakDashboardProps) {
   const [showSos, setShowSos] = useState(false);
   const [showDebrief, setShowDebrief] = useState(false);
   const [debriefEventId, setDebriefEventId] = useState<string | null>(null);
+  const [showRelapseModal, setShowRelapseModal] = useState(false);
   const [actionLoading, setActionLoading] = useState(false);
 
   const fetchDashboard = useCallback(async () => {
@@ -220,6 +226,36 @@ export function BreakDashboard({ habitId, onBack }: BreakDashboardProps) {
           <span>Check-in: {habit.checkinLocalTime} ({habit.timezone})</span>
         </div>
       </div>
+
+      {/* RELAPSE PATTERN BANNER (F-B9) */}
+      {data?.activeRelapsePrompt && (
+        <div
+          id="relapse-pattern-banner"
+          className="rounded-2xl border border-purple-500/40 bg-purple-950/20 p-5 shadow-xl animate-fade-in"
+        >
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+            <div className="flex items-start gap-3">
+              <span className="text-2xl mt-0.5">🔄</span>
+              <div>
+                <div className="flex items-center gap-2 text-purple-300 font-bold text-sm mb-1">
+                  <span>Pola Kambuh Terdeteksi</span>
+                </div>
+                <p className="text-xs text-slate-300 leading-relaxed">
+                  Frekuensi terpeleset meningkat belakangan ini. Mari tinjau pemicu dan sesuaikan rencana jika–maka agar langkahmu kembali nyaman.
+                </p>
+              </div>
+            </div>
+            <button
+              id="open-relapse-plan-btn"
+              type="button"
+              onClick={() => setShowRelapseModal(true)}
+              className="rounded-xl bg-purple-600 hover:bg-purple-500 px-4 py-2.5 text-xs font-bold text-white shadow-lg shadow-purple-600/30 transition-all self-end sm:self-center whitespace-nowrap"
+            >
+              Tinjau & Reset Rencana →
+            </button>
+          </div>
+        </div>
+      )}
 
       {/* PENDING CHECK-IN BANNER */}
       {pendingCheckins && pendingCheckins.length > 0 && (
@@ -489,6 +525,27 @@ export function BreakDashboard({ habitId, onBack }: BreakDashboardProps) {
               setShowRecovery(true);
             }
           }
+        }}
+      />
+
+      {/* MODAL: Relapse Reset Plan (F-B9) */}
+      <RelapseResetPlanModal
+        isOpen={showRelapseModal}
+        habitId={habit.id}
+        habitName={displayName}
+        isHighRisk={habit.breakProfile?.highRiskCategory ?? false}
+        currentWhyReasons={
+          Array.isArray(habit.breakProfile?.whyReasons)
+            ? (habit.breakProfile.whyReasons as string[])
+            : []
+        }
+        onClose={() => {
+          setShowRelapseModal(false);
+          fetchDashboard();
+        }}
+        onSuccess={() => {
+          setShowRelapseModal(false);
+          fetchDashboard();
         }}
       />
     </div>

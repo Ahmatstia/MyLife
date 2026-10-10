@@ -75,6 +75,7 @@ describe("Habits v2 UI Logic & Contract Tests (Langkah 1.6)", () => {
       expect(files).toContain("HabitsV2App.tsx");
       expect(files).toContain("SosUrgeSurfingModal.tsx");
       expect(files).toContain("DebriefModal.tsx");
+      expect(files).toContain("RelapseResetPlanModal.tsx");
       expect(files).toContain("index.ts");
     });
 
@@ -136,6 +137,17 @@ describe("Habits v2 UI Logic & Contract Tests (Langkah 1.6)", () => {
       expect(content).toContain("Apa yang berhasil menahanmu sebelumnya, atau apa yang bisa diubah?");
       expect(content).toContain("Rencana Jika–Maka apa yang ingin kamu tambahkan?");
       expect(content).toContain("Lewati Refleksi");
+    });
+
+    it("verifies RelapseResetPlanModal implements relapse reset plan workflow (F-B9)", () => {
+      const modalPath = path.join(componentsDir, "RelapseResetPlanModal.tsx");
+      const content = fs.readFileSync(modalPath, "utf-8");
+
+      expect(content).toContain("Penyesuaian Strategi & Reset Rencana");
+      expect(content).toContain("Pola frekuensi terpeleset terdeteksi belakangan ini.");
+      expect(content).toContain("Kembali ke Tahap Persiapan");
+      expect(content).toContain("Turunkan Target (Pengurangan Bertahap)");
+      expect(content).toContain("Nanti Saja");
     });
   });
 

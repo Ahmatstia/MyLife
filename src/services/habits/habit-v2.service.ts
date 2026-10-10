@@ -235,12 +235,23 @@ export async function getTrackedHabitDashboardService(
     }),
   ]);
 
+  const relapseAckAt = habit.breakProfile?.relapseAckAt
+    ? new Date(habit.breakProfile.relapseAckAt).getTime()
+    : 0;
+  const lastLapseAt = habit.stats?.lastLapseAt
+    ? new Date(habit.stats.lastLapseAt).getTime()
+    : 0;
+  const activeRelapsePrompt = Boolean(
+    habit.stats?.relapsePattern && (!relapseAckAt || lastLapseAt > relapseAckAt),
+  );
+
   return {
     habit,
     stats: habit.stats,
     pendingCheckins,
     calendar: checkins,
     recentEvents,
+    activeRelapsePrompt,
   };
 }
 

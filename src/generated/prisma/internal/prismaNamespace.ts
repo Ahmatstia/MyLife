@@ -3813,6 +3813,7 @@ export const HabitBreakProfileScalarFieldEnum = {
   relapseWindowDays: 'relapseWindowDays',
   highRiskCategory: 'highRiskCategory',
   safetyAckAt: 'safetyAckAt',
+  relapseAckAt: 'relapseAckAt',
   environmentChecklist: 'environmentChecklist'
 } as const
 
