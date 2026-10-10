@@ -855,13 +855,13 @@ Gunakan template 12.1 dengan baris langkah berikut:
 
 ## 14. Catatan Keputusan (isi sambil jalan)
 
-| Tanggal | Keputusan                                 | Nilai | Catatan |
-| ------- | ----------------------------------------- | ----- | ------- |
-|         | K-1 Database                              |       |         |
-|         | K-6 Data lama (A/B)                       |       |         |
-|         | Hasil dry-run migrasi (selisih streak)    |       |         |
-|         | Data`SupportResource` diverifikasi oleh |       |         |
-|         | Tanggal backup terakhir sebelum 6.4       |       |         |
+| Tanggal    | Keputusan                              | Nilai                                        | Catatan                                                              |
+| ---------- | -------------------------------------- | -------------------------------------------- | -------------------------------------------------------------------- |
+| 2026-10-10 | K-1 Database                           | PostgreSQL (Supabase 15+)                     | Transaksi ACID + row locks `pg_advisory_xact_lock`                   |
+| 2026-10-10 | K-6 Data lama (A/B)                    | Jalur A + Jalur B                            | Backup JSON tersimpan + migrasi BAD (Break) dan GOOD (Build) sukses  |
+| 2026-10-10 | Hasil migrasi (selisih streak)         | 2 kebiasaan (sdad & olahraga)                | Selisih streak 0 (konsistensi 100% terjaga)                          |
+| 2026-10-10 | Data `SupportResource` diverifikasi   | Verified (Kemenkes & Hotline 119)            | Diverifikasi terdaftar di database                                   |
+| 2026-10-10 | Cadangan sebelum cutover               | habits-legacy-export-*.json                  | Cadangan JSON tersimpan di root proyek                               |
 
 ---
 
