@@ -3,7 +3,7 @@ import { PrismaClient } from "../generated/prisma/client";
 import { PrismaPg } from "@prisma/adapter-pg";
 import { Pool } from "pg";
 
-const SCHEMA_VERSION = "habits-v2-phase3";
+const SCHEMA_VERSION = "habits-v2-complete";
 
 const globalForPrisma = globalThis as unknown as {
   prisma: PrismaClient | undefined;
@@ -12,7 +12,13 @@ const globalForPrisma = globalThis as unknown as {
 };
 
 // Bust stale in-memory PrismaClient if schema was regenerated during hot-reload
-if (globalForPrisma.schemaVersion !== SCHEMA_VERSION) {
+// or if new models (e.g. habitReminder, habitReflection) are missing on the cached client
+if (
+  globalForPrisma.schemaVersion !== SCHEMA_VERSION ||
+  !globalForPrisma.prisma ||
+  !("habitReminder" in globalForPrisma.prisma) ||
+  !("habitReflection" in globalForPrisma.prisma)
+) {
   globalForPrisma.prisma = undefined;
   globalForPrisma.schemaVersion = SCHEMA_VERSION;
 }
