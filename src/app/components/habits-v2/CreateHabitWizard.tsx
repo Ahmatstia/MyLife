@@ -39,6 +39,11 @@ export function CreateHabitWizard({
   const [timezone, setTimezone] = useState(defaultTimezone);
 
   // BREAK State
+  const [breakMode, setBreakMode] = useState<"ABSTAIN" | "REDUCE">("ABSTAIN");
+  const [reduceDailyLimit, setReduceDailyLimit] = useState<number | "">(5);
+  const [reduceStepPercent, setReduceStepPercent] = useState<number | "">(10);
+  const [reduceStepEveryDays, setReduceStepEveryDays] = useState<number | "">(7);
+
   const [startedAt, setStartedAt] = useState(() => {
     const now = new Date();
     const local = new Date(now.getTime() - now.getTimezoneOffset() * 60000);
@@ -145,7 +150,7 @@ export function CreateHabitWizard({
           displayAlias: displayAlias.trim() || undefined,
           category: category.trim() || undefined,
           kind: "BREAK",
-          mode: "ABSTAIN",
+          mode: breakMode,
           timezone,
           checkinLocalTime,
           startedAt: new Date(startedAt).toISOString(),
@@ -154,6 +159,9 @@ export function CreateHabitWizard({
           whyReasons: validReasons,
           futureSelfNote: futureSelfNote.trim() || undefined,
           costPerOccurrence: costPerOccurrence === "" ? undefined : Number(costPerOccurrence),
+          reduceDailyLimit: breakMode === "REDUCE" ? (reduceDailyLimit === "" ? 0 : Number(reduceDailyLimit)) : undefined,
+          reduceStepPercent: breakMode === "REDUCE" && reduceStepPercent !== "" ? Number(reduceStepPercent) : undefined,
+          reduceStepEveryDays: breakMode === "REDUCE" && reduceStepEveryDays !== "" ? Number(reduceStepEveryDays) : undefined,
         };
       } else {
         payload = {
@@ -336,6 +344,45 @@ export function CreateHabitWizard({
               </div>
             </div>
 
+            {/* Jika BREAK: Pilihan Mode Abstain vs Reduce */}
+            {kind === "BREAK" && (
+              <div>
+                <span className="block text-xs font-semibold text-white mb-2">
+                  Metode Pendekatan
+                </span>
+                <div className="grid grid-cols-2 gap-2 text-xs">
+                  <button
+                    type="button"
+                    onClick={() => setBreakMode("ABSTAIN")}
+                    className={`p-3 rounded-xl border text-left transition-all ${
+                      breakMode === "ABSTAIN"
+                        ? "bg-indigo-600/30 border-indigo-500 text-white"
+                        : "bg-white/5 border-white/10 text-slate-400 hover:bg-white/10"
+                    }`}
+                  >
+                    <div className="font-semibold text-sm mb-1">🛡️ Berhenti Total (Abstain)</div>
+                    <div className="text-[11px] opacity-80">
+                      Target nol kejadian. Timer presisi waktu bersih.
+                    </div>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setBreakMode("REDUCE")}
+                    className={`p-3 rounded-xl border text-left transition-all ${
+                      breakMode === "REDUCE"
+                        ? "bg-teal-600/30 border-teal-500 text-white"
+                        : "bg-white/5 border-white/10 text-slate-400 hover:bg-white/10"
+                    }`}
+                  >
+                    <div className="font-semibold text-sm mb-1">📉 Kurangi Bertahap (Reduce)</div>
+                    <div className="text-[11px] opacity-80">
+                      Batas kuota harian yang turun berkala hingga nol.
+                    </div>
+                  </button>
+                </div>
+              </div>
+            )}
+
             {/* Privacy Level Radio */}
             <div>
               <span className="block text-xs font-semibold text-white mb-2">
@@ -404,21 +451,87 @@ export function CreateHabitWizard({
             </div>
 
             {kind === "BREAK" ? (
-              <div>
-                <label htmlFor="startedAt" className="block text-xs font-semibold text-white mb-1.5">
-                  Kapan Kamu Mulai Berhenti?
-                </label>
-                <input
-                  id="startedAt"
-                  type="datetime-local"
-                  value={startedAt}
-                  onChange={(e) => setStartedAt(e.target.value)}
-                  required
-                  className="w-full rounded-xl border border-white/10 bg-white/5 px-4 py-2.5 text-sm text-white focus:outline-none focus:ring-2 focus:ring-emerald-500"
-                />
-                <p className="text-[11px] text-slate-400 mt-1">
-                  Waktu ini menjadi titik awal timer &quot;Bersih Sejak&quot;.
-                </p>
+              <div className="space-y-4">
+                {breakMode === "ABSTAIN" ? (
+                  <div>
+                    <label htmlFor="startedAt" className="block text-xs font-semibold text-white mb-1.5">
+                      Kapan Kamu Mulai Berhenti?
+                    </label>
+                    <input
+                      id="startedAt"
+                      type="datetime-local"
+                      value={startedAt}
+                      onChange={(e) => setStartedAt(e.target.value)}
+                      required
+                      className="w-full rounded-xl border border-white/10 bg-white/5 px-4 py-2.5 text-sm text-white focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                    />
+                    <p className="text-[11px] text-slate-400 mt-1">
+                      Waktu ini menjadi titik awal timer &quot;Bersih Sejak&quot;.
+                    </p>
+                  </div>
+                ) : (
+                  <div className="rounded-xl border border-teal-500/30 bg-teal-500/10 p-4 space-y-3">
+                    <span className="block text-xs font-bold text-teal-300">
+                      Pengaturan Kuota &amp; Penurunan Bertahap
+                    </span>
+                    <div>
+                      <label htmlFor="reduceDailyLimit" className="block text-xs font-semibold text-white mb-1">
+                        Batas Kuota Harian Awal (kejadian/hari) *
+                      </label>
+                      <input
+                        id="reduceDailyLimit"
+                        type="number"
+                        min="0"
+                        value={reduceDailyLimit}
+                        onChange={(e) =>
+                          setReduceDailyLimit(e.target.value === "" ? "" : Number(e.target.value))
+                        }
+                        placeholder="Contoh: 5"
+                        required
+                        className="w-full rounded-xl border border-white/10 bg-white/5 px-4 py-2 text-sm text-white focus:outline-none focus:ring-2 focus:ring-teal-500"
+                      />
+                      <p className="text-[11px] text-slate-400 mt-1">
+                        Jumlah maksimum kejadian yang ditoleransi dalam 1 hari saat ini.
+                      </p>
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
+                      <div>
+                        <label htmlFor="reduceStepPercent" className="block text-xs font-semibold text-white mb-1">
+                          Persentase Penurunan (%)
+                        </label>
+                        <input
+                          id="reduceStepPercent"
+                          type="number"
+                          min="1"
+                          max="100"
+                          value={reduceStepPercent}
+                          onChange={(e) =>
+                            setReduceStepPercent(e.target.value === "" ? "" : Number(e.target.value))
+                          }
+                          placeholder="10"
+                          className="w-full rounded-xl border border-white/10 bg-white/5 px-4 py-2 text-sm text-white focus:outline-none focus:ring-2 focus:ring-teal-500"
+                        />
+                      </div>
+                      <div>
+                        <label htmlFor="reduceStepEveryDays" className="block text-xs font-semibold text-white mb-1">
+                          Setiap Interval (Hari)
+                        </label>
+                        <input
+                          id="reduceStepEveryDays"
+                          type="number"
+                          min="1"
+                          value={reduceStepEveryDays}
+                          onChange={(e) =>
+                            setReduceStepEveryDays(e.target.value === "" ? "" : Number(e.target.value))
+                          }
+                          placeholder="7"
+                          className="w-full rounded-xl border border-white/10 bg-white/5 px-4 py-2 text-sm text-white focus:outline-none focus:ring-2 focus:ring-teal-500"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                )}
               </div>
             ) : (
               <div className="space-y-4">

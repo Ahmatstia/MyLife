@@ -11,6 +11,7 @@ import { acquireHabitAdvisoryLock } from "@/repositories/habits/tracked-habit.re
 import { recomputeHabitStats } from "./stats.service";
 import { HabitsError } from "./habit-v2.service";
 import { detectCrisisKeywords } from "@/lib/habits/safety/crisis";
+import { dailyLimit } from "@/lib/habits/reduce";
 
 const FIVE_MINUTES_MS = 5 * 60 * 1000;
 const SEVEN_DAYS_MS = 7 * 24 * 60 * 60 * 1000;
@@ -246,6 +247,66 @@ export async function logHabitEventService(
             status: "SKIPPED",
           },
         });
+      }
+
+      if (input.type === "OCCURRENCE" && habit.kind === "BREAK" && habit.mode === "REDUCE") {
+        const checkin = await tx.habitCheckin.findFirst({
+          where: {
+            habitId,
+            windowStart: { lte: occurredAt },
+            windowEnd: { gt: occurredAt },
+          },
+        });
+
+        if (checkin) {
+          const occurrences = await tx.habitEvent.findMany({
+            where: {
+              habitId,
+              type: "OCCURRENCE",
+              occurredAt: { gte: checkin.windowStart, lt: checkin.windowEnd },
+              deletedAt: null,
+            },
+            select: { quantity: true },
+          });
+
+          const totalQuantity = occurrences.reduce(
+            (sum, e) => sum + (Number(e.quantity) || 1),
+            0,
+          );
+
+          const breakProfile = await tx.habitBreakProfile.findUnique({
+            where: { habitId },
+          });
+
+          const daysSinceStart = Math.max(
+            0,
+            Math.floor(
+              (occurredAt.getTime() - habit.startedAt.getTime()) / (24 * 60 * 60 * 1000),
+            ),
+          );
+
+          const limit = dailyLimit(
+            {
+              reduceDailyLimit: breakProfile?.reduceDailyLimit,
+              baselinePerDay: breakProfile?.baselinePerDay
+                ? Number(breakProfile.baselinePerDay)
+                : null,
+              reduceStepPercent: breakProfile?.reduceStepPercent,
+              reduceStepEveryDays: breakProfile?.reduceStepEveryDays,
+            },
+            daysSinceStart,
+          );
+
+          // Jika total kuantitas melebihi batas -> OVER_LIMIT (T-14: bukan LAPSE)
+          if (totalQuantity > limit) {
+            await tx.habitCheckin.update({
+              where: { id: checkin.id },
+              data: {
+                status: "OVER_LIMIT",
+              },
+            });
+          }
+        }
       }
 
       // Jika URGE berhasil dilawan dan ada coping plan yang dipakai

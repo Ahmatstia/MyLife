@@ -29,6 +29,8 @@ export function RelapseResetPlanModal({
   );
   const [ifCondition, setIfCondition] = useState("");
   const [thenAction, setThenAction] = useState("");
+  const [selectedAction, setSelectedAction] = useState<"PREPARATION" | "REDUCE">("PREPARATION");
+  const [newReduceLimit, setNewReduceLimit] = useState<number>(3);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -89,6 +91,24 @@ export function RelapseResetPlanModal({
       const json = await res.json();
       if (!res.ok || !json.success) {
         throw new Error(json.error?.message || "Tidak dapat mengatur ulang rencana.");
+      }
+
+      // Jika user memilih beralih ke mode REDUCE
+      if (selectedAction === "REDUCE") {
+        const modeRes = await fetch(`/api/tracked-habits/${habitId}/mode`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            targetMode: "REDUCE",
+            reduceDailyLimit: newReduceLimit,
+            reduceStepPercent: 10,
+            reduceStepEveryDays: 7,
+          }),
+        });
+        const modeJson = await modeRes.json();
+        if (!modeRes.ok || !modeJson.success) {
+          throw new Error(modeJson.error?.message || "Tidak dapat beralih ke mode Reduce.");
+        }
       }
 
       onSuccess();
@@ -334,21 +354,44 @@ export function RelapseResetPlanModal({
             </div>
 
             {/* Pilihan 2: Opsi Pengurangan Bertahap (Abstain -> Reduce) */}
-            <div className="p-4 rounded-2xl bg-white/5 border border-white/10 space-y-2 opacity-85">
-              <div className="flex items-center justify-between">
+            <div
+              onClick={() => setSelectedAction("REDUCE")}
+              className={`p-4 rounded-2xl border transition-all cursor-pointer ${
+                selectedAction === "REDUCE"
+                  ? "bg-teal-950/40 border-teal-500 text-white shadow-lg"
+                  : "bg-white/5 border-white/10 hover:bg-white/10"
+              }`}
+            >
+              <div className="flex items-center justify-between mb-1.5">
                 <div className="flex items-center gap-2">
                   <span className="text-base">📉</span>
-                  <span className="text-xs font-bold text-slate-200">
+                  <span className="text-xs font-bold text-white">
                     Turunkan Target (Pengurangan Bertahap)
                   </span>
                 </div>
-                <span className="text-[10px] font-bold text-indigo-400 bg-indigo-500/20 px-2 py-0.5 rounded-full border border-indigo-500/30">
-                  Fase 3 Segera Hadir
+                <span className="text-[10px] font-bold text-teal-300 bg-teal-500/20 px-2 py-0.5 rounded-full border border-teal-500/30">
+                  Aktif (Mode Reduce)
                 </span>
               </div>
-              <p className="text-[11px] text-slate-400 leading-relaxed">
-                Bila berhenti total terasa terlalu berat saat ini, mode kuota bertahap (Reduce) akan memberikan batas harian yang diturunkan perlahan.
+              <p className="text-[11px] text-slate-300 leading-relaxed">
+                Bila berhenti total terasa terlalu berat saat ini, beralihlah ke kuota harian bertahap agar progres tidak hilang dan tetap terkendali.
               </p>
+
+              {selectedAction === "REDUCE" && (
+                <div className="mt-3 pt-3 border-t border-teal-500/20 space-y-2">
+                  <label htmlFor="relapse-reduce-limit" className="block text-[11px] font-semibold text-teal-200">
+                    Batas Kuota Harian Baru (kejadian/hari):
+                  </label>
+                  <input
+                    id="relapse-reduce-limit"
+                    type="number"
+                    min="1"
+                    value={newReduceLimit}
+                    onChange={(e) => setNewReduceLimit(Number(e.target.value))}
+                    className="w-full rounded-xl border border-teal-500/30 bg-black/40 px-3 py-1.5 text-xs text-white"
+                  />
+                </div>
+              )}
             </div>
 
             {error && (
@@ -372,7 +415,11 @@ export function RelapseResetPlanModal({
                 onClick={handleResetPlanSubmit}
                 className="rounded-2xl bg-gradient-to-r from-purple-600 to-emerald-600 hover:from-purple-500 hover:to-emerald-500 px-6 py-2.5 text-xs font-bold text-white shadow-lg transition-all disabled:opacity-50"
               >
-                {submitting ? "Memproses..." : "Terapkan & Kembali ke Persiapan ✓"}
+                {submitting
+                  ? "Memproses..."
+                  : selectedAction === "REDUCE"
+                  ? "Terapkan & Beralih ke Mode Reduce ✓"
+                  : "Terapkan & Kembali ke Persiapan ✓"}
               </button>
             </div>
           </div>

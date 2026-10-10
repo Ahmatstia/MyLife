@@ -34,9 +34,11 @@ describe("computeStats: dasar", () => {
     });
   });
 
-  it("mendukung BUILD dan menolak mode REDUCE yang belum didukung (hingga Langkah 3.4)", () => {
+  it("mendukung BUILD dan REDUCE di Langkah 3.4", () => {
     expect(() => computeStats([], [], { kind: "BUILD", mode: null }, new Date())).not.toThrow();
-    expect(() => computeStats([], [], { kind: "BREAK", mode: "REDUCE" }, new Date())).toThrow(UnsupportedHabitError);
+    expect(() => computeStats([], [], { kind: "BREAK", mode: "REDUCE" }, new Date())).not.toThrow();
+    // @ts-expect-error invalid kind/mode
+    expect(() => computeStats([], [], { kind: "INVALID", mode: null }, new Date())).toThrow(UnsupportedHabitError);
   });
 
   it("jendela yang belum berakhir diabaikan", () => {

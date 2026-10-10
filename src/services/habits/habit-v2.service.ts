@@ -6,13 +6,17 @@ import { nextCheckinAfter } from "@/lib/habits/window";
 import {
   createTrackedHabitSchema,
   updateTrackedHabitSchema,
+  switchHabitModeSchema,
   type CreateTrackedHabitInput,
   type UpdateTrackedHabitInput,
+  type SwitchHabitModeInput,
 } from "@/schemas/habits/tracked-habit.schema";
 import {
   findTrackedHabitById,
   findTrackedHabitsByUser,
+  acquireHabitAdvisoryLock,
 } from "@/repositories/habits/tracked-habit.repository";
+import { recomputeHabitStats } from "./stats.service";
 
 export class HabitsError extends Error {
   constructor(
@@ -48,12 +52,12 @@ export async function createTrackedHabitService(
   const input = parsed.data;
 
   // Validasi jenis kebiasaan:
-  // - BREAK: saat ini hanya mode ABSTAIN (mode REDUCE di Langkah 3.4)
+  // - BREAK: mode ABSTAIN atau REDUCE
   // - BUILD: mode harus null
-  if (input.kind === "BREAK" && input.mode !== "ABSTAIN") {
+  if (input.kind === "BREAK" && !input.mode) {
     throw new HabitsError(
-      "Saat ini untuk kebiasaan BREAK hanya mode ABSTAIN yang didukung (mode REDUCE aktif di Langkah 3.4).",
-      "NOT_SUPPORTED_YET",
+      "Mode kebiasaan BREAK wajib ditentukan (ABSTAIN atau REDUCE).",
+      "VALIDATION_ERROR",
       400,
     );
   }
@@ -123,6 +127,9 @@ export async function createTrackedHabitService(
           costPerOccurrence: input.costPerOccurrence,
           currency: input.currency ?? "IDR",
           minutesPerOccurrence: input.minutesPerOccurrence,
+          reduceDailyLimit: input.reduceDailyLimit,
+          reduceStepPercent: input.reduceStepPercent,
+          reduceStepEveryDays: input.reduceStepEveryDays,
           relapseLapseCount: input.relapseLapseCount ?? 3,
           relapseWindowDays: input.relapseWindowDays ?? 7,
           highRiskCategory: input.highRiskCategory ?? false,
@@ -225,16 +232,105 @@ export async function updateTrackedHabitService(
     nextCheckinAt = nextCheckinAfter(fromTime, tz, time);
   }
 
-  return prisma.trackedHabit.update({
-    where: { id: habitId },
-    data: {
-      ...input,
-      ...(nextCheckinAt !== existing.nextCheckinAt ? { nextCheckinAt } : {}),
-    },
-    include: {
-      breakProfile: true,
-      stats: true,
-    },
+  const { reduceDailyLimit, reduceStepPercent, reduceStepEveryDays, ...habitFields } = input;
+
+  return prisma.$transaction(async (tx) => {
+    if (
+      existing.kind === "BREAK" &&
+      (reduceDailyLimit !== undefined || reduceStepPercent !== undefined || reduceStepEveryDays !== undefined)
+    ) {
+      await tx.habitBreakProfile.update({
+        where: { habitId },
+        data: {
+          ...(reduceDailyLimit !== undefined ? { reduceDailyLimit } : {}),
+          ...(reduceStepPercent !== undefined ? { reduceStepPercent } : {}),
+          ...(reduceStepEveryDays !== undefined ? { reduceStepEveryDays } : {}),
+        },
+      });
+    }
+
+    return tx.trackedHabit.update({
+      where: { id: habitId },
+      data: {
+        ...habitFields,
+        ...(nextCheckinAt !== existing.nextCheckinAt ? { nextCheckinAt } : {}),
+      },
+      include: {
+        breakProfile: true,
+        buildProfile: true,
+        stats: true,
+      },
+    });
+  });
+}
+
+/**
+ * Alur peralihan mode untuk kebiasaan jenis BREAK (§8.4, F-B9):
+ * - "Abstain → Reduce": dari alur reset rencana kambuh.
+ * - "Reduce → Abstain": saat target harian mencapai 0 atau pengguna siap berhenti total.
+ */
+export async function switchHabitModeService(
+  userId: string,
+  habitId: string,
+  rawInput: SwitchHabitModeInput,
+  clock: Clock = new SystemClock(),
+) {
+  const parsed = switchHabitModeSchema.safeParse(rawInput);
+  if (!parsed.success) {
+    throw new HabitsError(
+      parsed.error.issues.map((i) => i.message).join(", "),
+      "VALIDATION_ERROR",
+      400,
+    );
+  }
+
+  const existing = await findTrackedHabitById(habitId, userId);
+  if (!existing) {
+    throw new HabitsError("Kebiasaan tidak ditemukan", "NOT_FOUND", 404);
+  }
+
+  if (existing.kind !== "BREAK") {
+    throw new HabitsError(
+      "Peralihan mode hanya berlaku untuk kebiasaan jenis BREAK.",
+      "VALIDATION_ERROR",
+      400,
+    );
+  }
+
+  const input = parsed.data;
+
+  return prisma.$transaction(async (tx) => {
+    await acquireHabitAdvisoryLock(habitId, tx);
+
+    await tx.trackedHabit.update({
+      where: { id: habitId },
+      data: { mode: input.targetMode },
+    });
+
+    if (input.targetMode === "REDUCE") {
+      await tx.habitBreakProfile.update({
+        where: { habitId },
+        data: {
+          reduceDailyLimit: input.reduceDailyLimit,
+          reduceStepPercent: input.reduceStepPercent,
+          reduceStepEveryDays: input.reduceStepEveryDays,
+        },
+      });
+    } else {
+      // Beralih ke ABSTAIN: reset kolom batas reduce
+      await tx.habitBreakProfile.update({
+        where: { habitId },
+        data: {
+          reduceDailyLimit: null,
+          reduceStepPercent: null,
+          reduceStepEveryDays: null,
+        },
+      });
+    }
+
+    await recomputeHabitStats(habitId, tx, clock);
+
+    return findTrackedHabitById(habitId, userId, tx);
   });
 }
 

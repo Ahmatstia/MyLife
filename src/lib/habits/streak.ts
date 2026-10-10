@@ -183,6 +183,89 @@ function computeBuildStats(
   };
 }
 
+function computeReduceStats(
+  checkins: readonly CheckinLike[],
+  events: readonly HabitEventLike[],
+  _habit: HabitLike,
+  now: Date,
+): HabitComputedStats {
+  const nowMs = now.getTime();
+  const active = activeEvents(events);
+
+  // Jendela yang sudah berakhir, urut dari yang terlama ke terbaru
+  const endedAsc = checkins
+    .filter((c) => c.windowEnd.getTime() <= nowMs)
+    .sort((a, b) => a.windowEnd.getTime() - b.windowEnd.getTime());
+
+  // Hitung streak ketat (current & longest)
+  let currentStreakDays = 0;
+  for (let i = endedAsc.length - 1; i >= 0; i--) {
+    const s = endedAsc[i].status;
+    if (s === "WITHIN_LIMIT") {
+      currentStreakDays++;
+    } else if (s === "OVER_LIMIT") {
+      break;
+    }
+  }
+
+  let longestStreakDays = 0;
+  let run = 0;
+  for (const w of endedAsc) {
+    if (w.status === "WITHIN_LIMIT") {
+      run++;
+      if (run > longestStreakDays) longestStreakDays = run;
+    } else if (w.status === "OVER_LIMIT") {
+      run = 0;
+    }
+  }
+
+  // Resilient streak (absorb 1 OVER_LIMIT terisolasi)
+  let resilientStreak = 0;
+  let consecutiveOver = 0;
+  for (let i = endedAsc.length - 1; i >= 0; i--) {
+    const s = endedAsc[i].status;
+    if (s === "WITHIN_LIMIT") {
+      resilientStreak++;
+      consecutiveOver = 0;
+    } else if (s === "OVER_LIMIT") {
+      consecutiveOver++;
+      if (consecutiveOver >= 2) {
+        break;
+      }
+    }
+  }
+
+  const confirmedCleanDays = endedAsc.filter((w) => w.status === "WITHIN_LIMIT").length;
+  const totalOverLimit = endedAsc.filter((w) => w.status === "OVER_LIMIT").length;
+
+  // Evaluasi 30 jendela terakhir
+  const counted = endedAsc.filter(
+    (w) => w.status === "WITHIN_LIMIT" || w.status === "OVER_LIMIT",
+  );
+  const recent = counted.slice(-CLEAN_RATE_WINDOW_COUNT);
+  const recentWithin = recent.filter((w) => w.status === "WITHIN_LIMIT").length;
+  const rate30d =
+    recent.length === 0
+      ? null
+      : Math.round((100 * recentWithin * 100) / recent.length) / 100;
+
+  const urgesResisted = active.filter(
+    (e) => e.type === "URGE" && e.outcome === "RESISTED",
+  ).length;
+
+  return {
+    currentStreakDays,
+    longestStreakDays,
+    confirmedCleanDays,
+    cleanRate30d: rate30d,
+    consistency30d: rate30d,
+    resilientStreak,
+    lastLapseAt: null,
+    totalLapses: totalOverLimit,
+    urgesResisted,
+  };
+}
+
 export function computeStats(
   checkins: readonly CheckinLike[],
   events: readonly HabitEventLike[],
@@ -191,6 +274,10 @@ export function computeStats(
 ): HabitComputedStats {
   if (habit.kind === "BUILD") {
     return computeBuildStats(checkins, events, habit, now);
+  }
+
+  if (habit.kind === "BREAK" && habit.mode === "REDUCE") {
+    return computeReduceStats(checkins, events, habit, now);
   }
 
   if (habit.kind !== "BREAK" || habit.mode !== "ABSTAIN") {

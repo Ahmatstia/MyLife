@@ -12,6 +12,7 @@ import {
 import { acquireHabitAdvisoryLock } from "@/repositories/habits/tracked-habit.repository";
 import { recomputeHabitStats } from "./stats.service";
 import { HabitsError } from "./habit-v2.service";
+import { dailyLimit } from "@/lib/habits/reduce";
 
 export async function respondCheckinService(
   userId: string,
@@ -72,27 +73,88 @@ export async function respondCheckinService(
       );
     }
 
-    // 6. Invarian 4: Jika ada LAPSE di jendela, jawaban "CLEAN" wajib ditolak!
-    if (input.response === "CLEAN") {
-      const lapseCount = await tx.habitEvent.count({
+    // 6. Evaluasi jawaban berdasarkan mode dan jenis habit
+    let resolvedStatus = input.response;
+
+    if (habit.kind === "BREAK" && habit.mode === "REDUCE") {
+      const occurrences = await tx.habitEvent.findMany({
         where: {
           habitId,
-          type: "LAPSE",
+          type: "OCCURRENCE",
+          occurredAt: { gte: checkin.windowStart, lt: checkin.windowEnd },
           deletedAt: null,
-          occurredAt: {
-            gte: checkin.windowStart,
-            lt: checkin.windowEnd,
-          },
         },
+        select: { quantity: true },
       });
 
-      if (lapseCount > 0) {
+      const totalQuantity =
+        occurrences.reduce((sum, e) => sum + (Number(e.quantity) || 1), 0) +
+        (input.quantity != null ? Number(input.quantity) : 0);
+
+      const breakProfile = await tx.habitBreakProfile.findUnique({
+        where: { habitId },
+      });
+
+      const daysSinceStart = Math.max(
+        0,
+        Math.floor(
+          (checkin.windowStart.getTime() - habit.startedAt.getTime()) /
+            (24 * 60 * 60 * 1000),
+        ),
+      );
+
+      const limit = breakProfile
+        ? dailyLimit(
+            {
+              reduceDailyLimit: breakProfile.reduceDailyLimit,
+              baselinePerDay: breakProfile.baselinePerDay
+                ? Number(breakProfile.baselinePerDay)
+                : null,
+              reduceStepPercent: breakProfile.reduceStepPercent,
+              reduceStepEveryDays: breakProfile.reduceStepEveryDays,
+            },
+            daysSinceStart,
+          )
+        : 0;
+
+      if (!resolvedStatus) {
+        resolvedStatus = totalQuantity > limit ? "OVER_LIMIT" : "WITHIN_LIMIT";
+      }
+
+      if (resolvedStatus === "WITHIN_LIMIT" && totalQuantity > limit) {
         throw new HabitsError(
-          "Terdapat lapse/terpeleset tercatat di dalam rentang jendela ini. Status check-in tidak dapat bersih (CLEAN).",
+          `Total kejadian (${totalQuantity}) melebihi kuota harian (${limit}). Status tidak dapat WITHIN_LIMIT.`,
           "CONFLICT",
           409,
         );
       }
+    } else if (habit.kind === "BREAK" && habit.mode === "ABSTAIN") {
+      // Invarian 4: Jika ada LAPSE di jendela, jawaban "CLEAN" wajib ditolak!
+      if (input.response === "CLEAN") {
+        const lapseCount = await tx.habitEvent.count({
+          where: {
+            habitId,
+            type: "LAPSE",
+            deletedAt: null,
+            occurredAt: {
+              gte: checkin.windowStart,
+              lt: checkin.windowEnd,
+            },
+          },
+        });
+
+        if (lapseCount > 0) {
+          throw new HabitsError(
+            "Terdapat lapse/terpeleset tercatat di dalam rentang jendela ini. Status check-in tidak dapat bersih (CLEAN).",
+            "CONFLICT",
+            409,
+          );
+        }
+      }
+    }
+
+    if (!resolvedStatus) {
+      resolvedStatus = "CLEAN";
     }
 
     // 7. Tentukan label kualitas data: LIVE (< 12 jam) vs BACKFILL (> 12 jam)
@@ -103,7 +165,7 @@ export async function respondCheckinService(
     const updatedCheckin = await tx.habitCheckin.update({
       where: { id: checkinId },
       data: {
-        status: input.response,
+        status: resolvedStatus,
         respondedAt: now,
         responseSource,
         quantity: input.quantity,

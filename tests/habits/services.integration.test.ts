@@ -73,17 +73,18 @@ describe("Habits v2 Services Integration Tests (PostgreSQL)", () => {
   });
 
   describe("T-08: Validasi tipe kebiasaan (BUILD didukung di Fase 3, REDUCE di Langkah 3.4)", () => {
-    it("menolak mode=REDUCE dengan kode NOT_SUPPORTED_YET sebelum Langkah 3.4", async () => {
-      await expect(
-        createTrackedHabitService(user1Id, {
-          name: "Kurangi Kopi",
-          kind: HabitKind.BREAK,
-          mode: HabitMode.REDUCE,
-          timezone: "Asia/Jakarta",
-          checkinLocalTime: "20:00",
-          whyReasons: ["Asam lambung"],
-        }),
-      ).rejects.toMatchObject({ code: "NOT_SUPPORTED_YET" });
+    it("mendukung mode=REDUCE pada Langkah 3.4 dengan batas harian", async () => {
+      const habit = await createTrackedHabitService(user1Id, {
+        name: "Kurangi Kopi",
+        kind: HabitKind.BREAK,
+        mode: HabitMode.REDUCE,
+        timezone: "Asia/Jakarta",
+        checkinLocalTime: "20:00",
+        whyReasons: ["Asam lambung"],
+        reduceDailyLimit: 2,
+      });
+      expect(habit.mode).toBe(HabitMode.REDUCE);
+      expect(habit.breakProfile?.reduceDailyLimit).toBe(2);
     });
   });
 
