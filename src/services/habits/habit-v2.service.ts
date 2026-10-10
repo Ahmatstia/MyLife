@@ -1,3 +1,4 @@
+import { DateTime } from "luxon";
 import { prisma } from "@/lib/prisma";
 import type { HabitStatus } from "@/generated/prisma/client";
 import { SystemClock, type Clock } from "@/lib/habits/clock";
@@ -242,3 +243,67 @@ export async function getTrackedHabitDashboardService(
     recentEvents,
   };
 }
+
+export async function getTrackedHabitCalendarService(
+  userId: string,
+  habitId: string,
+  monthStr: string,
+) {
+  const habit = await findTrackedHabitById(habitId, userId);
+  if (!habit) {
+    throw new HabitsError("Kebiasaan tidak ditemukan", "NOT_FOUND", 404);
+  }
+
+  if (!/^\d{4}-(0[1-9]|1[0-2])$/.test(monthStr)) {
+    throw new HabitsError(
+      "Format bulan tidak valid. Gunakan format YYYY-MM (contoh: 2026-10)",
+      "VALIDATION_ERROR",
+      400,
+    );
+  }
+
+  const startOfMonth = DateTime.fromFormat(monthStr, "yyyy-MM", {
+    zone: habit.timezone,
+  }).startOf("month");
+  const endOfMonth = startOfMonth.endOf("month");
+
+  const [checkins, events] = await Promise.all([
+    prisma.habitCheckin.findMany({
+      where: {
+        habitId,
+        periodDate: {
+          gte: startOfMonth.toJSDate(),
+          lte: endOfMonth.toJSDate(),
+        },
+      },
+      orderBy: { periodDate: "asc" },
+    }),
+    prisma.habitEvent.findMany({
+      where: {
+        habitId,
+        deletedAt: null,
+        occurredAt: {
+          gte: startOfMonth.toJSDate(),
+          lte: endOfMonth.toJSDate(),
+        },
+      },
+      orderBy: { occurredAt: "asc" },
+    }),
+  ]);
+
+  const days: Record<string, string> = {};
+  for (const c of checkins) {
+    const key = DateTime.fromJSDate(c.periodDate, { zone: habit.timezone }).toFormat("yyyy-MM-dd");
+    days[key] = c.status;
+  }
+
+  return {
+    habitId,
+    month: monthStr,
+    timezone: habit.timezone,
+    days,
+    checkins,
+    events,
+  };
+}
+
