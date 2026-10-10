@@ -104,6 +104,41 @@ export async function recomputeHabitStats(
     });
   }
 
+  // Hitung estimasi penghematan uang dan waktu (Langkah 3.6 / §8.3)
+  let moneySavedEst: Prisma.Decimal | null = null;
+  let minutesSavedEst: number | null = null;
+
+  if (habit.kind === "BREAK" && habit.breakProfile) {
+    const baseline = habit.breakProfile.baselinePerDay
+      ? Number(habit.breakProfile.baselinePerDay)
+      : null;
+    const costPerOcc = habit.breakProfile.costPerOccurrence
+      ? Number(habit.breakProfile.costPerOccurrence)
+      : null;
+    const minsPerOcc = habit.breakProfile.minutesPerOccurrence ?? null;
+
+    if (baseline !== null && baseline > 0) {
+      let occurrencesAvoided = 0;
+      if (habit.mode === "REDUCE") {
+        const daysEvaluated = computed.confirmedCleanDays;
+        const totalOccurrences = events
+          .filter((e) => e.type === "OCCURRENCE" && e.deletedAt == null)
+          .reduce((sum, e) => sum + (Number(e.quantity) || 1), 0);
+        const expectedTotal = daysEvaluated * baseline;
+        occurrencesAvoided = Math.max(0, Math.round(expectedTotal - totalOccurrences));
+      } else {
+        occurrencesAvoided = Math.round(computed.confirmedCleanDays * baseline);
+      }
+
+      if (costPerOcc !== null && costPerOcc > 0) {
+        moneySavedEst = new Prisma.Decimal(Math.round(occurrencesAvoided * costPerOcc));
+      }
+      if (minsPerOcc !== null && minsPerOcc > 0) {
+        minutesSavedEst = Math.round(occurrencesAvoided * minsPerOcc);
+      }
+    }
+  }
+
   return upsertHabitStats(
     habitId,
     {
@@ -116,6 +151,8 @@ export async function recomputeHabitStats(
       cleanRate30d: computed.cleanRate30d !== null ? new Prisma.Decimal(computed.cleanRate30d) : null,
       consistency30d: computed.consistency30d !== null ? new Prisma.Decimal(computed.consistency30d) : null,
       resilientStreak: computed.resilientStreak,
+      moneySavedEst,
+      minutesSavedEst,
       relapsePattern: isRelapsing,
     },
     client,

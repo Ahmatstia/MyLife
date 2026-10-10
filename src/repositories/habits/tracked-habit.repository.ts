@@ -28,6 +28,13 @@ export async function findTrackedHabitById(
       breakProfile: true,
       buildProfile: true,
       stats: true,
+      replacedByProfiles: {
+        include: {
+          habit: {
+            select: { id: true, name: true, displayAlias: true },
+          },
+        },
+      },
     },
   });
 }

@@ -21,6 +21,26 @@ function getServerClockTime() {
   return 0;
 }
 
+function formatSavingsMoney(val: number | string | null | undefined): string {
+  if (val == null) return "Rp 0";
+  const num = typeof val === "string" ? parseFloat(val) : Number(val);
+  if (isNaN(num)) return "Rp 0";
+  return new Intl.NumberFormat("id-ID", {
+    style: "currency",
+    currency: "IDR",
+    maximumFractionDigits: 0,
+  }).format(num);
+}
+
+function formatSavingsTime(minutes: number | null | undefined): string {
+  if (minutes == null || isNaN(minutes) || minutes <= 0) return "0 menit";
+  if (minutes < 60) return `${minutes} menit`;
+  const hours = Math.floor(minutes / 60);
+  const remainingMins = minutes % 60;
+  if (remainingMins === 0) return `${hours} jam`;
+  return `${hours} jam ${remainingMins} mnt`;
+}
+
 interface DashboardData {
   habit: {
     id: string;
@@ -44,6 +64,14 @@ interface DashboardData {
       reduceStepEveryDays?: number | null;
       baselinePerDay?: number | null;
     } | null;
+    replacedByProfiles?: Array<{
+      id: string;
+      habit: {
+        id: string;
+        name: string;
+        displayAlias?: string | null;
+      };
+    }>;
   };
   stats?: {
     currentStreakDays: number;
@@ -56,6 +84,8 @@ interface DashboardData {
     totalLapses: number;
     urgesResisted: number;
     relapsePattern?: boolean;
+    moneySavedEst?: number | string | null;
+    minutesSavedEst?: number | null;
   } | null;
   activeRelapsePrompt?: boolean;
   pendingCheckins: Array<{
@@ -709,6 +739,91 @@ export function BreakDashboard({ habitId, onBack }: BreakDashboardProps) {
             <span className="text-2xl font-black text-emerald-300">
               📈 {stats?.cleanRate30d != null ? `${stats.cleanRate30d}%` : "-"}
             </span>
+          </div>
+        </div>
+      )}
+
+      {/* SAVINGS CARD (HEMAT UANG & WAKTU - F-B3 & Langkah 3.6) */}
+      {Boolean(habit.breakProfile?.baselinePerDay && habit.breakProfile.baselinePerDay > 0) &&
+        (stats?.moneySavedEst != null || stats?.minutesSavedEst != null) && (
+          <div className="rounded-2xl border border-emerald-500/20 bg-gradient-to-r from-emerald-950/20 via-[#161622] to-teal-950/20 p-5 shadow-xl">
+            <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center gap-2.5">
+                <span className="text-xl">💰</span>
+                <div>
+                  <h3 className="text-sm font-bold text-white flex items-center gap-2">
+                    Estimasi Penghematan
+                    <span className="text-[11px] font-normal text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-full border border-emerald-500/20">
+                      (perkiraan)
+                    </span>
+                  </h3>
+                  <p className="text-[11px] text-slate-400">
+                    Berdasarkan baseline kebiasaan harian dan konsistensi waktu bersihmu.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              {stats?.moneySavedEst != null && (
+                <div className="rounded-xl border border-white/5 bg-white/5 p-4 flex items-center justify-between">
+                  <div>
+                    <span className="text-[11px] text-slate-400 block mb-0.5">
+                      Uang Dihemat <span className="text-emerald-400 font-medium">(perkiraan)</span>
+                    </span>
+                    <span className="text-xl sm:text-2xl font-black text-emerald-400">
+                      {formatSavingsMoney(stats.moneySavedEst)}
+                    </span>
+                  </div>
+                  <div className="h-10 w-10 rounded-xl bg-emerald-500/10 flex items-center justify-center text-lg text-emerald-400">
+                    💵
+                  </div>
+                </div>
+              )}
+
+              {stats?.minutesSavedEst != null && (
+                <div className="rounded-xl border border-white/5 bg-white/5 p-4 flex items-center justify-between">
+                  <div>
+                    <span className="text-[11px] text-slate-400 block mb-0.5">
+                      Waktu Dihemat <span className="text-teal-400 font-medium">(perkiraan)</span>
+                    </span>
+                    <span className="text-xl sm:text-2xl font-black text-teal-300">
+                      {formatSavingsTime(stats.minutesSavedEst)}
+                    </span>
+                  </div>
+                  <div className="h-10 w-10 rounded-xl bg-teal-500/10 flex items-center justify-center text-lg text-teal-400">
+                    ⏳
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+        )}
+
+      {/* REPLACEMENT HABITS LINKED (Langkah 3.5) */}
+      {habit.replacedByProfiles && habit.replacedByProfiles.length > 0 && (
+        <div className="rounded-2xl border border-indigo-500/30 bg-indigo-950/20 p-5 shadow-xl">
+          <div className="flex items-center gap-3">
+            <span className="text-2xl">🔄</span>
+            <div>
+              <div className="text-sm font-bold text-indigo-300">
+                Kebiasaan Pengganti Terhubung
+              </div>
+              <p className="text-xs text-slate-300 mt-0.5">
+                Dorongan kebiasaan ini dialihkan ke kebiasaan positif berikut:
+              </p>
+            </div>
+          </div>
+          <div className="mt-3 flex flex-wrap gap-2">
+            {habit.replacedByProfiles.map((item) => (
+              <span
+                key={item.id}
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-indigo-500/10 border border-indigo-500/30 text-indigo-200 text-xs font-semibold"
+              >
+                <span>🌱</span>
+                <span>{item.habit.displayAlias || item.habit.name}</span>
+              </span>
+            ))}
           </div>
         </div>
       )}

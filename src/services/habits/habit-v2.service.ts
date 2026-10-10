@@ -139,6 +139,19 @@ export async function createTrackedHabitService(
       });
     } else {
       // BUILD
+      if (input.replacesHabitId) {
+        const targetBreakHabit = await tx.trackedHabit.findFirst({
+          where: { id: input.replacesHabitId, userId, kind: "BREAK" },
+        });
+        if (!targetBreakHabit) {
+          throw new HabitsError(
+            "Kebiasaan yang digantikan tidak ditemukan atau bukan kebiasaan Break.",
+            "VALIDATION_ERROR",
+            400,
+          );
+        }
+      }
+
       buildProfile = await tx.habitBuildProfile.create({
         data: {
           habitId: habit.id,

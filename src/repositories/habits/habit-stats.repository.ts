@@ -23,6 +23,8 @@ export async function upsertHabitStats(
     cleanRate30d?: number | Prisma.Decimal | null;
     consistency30d?: number | Prisma.Decimal | null;
     resilientStreak?: number;
+    moneySavedEst?: Prisma.Decimal | null;
+    minutesSavedEst?: number | null;
     relapsePattern: boolean;
   },
   client: DbClient = prisma,

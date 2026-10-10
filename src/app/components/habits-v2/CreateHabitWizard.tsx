@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 interface CreateHabitWizardProps {
   onSuccess: (habitId: string) => void;
@@ -58,6 +58,10 @@ export function CreateHabitWizard({
   const [daysOfWeek, setDaysOfWeek] = useState<number[]>([1, 2, 3, 4, 5]);
   const [timesPerWeek, setTimesPerWeek] = useState<number>(3);
   const [restDays, setRestDays] = useState<number[]>([]);
+  const [replacesHabitId, setReplacesHabitId] = useState<string>("");
+  const [userBreakHabits, setUserBreakHabits] = useState<
+    Array<{ id: string; name: string; displayAlias?: string | null }>
+  >([]);
 
   const [anchorText, setAnchorText] = useState("");
   const [tinyBehavior, setTinyBehavior] = useState("");
@@ -65,6 +69,22 @@ export function CreateHabitWizard({
   const [tinyVersion, setTinyVersion] = useState("");
   const [standardVersion, setStandardVersion] = useState("");
   const [stretchVersion, setStretchVersion] = useState("");
+
+  useEffect(() => {
+    fetch("/api/tracked-habits?status=ACTIVE")
+      .then((res) => res.json())
+      .then((json) => {
+        if (json.success && Array.isArray(json.data)) {
+          const breaks = json.data.filter(
+            (h: { kind: string }) => h.kind === "BREAK",
+          );
+          setUserBreakHabits(breaks);
+        }
+      })
+      .catch(() => {
+        // silent fallback
+      });
+  }, []);
 
   const handleAddReason = () => {
     setWhyReasons([...whyReasons, ""]);
@@ -178,6 +198,7 @@ export function CreateHabitWizard({
           daysOfWeek: scheduleType === "DAYS_OF_WEEK" ? daysOfWeek : [],
           timesPerWeek: scheduleType === "TIMES_PER_WEEK" ? timesPerWeek : undefined,
           restDays,
+          replacesHabitId: replacesHabitId ? replacesHabitId : undefined,
           anchorText: anchorText.trim() || undefined,
           tinyBehavior: tinyBehavior.trim(),
           celebrationText: celebrationText.trim() || undefined,
@@ -837,6 +858,31 @@ export function CreateHabitWizard({
                       />
                     </div>
                   </div>
+                </div>
+
+                {/* Kebiasaan Pengganti (Replacement Habit - Langkah 3.5) */}
+                <div className="pt-2 border-t border-white/10">
+                  <label htmlFor="replacesHabitId" className="block text-xs font-semibold text-white mb-1">
+                    🔄 Gantikan Kebiasaan Break (Opsional)
+                  </label>
+                  <select
+                    id="replacesHabitId"
+                    value={replacesHabitId}
+                    onChange={(e) => setReplacesHabitId(e.target.value)}
+                    className="w-full rounded-xl border border-white/10 bg-white/5 px-4 py-2.5 text-xs text-white focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                  >
+                    <option value="" className="bg-[#151522] text-slate-400">
+                      -- Bukan pengganti kebiasaan lain --
+                    </option>
+                    {userBreakHabits.map((h) => (
+                      <option key={h.id} value={h.id} className="bg-[#151522] text-white">
+                        {h.displayAlias || h.name}
+                      </option>
+                    ))}
+                  </select>
+                  <p className="text-[11px] text-slate-400 mt-1">
+                    Hubungkan jika kebiasaan positif ini dirancang untuk menggantikan dorongan kebiasaan yang sedang dihentikan.
+                  </p>
                 </div>
               </div>
             )}

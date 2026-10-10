@@ -8,6 +8,11 @@ interface CopingPlanItem {
   thenAction: string;
   timesUsed: number;
   timesHelped: number;
+  replacementHabitId?: string | null;
+  replacementHabit?: {
+    id: string;
+    name: string;
+  } | null;
 }
 
 interface SosUrgeSurfingModalProps {
@@ -153,6 +158,8 @@ function SosUrgeSurfingModalContent({
     const start = startTimeRef.current ?? Date.now();
     const totalDurationSec = Math.max(1, Math.round((Date.now() - start) / 1000));
 
+    const selectedPlan = copingPlans.find((p) => p.id === selectedCopingPlanId);
+
     try {
       const res = await fetch(`/api/tracked-habits/${habitId}/events`, {
         method: "POST",
@@ -168,6 +175,7 @@ function SosUrgeSurfingModalContent({
             durationSec: totalDurationSec,
             tools: selectedTools,
             copingPlanId: selectedCopingPlanId || undefined,
+            replacementHabitId: selectedPlan?.replacementHabitId || undefined,
             timerElapsedSec: timerElapsed,
           },
         }),
@@ -176,6 +184,18 @@ function SosUrgeSurfingModalContent({
       const json = await res.json();
       if (!res.ok || !json.success) {
         throw new Error(json.error?.message || "Tidak dapat mencatat respon dorongan.");
+      }
+
+      if (selectedCopingPlanId) {
+        try {
+          await fetch(`/api/tracked-habits/${habitId}/coping-plans/${selectedCopingPlanId}/outcome`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ helped: outcome === "RESISTED" }),
+          });
+        } catch {
+          // ignore non-critical outcome recording error
+        }
       }
 
       onSuccess({
@@ -512,6 +532,13 @@ function SosUrgeSurfingModalContent({
                       <div className="text-slate-200">
                         ➔ {plan.thenAction}
                       </div>
+                      {plan.replacementHabit && (
+                        <div className="mt-2 flex items-center gap-1.5 text-[11px] font-medium text-emerald-300">
+                          <span className="px-2 py-0.5 rounded-md bg-emerald-500/20 border border-emerald-500/30">
+                            🌱 Aksi Pengganti: {plan.replacementHabit.name}
+                          </span>
+                        </div>
+                      )}
                     </button>
                   ))}
                 </div>

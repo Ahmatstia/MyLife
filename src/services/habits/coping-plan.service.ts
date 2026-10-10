@@ -1,3 +1,4 @@
+import { prisma } from "@/lib/prisma";
 import { HabitsError } from "./habit-v2.service";
 import { findTrackedHabitById } from "@/repositories/habits/tracked-habit.repository";
 import { findHabitTriggerById } from "@/repositories/habits/trigger.repository";
@@ -24,7 +25,24 @@ export async function getCopingPlansService(userId: string, habitId: string) {
     throw new HabitsError("Kebiasaan tidak ditemukan.", "NOT_FOUND", 404);
   }
 
-  return findCopingPlansByHabit(habitId);
+  const plans = await findCopingPlansByHabit(habitId);
+  const replacementIds = plans
+    .map((p) => p.replacementHabitId)
+    .filter((id): id is string => Boolean(id));
+
+  let replacementMap = new Map<string, { id: string; name: string }>();
+  if (replacementIds.length > 0) {
+    const replacements = await prisma.trackedHabit.findMany({
+      where: { id: { in: replacementIds }, userId },
+      select: { id: true, name: true },
+    });
+    replacementMap = new Map(replacements.map((r) => [r.id, r]));
+  }
+
+  return plans.map((p) => ({
+    ...p,
+    replacementHabit: p.replacementHabitId ? replacementMap.get(p.replacementHabitId) ?? null : null,
+  }));
 }
 
 export async function createCopingPlanService(
@@ -54,6 +72,18 @@ export async function createCopingPlanService(
     if (!habitTrigger || habitTrigger.habitId !== habitId) {
       throw new HabitsError(
         "Pemicu kebiasaan tidak valid atau tidak terkait dengan kebiasaan ini.",
+        "VALIDATION_ERROR",
+        400,
+      );
+    }
+  }
+
+  // Validasi: Kebiasaan pengganti harus milik pengguna yang sama
+  if (input.replacementHabitId) {
+    const replacement = await findTrackedHabitById(input.replacementHabitId, userId);
+    if (!replacement) {
+      throw new HabitsError(
+        "Kebiasaan pengganti tidak valid atau tidak ditemukan.",
         "VALIDATION_ERROR",
         400,
       );
@@ -104,6 +134,18 @@ export async function updateCopingPlanService(
     if (!habitTrigger || habitTrigger.habitId !== habitId) {
       throw new HabitsError(
         "Pemicu kebiasaan tidak valid atau tidak terkait dengan kebiasaan ini.",
+        "VALIDATION_ERROR",
+        400,
+      );
+    }
+  }
+
+  // Jika replacementHabitId diubah, pastikan milik pengguna yang sama
+  if (input.replacementHabitId) {
+    const replacement = await findTrackedHabitById(input.replacementHabitId, userId);
+    if (!replacement) {
+      throw new HabitsError(
+        "Kebiasaan pengganti tidak valid atau tidak ditemukan.",
         "VALIDATION_ERROR",
         400,
       );
