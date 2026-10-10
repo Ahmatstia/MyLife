@@ -76,6 +76,7 @@ describe("Habits v2 UI Logic & Contract Tests (Langkah 1.6)", () => {
       expect(files).toContain("SosUrgeSurfingModal.tsx");
       expect(files).toContain("DebriefModal.tsx");
       expect(files).toContain("RelapseResetPlanModal.tsx");
+      expect(files).toContain("SafetyNoticeModal.tsx");
       expect(files).toContain("index.ts");
     });
 
@@ -148,6 +149,16 @@ describe("Habits v2 UI Logic & Contract Tests (Langkah 1.6)", () => {
       expect(content).toContain("Kembali ke Tahap Persiapan");
       expect(content).toContain("Turunkan Target (Pengurangan Bertahap)");
       expect(content).toContain("Nanti Saja");
+    });
+
+    it("verifies SafetyNoticeModal implements mandatory high-risk safety screen (§14.3)", () => {
+      const modalPath = path.join(componentsDir, "SafetyNoticeModal.tsx");
+      const content = fs.readFileSync(modalPath, "utf-8");
+
+      expect(content).toContain("Panduan Keselamatan & Kesehatan");
+      expect(content).toContain("Peringatan Gejala Putus Zat (Withdrawal)");
+      expect(content).toContain("Aplikasi Bukan Pengganti Layanan Medis");
+      expect(content).toContain("Saya Mengerti & Mengakui Panduan Ini");
     });
   });
 

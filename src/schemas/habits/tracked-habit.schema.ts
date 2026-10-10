@@ -36,6 +36,11 @@ export const createTrackedHabitSchema = z.object({
   relapseLapseCount: z.number().int().positive().default(3),
   relapseWindowDays: z.number().int().positive().default(7),
   highRiskCategory: z.boolean().default(false),
+  safetyAck: z.boolean().optional(),
+  safetyAckAt: z
+    .union([z.string().datetime(), z.date()])
+    .optional()
+    .transform((val) => (val ? new Date(val) : undefined)),
   environmentChecklist: z.array(z.string()).default([]),
 });
 

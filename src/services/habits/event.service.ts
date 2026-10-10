@@ -10,6 +10,7 @@ import {
 import { acquireHabitAdvisoryLock } from "@/repositories/habits/tracked-habit.repository";
 import { recomputeHabitStats } from "./stats.service";
 import { HabitsError } from "./habit-v2.service";
+import { detectCrisisKeywords } from "@/lib/habits/safety/crisis";
 
 const FIVE_MINUTES_MS = 5 * 60 * 1000;
 const SEVEN_DAYS_MS = 7 * 24 * 60 * 60 * 1000;
@@ -89,6 +90,9 @@ export async function logHabitEventService(
 
     // 5. Simpan event baru dengan logika khusus URGE & LAPSE
     const metaRecord = (input.meta ?? {}) as Record<string, unknown>;
+    if (input.note && detectCrisisKeywords(input.note)) {
+      metaRecord.hasCrisisSignal = true;
+    }
     const copingPlanId = metaRecord.copingPlanId as string | undefined;
 
     let event;
@@ -330,6 +334,11 @@ export async function updateHabitEventService(
     const debriefData = input.debrief ?? input.debriefAnswers;
     if (debriefData !== undefined) {
       updatedMeta.debrief = debriefData;
+    }
+
+    const finalNote = input.note !== undefined ? input.note : event.note;
+    if (finalNote && detectCrisisKeywords(finalNote)) {
+      updatedMeta.hasCrisisSignal = true;
     }
 
     // 3. Perbarui baris habitEvent

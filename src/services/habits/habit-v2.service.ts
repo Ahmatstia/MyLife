@@ -17,7 +17,13 @@ import {
 export class HabitsError extends Error {
   constructor(
     message: string,
-    public readonly code: "NOT_FOUND" | "FORBIDDEN" | "NOT_SUPPORTED_YET" | "VALIDATION_ERROR" | "CONFLICT",
+    public readonly code:
+      | "NOT_FOUND"
+      | "FORBIDDEN"
+      | "NOT_SUPPORTED_YET"
+      | "VALIDATION_ERROR"
+      | "CONFLICT"
+      | "SAFETY_ACK_REQUIRED",
     public readonly statusCode: number = 400,
   ) {
     super(message);
@@ -80,6 +86,19 @@ export async function createTrackedHabitService(
       },
     });
 
+    // Validasi T-19: Kategori berisiko tinggi wajib mengakui layar keselamatan
+    if (input.highRiskCategory && !input.safetyAck && !input.safetyAckAt) {
+      throw new HabitsError(
+        "Kebiasaan dengan kategori berisiko tinggi memerlukan konfirmasi layar keselamatan sebelum dapat diaktifkan.",
+        "SAFETY_ACK_REQUIRED",
+        400,
+      );
+    }
+
+    const safetyAckAt = input.highRiskCategory
+      ? (input.safetyAckAt ?? (input.safetyAck ? clock.now() : null))
+      : null;
+
     // 2. Buat HabitBreakProfile
     const breakProfile = await tx.habitBreakProfile.create({
       data: {
@@ -93,6 +112,7 @@ export async function createTrackedHabitService(
         relapseLapseCount: input.relapseLapseCount,
         relapseWindowDays: input.relapseWindowDays,
         highRiskCategory: input.highRiskCategory,
+        safetyAckAt,
         environmentChecklist: input.environmentChecklist,
       },
     });
@@ -191,6 +211,18 @@ export async function setHabitStatusService(
   const existing = await findTrackedHabitById(habitId, userId);
   if (!existing) {
     throw new HabitsError("Kebiasaan tidak ditemukan", "NOT_FOUND", 404);
+  }
+
+  if (
+    status === "ACTIVE" &&
+    existing.breakProfile?.highRiskCategory &&
+    !existing.breakProfile.safetyAckAt
+  ) {
+    throw new HabitsError(
+      "Kebiasaan dengan kategori berisiko tinggi memerlukan konfirmasi layar keselamatan sebelum dapat diaktifkan.",
+      "SAFETY_ACK_REQUIRED",
+      400,
+    );
   }
 
   return prisma.trackedHabit.update({

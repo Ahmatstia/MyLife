@@ -8,3 +8,4 @@ export * from "./HabitsV2App";
 export * from "./SosUrgeSurfingModal";
 export * from "./DebriefModal";
 export * from "./RelapseResetPlanModal";
+export * from "./SafetyNoticeModal";
