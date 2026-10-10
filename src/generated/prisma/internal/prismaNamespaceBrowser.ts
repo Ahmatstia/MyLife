@@ -76,7 +76,13 @@ export const ModelName = {
   HabitTask: 'HabitTask',
   HabitPhase: 'HabitPhase',
   HabitLog: 'HabitLog',
-  HabitStreak: 'HabitStreak'
+  HabitStreak: 'HabitStreak',
+  TrackedHabit: 'TrackedHabit',
+  HabitBreakProfile: 'HabitBreakProfile',
+  HabitEvent: 'HabitEvent',
+  HabitCheckin: 'HabitCheckin',
+  HabitStats: 'HabitStats',
+  HabitNotificationOutbox: 'HabitNotificationOutbox'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -561,6 +567,130 @@ export const HabitStreakScalarFieldEnum = {
 export type HabitStreakScalarFieldEnum = (typeof HabitStreakScalarFieldEnum)[keyof typeof HabitStreakScalarFieldEnum]
 
 
+export const TrackedHabitScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  areaId: 'areaId',
+  kind: 'kind',
+  mode: 'mode',
+  name: 'name',
+  displayAlias: 'displayAlias',
+  category: 'category',
+  status: 'status',
+  stage: 'stage',
+  identityStatement: 'identityStatement',
+  timezone: 'timezone',
+  checkinLocalTime: 'checkinLocalTime',
+  startedAt: 'startedAt',
+  currentWindowStart: 'currentWindowStart',
+  nextCheckinAt: 'nextCheckinAt',
+  privacyLevel: 'privacyLevel',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  archivedAt: 'archivedAt'
+} as const
+
+export type TrackedHabitScalarFieldEnum = (typeof TrackedHabitScalarFieldEnum)[keyof typeof TrackedHabitScalarFieldEnum]
+
+
+export const HabitBreakProfileScalarFieldEnum = {
+  habitId: 'habitId',
+  whyReasons: 'whyReasons',
+  futureSelfNote: 'futureSelfNote',
+  rewardAnalysis: 'rewardAnalysis',
+  baselinePerDay: 'baselinePerDay',
+  costPerOccurrence: 'costPerOccurrence',
+  currency: 'currency',
+  minutesPerOccurrence: 'minutesPerOccurrence',
+  reduceDailyLimit: 'reduceDailyLimit',
+  reduceStepPercent: 'reduceStepPercent',
+  reduceStepEveryDays: 'reduceStepEveryDays',
+  relapseLapseCount: 'relapseLapseCount',
+  relapseWindowDays: 'relapseWindowDays',
+  highRiskCategory: 'highRiskCategory',
+  safetyAckAt: 'safetyAckAt',
+  environmentChecklist: 'environmentChecklist'
+} as const
+
+export type HabitBreakProfileScalarFieldEnum = (typeof HabitBreakProfileScalarFieldEnum)[keyof typeof HabitBreakProfileScalarFieldEnum]
+
+
+export const HabitEventScalarFieldEnum = {
+  id: 'id',
+  habitId: 'habitId',
+  userId: 'userId',
+  type: 'type',
+  occurredAt: 'occurredAt',
+  loggedAt: 'loggedAt',
+  quantity: 'quantity',
+  intensityBefore: 'intensityBefore',
+  intensityAfter: 'intensityAfter',
+  outcome: 'outcome',
+  severity: 'severity',
+  mood: 'mood',
+  halt: 'halt',
+  locationLabel: 'locationLabel',
+  withWhom: 'withWhom',
+  note: 'note',
+  meta: 'meta',
+  source: 'source',
+  idempotencyKey: 'idempotencyKey',
+  deletedAt: 'deletedAt'
+} as const
+
+export type HabitEventScalarFieldEnum = (typeof HabitEventScalarFieldEnum)[keyof typeof HabitEventScalarFieldEnum]
+
+
+export const HabitCheckinScalarFieldEnum = {
+  id: 'id',
+  habitId: 'habitId',
+  windowStart: 'windowStart',
+  windowEnd: 'windowEnd',
+  periodDate: 'periodDate',
+  status: 'status',
+  quantity: 'quantity',
+  mood: 'mood',
+  note: 'note',
+  notifiedAt: 'notifiedAt',
+  respondedAt: 'respondedAt',
+  responseSource: 'responseSource'
+} as const
+
+export type HabitCheckinScalarFieldEnum = (typeof HabitCheckinScalarFieldEnum)[keyof typeof HabitCheckinScalarFieldEnum]
+
+
+export const HabitStatsScalarFieldEnum = {
+  habitId: 'habitId',
+  lastLapseAt: 'lastLapseAt',
+  currentStreakDays: 'currentStreakDays',
+  longestStreakDays: 'longestStreakDays',
+  confirmedCleanDays: 'confirmedCleanDays',
+  totalLapses: 'totalLapses',
+  urgesResisted: 'urgesResisted',
+  cleanRate30d: 'cleanRate30d',
+  relapsePattern: 'relapsePattern',
+  recomputedAt: 'recomputedAt'
+} as const
+
+export type HabitStatsScalarFieldEnum = (typeof HabitStatsScalarFieldEnum)[keyof typeof HabitStatsScalarFieldEnum]
+
+
+export const HabitNotificationOutboxScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  habitId: 'habitId',
+  kind: 'kind',
+  payload: 'payload',
+  scheduledAt: 'scheduledAt',
+  status: 'status',
+  attempts: 'attempts',
+  dedupeKey: 'dedupeKey',
+  lastError: 'lastError'
+} as const
+
+export type HabitNotificationOutboxScalarFieldEnum = (typeof HabitNotificationOutboxScalarFieldEnum)[keyof typeof HabitNotificationOutboxScalarFieldEnum]
+
+
 export const SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -575,6 +705,13 @@ export const NullableJsonNullValueInput = {
 } as const
 
 export type NullableJsonNullValueInput = (typeof NullableJsonNullValueInput)[keyof typeof NullableJsonNullValueInput]
+
+
+export const JsonNullValueInput = {
+  JsonNull: JsonNull
+} as const
+
+export type JsonNullValueInput = (typeof JsonNullValueInput)[keyof typeof JsonNullValueInput]
 
 
 export const QueryMode = {

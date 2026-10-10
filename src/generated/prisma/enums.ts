@@ -201,3 +201,64 @@ export const HabitDifficulty = {
 } as const
 
 export type HabitDifficulty = (typeof HabitDifficulty)[keyof typeof HabitDifficulty]
+
+
+export const HabitKind = {
+  BREAK: 'BREAK',
+  BUILD: 'BUILD'
+} as const
+
+export type HabitKind = (typeof HabitKind)[keyof typeof HabitKind]
+
+
+export const HabitMode = {
+  ABSTAIN: 'ABSTAIN',
+  REDUCE: 'REDUCE'
+} as const
+
+export type HabitMode = (typeof HabitMode)[keyof typeof HabitMode]
+
+
+export const HabitStatus = {
+  ACTIVE: 'ACTIVE',
+  PAUSED: 'PAUSED',
+  ARCHIVED: 'ARCHIVED'
+} as const
+
+export type HabitStatus = (typeof HabitStatus)[keyof typeof HabitStatus]
+
+
+export const HabitStage = {
+  CONTEMPLATION: 'CONTEMPLATION',
+  PREPARATION: 'PREPARATION',
+  ACTION: 'ACTION',
+  MAINTENANCE: 'MAINTENANCE'
+} as const
+
+export type HabitStage = (typeof HabitStage)[keyof typeof HabitStage]
+
+
+export const HabitEventType = {
+  URGE: 'URGE',
+  LAPSE: 'LAPSE',
+  OCCURRENCE: 'OCCURRENCE',
+  COMPLETION: 'COMPLETION',
+  SKIP: 'SKIP'
+} as const
+
+export type HabitEventType = (typeof HabitEventType)[keyof typeof HabitEventType]
+
+
+export const HabitCheckinStatus = {
+  PENDING: 'PENDING',
+  CLEAN: 'CLEAN',
+  LAPSED: 'LAPSED',
+  WITHIN_LIMIT: 'WITHIN_LIMIT',
+  OVER_LIMIT: 'OVER_LIMIT',
+  DONE: 'DONE',
+  SKIPPED: 'SKIPPED',
+  MISSED: 'MISSED',
+  UNCONFIRMED: 'UNCONFIRMED'
+} as const
+
+export type HabitCheckinStatus = (typeof HabitCheckinStatus)[keyof typeof HabitCheckinStatus]

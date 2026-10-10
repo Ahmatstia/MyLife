@@ -36,8 +36,11 @@ if (testDatabaseUrl) {
   const currentTestPath = (expect.getState()?.testPath || "").replace(/\\/g, "/");
 
   const isPureTest =
-    currentTestPath.includes("/tests/habits/") ||
-    currentTestPath.includes("/tests/support/");
+    (currentTestPath.includes("/tests/habits/") ||
+      currentTestPath.includes("/tests/support/")) &&
+    !currentTestPath.includes("schema.constraints.test.ts") &&
+    !currentTestPath.includes(".db.test.ts") &&
+    !currentTestPath.includes(".integration.test.ts");
 
   if (!isPureTest && currentTestPath) {
     throw new Error(

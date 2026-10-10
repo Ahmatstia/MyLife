@@ -147,3 +147,33 @@ export type HabitLog = Prisma.HabitLogModel
  * 
  */
 export type HabitStreak = Prisma.HabitStreakModel
+/**
+ * Model TrackedHabit
+ * 
+ */
+export type TrackedHabit = Prisma.TrackedHabitModel
+/**
+ * Model HabitBreakProfile
+ * 
+ */
+export type HabitBreakProfile = Prisma.HabitBreakProfileModel
+/**
+ * Model HabitEvent
+ * 
+ */
+export type HabitEvent = Prisma.HabitEventModel
+/**
+ * Model HabitCheckin
+ * 
+ */
+export type HabitCheckin = Prisma.HabitCheckinModel
+/**
+ * Model HabitStats
+ * 
+ */
+export type HabitStats = Prisma.HabitStatsModel
+/**
+ * Model HabitNotificationOutbox
+ * 
+ */
+export type HabitNotificationOutbox = Prisma.HabitNotificationOutboxModel

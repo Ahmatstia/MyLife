@@ -3,7 +3,7 @@ import { PrismaClient } from "../generated/prisma/client";
 import { PrismaPg } from "@prisma/adapter-pg";
 import { Pool } from "pg";
 
-const SCHEMA_VERSION = "cr006-habit-tasks-v2";
+const SCHEMA_VERSION = "habits-v2-phase1";
 
 const globalForPrisma = globalThis as unknown as {
   prisma: PrismaClient | undefined;
