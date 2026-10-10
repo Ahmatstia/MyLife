@@ -19,6 +19,30 @@ async function main() {
   const triggerCount = await seedBuiltinTriggers(prisma);
   console.log(`✓ ${triggerCount} pemicu bawaan berhasil disemai.`);
 
+  // Seed Sumber Daya Bantuan Resmi (Fase 2)
+  console.log("🏥 Menyemai sumber daya bantuan resmi terverifikasi...");
+  const { VERIFIED_SUPPORT_RESOURCES } = await import("../src/lib/habits/safety/resources.seed");
+  for (const r of VERIFIED_SUPPORT_RESOURCES) {
+    const existing = await prisma.supportResource.findFirst({
+      where: { country: r.country, name: r.name },
+    });
+    if (!existing) {
+      await prisma.supportResource.create({
+        data: {
+          country: r.country,
+          category: r.category,
+          name: r.name,
+          contact: r.contact,
+          description: r.description,
+          sourceUrl: r.sourceUrl,
+          verifiedAt: r.verifiedAt,
+          isVerified: true,
+        },
+      });
+    }
+  }
+  console.log(`✓ ${VERIFIED_SUPPORT_RESOURCES.length} sumber daya bantuan disemai.`);
+
   // Demo Goal (hanya dibuat jika belum ada)
   let goal = await prisma.goal.findFirst({
     where: { userId: user.id, title: "Belajar AI / Machine Learning" },
