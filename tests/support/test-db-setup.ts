@@ -1,3 +1,4 @@
+import "dotenv/config";
 import { expect } from "vitest";
 import { assertSafeTestDatabaseUrl } from "./db-guard";
 

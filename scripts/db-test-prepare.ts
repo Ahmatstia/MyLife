@@ -1,6 +1,94 @@
 import { spawnSync } from "node:child_process";
+import { Client } from "pg";
 import "dotenv/config";
 import { assertSafeTestDatabaseUrl, sanitizeDatabaseUrl } from "../tests/support/db-guard";
+
+async function applyHabitsConstraints(testUrl: string) {
+  console.log("[db:test:prepare] Menerapkan custom CHECK constraints dan partial indexes...");
+  const client = new Client({ connectionString: testUrl });
+  await client.connect();
+
+  const constraintsSql = `
+    -- 1. chk_th_kind_mode
+    DO $$ BEGIN
+      IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname = 'chk_th_kind_mode') THEN
+        ALTER TABLE "TrackedHabit" ADD CONSTRAINT chk_th_kind_mode
+          CHECK ((kind = 'BREAK' AND mode IS NOT NULL) OR (kind = 'BUILD' AND mode IS NULL));
+      END IF;
+    END $$;
+
+    -- 2. chk_th_checkin_time
+    DO $$ BEGIN
+      IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname = 'chk_th_checkin_time') THEN
+        ALTER TABLE "TrackedHabit" ADD CONSTRAINT chk_th_checkin_time
+          CHECK ("checkinLocalTime" ~ '^([01][0-9]|2[0-3]):[0-5][0-9]$');
+      END IF;
+    END $$;
+
+    -- 3. chk_th_privacy
+    DO $$ BEGIN
+      IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname = 'chk_th_privacy') THEN
+        ALTER TABLE "TrackedHabit" ADD CONSTRAINT chk_th_privacy CHECK ("privacyLevel" BETWEEN 0 AND 2);
+      END IF;
+    END $$;
+
+    CREATE INDEX IF NOT EXISTS idx_th_due ON "TrackedHabit" ("nextCheckinAt") WHERE status = 'ACTIVE';
+
+    -- 4. chk_he_qty
+    DO $$ BEGIN
+      IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname = 'chk_he_qty') THEN
+        ALTER TABLE "HabitEvent" ADD CONSTRAINT chk_he_qty CHECK (quantity > 0);
+      END IF;
+    END $$;
+
+    -- 5. chk_he_intensity
+    DO $$ BEGIN
+      IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname = 'chk_he_intensity') THEN
+        ALTER TABLE "HabitEvent" ADD CONSTRAINT chk_he_intensity CHECK (
+          ("intensityBefore" IS NULL OR "intensityBefore" BETWEEN 0 AND 10) AND
+          ("intensityAfter"  IS NULL OR "intensityAfter"  BETWEEN 0 AND 10));
+      END IF;
+    END $$;
+
+    -- 6. chk_he_mood
+    DO $$ BEGIN
+      IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname = 'chk_he_mood') THEN
+        ALTER TABLE "HabitEvent" ADD CONSTRAINT chk_he_mood CHECK (mood IS NULL OR mood BETWEEN 1 AND 5);
+      END IF;
+    END $$;
+
+    -- 7. chk_he_outcome
+    DO $$ BEGIN
+      IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname = 'chk_he_outcome') THEN
+        ALTER TABLE "HabitEvent" ADD CONSTRAINT chk_he_outcome CHECK (outcome IS NULL OR outcome IN ('RESISTED','GAVE_IN'));
+      END IF;
+    END $$;
+
+    -- 8. chk_he_severity
+    DO $$ BEGIN
+      IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname = 'chk_he_severity') THEN
+        ALTER TABLE "HabitEvent" ADD CONSTRAINT chk_he_severity CHECK (severity IS NULL OR severity IN ('SLIP','RELAPSE'));
+      END IF;
+    END $$;
+
+    CREATE INDEX IF NOT EXISTS idx_he_habit_time ON "HabitEvent" ("habitId", "occurredAt" DESC) WHERE "deletedAt" IS NULL;
+
+    -- 9. chk_hc_window
+    DO $$ BEGIN
+      IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname = 'chk_hc_window') THEN
+        ALTER TABLE "HabitCheckin" ADD CONSTRAINT chk_hc_window CHECK ("windowEnd" > "windowStart");
+      END IF;
+    END $$;
+
+    CREATE INDEX IF NOT EXISTS idx_hc_pending ON "HabitCheckin" ("habitId", "windowEnd" DESC) WHERE status = 'PENDING';
+
+    CREATE INDEX IF NOT EXISTS idx_hob_pending ON "HabitNotificationOutbox" ("scheduledAt") WHERE status = 'PENDING';
+  `;
+
+  await client.query(constraintsSql);
+  await client.end();
+  console.log("[db:test:prepare] ✓ Custom CHECK constraints dan partial indexes berhasil diterapkan.");
+}
 
 async function main() {
   const testUrl = process.env.TEST_DATABASE_URL?.trim();
@@ -12,8 +100,7 @@ async function main() {
     `[db:test:prepare] Memvalidasi & menyiapkan skema database pengujian pada: ${sanitizeDatabaseUrl(testUrl)}`,
   );
 
-  // 2. Jalankan prisma migrate deploy dengan DATABASE_URL = TEST_DATABASE_URL HANYA untuk proses anak
-  // Menyediakan DIRECT_URL juga untuk Prisma jika skema mengonfigurasikannya
+  // 2. Jalankan migrasi/skema dengan DATABASE_URL = TEST_DATABASE_URL HANYA untuk proses anak
   const childEnv = {
     ...process.env,
     DATABASE_URL: testUrl,
@@ -21,20 +108,89 @@ async function main() {
   };
 
   const npxCmd = process.platform === "win32" ? "npx.cmd" : "npx";
-  const result = spawnSync(npxCmd, ["prisma", "migrate", "deploy"], {
+
+  // Coba prisma migrate deploy terlebih dahulu
+  console.log("[db:test:prepare] Menjalankan prisma migrate deploy...");
+  const migrateResult = spawnSync(npxCmd, ["prisma", "migrate", "deploy"], {
     stdio: "inherit",
     env: childEnv,
     shell: true,
   });
 
-  if (result.status !== 0) {
-    console.error(
-      `[db:test:prepare] prisma migrate deploy gagal dengan status ${result.status}.`,
+  if (migrateResult.status !== 0) {
+    console.warn(
+      "\n[db:test:prepare] PERINGATAN: `prisma migrate deploy` gagal karena riwayat migrasi awal berisi sintaks SQLite (Temuan 1.1c).",
     );
-    process.exit(result.status ?? 1);
+    console.log(
+      "[db:test:prepare] Menggunakan fallback DDL dari `prisma migrate diff` untuk sinkronisasi skema penuh ke database pengujian...",
+    );
+
+    const diffResult = spawnSync(
+      npxCmd,
+      [
+        "prisma",
+        "migrate",
+        "diff",
+        "--from-empty",
+        "--to-schema",
+        "prisma/schema.prisma",
+        "--script",
+      ],
+      {
+        encoding: "utf-8",
+        env: childEnv,
+        shell: true,
+      },
+    );
+
+    if (diffResult.status !== 0 || !diffResult.stdout) {
+      console.error(
+        `[db:test:prepare] prisma migrate diff gagal: ${diffResult.stderr || "tidak ada output"}`,
+      );
+      process.exit(diffResult.status ?? 1);
+    }
+
+    const client = new Client({ connectionString: testUrl });
+    await client.connect();
+    try {
+      await client.query(diffResult.stdout);
+      console.log("[db:test:prepare] ✓ Skema penuh berhasil dibuat di database pengujian.");
+    } catch (e: unknown) {
+      const msg = e instanceof Error ? e.message : String(e);
+      // Jika objek sudah ada (misal re-run), abaikan error already exists
+      if (!msg.includes("already exists")) {
+        console.error(`[db:test:prepare] Eksekusi DDL gagal: ${msg}`);
+        await client.end();
+        process.exit(1);
+      }
+    } finally {
+      await client.end();
+    }
   }
 
-  console.log("[db:test:prepare] Skema database pengujian berhasil disiapkan.");
+  // Terapkan custom constraints & partial indexes
+  await applyHabitsConstraints(testUrl!);
+
+  // Terapkan juga constraints aplikasi lama jika ada
+  console.log("[db:test:prepare] Menjalankan scripts/setup-db-constraints.ts...");
+  const constraintsResult = spawnSync(
+    npxCmd,
+    ["tsx", "scripts/setup-db-constraints.ts"],
+    {
+      stdio: "inherit",
+      env: childEnv,
+      shell: true,
+    },
+  );
+
+  if (constraintsResult.status !== 0) {
+    console.error(
+      `[db:test:prepare] scripts/setup-db-constraints.ts gagal dengan status ${constraintsResult.status}.`,
+    );
+    process.exit(constraintsResult.status ?? 1);
+  }
+
+  console.log("\n[db:test:prepare] Database pengujian siap digunakan untuk pengujian.");
 }
 
 main().catch((err: unknown) => {
