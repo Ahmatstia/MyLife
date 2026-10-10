@@ -892,6 +892,8 @@ model TrackedHabit {
   copingPlans         CopingPlan[]
   milestones          HabitMilestone[]
   automaticitySurveys AutomaticitySurvey[]
+  reminders           HabitReminder[]
+  reflections         HabitReflection[]
 
   @@index([userId, status])
 }
@@ -1140,6 +1142,50 @@ model AutomaticitySurvey {
   createdAt  DateTime     @default(now()) @db.Timestamptz(3)
 
   @@index([habitId, answeredAt])
+}
+
+// ------------------------------------------------------------------------------
+// HABITS V2 DOMAIN (FASE 4: Pengingat & Refleksi)
+// ------------------------------------------------------------------------------
+
+enum HabitReminderKind {
+  CHECKIN
+  EVENING_REFLECTION
+  RISK_WINDOW
+  WEEKLY_REVIEW
+  ANCHOR
+}
+
+model HabitReminder {
+  id         String            @id @default(cuid())
+  habitId    String
+  habit      TrackedHabit      @relation(fields: [habitId], references: [id], onDelete: Cascade)
+  kind       HabitReminderKind
+  localTime  String            // "HH:mm"
+  daysOfWeek Int[]             @default([]) // 1=Senin .. 7=Minggu
+  nextFireAt DateTime?         @db.Timestamptz(3)
+  isActive   Boolean           @default(true)
+  createdAt  DateTime          @default(now()) @db.Timestamptz(3)
+  updatedAt  DateTime          @updatedAt @db.Timestamptz(3)
+
+  @@index([habitId, isActive])
+  @@index([isActive, nextFireAt])
+}
+
+model HabitReflection {
+  id          String       @id @default(cuid())
+  habitId     String
+  habit       TrackedHabit @relation(fields: [habitId], references: [id], onDelete: Cascade)
+  weekStart   DateTime     @db.Date
+  summary     Json?
+  question    String
+  answer      String?
+  submittedAt DateTime?    @db.Timestamptz(3)
+  createdAt   DateTime     @default(now()) @db.Timestamptz(3)
+  updatedAt   DateTime     @updatedAt @db.Timestamptz(3)
+
+  @@unique([habitId, weekStart])
+  @@index([habitId, weekStart(sort: Desc)])
 }
 
 

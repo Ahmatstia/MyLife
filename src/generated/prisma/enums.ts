@@ -286,3 +286,14 @@ export const TriggerCategory = {
 } as const
 
 export type TriggerCategory = (typeof TriggerCategory)[keyof typeof TriggerCategory]
+
+
+export const HabitReminderKind = {
+  CHECKIN: 'CHECKIN',
+  EVENING_REFLECTION: 'EVENING_REFLECTION',
+  RISK_WINDOW: 'RISK_WINDOW',
+  WEEKLY_REVIEW: 'WEEKLY_REVIEW',
+  ANCHOR: 'ANCHOR'
+} as const
+
+export type HabitReminderKind = (typeof HabitReminderKind)[keyof typeof HabitReminderKind]

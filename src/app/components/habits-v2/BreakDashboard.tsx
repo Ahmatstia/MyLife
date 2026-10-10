@@ -9,6 +9,9 @@ import { SosUrgeSurfingModal } from "./SosUrgeSurfingModal";
 import { DebriefModal } from "./DebriefModal";
 import { RelapseResetPlanModal } from "./RelapseResetPlanModal";
 import { MilestoneCelebrationModal } from "./MilestoneCelebrationModal";
+import { HabitInsightsModal } from "./HabitInsightsModal";
+import { HabitRemindersModal } from "./HabitRemindersModal";
+import { WeeklyReflectionModal } from "./WeeklyReflectionModal";
 
 function formatSavingsMoney(val: number | string | null | undefined): string {
   if (val == null) return "Rp 0";
@@ -114,6 +117,9 @@ export function BreakDashboard({ habitId, onBack }: BreakDashboardProps) {
   const [showDebrief, setShowDebrief] = useState(false);
   const [debriefEventId, setDebriefEventId] = useState<string | null>(null);
   const [showRelapseModal, setShowRelapseModal] = useState(false);
+  const [showInsights, setShowInsights] = useState(false);
+  const [showReminders, setShowReminders] = useState(false);
+  const [showReflection, setShowReflection] = useState(false);
   const [uncelebratedMilestone, setUncelebratedMilestone] = useState<{
     id: string;
     code: string;
@@ -339,6 +345,30 @@ export function BreakDashboard({ habitId, onBack }: BreakDashboardProps) {
         </button>
 
         <div className="flex items-center gap-2">
+          <button
+            id="dashboard-insights-btn"
+            type="button"
+            onClick={() => setShowInsights(true)}
+            className="inline-flex items-center gap-1.5 rounded-xl border border-indigo-500/30 bg-indigo-500/10 hover:bg-indigo-500/20 px-3 py-1.5 text-xs font-semibold text-indigo-300 transition-colors shadow-sm"
+          >
+            📊 Pola &amp; Insight
+          </button>
+          <button
+            id="dashboard-reminders-btn"
+            type="button"
+            onClick={() => setShowReminders(true)}
+            className="inline-flex items-center gap-1.5 rounded-xl border border-white/10 bg-white/5 hover:bg-white/10 px-3 py-1.5 text-xs font-semibold text-slate-300 transition-colors shadow-sm"
+          >
+            🔔 Pengingat
+          </button>
+          <button
+            id="dashboard-reflection-btn"
+            type="button"
+            onClick={() => setShowReflection(true)}
+            className="inline-flex items-center gap-1.5 rounded-xl border border-white/10 bg-white/5 hover:bg-white/10 px-3 py-1.5 text-xs font-semibold text-slate-300 transition-colors shadow-sm"
+          >
+            📑 Refleksi
+          </button>
           {isReduce && (
             <span className="px-2.5 py-1 rounded-full bg-indigo-500/10 border border-indigo-500/20 text-indigo-300 text-xs font-semibold">
               Mode Kurangi Bertahap
@@ -956,6 +986,30 @@ export function BreakDashboard({ habitId, onBack }: BreakDashboardProps) {
           setUncelebratedMilestone(null);
           fetchDashboard();
         }}
+      />
+
+      {/* MODAL: Insights & Patterns (Fase 4) */}
+      <HabitInsightsModal
+        isOpen={showInsights}
+        habitId={habit.id}
+        habitName={displayName}
+        onClose={() => setShowInsights(false)}
+      />
+
+      {/* MODAL: Reminders (Fase 4) */}
+      <HabitRemindersModal
+        isOpen={showReminders}
+        habitId={habit.id}
+        habitName={displayName}
+        onClose={() => setShowReminders(false)}
+      />
+
+      {/* MODAL: Weekly Reflection (Fase 4) */}
+      <WeeklyReflectionModal
+        isOpen={showReflection}
+        habitId={habit.id}
+        habitName={displayName}
+        onClose={() => setShowReflection(false)}
       />
     </div>
   );

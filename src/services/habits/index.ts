@@ -9,3 +9,6 @@ export * from "./relapse.service";
 export * from "./safety.service";
 export * from "./milestone.service";
 export * from "./automaticity-survey.service";
+export * from "./insight.service";
+export * from "./reminder.service";
+export * from "./reflection.service";

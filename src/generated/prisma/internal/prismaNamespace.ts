@@ -436,7 +436,9 @@ export const ModelName = {
   HabitMilestone: 'HabitMilestone',
   SupportResource: 'SupportResource',
   HabitBuildProfile: 'HabitBuildProfile',
-  AutomaticitySurvey: 'AutomaticitySurvey'
+  AutomaticitySurvey: 'AutomaticitySurvey',
+  HabitReminder: 'HabitReminder',
+  HabitReflection: 'HabitReflection'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -452,7 +454,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "userPreference" | "area" | "goal" | "objective" | "project" | "stage" | "milestone" | "task" | "session" | "dailyFocus" | "review" | "calendarEvent" | "activity" | "capture" | "notification" | "lifeIdentity" | "lifeVision" | "lifeChapter" | "chapterFocusArea" | "lifeReflection" | "habit" | "habitTask" | "habitPhase" | "habitLog" | "habitStreak" | "trackedHabit" | "habitBreakProfile" | "habitEvent" | "habitCheckin" | "habitStats" | "habitNotificationOutbox" | "trigger" | "habitTrigger" | "copingPlan" | "habitEventTrigger" | "habitMilestone" | "supportResource" | "habitBuildProfile" | "automaticitySurvey"
+    modelProps: "user" | "userPreference" | "area" | "goal" | "objective" | "project" | "stage" | "milestone" | "task" | "session" | "dailyFocus" | "review" | "calendarEvent" | "activity" | "capture" | "notification" | "lifeIdentity" | "lifeVision" | "lifeChapter" | "chapterFocusArea" | "lifeReflection" | "habit" | "habitTask" | "habitPhase" | "habitLog" | "habitStreak" | "trackedHabit" | "habitBreakProfile" | "habitEvent" | "habitCheckin" | "habitStats" | "habitNotificationOutbox" | "trigger" | "habitTrigger" | "copingPlan" | "habitEventTrigger" | "habitMilestone" | "supportResource" | "habitBuildProfile" | "automaticitySurvey" | "habitReminder" | "habitReflection"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -3416,6 +3418,154 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    HabitReminder: {
+      payload: Prisma.$HabitReminderPayload<ExtArgs>
+      fields: Prisma.HabitReminderFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.HabitReminderFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$HabitReminderPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.HabitReminderFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$HabitReminderPayload>
+        }
+        findFirst: {
+          args: Prisma.HabitReminderFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$HabitReminderPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.HabitReminderFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$HabitReminderPayload>
+        }
+        findMany: {
+          args: Prisma.HabitReminderFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$HabitReminderPayload>[]
+        }
+        create: {
+          args: Prisma.HabitReminderCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$HabitReminderPayload>
+        }
+        createMany: {
+          args: Prisma.HabitReminderCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.HabitReminderCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$HabitReminderPayload>[]
+        }
+        delete: {
+          args: Prisma.HabitReminderDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$HabitReminderPayload>
+        }
+        update: {
+          args: Prisma.HabitReminderUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$HabitReminderPayload>
+        }
+        deleteMany: {
+          args: Prisma.HabitReminderDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.HabitReminderUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.HabitReminderUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$HabitReminderPayload>[]
+        }
+        upsert: {
+          args: Prisma.HabitReminderUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$HabitReminderPayload>
+        }
+        aggregate: {
+          args: Prisma.HabitReminderAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateHabitReminder>
+        }
+        groupBy: {
+          args: Prisma.HabitReminderGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.HabitReminderGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.HabitReminderCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.HabitReminderCountAggregateOutputType> | number
+        }
+      }
+    }
+    HabitReflection: {
+      payload: Prisma.$HabitReflectionPayload<ExtArgs>
+      fields: Prisma.HabitReflectionFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.HabitReflectionFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$HabitReflectionPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.HabitReflectionFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$HabitReflectionPayload>
+        }
+        findFirst: {
+          args: Prisma.HabitReflectionFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$HabitReflectionPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.HabitReflectionFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$HabitReflectionPayload>
+        }
+        findMany: {
+          args: Prisma.HabitReflectionFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$HabitReflectionPayload>[]
+        }
+        create: {
+          args: Prisma.HabitReflectionCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$HabitReflectionPayload>
+        }
+        createMany: {
+          args: Prisma.HabitReflectionCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.HabitReflectionCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$HabitReflectionPayload>[]
+        }
+        delete: {
+          args: Prisma.HabitReflectionDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$HabitReflectionPayload>
+        }
+        update: {
+          args: Prisma.HabitReflectionUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$HabitReflectionPayload>
+        }
+        deleteMany: {
+          args: Prisma.HabitReflectionDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.HabitReflectionUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.HabitReflectionUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$HabitReflectionPayload>[]
+        }
+        upsert: {
+          args: Prisma.HabitReflectionUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$HabitReflectionPayload>
+        }
+        aggregate: {
+          args: Prisma.HabitReflectionAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateHabitReflection>
+        }
+        groupBy: {
+          args: Prisma.HabitReflectionGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.HabitReflectionGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.HabitReflectionCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.HabitReflectionCountAggregateOutputType> | number
+        }
+      }
+    }
   }
 } & {
   other: {
@@ -4163,6 +4313,36 @@ export const AutomaticitySurveyScalarFieldEnum = {
 export type AutomaticitySurveyScalarFieldEnum = (typeof AutomaticitySurveyScalarFieldEnum)[keyof typeof AutomaticitySurveyScalarFieldEnum]
 
 
+export const HabitReminderScalarFieldEnum = {
+  id: 'id',
+  habitId: 'habitId',
+  kind: 'kind',
+  localTime: 'localTime',
+  daysOfWeek: 'daysOfWeek',
+  nextFireAt: 'nextFireAt',
+  isActive: 'isActive',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type HabitReminderScalarFieldEnum = (typeof HabitReminderScalarFieldEnum)[keyof typeof HabitReminderScalarFieldEnum]
+
+
+export const HabitReflectionScalarFieldEnum = {
+  id: 'id',
+  habitId: 'habitId',
+  weekStart: 'weekStart',
+  summary: 'summary',
+  question: 'question',
+  answer: 'answer',
+  submittedAt: 'submittedAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type HabitReflectionScalarFieldEnum = (typeof HabitReflectionScalarFieldEnum)[keyof typeof HabitReflectionScalarFieldEnum]
+
+
 export const SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -4685,6 +4865,20 @@ export type EnumHabitScheduleTypeFieldRefInput<$PrismaModel> = FieldRefInputType
 export type ListEnumHabitScheduleTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'HabitScheduleType[]'>
     
 
+
+/**
+ * Reference to a field of type 'HabitReminderKind'
+ */
+export type EnumHabitReminderKindFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'HabitReminderKind'>
+    
+
+
+/**
+ * Reference to a field of type 'HabitReminderKind[]'
+ */
+export type ListEnumHabitReminderKindFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'HabitReminderKind[]'>
+    
+
 /**
  * Batch Payload for updateMany & deleteMany & createMany
  */
@@ -4876,6 +5070,8 @@ export type GlobalOmitConfig = {
   supportResource?: Prisma.SupportResourceOmit
   habitBuildProfile?: Prisma.HabitBuildProfileOmit
   automaticitySurvey?: Prisma.AutomaticitySurveyOmit
+  habitReminder?: Prisma.HabitReminderOmit
+  habitReflection?: Prisma.HabitReflectionOmit
 }
 
 /* Types for Logging */

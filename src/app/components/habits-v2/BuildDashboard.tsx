@@ -4,6 +4,9 @@ import React, { useEffect, useState, useCallback } from "react";
 import { Calendar90Days } from "./Calendar90Days";
 import { AutomaticitySurveyModal } from "./AutomaticitySurveyModal";
 import { MilestoneCelebrationModal } from "./MilestoneCelebrationModal";
+import { HabitInsightsModal } from "./HabitInsightsModal";
+import { HabitRemindersModal } from "./HabitRemindersModal";
+import { WeeklyReflectionModal } from "./WeeklyReflectionModal";
 
 interface BuildDashboardData {
   habit: {
@@ -73,6 +76,9 @@ export function BuildDashboard({ habitId, onBack }: BuildDashboardProps) {
   const [celebrationToast, setCelebrationToast] = useState<string | null>(null);
 
   // Modals
+  const [showInsights, setShowInsights] = useState(false);
+  const [showReminders, setShowReminders] = useState(false);
+  const [showReflection, setShowReflection] = useState(false);
   const [showSurveyModal, setShowSurveyModal] = useState(false);
   const [surveyInfo, setSurveyInfo] = useState<{
     surveys: Array<{ id: string; score: number; answeredAt: string }>;
@@ -304,9 +310,32 @@ export function BuildDashboard({ habitId, onBack }: BuildDashboardProps) {
           )}
         </div>
 
-        {/* Waktu Checkin */}
-        <div className="flex items-center gap-3 text-xs text-slate-400 bg-white/5 px-3 py-2 rounded-xl border border-white/10 self-start sm:self-auto">
-          <span>⏰ Evaluasi harian: <strong className="text-white">{habit.checkinLocalTime}</strong></span>
+        {/* Waktu Checkin, Reminders & Insights */}
+        <div className="flex items-center gap-2 flex-wrap self-start sm:self-auto">
+          <button
+            type="button"
+            onClick={() => setShowInsights(true)}
+            className="inline-flex items-center gap-1.5 rounded-xl border border-emerald-500/30 bg-emerald-500/10 hover:bg-emerald-500/20 px-3 py-1.5 text-xs font-semibold text-emerald-300 transition-colors shadow-sm"
+          >
+            📊 Pola &amp; Insight
+          </button>
+          <button
+            type="button"
+            onClick={() => setShowReminders(true)}
+            className="inline-flex items-center gap-1.5 rounded-xl border border-white/10 bg-white/5 hover:bg-white/10 px-3 py-1.5 text-xs font-semibold text-slate-300 transition-colors shadow-sm"
+          >
+            🔔 Pengingat
+          </button>
+          <button
+            type="button"
+            onClick={() => setShowReflection(true)}
+            className="inline-flex items-center gap-1.5 rounded-xl border border-white/10 bg-white/5 hover:bg-white/10 px-3 py-1.5 text-xs font-semibold text-slate-300 transition-colors shadow-sm"
+          >
+            📑 Refleksi
+          </button>
+          <div className="flex items-center gap-2 text-xs text-slate-400 bg-white/5 px-3 py-1.5 rounded-xl border border-white/10">
+            <span>⏰ Evaluasi: <strong className="text-white">{habit.checkinLocalTime}</strong></span>
+          </div>
         </div>
       </div>
 
@@ -529,6 +558,30 @@ export function BuildDashboard({ habitId, onBack }: BuildDashboardProps) {
           onClose={() => setUncelebratedMilestone(null)}
         />
       )}
+
+      {/* MODAL: Insights & Patterns (Fase 4) */}
+      <HabitInsightsModal
+        isOpen={showInsights}
+        habitId={habit.id}
+        habitName={habit.name}
+        onClose={() => setShowInsights(false)}
+      />
+
+      {/* MODAL: Reminders (Fase 4) */}
+      <HabitRemindersModal
+        isOpen={showReminders}
+        habitId={habit.id}
+        habitName={habit.name}
+        onClose={() => setShowReminders(false)}
+      />
+
+      {/* MODAL: Weekly Reflection (Fase 4) */}
+      <WeeklyReflectionModal
+        isOpen={showReflection}
+        habitId={habit.id}
+        habitName={habit.name}
+        onClose={() => setShowReflection(false)}
+      />
     </div>
   );
 }

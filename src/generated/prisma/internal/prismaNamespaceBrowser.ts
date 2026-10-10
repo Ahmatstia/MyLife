@@ -90,7 +90,9 @@ export const ModelName = {
   HabitMilestone: 'HabitMilestone',
   SupportResource: 'SupportResource',
   HabitBuildProfile: 'HabitBuildProfile',
-  AutomaticitySurvey: 'AutomaticitySurvey'
+  AutomaticitySurvey: 'AutomaticitySurvey',
+  HabitReminder: 'HabitReminder',
+  HabitReflection: 'HabitReflection'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -815,6 +817,36 @@ export const AutomaticitySurveyScalarFieldEnum = {
 } as const
 
 export type AutomaticitySurveyScalarFieldEnum = (typeof AutomaticitySurveyScalarFieldEnum)[keyof typeof AutomaticitySurveyScalarFieldEnum]
+
+
+export const HabitReminderScalarFieldEnum = {
+  id: 'id',
+  habitId: 'habitId',
+  kind: 'kind',
+  localTime: 'localTime',
+  daysOfWeek: 'daysOfWeek',
+  nextFireAt: 'nextFireAt',
+  isActive: 'isActive',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type HabitReminderScalarFieldEnum = (typeof HabitReminderScalarFieldEnum)[keyof typeof HabitReminderScalarFieldEnum]
+
+
+export const HabitReflectionScalarFieldEnum = {
+  id: 'id',
+  habitId: 'habitId',
+  weekStart: 'weekStart',
+  summary: 'summary',
+  question: 'question',
+  answer: 'answer',
+  submittedAt: 'submittedAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type HabitReflectionScalarFieldEnum = (typeof HabitReflectionScalarFieldEnum)[keyof typeof HabitReflectionScalarFieldEnum]
 
 
 export const SortOrder = {

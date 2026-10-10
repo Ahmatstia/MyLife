@@ -217,3 +217,13 @@ export type HabitBuildProfile = Prisma.HabitBuildProfileModel
  * 
  */
 export type AutomaticitySurvey = Prisma.AutomaticitySurveyModel
+/**
+ * Model HabitReminder
+ * 
+ */
+export type HabitReminder = Prisma.HabitReminderModel
+/**
+ * Model HabitReflection
+ * 
+ */
+export type HabitReflection = Prisma.HabitReflectionModel

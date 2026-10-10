@@ -871,6 +871,23 @@ export type EnumHabitScheduleTypeWithAggregatesFilter<$PrismaModel = never> = {
   _max?: Prisma.NestedEnumHabitScheduleTypeFilter<$PrismaModel>
 }
 
+export type EnumHabitReminderKindFilter<$PrismaModel = never> = {
+  equals?: $Enums.HabitReminderKind | Prisma.EnumHabitReminderKindFieldRefInput<$PrismaModel>
+  in?: $Enums.HabitReminderKind[] | Prisma.ListEnumHabitReminderKindFieldRefInput<$PrismaModel>
+  notIn?: $Enums.HabitReminderKind[] | Prisma.ListEnumHabitReminderKindFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumHabitReminderKindFilter<$PrismaModel> | $Enums.HabitReminderKind
+}
+
+export type EnumHabitReminderKindWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.HabitReminderKind | Prisma.EnumHabitReminderKindFieldRefInput<$PrismaModel>
+  in?: $Enums.HabitReminderKind[] | Prisma.ListEnumHabitReminderKindFieldRefInput<$PrismaModel>
+  notIn?: $Enums.HabitReminderKind[] | Prisma.ListEnumHabitReminderKindFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumHabitReminderKindWithAggregatesFilter<$PrismaModel> | $Enums.HabitReminderKind
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumHabitReminderKindFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumHabitReminderKindFilter<$PrismaModel>
+}
+
 export type NestedStringFilter<$PrismaModel = never> = {
   equals?: string | Prisma.StringFieldRefInput<$PrismaModel>
   in?: string[] | Prisma.ListStringFieldRefInput<$PrismaModel>
@@ -1663,6 +1680,23 @@ export type NestedEnumHabitScheduleTypeWithAggregatesFilter<$PrismaModel = never
   _count?: Prisma.NestedIntFilter<$PrismaModel>
   _min?: Prisma.NestedEnumHabitScheduleTypeFilter<$PrismaModel>
   _max?: Prisma.NestedEnumHabitScheduleTypeFilter<$PrismaModel>
+}
+
+export type NestedEnumHabitReminderKindFilter<$PrismaModel = never> = {
+  equals?: $Enums.HabitReminderKind | Prisma.EnumHabitReminderKindFieldRefInput<$PrismaModel>
+  in?: $Enums.HabitReminderKind[] | Prisma.ListEnumHabitReminderKindFieldRefInput<$PrismaModel>
+  notIn?: $Enums.HabitReminderKind[] | Prisma.ListEnumHabitReminderKindFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumHabitReminderKindFilter<$PrismaModel> | $Enums.HabitReminderKind
+}
+
+export type NestedEnumHabitReminderKindWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.HabitReminderKind | Prisma.EnumHabitReminderKindFieldRefInput<$PrismaModel>
+  in?: $Enums.HabitReminderKind[] | Prisma.ListEnumHabitReminderKindFieldRefInput<$PrismaModel>
+  notIn?: $Enums.HabitReminderKind[] | Prisma.ListEnumHabitReminderKindFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumHabitReminderKindWithAggregatesFilter<$PrismaModel> | $Enums.HabitReminderKind
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumHabitReminderKindFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumHabitReminderKindFilter<$PrismaModel>
 }
 
 

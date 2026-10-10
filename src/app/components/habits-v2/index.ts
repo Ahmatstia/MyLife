@@ -12,3 +12,6 @@ export * from "./SafetyNoticeModal";
 export * from "./MilestoneCelebrationModal";
 export * from "./BuildDashboard";
 export * from "./AutomaticitySurveyModal";
+export * from "./HabitInsightsModal";
+export * from "./HabitRemindersModal";
+export * from "./WeeklyReflectionModal";
