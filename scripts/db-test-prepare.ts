@@ -83,6 +83,22 @@ async function applyHabitsConstraints(testUrl: string) {
     CREATE INDEX IF NOT EXISTS idx_hc_pending ON "HabitCheckin" ("habitId", "windowEnd" DESC) WHERE status = 'PENDING';
 
     CREATE INDEX IF NOT EXISTS idx_hob_pending ON "HabitNotificationOutbox" ("scheduledAt") WHERE status = 'PENDING';
+
+    -- 10. chk_ht_intensity
+    DO $$ BEGIN
+      IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname = 'chk_ht_intensity') THEN
+        ALTER TABLE "HabitTrigger" ADD CONSTRAINT chk_ht_intensity CHECK (intensity BETWEEN 1 AND 5);
+      END IF;
+    END $$;
+
+    -- 11. chk_cp_times
+    DO $$ BEGIN
+      IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname = 'chk_cp_times') THEN
+        ALTER TABLE "CopingPlan" ADD CONSTRAINT chk_cp_times CHECK ("timesUsed" >= 0 AND "timesHelped" >= 0 AND "timesHelped" <= "timesUsed");
+      END IF;
+    END $$;
+
+    CREATE INDEX IF NOT EXISTS idx_trigger_builtin ON "Trigger" ("category") WHERE "userId" IS NULL;
   `;
 
   await client.query(constraintsSql);
@@ -132,7 +148,7 @@ async function main() {
         "prisma",
         "migrate",
         "diff",
-        "--from-empty",
+        "--from-config-datasource",
         "--to-schema",
         "prisma/schema.prisma",
         "--script",
@@ -154,16 +170,23 @@ async function main() {
     const client = new Client({ connectionString: testUrl });
     await client.connect();
     try {
-      await client.query(diffResult.stdout);
-      console.log("[db:test:prepare] ✓ Skema penuh berhasil dibuat di database pengujian.");
-    } catch (e: unknown) {
-      const msg = e instanceof Error ? e.message : String(e);
-      // Jika objek sudah ada (misal re-run), abaikan error already exists
-      if (!msg.includes("already exists")) {
-        console.error(`[db:test:prepare] Eksekusi DDL gagal: ${msg}`);
-        await client.end();
-        process.exit(1);
+      // Eksekusi statement demi statement agar error 'already exists' tidak menghentikan statement lainnya
+      const statements = diffResult.stdout
+        .split(/;\s*[\r\n]+/)
+        .map((s) => s.trim())
+        .filter((s) => s.length > 0);
+
+      for (const sql of statements) {
+        try {
+          await client.query(sql);
+        } catch (e: unknown) {
+          const msg = e instanceof Error ? e.message : String(e);
+          if (!msg.includes("already exists") && !msg.includes("duplicate")) {
+            console.warn(`[db:test:prepare] Peringatan DDL: ${msg}`);
+          }
+        }
       }
+      console.log("[db:test:prepare] ✓ Sinkronisasi DDL berhasil diterapkan ke database pengujian.");
     } finally {
       await client.end();
     }

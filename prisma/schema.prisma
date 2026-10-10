@@ -188,6 +188,7 @@ model User {
   trackedHabits   TrackedHabit[]
   habitEvents     HabitEvent[]
   habitOutbox     HabitNotificationOutbox[]
+  triggers        Trigger[]
 }
 
 model UserPreference {
@@ -879,6 +880,9 @@ model TrackedHabit {
   checkins     HabitCheckin[]
   stats        HabitStats?
   outbox       HabitNotificationOutbox[]
+  triggers     HabitTrigger[]
+  copingPlans  CopingPlan[]
+  milestones   HabitMilestone[]
 
   @@index([userId, status])
 }
@@ -926,6 +930,8 @@ model HabitEvent {
   source          String         @default("APP")   // APP | CHECKIN | SOS | BACKFILL
   idempotencyKey  String?
   deletedAt       DateTime?      @db.Timestamptz(3)
+
+  eventTriggers   HabitEventTrigger[]
 
   @@unique([userId, idempotencyKey])
   @@index([habitId, occurredAt(sort: Desc)])
@@ -980,4 +986,116 @@ model HabitNotificationOutbox {
 
   @@index([status, scheduledAt])
 }
+
+// ------------------------------------------------------------------------------
+// HABITS V2 DOMAIN (FASE 2: Rencana, Pemicu, SOS, Keselamatan)
+// ------------------------------------------------------------------------------
+
+enum TriggerCategory {
+  TIME
+  PLACE
+  PERSON
+  EMOTION
+  PHYSICAL
+  ACTIVITY
+  DEVICE
+  OTHER
+}
+
+model Trigger {
+  id          String          @id @default(cuid())
+  userId      String?
+  user        User?           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  category    TriggerCategory
+  name        String
+  description String?
+  createdAt   DateTime        @default(now()) @db.Timestamptz(3)
+  updatedAt   DateTime        @updatedAt @db.Timestamptz(3)
+
+  habitTriggers HabitTrigger[]
+
+  @@index([userId, category])
+}
+
+model HabitTrigger {
+  id        String       @id @default(cuid())
+  habitId   String
+  habit     TrackedHabit @relation(fields: [habitId], references: [id], onDelete: Cascade)
+  triggerId String
+  trigger   Trigger      @relation(fields: [triggerId], references: [id], onDelete: Cascade)
+  intensity Int          @default(3) // 1-5
+  note      String?
+  createdAt DateTime     @default(now()) @db.Timestamptz(3)
+  updatedAt DateTime     @updatedAt @db.Timestamptz(3)
+
+  copingPlans   CopingPlan[]
+  eventTriggers HabitEventTrigger[]
+
+  @@unique([habitId, triggerId])
+  @@index([habitId])
+}
+
+model CopingPlan {
+  id                 String        @id @default(cuid())
+  habitId            String
+  habit              TrackedHabit  @relation(fields: [habitId], references: [id], onDelete: Cascade)
+  habitTriggerId     String?
+  habitTrigger       HabitTrigger? @relation(fields: [habitTriggerId], references: [id], onDelete: SetNull)
+  ifCondition        String
+  thenAction         String
+  replacementHabitId String?
+  timesUsed          Int           @default(0)
+  timesHelped        Int           @default(0)
+  order              Int           @default(0)
+  isActive           Boolean       @default(true)
+  createdAt          DateTime      @default(now()) @db.Timestamptz(3)
+  updatedAt          DateTime      @updatedAt @db.Timestamptz(3)
+
+  @@index([habitId, isActive])
+  @@index([habitTriggerId])
+}
+
+model HabitEventTrigger {
+  id             String       @id @default(cuid())
+  eventId        String
+  event          HabitEvent   @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  habitTriggerId String
+  habitTrigger   HabitTrigger @relation(fields: [habitTriggerId], references: [id], onDelete: Cascade)
+  createdAt      DateTime     @default(now()) @db.Timestamptz(3)
+
+  @@unique([eventId, habitTriggerId])
+  @@index([eventId])
+  @@index([habitTriggerId])
+}
+
+model HabitMilestone {
+  id           String       @id @default(cuid())
+  habitId      String
+  habit        TrackedHabit @relation(fields: [habitId], references: [id], onDelete: Cascade)
+  code         String       // STREAK_1..365, FIRST_URGE_RESISTED, etc.
+  title        String
+  achievedAt   DateTime     @db.Timestamptz(3)
+  celebratedAt DateTime?    @db.Timestamptz(3)
+  createdAt    DateTime     @default(now()) @db.Timestamptz(3)
+
+  @@unique([habitId, code])
+  @@index([habitId, achievedAt])
+}
+
+model SupportResource {
+  id          String   @id @default(cuid())
+  country     String   @default("ID")
+  category    String   // GENERAL | SUBSTANCE | GAMBLING | CRISIS | MENTAL_HEALTH
+  name        String
+  contact     String
+  description String?
+  isVerified  Boolean  @default(true)
+  verifiedAt  DateTime @db.Timestamptz(3)
+  sourceUrl   String?
+  createdAt   DateTime @default(now()) @db.Timestamptz(3)
+  updatedAt   DateTime @updatedAt @db.Timestamptz(3)
+
+  @@index([country, category])
+}
+
 

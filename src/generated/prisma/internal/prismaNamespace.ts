@@ -428,7 +428,13 @@ export const ModelName = {
   HabitEvent: 'HabitEvent',
   HabitCheckin: 'HabitCheckin',
   HabitStats: 'HabitStats',
-  HabitNotificationOutbox: 'HabitNotificationOutbox'
+  HabitNotificationOutbox: 'HabitNotificationOutbox',
+  Trigger: 'Trigger',
+  HabitTrigger: 'HabitTrigger',
+  CopingPlan: 'CopingPlan',
+  HabitEventTrigger: 'HabitEventTrigger',
+  HabitMilestone: 'HabitMilestone',
+  SupportResource: 'SupportResource'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -444,7 +450,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "userPreference" | "area" | "goal" | "objective" | "project" | "stage" | "milestone" | "task" | "session" | "dailyFocus" | "review" | "calendarEvent" | "activity" | "capture" | "notification" | "lifeIdentity" | "lifeVision" | "lifeChapter" | "chapterFocusArea" | "lifeReflection" | "habit" | "habitTask" | "habitPhase" | "habitLog" | "habitStreak" | "trackedHabit" | "habitBreakProfile" | "habitEvent" | "habitCheckin" | "habitStats" | "habitNotificationOutbox"
+    modelProps: "user" | "userPreference" | "area" | "goal" | "objective" | "project" | "stage" | "milestone" | "task" | "session" | "dailyFocus" | "review" | "calendarEvent" | "activity" | "capture" | "notification" | "lifeIdentity" | "lifeVision" | "lifeChapter" | "chapterFocusArea" | "lifeReflection" | "habit" | "habitTask" | "habitPhase" | "habitLog" | "habitStreak" | "trackedHabit" | "habitBreakProfile" | "habitEvent" | "habitCheckin" | "habitStats" | "habitNotificationOutbox" | "trigger" | "habitTrigger" | "copingPlan" | "habitEventTrigger" | "habitMilestone" | "supportResource"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -2816,6 +2822,450 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    Trigger: {
+      payload: Prisma.$TriggerPayload<ExtArgs>
+      fields: Prisma.TriggerFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.TriggerFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TriggerPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.TriggerFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TriggerPayload>
+        }
+        findFirst: {
+          args: Prisma.TriggerFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TriggerPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.TriggerFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TriggerPayload>
+        }
+        findMany: {
+          args: Prisma.TriggerFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TriggerPayload>[]
+        }
+        create: {
+          args: Prisma.TriggerCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TriggerPayload>
+        }
+        createMany: {
+          args: Prisma.TriggerCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.TriggerCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TriggerPayload>[]
+        }
+        delete: {
+          args: Prisma.TriggerDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TriggerPayload>
+        }
+        update: {
+          args: Prisma.TriggerUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TriggerPayload>
+        }
+        deleteMany: {
+          args: Prisma.TriggerDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.TriggerUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.TriggerUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TriggerPayload>[]
+        }
+        upsert: {
+          args: Prisma.TriggerUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TriggerPayload>
+        }
+        aggregate: {
+          args: Prisma.TriggerAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateTrigger>
+        }
+        groupBy: {
+          args: Prisma.TriggerGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.TriggerGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.TriggerCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.TriggerCountAggregateOutputType> | number
+        }
+      }
+    }
+    HabitTrigger: {
+      payload: Prisma.$HabitTriggerPayload<ExtArgs>
+      fields: Prisma.HabitTriggerFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.HabitTriggerFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$HabitTriggerPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.HabitTriggerFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$HabitTriggerPayload>
+        }
+        findFirst: {
+          args: Prisma.HabitTriggerFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$HabitTriggerPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.HabitTriggerFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$HabitTriggerPayload>
+        }
+        findMany: {
+          args: Prisma.HabitTriggerFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$HabitTriggerPayload>[]
+        }
+        create: {
+          args: Prisma.HabitTriggerCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$HabitTriggerPayload>
+        }
+        createMany: {
+          args: Prisma.HabitTriggerCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.HabitTriggerCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$HabitTriggerPayload>[]
+        }
+        delete: {
+          args: Prisma.HabitTriggerDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$HabitTriggerPayload>
+        }
+        update: {
+          args: Prisma.HabitTriggerUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$HabitTriggerPayload>
+        }
+        deleteMany: {
+          args: Prisma.HabitTriggerDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.HabitTriggerUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.HabitTriggerUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$HabitTriggerPayload>[]
+        }
+        upsert: {
+          args: Prisma.HabitTriggerUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$HabitTriggerPayload>
+        }
+        aggregate: {
+          args: Prisma.HabitTriggerAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateHabitTrigger>
+        }
+        groupBy: {
+          args: Prisma.HabitTriggerGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.HabitTriggerGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.HabitTriggerCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.HabitTriggerCountAggregateOutputType> | number
+        }
+      }
+    }
+    CopingPlan: {
+      payload: Prisma.$CopingPlanPayload<ExtArgs>
+      fields: Prisma.CopingPlanFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.CopingPlanFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CopingPlanPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.CopingPlanFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CopingPlanPayload>
+        }
+        findFirst: {
+          args: Prisma.CopingPlanFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CopingPlanPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.CopingPlanFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CopingPlanPayload>
+        }
+        findMany: {
+          args: Prisma.CopingPlanFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CopingPlanPayload>[]
+        }
+        create: {
+          args: Prisma.CopingPlanCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CopingPlanPayload>
+        }
+        createMany: {
+          args: Prisma.CopingPlanCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.CopingPlanCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CopingPlanPayload>[]
+        }
+        delete: {
+          args: Prisma.CopingPlanDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CopingPlanPayload>
+        }
+        update: {
+          args: Prisma.CopingPlanUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CopingPlanPayload>
+        }
+        deleteMany: {
+          args: Prisma.CopingPlanDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.CopingPlanUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.CopingPlanUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CopingPlanPayload>[]
+        }
+        upsert: {
+          args: Prisma.CopingPlanUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CopingPlanPayload>
+        }
+        aggregate: {
+          args: Prisma.CopingPlanAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateCopingPlan>
+        }
+        groupBy: {
+          args: Prisma.CopingPlanGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.CopingPlanGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.CopingPlanCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.CopingPlanCountAggregateOutputType> | number
+        }
+      }
+    }
+    HabitEventTrigger: {
+      payload: Prisma.$HabitEventTriggerPayload<ExtArgs>
+      fields: Prisma.HabitEventTriggerFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.HabitEventTriggerFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$HabitEventTriggerPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.HabitEventTriggerFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$HabitEventTriggerPayload>
+        }
+        findFirst: {
+          args: Prisma.HabitEventTriggerFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$HabitEventTriggerPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.HabitEventTriggerFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$HabitEventTriggerPayload>
+        }
+        findMany: {
+          args: Prisma.HabitEventTriggerFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$HabitEventTriggerPayload>[]
+        }
+        create: {
+          args: Prisma.HabitEventTriggerCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$HabitEventTriggerPayload>
+        }
+        createMany: {
+          args: Prisma.HabitEventTriggerCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.HabitEventTriggerCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$HabitEventTriggerPayload>[]
+        }
+        delete: {
+          args: Prisma.HabitEventTriggerDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$HabitEventTriggerPayload>
+        }
+        update: {
+          args: Prisma.HabitEventTriggerUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$HabitEventTriggerPayload>
+        }
+        deleteMany: {
+          args: Prisma.HabitEventTriggerDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.HabitEventTriggerUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.HabitEventTriggerUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$HabitEventTriggerPayload>[]
+        }
+        upsert: {
+          args: Prisma.HabitEventTriggerUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$HabitEventTriggerPayload>
+        }
+        aggregate: {
+          args: Prisma.HabitEventTriggerAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateHabitEventTrigger>
+        }
+        groupBy: {
+          args: Prisma.HabitEventTriggerGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.HabitEventTriggerGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.HabitEventTriggerCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.HabitEventTriggerCountAggregateOutputType> | number
+        }
+      }
+    }
+    HabitMilestone: {
+      payload: Prisma.$HabitMilestonePayload<ExtArgs>
+      fields: Prisma.HabitMilestoneFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.HabitMilestoneFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$HabitMilestonePayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.HabitMilestoneFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$HabitMilestonePayload>
+        }
+        findFirst: {
+          args: Prisma.HabitMilestoneFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$HabitMilestonePayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.HabitMilestoneFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$HabitMilestonePayload>
+        }
+        findMany: {
+          args: Prisma.HabitMilestoneFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$HabitMilestonePayload>[]
+        }
+        create: {
+          args: Prisma.HabitMilestoneCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$HabitMilestonePayload>
+        }
+        createMany: {
+          args: Prisma.HabitMilestoneCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.HabitMilestoneCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$HabitMilestonePayload>[]
+        }
+        delete: {
+          args: Prisma.HabitMilestoneDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$HabitMilestonePayload>
+        }
+        update: {
+          args: Prisma.HabitMilestoneUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$HabitMilestonePayload>
+        }
+        deleteMany: {
+          args: Prisma.HabitMilestoneDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.HabitMilestoneUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.HabitMilestoneUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$HabitMilestonePayload>[]
+        }
+        upsert: {
+          args: Prisma.HabitMilestoneUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$HabitMilestonePayload>
+        }
+        aggregate: {
+          args: Prisma.HabitMilestoneAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateHabitMilestone>
+        }
+        groupBy: {
+          args: Prisma.HabitMilestoneGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.HabitMilestoneGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.HabitMilestoneCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.HabitMilestoneCountAggregateOutputType> | number
+        }
+      }
+    }
+    SupportResource: {
+      payload: Prisma.$SupportResourcePayload<ExtArgs>
+      fields: Prisma.SupportResourceFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.SupportResourceFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SupportResourcePayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.SupportResourceFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SupportResourcePayload>
+        }
+        findFirst: {
+          args: Prisma.SupportResourceFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SupportResourcePayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.SupportResourceFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SupportResourcePayload>
+        }
+        findMany: {
+          args: Prisma.SupportResourceFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SupportResourcePayload>[]
+        }
+        create: {
+          args: Prisma.SupportResourceCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SupportResourcePayload>
+        }
+        createMany: {
+          args: Prisma.SupportResourceCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.SupportResourceCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SupportResourcePayload>[]
+        }
+        delete: {
+          args: Prisma.SupportResourceDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SupportResourcePayload>
+        }
+        update: {
+          args: Prisma.SupportResourceUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SupportResourcePayload>
+        }
+        deleteMany: {
+          args: Prisma.SupportResourceDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.SupportResourceUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.SupportResourceUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SupportResourcePayload>[]
+        }
+        upsert: {
+          args: Prisma.SupportResourceUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SupportResourcePayload>
+        }
+        aggregate: {
+          args: Prisma.SupportResourceAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateSupportResource>
+        }
+        groupBy: {
+          args: Prisma.SupportResourceGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.SupportResourceGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.SupportResourceCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.SupportResourceCountAggregateOutputType> | number
+        }
+      }
+    }
   }
 } & {
   other: {
@@ -3445,6 +3895,90 @@ export const HabitNotificationOutboxScalarFieldEnum = {
 export type HabitNotificationOutboxScalarFieldEnum = (typeof HabitNotificationOutboxScalarFieldEnum)[keyof typeof HabitNotificationOutboxScalarFieldEnum]
 
 
+export const TriggerScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  category: 'category',
+  name: 'name',
+  description: 'description',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type TriggerScalarFieldEnum = (typeof TriggerScalarFieldEnum)[keyof typeof TriggerScalarFieldEnum]
+
+
+export const HabitTriggerScalarFieldEnum = {
+  id: 'id',
+  habitId: 'habitId',
+  triggerId: 'triggerId',
+  intensity: 'intensity',
+  note: 'note',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type HabitTriggerScalarFieldEnum = (typeof HabitTriggerScalarFieldEnum)[keyof typeof HabitTriggerScalarFieldEnum]
+
+
+export const CopingPlanScalarFieldEnum = {
+  id: 'id',
+  habitId: 'habitId',
+  habitTriggerId: 'habitTriggerId',
+  ifCondition: 'ifCondition',
+  thenAction: 'thenAction',
+  replacementHabitId: 'replacementHabitId',
+  timesUsed: 'timesUsed',
+  timesHelped: 'timesHelped',
+  order: 'order',
+  isActive: 'isActive',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type CopingPlanScalarFieldEnum = (typeof CopingPlanScalarFieldEnum)[keyof typeof CopingPlanScalarFieldEnum]
+
+
+export const HabitEventTriggerScalarFieldEnum = {
+  id: 'id',
+  eventId: 'eventId',
+  habitTriggerId: 'habitTriggerId',
+  createdAt: 'createdAt'
+} as const
+
+export type HabitEventTriggerScalarFieldEnum = (typeof HabitEventTriggerScalarFieldEnum)[keyof typeof HabitEventTriggerScalarFieldEnum]
+
+
+export const HabitMilestoneScalarFieldEnum = {
+  id: 'id',
+  habitId: 'habitId',
+  code: 'code',
+  title: 'title',
+  achievedAt: 'achievedAt',
+  celebratedAt: 'celebratedAt',
+  createdAt: 'createdAt'
+} as const
+
+export type HabitMilestoneScalarFieldEnum = (typeof HabitMilestoneScalarFieldEnum)[keyof typeof HabitMilestoneScalarFieldEnum]
+
+
+export const SupportResourceScalarFieldEnum = {
+  id: 'id',
+  country: 'country',
+  category: 'category',
+  name: 'name',
+  contact: 'contact',
+  description: 'description',
+  isVerified: 'isVerified',
+  verifiedAt: 'verifiedAt',
+  sourceUrl: 'sourceUrl',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type SupportResourceScalarFieldEnum = (typeof SupportResourceScalarFieldEnum)[keyof typeof SupportResourceScalarFieldEnum]
+
+
 export const SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -3939,6 +4473,20 @@ export type EnumHabitCheckinStatusFieldRefInput<$PrismaModel> = FieldRefInputTyp
 export type ListEnumHabitCheckinStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'HabitCheckinStatus[]'>
     
 
+
+/**
+ * Reference to a field of type 'TriggerCategory'
+ */
+export type EnumTriggerCategoryFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'TriggerCategory'>
+    
+
+
+/**
+ * Reference to a field of type 'TriggerCategory[]'
+ */
+export type ListEnumTriggerCategoryFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'TriggerCategory[]'>
+    
+
 /**
  * Batch Payload for updateMany & deleteMany & createMany
  */
@@ -4122,6 +4670,12 @@ export type GlobalOmitConfig = {
   habitCheckin?: Prisma.HabitCheckinOmit
   habitStats?: Prisma.HabitStatsOmit
   habitNotificationOutbox?: Prisma.HabitNotificationOutboxOmit
+  trigger?: Prisma.TriggerOmit
+  habitTrigger?: Prisma.HabitTriggerOmit
+  copingPlan?: Prisma.CopingPlanOmit
+  habitEventTrigger?: Prisma.HabitEventTriggerOmit
+  habitMilestone?: Prisma.HabitMilestoneOmit
+  supportResource?: Prisma.SupportResourceOmit
 }
 
 /* Types for Logging */

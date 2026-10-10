@@ -342,6 +342,7 @@ export type HabitEventWhereInput = {
   deletedAt?: Prisma.DateTimeNullableFilter<"HabitEvent"> | Date | string | null
   habit?: Prisma.XOR<Prisma.TrackedHabitScalarRelationFilter, Prisma.TrackedHabitWhereInput>
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
+  eventTriggers?: Prisma.HabitEventTriggerListRelationFilter
 }
 
 export type HabitEventOrderByWithRelationInput = {
@@ -367,6 +368,7 @@ export type HabitEventOrderByWithRelationInput = {
   deletedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   habit?: Prisma.TrackedHabitOrderByWithRelationInput
   user?: Prisma.UserOrderByWithRelationInput
+  eventTriggers?: Prisma.HabitEventTriggerOrderByRelationAggregateInput
 }
 
 export type HabitEventWhereUniqueInput = Prisma.AtLeast<{
@@ -396,6 +398,7 @@ export type HabitEventWhereUniqueInput = Prisma.AtLeast<{
   deletedAt?: Prisma.DateTimeNullableFilter<"HabitEvent"> | Date | string | null
   habit?: Prisma.XOR<Prisma.TrackedHabitScalarRelationFilter, Prisma.TrackedHabitWhereInput>
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
+  eventTriggers?: Prisma.HabitEventTriggerListRelationFilter
 }, "id" | "userId_idempotencyKey">
 
 export type HabitEventOrderByWithAggregationInput = {
@@ -473,6 +476,7 @@ export type HabitEventCreateInput = {
   deletedAt?: Date | string | null
   habit: Prisma.TrackedHabitCreateNestedOneWithoutEventsInput
   user: Prisma.UserCreateNestedOneWithoutHabitEventsInput
+  eventTriggers?: Prisma.HabitEventTriggerCreateNestedManyWithoutEventInput
 }
 
 export type HabitEventUncheckedCreateInput = {
@@ -496,6 +500,7 @@ export type HabitEventUncheckedCreateInput = {
   source?: string
   idempotencyKey?: string | null
   deletedAt?: Date | string | null
+  eventTriggers?: Prisma.HabitEventTriggerUncheckedCreateNestedManyWithoutEventInput
 }
 
 export type HabitEventUpdateInput = {
@@ -519,6 +524,7 @@ export type HabitEventUpdateInput = {
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   habit?: Prisma.TrackedHabitUpdateOneRequiredWithoutEventsNestedInput
   user?: Prisma.UserUpdateOneRequiredWithoutHabitEventsNestedInput
+  eventTriggers?: Prisma.HabitEventTriggerUpdateManyWithoutEventNestedInput
 }
 
 export type HabitEventUncheckedUpdateInput = {
@@ -542,6 +548,7 @@ export type HabitEventUncheckedUpdateInput = {
   source?: Prisma.StringFieldUpdateOperationsInput | string
   idempotencyKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  eventTriggers?: Prisma.HabitEventTriggerUncheckedUpdateManyWithoutEventNestedInput
 }
 
 export type HabitEventCreateManyInput = {
@@ -705,6 +712,11 @@ export type HabitEventSumOrderByAggregateInput = {
   mood?: Prisma.SortOrder
 }
 
+export type HabitEventScalarRelationFilter = {
+  is?: Prisma.HabitEventWhereInput
+  isNot?: Prisma.HabitEventWhereInput
+}
+
 export type HabitEventCreateNestedManyWithoutUserInput = {
   create?: Prisma.XOR<Prisma.HabitEventCreateWithoutUserInput, Prisma.HabitEventUncheckedCreateWithoutUserInput> | Prisma.HabitEventCreateWithoutUserInput[] | Prisma.HabitEventUncheckedCreateWithoutUserInput[]
   connectOrCreate?: Prisma.HabitEventCreateOrConnectWithoutUserInput | Prisma.HabitEventCreateOrConnectWithoutUserInput[]
@@ -810,6 +822,20 @@ export type HabitEventUpdatehaltInput = {
   push?: string | string[]
 }
 
+export type HabitEventCreateNestedOneWithoutEventTriggersInput = {
+  create?: Prisma.XOR<Prisma.HabitEventCreateWithoutEventTriggersInput, Prisma.HabitEventUncheckedCreateWithoutEventTriggersInput>
+  connectOrCreate?: Prisma.HabitEventCreateOrConnectWithoutEventTriggersInput
+  connect?: Prisma.HabitEventWhereUniqueInput
+}
+
+export type HabitEventUpdateOneRequiredWithoutEventTriggersNestedInput = {
+  create?: Prisma.XOR<Prisma.HabitEventCreateWithoutEventTriggersInput, Prisma.HabitEventUncheckedCreateWithoutEventTriggersInput>
+  connectOrCreate?: Prisma.HabitEventCreateOrConnectWithoutEventTriggersInput
+  upsert?: Prisma.HabitEventUpsertWithoutEventTriggersInput
+  connect?: Prisma.HabitEventWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.HabitEventUpdateToOneWithWhereWithoutEventTriggersInput, Prisma.HabitEventUpdateWithoutEventTriggersInput>, Prisma.HabitEventUncheckedUpdateWithoutEventTriggersInput>
+}
+
 export type HabitEventCreateWithoutUserInput = {
   id?: string
   type: $Enums.HabitEventType
@@ -830,6 +856,7 @@ export type HabitEventCreateWithoutUserInput = {
   idempotencyKey?: string | null
   deletedAt?: Date | string | null
   habit: Prisma.TrackedHabitCreateNestedOneWithoutEventsInput
+  eventTriggers?: Prisma.HabitEventTriggerCreateNestedManyWithoutEventInput
 }
 
 export type HabitEventUncheckedCreateWithoutUserInput = {
@@ -852,6 +879,7 @@ export type HabitEventUncheckedCreateWithoutUserInput = {
   source?: string
   idempotencyKey?: string | null
   deletedAt?: Date | string | null
+  eventTriggers?: Prisma.HabitEventTriggerUncheckedCreateNestedManyWithoutEventInput
 }
 
 export type HabitEventCreateOrConnectWithoutUserInput = {
@@ -926,6 +954,7 @@ export type HabitEventCreateWithoutHabitInput = {
   idempotencyKey?: string | null
   deletedAt?: Date | string | null
   user: Prisma.UserCreateNestedOneWithoutHabitEventsInput
+  eventTriggers?: Prisma.HabitEventTriggerCreateNestedManyWithoutEventInput
 }
 
 export type HabitEventUncheckedCreateWithoutHabitInput = {
@@ -948,6 +977,7 @@ export type HabitEventUncheckedCreateWithoutHabitInput = {
   source?: string
   idempotencyKey?: string | null
   deletedAt?: Date | string | null
+  eventTriggers?: Prisma.HabitEventTriggerUncheckedCreateNestedManyWithoutEventInput
 }
 
 export type HabitEventCreateOrConnectWithoutHabitInput = {
@@ -974,6 +1004,114 @@ export type HabitEventUpdateWithWhereUniqueWithoutHabitInput = {
 export type HabitEventUpdateManyWithWhereWithoutHabitInput = {
   where: Prisma.HabitEventScalarWhereInput
   data: Prisma.XOR<Prisma.HabitEventUpdateManyMutationInput, Prisma.HabitEventUncheckedUpdateManyWithoutHabitInput>
+}
+
+export type HabitEventCreateWithoutEventTriggersInput = {
+  id?: string
+  type: $Enums.HabitEventType
+  occurredAt: Date | string
+  loggedAt?: Date | string
+  quantity?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  intensityBefore?: number | null
+  intensityAfter?: number | null
+  outcome?: string | null
+  severity?: string | null
+  mood?: number | null
+  halt?: Prisma.HabitEventCreatehaltInput | string[]
+  locationLabel?: string | null
+  withWhom?: string | null
+  note?: string | null
+  meta?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  source?: string
+  idempotencyKey?: string | null
+  deletedAt?: Date | string | null
+  habit: Prisma.TrackedHabitCreateNestedOneWithoutEventsInput
+  user: Prisma.UserCreateNestedOneWithoutHabitEventsInput
+}
+
+export type HabitEventUncheckedCreateWithoutEventTriggersInput = {
+  id?: string
+  habitId: string
+  userId: string
+  type: $Enums.HabitEventType
+  occurredAt: Date | string
+  loggedAt?: Date | string
+  quantity?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  intensityBefore?: number | null
+  intensityAfter?: number | null
+  outcome?: string | null
+  severity?: string | null
+  mood?: number | null
+  halt?: Prisma.HabitEventCreatehaltInput | string[]
+  locationLabel?: string | null
+  withWhom?: string | null
+  note?: string | null
+  meta?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  source?: string
+  idempotencyKey?: string | null
+  deletedAt?: Date | string | null
+}
+
+export type HabitEventCreateOrConnectWithoutEventTriggersInput = {
+  where: Prisma.HabitEventWhereUniqueInput
+  create: Prisma.XOR<Prisma.HabitEventCreateWithoutEventTriggersInput, Prisma.HabitEventUncheckedCreateWithoutEventTriggersInput>
+}
+
+export type HabitEventUpsertWithoutEventTriggersInput = {
+  update: Prisma.XOR<Prisma.HabitEventUpdateWithoutEventTriggersInput, Prisma.HabitEventUncheckedUpdateWithoutEventTriggersInput>
+  create: Prisma.XOR<Prisma.HabitEventCreateWithoutEventTriggersInput, Prisma.HabitEventUncheckedCreateWithoutEventTriggersInput>
+  where?: Prisma.HabitEventWhereInput
+}
+
+export type HabitEventUpdateToOneWithWhereWithoutEventTriggersInput = {
+  where?: Prisma.HabitEventWhereInput
+  data: Prisma.XOR<Prisma.HabitEventUpdateWithoutEventTriggersInput, Prisma.HabitEventUncheckedUpdateWithoutEventTriggersInput>
+}
+
+export type HabitEventUpdateWithoutEventTriggersInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.EnumHabitEventTypeFieldUpdateOperationsInput | $Enums.HabitEventType
+  occurredAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  loggedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  quantity?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  intensityBefore?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  intensityAfter?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  outcome?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  severity?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  mood?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  halt?: Prisma.HabitEventUpdatehaltInput | string[]
+  locationLabel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  withWhom?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  meta?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  source?: Prisma.StringFieldUpdateOperationsInput | string
+  idempotencyKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  habit?: Prisma.TrackedHabitUpdateOneRequiredWithoutEventsNestedInput
+  user?: Prisma.UserUpdateOneRequiredWithoutHabitEventsNestedInput
+}
+
+export type HabitEventUncheckedUpdateWithoutEventTriggersInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  habitId?: Prisma.StringFieldUpdateOperationsInput | string
+  userId?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.EnumHabitEventTypeFieldUpdateOperationsInput | $Enums.HabitEventType
+  occurredAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  loggedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  quantity?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  intensityBefore?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  intensityAfter?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  outcome?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  severity?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  mood?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  halt?: Prisma.HabitEventUpdatehaltInput | string[]
+  locationLabel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  withWhom?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  meta?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  source?: Prisma.StringFieldUpdateOperationsInput | string
+  idempotencyKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
 
 export type HabitEventCreateManyUserInput = {
@@ -1018,6 +1156,7 @@ export type HabitEventUpdateWithoutUserInput = {
   idempotencyKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   habit?: Prisma.TrackedHabitUpdateOneRequiredWithoutEventsNestedInput
+  eventTriggers?: Prisma.HabitEventTriggerUpdateManyWithoutEventNestedInput
 }
 
 export type HabitEventUncheckedUpdateWithoutUserInput = {
@@ -1040,6 +1179,7 @@ export type HabitEventUncheckedUpdateWithoutUserInput = {
   source?: Prisma.StringFieldUpdateOperationsInput | string
   idempotencyKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  eventTriggers?: Prisma.HabitEventTriggerUncheckedUpdateManyWithoutEventNestedInput
 }
 
 export type HabitEventUncheckedUpdateManyWithoutUserInput = {
@@ -1106,6 +1246,7 @@ export type HabitEventUpdateWithoutHabitInput = {
   idempotencyKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   user?: Prisma.UserUpdateOneRequiredWithoutHabitEventsNestedInput
+  eventTriggers?: Prisma.HabitEventTriggerUpdateManyWithoutEventNestedInput
 }
 
 export type HabitEventUncheckedUpdateWithoutHabitInput = {
@@ -1128,6 +1269,7 @@ export type HabitEventUncheckedUpdateWithoutHabitInput = {
   source?: Prisma.StringFieldUpdateOperationsInput | string
   idempotencyKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  eventTriggers?: Prisma.HabitEventTriggerUncheckedUpdateManyWithoutEventNestedInput
 }
 
 export type HabitEventUncheckedUpdateManyWithoutHabitInput = {
@@ -1153,6 +1295,35 @@ export type HabitEventUncheckedUpdateManyWithoutHabitInput = {
 }
 
 
+/**
+ * Count Type HabitEventCountOutputType
+ */
+
+export type HabitEventCountOutputType = {
+  eventTriggers: number
+}
+
+export type HabitEventCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  eventTriggers?: boolean | HabitEventCountOutputTypeCountEventTriggersArgs
+}
+
+/**
+ * HabitEventCountOutputType without action
+ */
+export type HabitEventCountOutputTypeDefaultArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the HabitEventCountOutputType
+   */
+  select?: Prisma.HabitEventCountOutputTypeSelect<ExtArgs> | null
+}
+
+/**
+ * HabitEventCountOutputType without action
+ */
+export type HabitEventCountOutputTypeCountEventTriggersArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.HabitEventTriggerWhereInput
+}
+
 
 export type HabitEventSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -1177,6 +1348,8 @@ export type HabitEventSelect<ExtArgs extends runtime.Types.Extensions.InternalAr
   deletedAt?: boolean
   habit?: boolean | Prisma.TrackedHabitDefaultArgs<ExtArgs>
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  eventTriggers?: boolean | Prisma.HabitEvent$eventTriggersArgs<ExtArgs>
+  _count?: boolean | Prisma.HabitEventCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["habitEvent"]>
 
 export type HabitEventSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -1256,6 +1429,8 @@ export type HabitEventOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs
 export type HabitEventInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   habit?: boolean | Prisma.TrackedHabitDefaultArgs<ExtArgs>
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  eventTriggers?: boolean | Prisma.HabitEvent$eventTriggersArgs<ExtArgs>
+  _count?: boolean | Prisma.HabitEventCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type HabitEventIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   habit?: boolean | Prisma.TrackedHabitDefaultArgs<ExtArgs>
@@ -1271,6 +1446,7 @@ export type $HabitEventPayload<ExtArgs extends runtime.Types.Extensions.Internal
   objects: {
     habit: Prisma.$TrackedHabitPayload<ExtArgs>
     user: Prisma.$UserPayload<ExtArgs>
+    eventTriggers: Prisma.$HabitEventTriggerPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1689,6 +1865,7 @@ export interface Prisma__HabitEventClient<T, Null = never, ExtArgs extends runti
   readonly [Symbol.toStringTag]: "PrismaPromise"
   habit<T extends Prisma.TrackedHabitDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.TrackedHabitDefaultArgs<ExtArgs>>): Prisma.Prisma__TrackedHabitClient<runtime.Types.Result.GetResult<Prisma.$TrackedHabitPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   user<T extends Prisma.UserDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.UserDefaultArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  eventTriggers<T extends Prisma.HabitEvent$eventTriggersArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.HabitEvent$eventTriggersArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$HabitEventTriggerPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -2136,6 +2313,30 @@ export type HabitEventDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.In
    * Limit how many HabitEvents to delete.
    */
   limit?: number
+}
+
+/**
+ * HabitEvent.eventTriggers
+ */
+export type HabitEvent$eventTriggersArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the HabitEventTrigger
+   */
+  select?: Prisma.HabitEventTriggerSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the HabitEventTrigger
+   */
+  omit?: Prisma.HabitEventTriggerOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.HabitEventTriggerInclude<ExtArgs> | null
+  where?: Prisma.HabitEventTriggerWhereInput
+  orderBy?: Prisma.HabitEventTriggerOrderByWithRelationInput | Prisma.HabitEventTriggerOrderByWithRelationInput[]
+  cursor?: Prisma.HabitEventTriggerWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.HabitEventTriggerScalarFieldEnum | Prisma.HabitEventTriggerScalarFieldEnum[]
 }
 
 /**

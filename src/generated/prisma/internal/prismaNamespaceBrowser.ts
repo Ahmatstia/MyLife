@@ -82,7 +82,13 @@ export const ModelName = {
   HabitEvent: 'HabitEvent',
   HabitCheckin: 'HabitCheckin',
   HabitStats: 'HabitStats',
-  HabitNotificationOutbox: 'HabitNotificationOutbox'
+  HabitNotificationOutbox: 'HabitNotificationOutbox',
+  Trigger: 'Trigger',
+  HabitTrigger: 'HabitTrigger',
+  CopingPlan: 'CopingPlan',
+  HabitEventTrigger: 'HabitEventTrigger',
+  HabitMilestone: 'HabitMilestone',
+  SupportResource: 'SupportResource'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -689,6 +695,90 @@ export const HabitNotificationOutboxScalarFieldEnum = {
 } as const
 
 export type HabitNotificationOutboxScalarFieldEnum = (typeof HabitNotificationOutboxScalarFieldEnum)[keyof typeof HabitNotificationOutboxScalarFieldEnum]
+
+
+export const TriggerScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  category: 'category',
+  name: 'name',
+  description: 'description',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type TriggerScalarFieldEnum = (typeof TriggerScalarFieldEnum)[keyof typeof TriggerScalarFieldEnum]
+
+
+export const HabitTriggerScalarFieldEnum = {
+  id: 'id',
+  habitId: 'habitId',
+  triggerId: 'triggerId',
+  intensity: 'intensity',
+  note: 'note',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type HabitTriggerScalarFieldEnum = (typeof HabitTriggerScalarFieldEnum)[keyof typeof HabitTriggerScalarFieldEnum]
+
+
+export const CopingPlanScalarFieldEnum = {
+  id: 'id',
+  habitId: 'habitId',
+  habitTriggerId: 'habitTriggerId',
+  ifCondition: 'ifCondition',
+  thenAction: 'thenAction',
+  replacementHabitId: 'replacementHabitId',
+  timesUsed: 'timesUsed',
+  timesHelped: 'timesHelped',
+  order: 'order',
+  isActive: 'isActive',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type CopingPlanScalarFieldEnum = (typeof CopingPlanScalarFieldEnum)[keyof typeof CopingPlanScalarFieldEnum]
+
+
+export const HabitEventTriggerScalarFieldEnum = {
+  id: 'id',
+  eventId: 'eventId',
+  habitTriggerId: 'habitTriggerId',
+  createdAt: 'createdAt'
+} as const
+
+export type HabitEventTriggerScalarFieldEnum = (typeof HabitEventTriggerScalarFieldEnum)[keyof typeof HabitEventTriggerScalarFieldEnum]
+
+
+export const HabitMilestoneScalarFieldEnum = {
+  id: 'id',
+  habitId: 'habitId',
+  code: 'code',
+  title: 'title',
+  achievedAt: 'achievedAt',
+  celebratedAt: 'celebratedAt',
+  createdAt: 'createdAt'
+} as const
+
+export type HabitMilestoneScalarFieldEnum = (typeof HabitMilestoneScalarFieldEnum)[keyof typeof HabitMilestoneScalarFieldEnum]
+
+
+export const SupportResourceScalarFieldEnum = {
+  id: 'id',
+  country: 'country',
+  category: 'category',
+  name: 'name',
+  contact: 'contact',
+  description: 'description',
+  isVerified: 'isVerified',
+  verifiedAt: 'verifiedAt',
+  sourceUrl: 'sourceUrl',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type SupportResourceScalarFieldEnum = (typeof SupportResourceScalarFieldEnum)[keyof typeof SupportResourceScalarFieldEnum]
 
 
 export const SortOrder = {

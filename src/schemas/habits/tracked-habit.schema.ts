@@ -22,7 +22,7 @@ export const createTrackedHabitSchema = z.object({
   startedAt: z
     .union([z.string().datetime(), z.date()])
     .optional()
-    .transform((val) => (val ? new Date(val) : new Date())),
+    .transform((val) => (val ? new Date(val) : undefined)),
   privacyLevel: z.number().int().min(0).max(2).default(1),
   areaId: z.string().cuid().optional().nullable(),
 

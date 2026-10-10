@@ -201,3 +201,33 @@ export type HabitStats = Prisma.HabitStatsModel
  * 
  */
 export type HabitNotificationOutbox = Prisma.HabitNotificationOutboxModel
+/**
+ * Model Trigger
+ * 
+ */
+export type Trigger = Prisma.TriggerModel
+/**
+ * Model HabitTrigger
+ * 
+ */
+export type HabitTrigger = Prisma.HabitTriggerModel
+/**
+ * Model CopingPlan
+ * 
+ */
+export type CopingPlan = Prisma.CopingPlanModel
+/**
+ * Model HabitEventTrigger
+ * 
+ */
+export type HabitEventTrigger = Prisma.HabitEventTriggerModel
+/**
+ * Model HabitMilestone
+ * 
+ */
+export type HabitMilestone = Prisma.HabitMilestoneModel
+/**
+ * Model SupportResource
+ * 
+ */
+export type SupportResource = Prisma.SupportResourceModel

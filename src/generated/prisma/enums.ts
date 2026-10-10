@@ -263,3 +263,17 @@ export const HabitCheckinStatus = {
 } as const
 
 export type HabitCheckinStatus = (typeof HabitCheckinStatus)[keyof typeof HabitCheckinStatus]
+
+
+export const TriggerCategory = {
+  TIME: 'TIME',
+  PLACE: 'PLACE',
+  PERSON: 'PERSON',
+  EMOTION: 'EMOTION',
+  PHYSICAL: 'PHYSICAL',
+  ACTIVITY: 'ACTIVITY',
+  DEVICE: 'DEVICE',
+  OTHER: 'OTHER'
+} as const
+
+export type TriggerCategory = (typeof TriggerCategory)[keyof typeof TriggerCategory]

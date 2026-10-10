@@ -837,6 +837,23 @@ export type EnumHabitCheckinStatusWithAggregatesFilter<$PrismaModel = never> = {
   _max?: Prisma.NestedEnumHabitCheckinStatusFilter<$PrismaModel>
 }
 
+export type EnumTriggerCategoryFilter<$PrismaModel = never> = {
+  equals?: $Enums.TriggerCategory | Prisma.EnumTriggerCategoryFieldRefInput<$PrismaModel>
+  in?: $Enums.TriggerCategory[] | Prisma.ListEnumTriggerCategoryFieldRefInput<$PrismaModel>
+  notIn?: $Enums.TriggerCategory[] | Prisma.ListEnumTriggerCategoryFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumTriggerCategoryFilter<$PrismaModel> | $Enums.TriggerCategory
+}
+
+export type EnumTriggerCategoryWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.TriggerCategory | Prisma.EnumTriggerCategoryFieldRefInput<$PrismaModel>
+  in?: $Enums.TriggerCategory[] | Prisma.ListEnumTriggerCategoryFieldRefInput<$PrismaModel>
+  notIn?: $Enums.TriggerCategory[] | Prisma.ListEnumTriggerCategoryFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumTriggerCategoryWithAggregatesFilter<$PrismaModel> | $Enums.TriggerCategory
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumTriggerCategoryFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumTriggerCategoryFilter<$PrismaModel>
+}
+
 export type NestedStringFilter<$PrismaModel = never> = {
   equals?: string | Prisma.StringFieldRefInput<$PrismaModel>
   in?: string[] | Prisma.ListStringFieldRefInput<$PrismaModel>
@@ -1595,6 +1612,23 @@ export type NestedEnumHabitCheckinStatusWithAggregatesFilter<$PrismaModel = neve
   _count?: Prisma.NestedIntFilter<$PrismaModel>
   _min?: Prisma.NestedEnumHabitCheckinStatusFilter<$PrismaModel>
   _max?: Prisma.NestedEnumHabitCheckinStatusFilter<$PrismaModel>
+}
+
+export type NestedEnumTriggerCategoryFilter<$PrismaModel = never> = {
+  equals?: $Enums.TriggerCategory | Prisma.EnumTriggerCategoryFieldRefInput<$PrismaModel>
+  in?: $Enums.TriggerCategory[] | Prisma.ListEnumTriggerCategoryFieldRefInput<$PrismaModel>
+  notIn?: $Enums.TriggerCategory[] | Prisma.ListEnumTriggerCategoryFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumTriggerCategoryFilter<$PrismaModel> | $Enums.TriggerCategory
+}
+
+export type NestedEnumTriggerCategoryWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.TriggerCategory | Prisma.EnumTriggerCategoryFieldRefInput<$PrismaModel>
+  in?: $Enums.TriggerCategory[] | Prisma.ListEnumTriggerCategoryFieldRefInput<$PrismaModel>
+  notIn?: $Enums.TriggerCategory[] | Prisma.ListEnumTriggerCategoryFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumTriggerCategoryWithAggregatesFilter<$PrismaModel> | $Enums.TriggerCategory
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumTriggerCategoryFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumTriggerCategoryFilter<$PrismaModel>
 }
 
 
