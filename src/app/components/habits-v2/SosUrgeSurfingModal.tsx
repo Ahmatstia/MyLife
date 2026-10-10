@@ -15,7 +15,12 @@ interface SosUrgeSurfingModalProps {
   habitId: string;
   habitName: string;
   onClose: () => void;
-  onSuccess: (result: { outcome: "RESISTED" | "GAVE_IN"; urgesResistedDelta: number }) => void;
+  onSuccess: (result: {
+    outcome: "RESISTED" | "GAVE_IN";
+    urgesResistedDelta: number;
+    eventId?: string;
+    lapseEventId?: string;
+  }) => void;
 }
 
 type Step = 1 | 2 | 3 | 4 | 5 | 6 | 7;
@@ -176,6 +181,8 @@ function SosUrgeSurfingModalContent({
       onSuccess({
         outcome,
         urgesResistedDelta: outcome === "RESISTED" ? 1 : 0,
+        eventId: json.data?.id,
+        lapseEventId: json.data?.meta?.relatedEventId,
       });
       onClose();
     } catch (err) {

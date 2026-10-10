@@ -6,7 +6,7 @@ interface LogLapseModalProps {
   isOpen: boolean;
   habitId: string;
   onClose: () => void;
-  onSuccess: () => void;
+  onSuccess: (event?: { id: string }) => void;
 }
 
 export function LogLapseModal({
@@ -54,7 +54,7 @@ export function LogLapseModal({
         throw new Error(json.error?.message || "Tidak dapat mencatat kejadian.");
       }
 
-      onSuccess();
+      onSuccess(json.data);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Terjadi kesalahan.");
     } finally {

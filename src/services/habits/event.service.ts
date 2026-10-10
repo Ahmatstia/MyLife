@@ -3,7 +3,9 @@ import type { Prisma } from "@/generated/prisma/client";
 import { SystemClock, type Clock } from "@/lib/habits/clock";
 import {
   logHabitEventSchema,
+  updateHabitEventSchema,
   type LogHabitEventInput,
+  type UpdateHabitEventInput,
 } from "@/schemas/habits/habit-event.schema";
 import { acquireHabitAdvisoryLock } from "@/repositories/habits/tracked-habit.repository";
 import { recomputeHabitStats } from "./stats.service";
@@ -251,5 +253,111 @@ export async function deleteHabitEventService(
     await recomputeHabitStats(habitId, tx, clock);
 
     return { success: true, deletedEventId: eventId };
+  });
+}
+
+export async function updateHabitEventService(
+  userId: string,
+  habitId: string,
+  eventId: string,
+  rawInput: UpdateHabitEventInput,
+  clock: Clock = new SystemClock(),
+) {
+  const parsed = updateHabitEventSchema.safeParse(rawInput);
+  if (!parsed.success) {
+    throw new HabitsError(
+      parsed.error.issues.map((i) => i.message).join(", "),
+      "VALIDATION_ERROR",
+      400,
+    );
+  }
+
+  const input = parsed.data;
+
+  return prisma.$transaction(async (tx) => {
+    await acquireHabitAdvisoryLock(habitId, tx);
+
+    const habit = await tx.trackedHabit.findFirst({
+      where: { id: habitId, userId },
+    });
+    if (!habit) {
+      throw new HabitsError("Kebiasaan tidak ditemukan", "NOT_FOUND", 404);
+    }
+
+    const event = await tx.habitEvent.findFirst({
+      where: { id: eventId, habitId, userId, deletedAt: null },
+    });
+    if (!event) {
+      throw new HabitsError("Kejadian tidak ditemukan", "NOT_FOUND", 404);
+    }
+
+    // 1. Tautkan pemicu ke HabitEventTrigger jika habitTriggerIds diberikan
+    if (input.habitTriggerIds && input.habitTriggerIds.length > 0) {
+      const validTriggers = await tx.habitTrigger.findMany({
+        where: {
+          id: { in: input.habitTriggerIds },
+          habitId,
+        },
+      });
+
+      if (validTriggers.length !== input.habitTriggerIds.length) {
+        throw new HabitsError(
+          "Satu atau lebih pemicu tidak valid atau tidak terkait dengan kebiasaan ini.",
+          "VALIDATION_ERROR",
+          400,
+        );
+      }
+
+      await tx.habitEventTrigger.createMany({
+        data: validTriggers.map((vt) => ({
+          eventId,
+          habitTriggerId: vt.id,
+        })),
+        skipDuplicates: true,
+      });
+    }
+
+    // 2. Gabungkan meta (termasuk debrief)
+    const currentMeta = (event.meta && typeof event.meta === "object"
+      ? event.meta
+      : {}) as Record<string, unknown>;
+
+    const updatedMeta: Record<string, unknown> = {
+      ...currentMeta,
+      ...(input.meta ?? {}),
+    };
+
+    const debriefData = input.debrief ?? input.debriefAnswers;
+    if (debriefData !== undefined) {
+      updatedMeta.debrief = debriefData;
+    }
+
+    // 3. Perbarui baris habitEvent
+    const updated = await tx.habitEvent.update({
+      where: { id: eventId },
+      data: {
+        note: input.note !== undefined ? input.note : event.note,
+        mood: input.mood !== undefined ? input.mood : event.mood,
+        halt: input.halt !== undefined ? input.halt : event.halt,
+        severity: input.severity !== undefined ? input.severity : event.severity,
+        meta: updatedMeta as Prisma.InputJsonValue,
+      },
+      include: {
+        eventTriggers: {
+          include: {
+            habitTrigger: {
+              include: {
+                trigger: true,
+              },
+            },
+          },
+        },
+      },
+    });
+
+    // 4. Hitung ulang statistik jika severity atau data relevan berubah
+    await recomputeHabitStats(habitId, tx, clock);
+
+    return updated;
   });
 }

@@ -23,4 +23,24 @@ export const logHabitEventSchema = z.object({
   source: z.string().trim().default("APP"),
 });
 
+export const debriefAnswersSchema = z.object({
+  whatHappened: z.string().trim().max(1000, "Deskripsi maksimal 1000 karakter.").optional().nullable(),
+  bodyFeeling: z.string().trim().max(1000, "Deskripsi maksimal 1000 karakter.").optional().nullable(),
+  whatHelpedBefore: z.string().trim().max(1000, "Deskripsi maksimal 1000 karakter.").optional().nullable(),
+  newCopingIdea: z.string().trim().max(1000, "Deskripsi maksimal 1000 karakter.").optional().nullable(),
+});
+
+export const updateHabitEventSchema = z.object({
+  debrief: debriefAnswersSchema.optional().nullable(),
+  debriefAnswers: debriefAnswersSchema.optional().nullable(),
+  habitTriggerIds: z.array(z.string().trim().min(1)).optional(),
+  note: z.string().trim().max(1000).optional().nullable(),
+  mood: z.number().int().min(1).max(5).optional().nullable(),
+  halt: z.array(z.string()).optional(),
+  severity: z.enum(["SLIP", "RELAPSE"]).optional().nullable(),
+  meta: z.record(z.string(), z.unknown()).optional(),
+});
+
 export type LogHabitEventInput = z.input<typeof logHabitEventSchema>;
+export type UpdateHabitEventInput = z.input<typeof updateHabitEventSchema>;
+export type DebriefAnswers = z.infer<typeof debriefAnswersSchema>;

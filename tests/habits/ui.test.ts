@@ -73,6 +73,8 @@ describe("Habits v2 UI Logic & Contract Tests (Langkah 1.6)", () => {
       expect(files).toContain("HabitCardV2.tsx");
       expect(files).toContain("BreakDashboard.tsx");
       expect(files).toContain("HabitsV2App.tsx");
+      expect(files).toContain("SosUrgeSurfingModal.tsx");
+      expect(files).toContain("DebriefModal.tsx");
       expect(files).toContain("index.ts");
     });
 
@@ -123,6 +125,17 @@ describe("Habits v2 UI Logic & Contract Tests (Langkah 1.6)", () => {
       expect(logLapseContent).not.toContain("bg-red-700");
       expect(recoveryContent).not.toContain("bg-red-600");
       expect(recoveryContent).not.toContain("bg-red-700");
+    });
+
+    it("verifies DebriefModal implements 4 situational reflection questions (F-B4)", () => {
+      const debriefPath = path.join(componentsDir, "DebriefModal.tsx");
+      const content = fs.readFileSync(debriefPath, "utf-8");
+
+      expect(content).toContain("Apa yang terjadi tepat sebelum kejadian ini?");
+      expect(content).toContain("Bagaimana kondisi tubuh dan perasaanmu saat itu?");
+      expect(content).toContain("Apa yang berhasil menahanmu sebelumnya, atau apa yang bisa diubah?");
+      expect(content).toContain("Rencana Jika–Maka apa yang ingin kamu tambahkan?");
+      expect(content).toContain("Lewati Refleksi");
     });
   });
 

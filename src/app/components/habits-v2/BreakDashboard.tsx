@@ -5,6 +5,7 @@ import { Calendar90Days } from "./Calendar90Days";
 import { LogLapseModal } from "./LogLapseModal";
 import { RecoveryModal } from "./RecoveryModal";
 import { SosUrgeSurfingModal } from "./SosUrgeSurfingModal";
+import { DebriefModal } from "./DebriefModal";
 
 interface DashboardData {
   habit: {
@@ -60,6 +61,8 @@ export function BreakDashboard({ habitId, onBack }: BreakDashboardProps) {
   const [showLogLapse, setShowLogLapse] = useState(false);
   const [showRecovery, setShowRecovery] = useState(false);
   const [showSos, setShowSos] = useState(false);
+  const [showDebrief, setShowDebrief] = useState(false);
+  const [debriefEventId, setDebriefEventId] = useState<string | null>(null);
   const [actionLoading, setActionLoading] = useState(false);
 
   const fetchDashboard = useCallback(async () => {
@@ -416,8 +419,32 @@ export function BreakDashboard({ habitId, onBack }: BreakDashboardProps) {
         isOpen={showLogLapse}
         habitId={habit.id}
         onClose={() => setShowLogLapse(false)}
-        onSuccess={() => {
+        onSuccess={(event) => {
           setShowLogLapse(false);
+          fetchDashboard();
+          if (event?.id) {
+            setDebriefEventId(event.id);
+            setShowDebrief(true);
+          } else {
+            setShowRecovery(true);
+          }
+        }}
+      />
+
+      {/* MODAL: Debrief Refleksi Situasi */}
+      <DebriefModal
+        isOpen={showDebrief}
+        habitId={habit.id}
+        eventId={debriefEventId}
+        habitName={displayName}
+        onClose={() => {
+          setShowDebrief(false);
+          setDebriefEventId(null);
+          setShowRecovery(true);
+        }}
+        onSuccess={() => {
+          setShowDebrief(false);
+          setDebriefEventId(null);
           setShowRecovery(true);
           fetchDashboard();
         }}
@@ -454,7 +481,13 @@ export function BreakDashboard({ habitId, onBack }: BreakDashboardProps) {
         onSuccess={(result) => {
           fetchDashboard();
           if (result.outcome === "GAVE_IN") {
-            setShowRecovery(true);
+            const targetId = result.lapseEventId || result.eventId;
+            if (targetId) {
+              setDebriefEventId(targetId);
+              setShowDebrief(true);
+            } else {
+              setShowRecovery(true);
+            }
           }
         }}
       />
