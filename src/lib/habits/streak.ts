@@ -13,10 +13,21 @@ export interface CheckinLike {
   status: CheckinStatus;
 }
 
-export interface BreakHabitLike {
-  kind: "BREAK" | "BUILD";
-  mode: "ABSTAIN" | "REDUCE" | null;
+export interface BuildProfileLike {
+  scheduleType?: "DAILY" | "DAYS_OF_WEEK" | "TIMES_PER_WEEK";
+  daysOfWeek?: number[];
+  timesPerWeek?: number | null;
+  restDays?: number[];
 }
+
+export interface HabitLike {
+  kind: "BREAK" | "BUILD";
+  mode?: "ABSTAIN" | "REDUCE" | null;
+  buildProfile?: BuildProfileLike | null;
+  timezone?: string;
+}
+
+export type BreakHabitLike = HabitLike;
 
 export interface HabitComputedStats {
   currentStreakDays: number;
@@ -24,6 +35,10 @@ export interface HabitComputedStats {
   confirmedCleanDays: number;
   /** Persen 0-100 (2 desimal), `null` bila belum ada jendela CLEAN/LAPSED. */
   cleanRate30d: number | null;
+  /** Persen 0-100 (2 desimal) untuk Build: DONE / (DONE + MISSED) pada 30 hari terjadwal terakhir. */
+  consistency30d: number | null;
+  /** Streak tahan banting untuk Build: hanya putus bila 2 jendela terjadwal beruntun MISSED. */
+  resilientStreak: number;
   lastLapseAt: Date | null;
   totalLapses: number;
   urgesResisted: number;
@@ -32,7 +47,7 @@ export interface HabitComputedStats {
 export class UnsupportedHabitError extends Error {
   readonly code = "NOT_SUPPORTED_YET";
   constructor() {
-    super("Statistik hanya didukung untuk kebiasaan BREAK dengan mode ABSTAIN (Fase 1).");
+    super("Statistik hanya didukung untuk BREAK (ABSTAIN) dan BUILD.");
     this.name = "UnsupportedHabitError";
   }
 }
@@ -66,13 +81,121 @@ function effectiveOf(checkin: CheckinLike, lapseTimes: readonly number[]): Effec
   return "NEUTRAL";
 }
 
+function computeBuildStats(
+  checkins: readonly CheckinLike[],
+  events: readonly HabitEventLike[],
+  _habit: HabitLike,
+  now: Date,
+): HabitComputedStats {
+  const nowMs = now.getTime();
+  const active = activeEvents(events);
+  const completionEvents = active.filter((e) => e.type === "COMPLETION");
+  const skipEvents = active.filter((e) => e.type === "SKIP");
+  const completionTimes = completionEvents.map((e) => e.occurredAt.getTime());
+  const skipTimes = skipEvents.map((e) => e.occurredAt.getTime());
+
+  // Jendela yang sudah berakhir, terurut kronologis (terlama ke terbaru).
+  const ended = checkins
+    .filter((c) => c.windowEnd.getTime() <= nowMs)
+    .map((c) => {
+      const start = c.windowStart.getTime();
+      const end = c.windowEnd.getTime();
+      let effective: CheckinStatus = c.status;
+      if (completionTimes.some((t) => t >= start && t < end)) {
+        effective = "DONE";
+      } else if (skipTimes.some((t) => t >= start && t < end)) {
+        effective = "SKIPPED";
+      }
+      return {
+        windowStart: start,
+        windowEnd: end,
+        status: c.status,
+        effective,
+      };
+    })
+    .sort((a, b) => a.windowEnd - b.windowEnd);
+
+  // Hanya jendela yang sudah terselesaikan (bukan PENDING).
+  const counted = ended.filter((w) => w.effective !== "PENDING");
+
+  // Jendela aktif terjadwal (DONE atau MISSED); SKIPPED adalah hari istirahat/skip netral.
+  const scheduled = counted.filter(
+    (w) => w.effective === "DONE" || w.effective === "MISSED",
+  );
+
+  // 1. consistency30d: 30 jendela terjadwal terbaru
+  const recent30 = [...scheduled].reverse().slice(0, CLEAN_RATE_WINDOW_COUNT);
+  const done30 = recent30.filter((w) => w.effective === "DONE").length;
+  const consistency30d =
+    recent30.length === 0
+      ? null
+      : Math.round((done30 * 10000) / recent30.length) / 100;
+
+  // 2. resilientStreak: hanya putus bila 2 jendela terjadwal beruntun MISSED (T-15, T-16)
+  let resilientStreak = 0;
+  let consecutiveMisses = 0;
+  for (const w of scheduled) {
+    if (w.effective === "DONE") {
+      resilientStreak++;
+      consecutiveMisses = 0;
+    } else if (w.effective === "MISSED") {
+      consecutiveMisses++;
+      if (consecutiveMisses >= 2) {
+        resilientStreak = 0;
+      }
+    }
+  }
+
+  // 3. strict streak: berturut-turut DONE mundur dari jendela terjadwal terbaru
+  let currentStreakDays = 0;
+  for (let i = scheduled.length - 1; i >= 0; i--) {
+    if (scheduled[i].effective === "DONE") {
+      currentStreakDays++;
+    } else if (scheduled[i].effective === "MISSED") {
+      break;
+    }
+  }
+
+  // 4. longest streak (strict consecutive DONE)
+  let longestStreakDays = 0;
+  let run = 0;
+  for (const w of scheduled) {
+    if (w.effective === "DONE") {
+      run++;
+      if (run > longestStreakDays) longestStreakDays = run;
+    } else if (w.effective === "MISSED") {
+      run = 0;
+    }
+  }
+
+  const confirmedCleanDays = counted.filter((w) => w.effective === "DONE").length;
+
+  return {
+    currentStreakDays,
+    longestStreakDays,
+    confirmedCleanDays,
+    cleanRate30d: consistency30d,
+    consistency30d,
+    resilientStreak,
+    lastLapseAt: null,
+    totalLapses: 0,
+    urgesResisted: 0,
+  };
+}
+
 export function computeStats(
   checkins: readonly CheckinLike[],
   events: readonly HabitEventLike[],
-  habit: BreakHabitLike,
+  habit: HabitLike,
   now: Date,
 ): HabitComputedStats {
-  if (habit.kind !== "BREAK" || habit.mode !== "ABSTAIN") throw new UnsupportedHabitError();
+  if (habit.kind === "BUILD") {
+    return computeBuildStats(checkins, events, habit, now);
+  }
+
+  if (habit.kind !== "BREAK" || habit.mode !== "ABSTAIN") {
+    throw new UnsupportedHabitError();
+  }
 
   const nowMs = now.getTime();
   const active = activeEvents(events);
@@ -145,6 +268,8 @@ export function computeStats(
     longestStreakDays,
     confirmedCleanDays,
     cleanRate30d,
+    consistency30d: null,
+    resilientStreak: 0,
     lastLapseAt,
     totalLapses: lapseEvents.length,
     urgesResisted,

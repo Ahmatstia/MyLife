@@ -14,6 +14,8 @@ describe("computeStats: dasar", () => {
       longestStreakDays: 0,
       confirmedCleanDays: 0,
       cleanRate30d: null,
+      consistency30d: null,
+      resilientStreak: 0,
       lastLapseAt: null,
       totalLapses: 0,
       urgesResisted: 0,
@@ -32,8 +34,8 @@ describe("computeStats: dasar", () => {
     });
   });
 
-  it("menolak kebiasaan selain BREAK/ABSTAIN (Fase 1)", () => {
-    expect(() => computeStats([], [], { kind: "BUILD", mode: null }, new Date())).toThrow(UnsupportedHabitError);
+  it("mendukung BUILD dan menolak mode REDUCE yang belum didukung (hingga Langkah 3.4)", () => {
+    expect(() => computeStats([], [], { kind: "BUILD", mode: null }, new Date())).not.toThrow();
     expect(() => computeStats([], [], { kind: "BREAK", mode: "REDUCE" }, new Date())).toThrow(UnsupportedHabitError);
   });
 
@@ -263,5 +265,104 @@ describe("invarian (property test, 300 skenario acak)", () => {
       expect(s.currentStreakDays).toBe(ref.current);
       expect(s.longestStreakDays).toBe(ref.longest);
     }
+  });
+});
+
+describe("Fase 3: Build habit metrics & resilient streak (T-15, T-16)", () => {
+  const BUILD_HABIT = { kind: "BUILD" as const, mode: null };
+
+  it("tanpa data -> consistency30d null, resilientStreak 0", () => {
+    const s = computeStats([], [], BUILD_HABIT, d("2026-10-10T00:00:00Z"));
+    expect(s).toEqual({
+      currentStreakDays: 0,
+      longestStreakDays: 0,
+      confirmedCleanDays: 0,
+      cleanRate30d: null,
+      consistency30d: null,
+      resilientStreak: 0,
+      lastLapseAt: null,
+      totalLapses: 0,
+      urgesResisted: 0,
+    });
+  });
+
+  it("5 jendela DONE -> streak 5, resilientStreak 5, consistency 100%", () => {
+    const checkins = dailyCheckins(["DONE", "DONE", "DONE", "DONE", "DONE"]);
+    const s = computeStats(checkins, [], BUILD_HABIT, afterAll(5));
+    expect(s.currentStreakDays).toBe(5);
+    expect(s.longestStreakDays).toBe(5);
+    expect(s.resilientStreak).toBe(5);
+    expect(s.confirmedCleanDays).toBe(5);
+    expect(s.consistency30d).toBe(100);
+  });
+
+  it("T-15: Build: lewati 1 hari lalu kerjakan -> resilient_streak tidak putus; streak ketat putus", () => {
+    // Hari 1: DONE, Hari 2: DONE, Hari 3: MISSED, Hari 4: DONE
+    const checkins = dailyCheckins(["DONE", "DONE", "MISSED", "DONE"]);
+    const s = computeStats(checkins, [], BUILD_HABIT, afterAll(4));
+
+    // Streak ketat putus pada Hari 3 dan baru mulai 1 hari di Hari 4
+    expect(s.currentStreakDays).toBe(1);
+    expect(s.longestStreakDays).toBe(2);
+
+    // Resilient streak menyerap 1 hari terlewat: 2 (sebelumnya) + 1 (hari 4) = 3!
+    expect(s.resilientStreak).toBe(3);
+
+    // Kepatuhan: 3 DONE dari 4 jendela terjadwal = 75%
+    expect(s.consistency30d).toBe(75);
+  });
+
+  it("T-15 (variasi): lewati 1 hari pada hari terbaru -> resilient_streak belum putus, streak ketat 0", () => {
+    // Hari 1: DONE, Hari 2: DONE, Hari 3: MISSED
+    const checkins = dailyCheckins(["DONE", "DONE", "MISSED"]);
+    const s = computeStats(checkins, [], BUILD_HABIT, afterAll(3));
+
+    expect(s.currentStreakDays).toBe(0);
+    expect(s.resilientStreak).toBe(2);
+  });
+
+  it("T-16: Build: 2 hari terlewat beruntun -> resilient_streak putus", () => {
+    // Hari 1: DONE, Hari 2: DONE, Hari 3: MISSED, Hari 4: MISSED
+    const checkins = dailyCheckins(["DONE", "DONE", "MISSED", "MISSED"]);
+    const s = computeStats(checkins, [], BUILD_HABIT, afterAll(4));
+
+    expect(s.currentStreakDays).toBe(0);
+    expect(s.longestStreakDays).toBe(2);
+    expect(s.resilientStreak).toBe(0); // 2 kali berurutan terlewat -> reset ke 0
+    expect(s.consistency30d).toBe(50);
+  });
+
+  it("hari istirahat / SKIPPED tidak memutus streak dan tidak dihitung sebagai miss", () => {
+    // Hari 1: DONE, Hari 2: SKIPPED (istirahat), Hari 3: DONE
+    const checkins = dailyCheckins(["DONE", "SKIPPED", "DONE"]);
+    const s = computeStats(checkins, [], BUILD_HABIT, afterAll(3));
+
+    expect(s.currentStreakDays).toBe(2);
+    expect(s.resilientStreak).toBe(2);
+    expect(s.consistency30d).toBe(100); // 2 DONE / (2 DONE + 0 MISSED)
+  });
+
+  it("miss lalu SKIPPED lalu miss -> dihitung sebagai 2 jendela terjadwal berurutan terlewat", () => {
+    // Hari 1: DONE, Hari 2: MISSED, Hari 3: SKIPPED, Hari 4: MISSED
+    const checkins = dailyCheckins(["DONE", "MISSED", "SKIPPED", "MISSED"]);
+    const s = computeStats(checkins, [], BUILD_HABIT, afterAll(4));
+
+    // Hari 2 dan Hari 4 adalah 2 jendela terjadwal aktif berurutan yang terlewat
+    expect(s.resilientStreak).toBe(0);
+    expect(s.currentStreakDays).toBe(0);
+  });
+
+  it("event COMPLETION di dalam jendela otomatis menjadikan jendela DONE", () => {
+    // Baris checkin masih berstatus PENDING/MISSED, tapi ada event COMPLETION di jendela 2
+    const checkins = dailyCheckins(["DONE", "MISSED"]);
+    const completionEvent: HabitEventLike = {
+      type: "COMPLETION",
+      occurredAt: new Date(endOf(2).getTime() - 3600 * 1000), // Di dalam jendela ke-2
+    };
+    const s = computeStats(checkins, [completionEvent], BUILD_HABIT, afterAll(2));
+
+    expect(s.currentStreakDays).toBe(2);
+    expect(s.resilientStreak).toBe(2);
+    expect(s.consistency30d).toBe(100);
   });
 });

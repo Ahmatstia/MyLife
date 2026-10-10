@@ -1,8 +1,10 @@
+import { DateTime } from "luxon";
 import { DEFAULT_GRACE_HOURS, LIVE_RESPONSE_MAX_HOURS, MS_PER_HOUR } from "./constants";
 
 /**
- * Penentuan status check-in. Fase 1 hanya mencakup BREAK/ABSTAIN (desain §8.2).
- * Status Reduce/Build ditambahkan di Fase 3.
+ * Penentuan status check-in.
+ * - Fase 1 & 2: BREAK/ABSTAIN (desain §8.2)
+ * - Fase 3: BUILD (desain §8.2, §8.3: DONE, SKIPPED, MISSED)
  */
 
 export type HabitEventType = "URGE" | "LAPSE" | "OCCURRENCE" | "COMPLETION" | "SKIP";
@@ -156,5 +158,112 @@ export function determineEventSource(
     return "BACKFILL";
   }
   return preferredSource;
+}
+
+/* ============================================================================
+ * FASE 3: BUILD HABIT STATUS RESOLUTION & SCHEDULES
+ * ============================================================================ */
+
+export type BuildCheckinAnswer = "DONE" | "SKIPPED";
+
+export function hasCompletion(events: readonly HabitEventLike[]): boolean {
+  return events.some((e) => isActive(e) && e.type === "COMPLETION");
+}
+
+export function hasSkip(events: readonly HabitEventLike[]): boolean {
+  return events.some((e) => isActive(e) && e.type === "SKIP");
+}
+
+/**
+ * Status awal jendela Build:
+ * - Bila ada COMPLETION aktif -> DONE
+ * - Bila ada SKIP aktif atau hari istirahat (isRestDay) -> SKIPPED
+ * - Selain itu -> PENDING
+ */
+export function initialBuildStatus(
+  windowEvents: readonly HabitEventLike[],
+  isRestDay: boolean = false,
+): CheckinStatus {
+  if (hasCompletion(windowEvents)) return "DONE";
+  if (hasSkip(windowEvents) || isRestDay) return "SKIPPED";
+  return "PENDING";
+}
+
+/**
+ * Menentukan status check-in untuk kebiasaan BUILD (desain §8.2):
+ * - Bila ada COMPLETION atau jawaban "DONE" -> DONE
+ * - Bila ada SKIP atau jawaban "SKIPPED" atau hari istirahat -> SKIPPED
+ * - Tanpa jawaban & tanpa event:
+ *   - bila masa tenggang lewat (gracePassed) -> MISSED
+ *   - bila belum -> PENDING
+ */
+export function resolveBuildStatus(
+  answer: BuildCheckinAnswer | null | undefined,
+  windowEvents: readonly HabitEventLike[],
+  isRestDay: boolean = false,
+  gracePassed: boolean = false,
+): ResolveResult {
+  if (hasCompletion(windowEvents) || answer === "DONE") {
+    return { ok: true, status: "DONE" };
+  }
+
+  if (hasSkip(windowEvents) || answer === "SKIPPED" || isRestDay) {
+    return { ok: true, status: "SKIPPED" };
+  }
+
+  if (gracePassed) {
+    return { ok: true, status: "MISSED" };
+  }
+
+  return { ok: true, status: "PENDING" };
+}
+
+export interface BuildScheduleLike {
+  scheduleType?: "DAILY" | "DAYS_OF_WEEK" | "TIMES_PER_WEEK";
+  daysOfWeek?: number[]; // 1=Senin .. 7=Minggu
+  timesPerWeek?: number | null;
+  restDays?: number[]; // 1=Senin .. 7=Minggu
+}
+
+/**
+ * Menentukan apakah tanggal lokal tertentu (atau DateTime/Date) merupakan hari terjadwal aktif
+ * atau hari istirahat untuk kebiasaan BUILD.
+ * Mengembalikan { isScheduled: boolean, isRestDay: boolean }.
+ */
+export function evaluateBuildDaySchedule(
+  periodDateOrInstant: string | Date,
+  schedule: BuildScheduleLike,
+  timezone: string = "UTC",
+): { isScheduled: boolean; isRestDay: boolean } {
+  let weekday: number;
+  if (typeof periodDateOrInstant === "string") {
+    // "YYYY-MM-DD"
+    const dt = DateTime.fromISO(periodDateOrInstant, { zone: timezone });
+    weekday = dt.weekday; // 1=Senin .. 7=Minggu
+  } else {
+    const dt = DateTime.fromJSDate(periodDateOrInstant, { zone: timezone });
+    weekday = dt.weekday;
+  }
+
+  const restDays = schedule.restDays ?? [];
+  const isRestDay = restDays.includes(weekday);
+
+  if (isRestDay) {
+    return { isScheduled: false, isRestDay: true };
+  }
+
+  const type = schedule.scheduleType ?? "DAILY";
+  if (type === "DAILY") {
+    return { isScheduled: true, isRestDay: false };
+  }
+
+  if (type === "DAYS_OF_WEEK") {
+    const days = schedule.daysOfWeek ?? [];
+    const isScheduled = days.includes(weekday);
+    return { isScheduled, isRestDay: !isScheduled };
+  }
+
+  // TIMES_PER_WEEK: Semua hari di luar restDays berpotensi dijadwalkan
+  return { isScheduled: true, isRestDay: false };
 }
 

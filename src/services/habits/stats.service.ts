@@ -14,7 +14,7 @@ export async function recomputeHabitStats(
 ): Promise<HabitStats> {
   const habit = await client.trackedHabit.findUnique({
     where: { id: habitId },
-    include: { breakProfile: true },
+    include: { breakProfile: true, buildProfile: true },
   });
 
   if (!habit) {
@@ -47,7 +47,12 @@ export async function recomputeHabitStats(
       outcome: e.outcome === "RESISTED" || e.outcome === "GAVE_IN" ? e.outcome : null,
       quantity: Number(e.quantity),
     })),
-    { kind: habit.kind, mode: habit.mode },
+    {
+      kind: habit.kind,
+      mode: habit.mode,
+      buildProfile: habit.buildProfile,
+      timezone: habit.timezone,
+    },
     now,
   );
 
@@ -109,6 +114,8 @@ export async function recomputeHabitStats(
       totalLapses: computed.totalLapses,
       urgesResisted: computed.urgesResisted,
       cleanRate30d: computed.cleanRate30d !== null ? new Prisma.Decimal(computed.cleanRate30d) : null,
+      consistency30d: computed.consistency30d !== null ? new Prisma.Decimal(computed.consistency30d) : null,
+      resilientStreak: computed.resilientStreak,
       relapsePattern: isRelapsing,
     },
     client,

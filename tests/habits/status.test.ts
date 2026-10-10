@@ -2,10 +2,15 @@ import { describe, expect, it } from "vitest";
 import {
   determineEventSource,
   determineResponseSource,
+  evaluateBuildDaySchedule,
   eventsInWindow,
+  hasCompletion,
   hasLapse,
+  hasSkip,
+  initialBuildStatus,
   initialStatus,
   isGracePassed,
+  resolveBuildStatus,
   resolveStatus,
   respondRejection,
   type HabitEventLike,
@@ -160,5 +165,83 @@ describe("determineResponseSource & determineEventSource (LIVE vs BACKFILL)", ()
     expect(determineEventSource(occurredAt, loggedAtNormal, "SOS")).toBe("SOS");
     expect(determineEventSource(occurredAt, loggedAtLate, "APP")).toBe("BACKFILL");
     expect(determineEventSource(occurredAt, loggedAtNormal, "BACKFILL")).toBe("BACKFILL");
+  });
+});
+
+describe("Fase 3: Status Check-in BUILD & Jadwal (desain §8.2, §8.3)", () => {
+  it("initialBuildStatus: COMPLETION -> DONE, SKIP/hari istirahat -> SKIPPED, selain itu PENDING", () => {
+    const completion: HabitEventLike = { type: "COMPLETION", occurredAt: d("2026-10-12T05:00:00Z") };
+    const skip: HabitEventLike = { type: "SKIP", occurredAt: d("2026-10-12T05:00:00Z") };
+
+    expect(initialBuildStatus([completion])).toBe("DONE");
+    expect(initialBuildStatus([skip])).toBe("SKIPPED");
+    expect(initialBuildStatus([], true)).toBe("SKIPPED"); // Hari istirahat
+    expect(initialBuildStatus([], false)).toBe("PENDING");
+  });
+
+  it("hasCompletion & hasSkip mendeteksi event aktif", () => {
+    const deletedCompletion: HabitEventLike = {
+      type: "COMPLETION",
+      occurredAt: d("2026-10-12T05:00:00Z"),
+      deletedAt: d("2026-10-12T06:00:00Z"),
+    };
+    expect(hasCompletion([deletedCompletion])).toBe(false);
+
+    const activeCompletion: HabitEventLike = { type: "COMPLETION", occurredAt: d("2026-10-12T05:00:00Z") };
+    expect(hasCompletion([activeCompletion])).toBe(true);
+
+    const activeSkip: HabitEventLike = { type: "SKIP", occurredAt: d("2026-10-12T05:00:00Z") };
+    expect(hasSkip([activeSkip])).toBe(true);
+  });
+
+  it("resolveBuildStatus: jawaban DONE atau event COMPLETION -> DONE", () => {
+    expect(resolveBuildStatus("DONE", [], false, false)).toEqual({ ok: true, status: "DONE" });
+    const completion: HabitEventLike = { type: "COMPLETION", occurredAt: d("2026-10-12T05:00:00Z") };
+    expect(resolveBuildStatus(null, [completion], false, false)).toEqual({ ok: true, status: "DONE" });
+  });
+
+  it("resolveBuildStatus: jawaban SKIPPED, event SKIP, atau hari istirahat -> SKIPPED", () => {
+    expect(resolveBuildStatus("SKIPPED", [], false, false)).toEqual({ ok: true, status: "SKIPPED" });
+    expect(resolveBuildStatus(null, [], true, false)).toEqual({ ok: true, status: "SKIPPED" });
+    const skip: HabitEventLike = { type: "SKIP", occurredAt: d("2026-10-12T05:00:00Z") };
+    expect(resolveBuildStatus(null, [skip], false, false)).toEqual({ ok: true, status: "SKIPPED" });
+  });
+
+  it("resolveBuildStatus: tanpa tindakan -> PENDING saat dalam tenggang, MISSED setelah tenggang lewat", () => {
+    expect(resolveBuildStatus(null, [], false, false)).toEqual({ ok: true, status: "PENDING" });
+    expect(resolveBuildStatus(null, [], false, true)).toEqual({ ok: true, status: "MISSED" });
+  });
+
+  describe("evaluateBuildDaySchedule", () => {
+    // 2026-10-12 adalah hari Senin (weekday = 1)
+    // 2026-10-13 adalah hari Selasa (weekday = 2)
+    // 2026-10-18 adalah hari Minggu (weekday = 7)
+
+    it("DAILY dengan restDays: hari istirahat menghasilkan isRestDay=true, selain itu isScheduled=true", () => {
+      const schedule = { scheduleType: "DAILY" as const, restDays: [7] };
+      const senin = evaluateBuildDaySchedule("2026-10-12", schedule);
+      expect(senin).toEqual({ isScheduled: true, isRestDay: false });
+
+      const minggu = evaluateBuildDaySchedule("2026-10-18", schedule);
+      expect(minggu).toEqual({ isScheduled: false, isRestDay: true });
+    });
+
+    it("DAYS_OF_WEEK: hanya hari dalam daysOfWeek yang aktif dijadwalkan", () => {
+      const schedule = { scheduleType: "DAYS_OF_WEEK" as const, daysOfWeek: [1, 3, 5] }; // Sen, Rab, Jum
+      const senin = evaluateBuildDaySchedule("2026-10-12", schedule);
+      expect(senin).toEqual({ isScheduled: true, isRestDay: false });
+
+      const selasa = evaluateBuildDaySchedule("2026-10-13", schedule);
+      expect(selasa).toEqual({ isScheduled: false, isRestDay: true });
+    });
+
+    it("TIMES_PER_WEEK: aktif pada semua hari di luar restDays", () => {
+      const schedule = { scheduleType: "TIMES_PER_WEEK" as const, timesPerWeek: 3, restDays: [7] };
+      const senin = evaluateBuildDaySchedule("2026-10-12", schedule);
+      expect(senin).toEqual({ isScheduled: true, isRestDay: false });
+
+      const minggu = evaluateBuildDaySchedule("2026-10-18", schedule);
+      expect(minggu).toEqual({ isScheduled: false, isRestDay: true });
+    });
   });
 });
