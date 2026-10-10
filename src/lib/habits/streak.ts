@@ -93,9 +93,15 @@ export function computeStats(
   const counted = ended.filter((w) => w.effective !== "NEUTRAL");
 
   let currentStreakDays = 0;
-  for (const w of counted) {
-    if (w.effective === "LAPSED") break;
-    currentStreakDays++;
+  const hasLapseAfterLastEndedWindow = lapseTimes.some(
+    (t) => !ended[0] || t >= ended[0].windowEnd,
+  );
+
+  if (!hasLapseAfterLastEndedWindow) {
+    for (const w of counted) {
+      if (w.effective === "LAPSED") break;
+      currentStreakDays++;
+    }
   }
 
   let longestStreakDays = 0;

@@ -8,7 +8,7 @@ export const logHabitEventSchema = z.object({
   occurredAt: z
     .union([z.string().datetime(), z.date()])
     .optional()
-    .transform((val) => (val ? new Date(val) : new Date())),
+    .transform((val) => (val ? new Date(val) : undefined)),
   quantity: z.number().positive("Kuantitas harus lebih dari 0").default(1),
   intensityBefore: z.number().int().min(0).max(10).optional().nullable(),
   intensityAfter: z.number().int().min(0).max(10).optional().nullable(),

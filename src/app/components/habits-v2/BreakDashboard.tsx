@@ -4,6 +4,7 @@ import React, { useEffect, useState, useCallback } from "react";
 import { Calendar90Days } from "./Calendar90Days";
 import { LogLapseModal } from "./LogLapseModal";
 import { RecoveryModal } from "./RecoveryModal";
+import { SosUrgeSurfingModal } from "./SosUrgeSurfingModal";
 
 interface DashboardData {
   habit: {
@@ -58,6 +59,7 @@ export function BreakDashboard({ habitId, onBack }: BreakDashboardProps) {
   // Modals
   const [showLogLapse, setShowLogLapse] = useState(false);
   const [showRecovery, setShowRecovery] = useState(false);
+  const [showSos, setShowSos] = useState(false);
   const [actionLoading, setActionLoading] = useState(false);
 
   const fetchDashboard = useCallback(async () => {
@@ -320,18 +322,26 @@ export function BreakDashboard({ habitId, onBack }: BreakDashboardProps) {
             )}
           </div>
 
-          {/* Action Button: Warm Amber / Neutral Tone (Mengikuti §13.2) */}
-          <div className="sm:text-right">
+          {/* Action Buttons: SOS Urge Surfing & Catat Terpeleset */}
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 sm:justify-end">
             <button
+              id="dashboard-sos-btn"
+              type="button"
+              onClick={() => setShowSos(true)}
+              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-rose-500 via-rose-600 to-amber-500 hover:from-rose-600 hover:to-amber-600 px-5 py-3 text-sm font-bold text-white shadow-xl shadow-rose-950/40 border border-rose-400/30 transition-all hover:scale-[1.02] active:scale-[0.98]"
+            >
+              <span>🆘</span>
+              <span>Bantuan SOS (Urge Surfing)</span>
+            </button>
+
+            <button
+              id="dashboard-log-lapse-btn"
               type="button"
               onClick={() => setShowLogLapse(true)}
               className="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-xl border border-amber-500/40 bg-amber-600/30 hover:bg-amber-600/50 px-5 py-3 text-sm font-semibold text-amber-200 shadow-lg focus:outline-none focus:ring-2 focus:ring-amber-400 transition-all"
             >
               📝 Catat Terpeleset
             </button>
-            <p className="text-[11px] text-slate-400 mt-2 max-w-xs">
-              Mencatat dengan jujur membantu memutus pola secara permanen.
-            </p>
           </div>
         </div>
       </div>
@@ -420,6 +430,32 @@ export function BreakDashboard({ habitId, onBack }: BreakDashboardProps) {
         onClose={() => {
           setShowRecovery(false);
           fetchDashboard();
+        }}
+      />
+
+      {/* Floating Quick Action SOS Button (<= 2 ketukan) */}
+      <button
+        id="floating-sos-btn"
+        type="button"
+        onClick={() => setShowSos(true)}
+        className="fixed bottom-6 right-6 z-40 flex items-center gap-2 rounded-full bg-gradient-to-r from-rose-600 via-rose-500 to-amber-500 hover:from-rose-500 hover:to-amber-400 px-5 py-3.5 shadow-2xl shadow-rose-950/70 text-white font-extrabold text-sm border border-white/20 hover:scale-105 active:scale-95 transition-all"
+        title="Butuh Bantuan Segera (SOS Urge Surfing)"
+      >
+        <span className="text-xl">🆘</span>
+        <span className="tracking-wide">SOS Dorongan</span>
+      </button>
+
+      {/* MODAL: SOS Urge Surfing */}
+      <SosUrgeSurfingModal
+        isOpen={showSos}
+        habitId={habit.id}
+        habitName={displayName}
+        onClose={() => setShowSos(false)}
+        onSuccess={(result) => {
+          fetchDashboard();
+          if (result.outcome === "GAVE_IN") {
+            setShowRecovery(true);
+          }
         }}
       />
     </div>

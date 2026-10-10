@@ -5,3 +5,4 @@ export * from "./CreateHabitWizard";
 export * from "./HabitCardV2";
 export * from "./BreakDashboard";
 export * from "./HabitsV2App";
+export * from "./SosUrgeSurfingModal";

@@ -85,31 +85,70 @@ export async function logHabitEventService(
       }
     }
 
-    // 5. Simpan event baru
-    const event = await tx.habitEvent.create({
-      data: {
-        habitId,
-        userId,
-        type: input.type,
-        occurredAt,
-        quantity: input.quantity,
-        intensityBefore: input.intensityBefore,
-        intensityAfter: input.intensityAfter,
-        outcome: input.outcome,
-        severity: input.severity,
-        mood: input.mood,
-        halt: input.halt,
-        locationLabel: input.locationLabel,
-        withWhom: input.withWhom,
-        note: input.note,
-        meta: input.meta as Prisma.InputJsonValue,
-        source: input.source,
-        idempotencyKey: idempotencyKey ?? null,
-      },
-    });
+    // 5. Simpan event baru dengan logika khusus URGE & LAPSE
+    const metaRecord = (input.meta ?? {}) as Record<string, unknown>;
+    const copingPlanId = metaRecord.copingPlanId as string | undefined;
 
-    // 6. Jika event bertipe LAPSE, sinkronkan status jendela check-in yang mencakup occurredAt ke LAPSED
-    if (input.type === "LAPSE") {
+    let event;
+
+    if (input.type === "URGE" && input.outcome === "GAVE_IN") {
+      // 5a. URGE dengan hasil GAVE_IN: server membuat URGE dan LAPSE dalam satu transaksi
+      const urgeEvent = await tx.habitEvent.create({
+        data: {
+          habitId,
+          userId,
+          type: "URGE",
+          occurredAt,
+          quantity: input.quantity,
+          intensityBefore: input.intensityBefore,
+          intensityAfter: input.intensityAfter,
+          outcome: "GAVE_IN",
+          severity: input.severity,
+          mood: input.mood,
+          halt: input.halt,
+          locationLabel: input.locationLabel,
+          withWhom: input.withWhom,
+          note: input.note,
+          meta: metaRecord as Prisma.InputJsonValue,
+          source: input.source,
+          idempotencyKey: idempotencyKey ?? null,
+        },
+      });
+
+      const lapseEvent = await tx.habitEvent.create({
+        data: {
+          habitId,
+          userId,
+          type: "LAPSE",
+          occurredAt,
+          quantity: input.quantity,
+          severity: input.severity ?? "SLIP",
+          mood: input.mood,
+          halt: input.halt,
+          locationLabel: input.locationLabel,
+          withWhom: input.withWhom,
+          note: input.note,
+          meta: {
+            ...metaRecord,
+            relatedEventId: urgeEvent.id,
+            cause: "URGE_GAVE_IN",
+          } as Prisma.InputJsonValue,
+          source: input.source,
+        },
+      });
+
+      // Tautkan relatedEventId balik ke URGE
+      event = await tx.habitEvent.update({
+        where: { id: urgeEvent.id },
+        data: {
+          meta: {
+            ...metaRecord,
+            relatedEventId: lapseEvent.id,
+          } as Prisma.InputJsonValue,
+        },
+      });
+
+      // Sinkronkan status jendela check-in yang mencakup occurredAt ke LAPSED
       await tx.habitCheckin.updateMany({
         where: {
           habitId,
@@ -120,9 +159,66 @@ export async function logHabitEventService(
           status: "LAPSED",
         },
       });
+
+      // Catat penggunaan rencana jika-maka (dipakai tapi tidak membantu)
+      if (copingPlanId) {
+        await tx.copingPlan.updateMany({
+          where: { id: copingPlanId, habitId },
+          data: {
+            timesUsed: { increment: 1 },
+          },
+        });
+      }
+    } else {
+      // 5b. Event URGE (RESISTED atau tanpa outcome), LAPSE biasa, atau event lainnya
+      event = await tx.habitEvent.create({
+        data: {
+          habitId,
+          userId,
+          type: input.type,
+          occurredAt,
+          quantity: input.quantity,
+          intensityBefore: input.intensityBefore,
+          intensityAfter: input.intensityAfter,
+          outcome: input.outcome,
+          severity: input.severity,
+          mood: input.mood,
+          halt: input.halt,
+          locationLabel: input.locationLabel,
+          withWhom: input.withWhom,
+          note: input.note,
+          meta: metaRecord as Prisma.InputJsonValue,
+          source: input.source,
+          idempotencyKey: idempotencyKey ?? null,
+        },
+      });
+
+      if (input.type === "LAPSE") {
+        await tx.habitCheckin.updateMany({
+          where: {
+            habitId,
+            windowStart: { lte: occurredAt },
+            windowEnd: { gt: occurredAt },
+          },
+          data: {
+            status: "LAPSED",
+          },
+        });
+      }
+
+      // Jika URGE berhasil dilawan dan ada coping plan yang dipakai
+      if (input.type === "URGE" && input.outcome === "RESISTED" && copingPlanId) {
+        await tx.copingPlan.updateMany({
+          where: { id: copingPlanId, habitId },
+          data: {
+            timesUsed: { increment: 1 },
+            timesHelped: { increment: 1 },
+          },
+        });
+      }
     }
 
-    // 7. Hitung ulang statistik kebiasaan
+    // 6. Hitung ulang statistik kebiasaan
     await recomputeHabitStats(habitId, tx, clock);
 
     return event;

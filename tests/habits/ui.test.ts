@@ -232,4 +232,42 @@ describe("Habits v2 UI Logic & Contract Tests (Langkah 1.6)", () => {
       expect(dashboard.stats?.lastLapseAt).toBeDefined();
     });
   });
+
+  describe("4. SOS Urge Surfing Contract & ≤ 2 Taps Accessibility", () => {
+    it("verifies BreakDashboard provides prominent and floating SOS buttons (≤ 2 taps)", () => {
+      const dashboardPath = path.resolve(
+        process.cwd(),
+        "src/app/components/habits-v2/BreakDashboard.tsx",
+      );
+      const content = fs.readFileSync(dashboardPath, "utf-8");
+
+      expect(content).toContain('id="dashboard-sos-btn"');
+      expect(content).toContain('id="floating-sos-btn"');
+      expect(content).toContain("<SosUrgeSurfingModal");
+      expect(content).toContain("showSos");
+    });
+
+    it("verifies SosUrgeSurfingModal implements all 7 steps of F-B3 with supportive language", () => {
+      const modalPath = path.resolve(
+        process.cwd(),
+        "src/app/components/habits-v2/SosUrgeSurfingModal.tsx",
+      );
+      const content = fs.readFileSync(modalPath, "utf-8");
+
+      // 7 Langkah F-B3
+      expect(content).toContain("Langkah {step} dari 7");
+      expect(content).toContain("Ini hanyalah sebuah dorongan, bukan perintah");
+      expect(content).toContain("Timer Penundaan");
+      expect(content).toContain("Box Breathing");
+      expect(content).toContain("HALT+B");
+      expect(content).toContain("Evaluasi Intensitas");
+      expect(content).toContain("RESISTED");
+      expect(content).toContain("GAVE_IN");
+      expect(content).toContain("Simpan & Selesaikan SOS");
+
+      // Non-judgmental language check (§13.2)
+      expect(content.toLowerCase()).not.toContain("gagal");
+      expect(content.toLowerCase()).not.toContain("kambuh kotor");
+    });
+  });
 });
