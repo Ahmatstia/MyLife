@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState, useCallback, useSyncExternalStore } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { dailyLimit } from "@/lib/habits/reduce";
 import { Calendar90Days } from "./Calendar90Days";
 import { LogLapseModal } from "./LogLapseModal";
@@ -9,17 +9,6 @@ import { SosUrgeSurfingModal } from "./SosUrgeSurfingModal";
 import { DebriefModal } from "./DebriefModal";
 import { RelapseResetPlanModal } from "./RelapseResetPlanModal";
 import { MilestoneCelebrationModal } from "./MilestoneCelebrationModal";
-
-function subscribeClock(callback: () => void) {
-  const timer = setInterval(callback, 1000);
-  return () => clearInterval(timer);
-}
-function getClockTime() {
-  return Date.now();
-}
-function getServerClockTime() {
-  return 0;
-}
 
 function formatSavingsMoney(val: number | string | null | undefined): string {
   if (val == null) return "Rp 0";
@@ -204,7 +193,7 @@ export function BreakDashboard({ habitId, onBack }: BreakDashboardProps) {
     return () => clearInterval(interval);
   }, [baselineTime]);
 
-  const currentTimestamp = useSyncExternalStore(subscribeClock, getClockTime, getServerClockTime);
+  const [currentTimestamp] = useState(() => Date.now());
 
   const handleRespondCheckin = async (
     checkinId: string,
