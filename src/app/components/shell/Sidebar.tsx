@@ -38,7 +38,7 @@ const navigationGroups: NavGroup[] = [
     title: "Perencanaan",
     items: [
       { href: "/goals", label: "Target & Proyek", verb: "Sasaran", icon: "flag", color: "text-[#a078ff]" },
-      { href: "/habits", label: "Habit Tracker", verb: "Kebiasaan", icon: "flame", color: "text-[#f43f5e]" },
+      // { href: "/habits", label: "Habit Tracker", verb: "Kebiasaan", icon: "flame", color: "text-[#f43f5e]" },
       { href: "/capture", label: "Inbox", verb: "Catat", icon: "inbox", color: "text-[#F59E0B]" },
     ],
   },

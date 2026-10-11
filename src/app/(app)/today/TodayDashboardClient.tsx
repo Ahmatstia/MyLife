@@ -7,7 +7,7 @@ import { useToast } from "@/app/components/ui/Toast";
 import { parseAmbientTask } from "@/ai/ambient/ambient-nlp";
 import { VoiceInputButton } from "@/app/components/ai/VoiceInputButton";
 import { RecentActivityFeed, type ActivityFeedItem } from "@/app/components/dashboard/RecentActivityFeed";
-import { PendingCheckinWidget } from "@/app/components/habits-v2/PendingCheckinWidget";
+// import { PendingCheckinWidget } from "@/app/components/habits-v2/PendingCheckinWidget";
 
 interface AreaOption {
   id: string;
@@ -825,8 +825,8 @@ export function TodayDashboardClient({
             </section>
           )}
 
-          {/* ── WIDGET EVALUASI KEBIASAAN TERTUNDA (HABITS V2) ── */}
-          <PendingCheckinWidget />
+          {/* ── WIDGET EVALUASI KEBIASAAN TERTUNDA (HABITS V2) [SEMENTARA DISEMBUNYIKAN] ── */}
+          {/* <PendingCheckinWidget /> */}
 
           {/* ── ANTREAN FOKUS HARI INI (TASK QUEUE) ── */}
           <section className="flex flex-col p-6 sm:p-7 rounded-3xl bg-white/90 dark:bg-[#131825]/90 border border-slate-200/80 dark:border-white/10 shadow-sm dark:shadow-xl">
