@@ -1,11 +1,7 @@
 "use client";
 
 import { useState, useEffect, useMemo, useRef } from "react";
-import {
-  DEFAULT_CITY,
-  getCityById,
-  IndonesianCity,
-} from "@/lib/prayer/cities";
+import { IndonesianCity } from "@/lib/prayer/cities";
 import {
   calculatePrayerSchedule,
   getNextPrayerInfo,
@@ -13,32 +9,15 @@ import {
 } from "@/lib/prayer/calculator";
 import { playPrayerChime, playTestChime } from "@/lib/prayer/audio";
 import { CitySelectorModal } from "./CitySelectorModal";
-
-const STORAGE_CITY_KEY = "mylife_prayer_city_id";
-const STORAGE_SOUND_KEY = "mylife_prayer_sound_enabled";
+import { usePrayerSettings } from "@/lib/prayer/usePrayerSettings";
 
 export function PrayerTimesWidget() {
-  const [selectedCity, setSelectedCity] = useState<IndonesianCity>(() => {
-    if (typeof window === "undefined") return DEFAULT_CITY;
-    try {
-      const savedCityId = localStorage.getItem(STORAGE_CITY_KEY);
-      if (savedCityId) return getCityById(savedCityId);
-    } catch {
-      // Fallback
-    }
-    return DEFAULT_CITY;
-  });
-
-  const [soundEnabled, setSoundEnabled] = useState<boolean>(() => {
-    if (typeof window === "undefined") return true;
-    try {
-      const savedSound = localStorage.getItem(STORAGE_SOUND_KEY);
-      if (savedSound !== null) return savedSound === "true";
-    } catch {
-      // Fallback
-    }
-    return true;
-  });
+  const {
+    city: selectedCity,
+    soundEnabled,
+    setCity: setSelectedCity,
+    setSoundEnabled,
+  } = usePrayerSettings();
 
   const [isCityModalOpen, setIsCityModalOpen] = useState(false);
   const [now, setNow] = useState<Date>(() => new Date());
@@ -55,22 +34,12 @@ export function PrayerTimesWidget() {
   // Persist city change
   const handleSelectCity = (city: IndonesianCity) => {
     setSelectedCity(city);
-    try {
-      localStorage.setItem(STORAGE_CITY_KEY, city.id);
-    } catch {
-      // LocalStorage fallback
-    }
   };
 
   // Persist sound toggle
   const toggleSound = () => {
     const nextVal = !soundEnabled;
     setSoundEnabled(nextVal);
-    try {
-      localStorage.setItem(STORAGE_SOUND_KEY, String(nextVal));
-    } catch {
-      // LocalStorage fallback
-    }
     if (nextVal) {
       playTestChime();
     }
@@ -144,6 +113,7 @@ export function PrayerTimesWidget() {
             {/* City Selector Button */}
             <button
               type="button"
+              suppressHydrationWarning
               onClick={() => setIsCityModalOpen(true)}
               className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-white/[0.06] dark:hover:bg-white/[0.12] text-slate-800 dark:text-white border border-slate-200/80 dark:border-white/[0.08] text-xs font-semibold transition-all active:scale-95 group shadow-xs"
               title="Klik untuk memilih kota di Indonesia"
@@ -230,7 +200,7 @@ export function PrayerTimesWidget() {
               <span className="material-symbols-outlined text-[18px] text-emerald-500">
                 timer
               </span>
-              <span className="font-mono text-xl sm:text-2xl font-black tracking-wider text-emerald-700 dark:text-emerald-400">
+              <span suppressHydrationWarning className="font-mono text-xl sm:text-2xl font-black tracking-wider text-emerald-700 dark:text-emerald-400">
                 {countdownStr}
               </span>
             </div>
@@ -283,6 +253,7 @@ export function PrayerTimesWidget() {
                 </div>
 
                 <div
+                  suppressHydrationWarning
                   className={`font-mono text-base font-extrabold ${
                     isNext
                       ? "text-emerald-700 dark:text-emerald-300 font-black"
@@ -305,10 +276,6 @@ export function PrayerTimesWidget() {
           <span className="flex items-center gap-1">
             <span className="material-symbols-outlined text-[14px] text-emerald-500">verified</span>
             <span>Metode Hisab MABIMS / Kemenag RI (+2 mnt Ihtiyath)</span>
-          </span>
-          <span className="flex items-center gap-1">
-            <span className="material-symbols-outlined text-[14px]">offline_bolt</span>
-            <span>100% Offline & Tanpa Kuota API</span>
           </span>
         </div>
       </div>

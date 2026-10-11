@@ -30,14 +30,14 @@ const navigationGroups: NavGroup[] = [
     title: "Eksekusi Harian",
     items: [
       { href: "/today", label: "Hari Ini", verb: "Harian", icon: "sun", color: "text-[#F59E0B]" },
-      { href: "/focus", label: "Mode Fokus", verb: "Pomodoro", icon: "target", color: "text-[#d0bcff]" },
-      { href: "/calendar", label: "Kalender", verb: "Jadwal", icon: "calendar", color: "text-[#38bdf8]" },
+      { href: "/focus", label: "Fokus", verb: "Pomodoro", icon: "target", color: "text-[#d0bcff]" },
+      { href: "/calendar", label: "Agenda", verb: "Jadwal", icon: "calendar", color: "text-[#38bdf8]" },
     ],
   },
   {
     title: "Perencanaan",
     items: [
-      { href: "/goals", label: "Target & Proyek", verb: "Sasaran", icon: "flag", color: "text-[#a078ff]" },
+      { href: "/goals", label: "Target", verb: "Sasaran", icon: "flag", color: "text-[#a078ff]" },
       // { href: "/habits", label: "Habit Tracker", verb: "Kebiasaan", icon: "flame", color: "text-[#f43f5e]" },
       { href: "/capture", label: "Inbox", verb: "Catat", icon: "inbox", color: "text-[#F59E0B]" },
     ],

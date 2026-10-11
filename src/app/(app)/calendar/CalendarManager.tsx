@@ -6,7 +6,8 @@ import Link from "next/link";
 import { useToast } from "@/app/components/ui/Toast";
 import { BackButton } from "@/app/components/ui/BackButton";
 import { calculatePrayerSchedule } from "@/lib/prayer/calculator";
-import { DEFAULT_CITY, getCityById, IndonesianCity } from "@/lib/prayer/cities";
+import { IndonesianCity } from "@/lib/prayer/cities";
+import { usePrayerSettings } from "@/lib/prayer/usePrayerSettings";
 
 // ── Types ──────────────────────────────────────────────────────────
 export interface EventItem {
@@ -429,6 +430,7 @@ function ToDoListView({
             {showPrayerTimes !== undefined && onToggleShowPrayerTimes && (
               <button
                 type="button"
+                suppressHydrationWarning
                 onClick={onToggleShowPrayerTimes}
                 className={`flex items-center gap-1.5 px-3 py-1 rounded-xl text-xs font-semibold transition-all border ${
                   showPrayerTimes
@@ -566,9 +568,9 @@ function ToDoListView({
                                 : "bg-zinc-950/80 border-white/[0.06] text-purple-300"
                             }`}
                           >
-                            <span>{formatTimeStr(evStart)}</span>
+                            <span suppressHydrationWarning>{formatTimeStr(evStart)}</span>
                             {isRange && !ev.isPrayer && (
-                              <span className="text-zinc-500 font-normal">
+                              <span suppressHydrationWarning className="text-zinc-500 font-normal">
                                 –{formatTimeStr(evEnd)}
                               </span>
                             )}
@@ -1071,46 +1073,21 @@ export function CalendarManager({
     return d;
   });
 
-  // Prayer Times in Calendar State
-  const [showPrayerTimes, setShowPrayerTimes] = useState<boolean>(() => {
-    if (typeof window === "undefined") return true;
-    try {
-      const saved = localStorage.getItem("mylife_calendar_show_prayer");
-      if (saved !== null) return saved === "true";
-    } catch {
-      // fallback
-    }
-    return true;
-  });
-
-  const [prayerCity, setPrayerCity] = useState<IndonesianCity>(() => {
-    if (typeof window === "undefined") return DEFAULT_CITY;
-    try {
-      const saved = localStorage.getItem("mylife_prayer_city_id");
-      if (saved) return getCityById(saved);
-    } catch {
-      // fallback
-    }
-    return DEFAULT_CITY;
-  });
-
-  const [showSunnah, setShowSunnah] = useState<boolean>(() => {
-    if (typeof window === "undefined") return false;
-    try {
-      const saved = localStorage.getItem("mylife_calendar_show_sunnah");
-      if (saved !== null) return saved === "true";
-    } catch {
-      // fallback
-    }
-    return false;
-  });
+  // Prayer Times in Calendar State (hydrated safely via usePrayerSettings)
+  const {
+    isHydrated,
+    city: prayerCity,
+    showInCalendar: showPrayerTimes,
+    showSunnah,
+    setShowInCalendar,
+  } = usePrayerSettings();
 
   const selectedDateKey = formatLocalDateOnly(selectedDay);
   const [prayerChecksMap, setPrayerChecksMap] = useState<Record<string, Record<string, boolean>>>({});
 
   const prayerChecks = useMemo(() => {
     if (prayerChecksMap[selectedDateKey]) return prayerChecksMap[selectedDateKey];
-    if (typeof window === "undefined") return {};
+    if (!isHydrated || typeof window === "undefined") return {};
     try {
       const saved = localStorage.getItem(`mylife_prayer_checks_${selectedDateKey}`);
       if (saved) return JSON.parse(saved);
@@ -1118,24 +1095,7 @@ export function CalendarManager({
       // fallback
     }
     return {};
-  }, [prayerChecksMap, selectedDateKey]);
-
-  useEffect(() => {
-    const handleStorage = () => {
-      try {
-        const savedShow = localStorage.getItem("mylife_calendar_show_prayer");
-        if (savedShow !== null) setShowPrayerTimes(savedShow === "true");
-        const savedCityId = localStorage.getItem("mylife_prayer_city_id");
-        if (savedCityId) setPrayerCity(getCityById(savedCityId));
-        const savedSunnah = localStorage.getItem("mylife_calendar_show_sunnah");
-        if (savedSunnah !== null) setShowSunnah(savedSunnah === "true");
-      } catch {
-        // fallback
-      }
-    };
-    window.addEventListener("storage", handleStorage);
-    return () => window.removeEventListener("storage", handleStorage);
-  }, []);
+  }, [prayerChecksMap, selectedDateKey, isHydrated]);
 
   const handleTogglePrayerCheck = useCallback(
     (prayerId: string) => {
@@ -1167,12 +1127,7 @@ export function CalendarManager({
 
   const handleToggleShowPrayerTimes = () => {
     const nextVal = !showPrayerTimes;
-    setShowPrayerTimes(nextVal);
-    try {
-      localStorage.setItem("mylife_calendar_show_prayer", String(nextVal));
-    } catch {
-      // fallback
-    }
+    setShowInCalendar(nextVal);
     toast(
       nextVal
         ? `Waktu Sholat (${prayerCity.name}) diaktifkan di To-Do List! 🕌`
@@ -1536,11 +1491,11 @@ export function CalendarManager({
               <BackButton fallbackUrl="/today" label="Kembali ke Hari Ini" />
               <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-purple-500/10 border border-purple-500/20 text-purple-300 text-xs font-medium">
                 <span className="w-2 h-2 rounded-full bg-purple-400 animate-pulse" />
-                <span>Jadwal &amp; To-Do Harian</span>
+                <span>Agenda &amp; To-Do Harian</span>
               </div>
             </div>
             <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-white flex items-center gap-3 flex-wrap">
-              <span>To-Do &amp; Jadwal</span>
+              <span>Agenda &amp; To-Do</span>
               {(viewMode === "TODO" || viewMode === "DAILY") && (
                 <span className="text-xs px-2.5 py-1 rounded-full bg-emerald-500/15 text-emerald-300 border border-emerald-500/25 font-semibold">
                   {selectedDayLabel}

@@ -4,9 +4,10 @@ import { useState } from "react";
 import { useToast } from "@/app/components/ui/Toast";
 import { Icon } from "@/app/components/ui/Icon";
 import { useTheme } from "@/app/components/theme/ThemeProvider";
-import { DEFAULT_CITY, getCityById, IndonesianCity } from "@/lib/prayer/cities";
+import { IndonesianCity } from "@/lib/prayer/cities";
 import { CitySelectorModal } from "@/app/components/prayer/CitySelectorModal";
 import { playTestChime } from "@/lib/prayer/audio";
+import { usePrayerSettings } from "@/lib/prayer/usePrayerSettings";
 
 type PreferenceData = {
   theme: "LIGHT" | "DARK" | "SYSTEM";
@@ -79,65 +80,27 @@ export function UserPreferenceControls({ initialPref }: { initialPref: Preferenc
     updatePref({ dailyFocusLimit: nextVal });
   }
 
-  // Prayer & Calendar Settings State
-  const [showPrayerInCalendar, setShowPrayerInCalendar] = useState<boolean>(() => {
-    if (typeof window === "undefined") return true;
-    try {
-      const saved = localStorage.getItem("mylife_calendar_show_prayer");
-      if (saved !== null) return saved === "true";
-    } catch {
-      // fallback
-    }
-    return true;
-  });
-
-  const [prayerCity, setPrayerCity] = useState<IndonesianCity>(() => {
-    if (typeof window === "undefined") return DEFAULT_CITY;
-    try {
-      const saved = localStorage.getItem("mylife_prayer_city_id");
-      if (saved) return getCityById(saved);
-    } catch {
-      // fallback
-    }
-    return DEFAULT_CITY;
-  });
-
-  const [prayerSound, setPrayerSound] = useState<boolean>(() => {
-    if (typeof window === "undefined") return true;
-    try {
-      const saved = localStorage.getItem("mylife_prayer_sound_enabled");
-      if (saved !== null) return saved === "true";
-    } catch {
-      // fallback
-    }
-    return true;
-  });
-
-  const [showSunnahInCalendar, setShowSunnahInCalendar] = useState<boolean>(() => {
-    if (typeof window === "undefined") return false;
-    try {
-      const saved = localStorage.getItem("mylife_calendar_show_sunnah");
-      if (saved !== null) return saved === "true";
-    } catch {
-      // fallback
-    }
-    return false;
-  });
+  // Prayer & Agenda Settings State via unified hook
+  const {
+    city: prayerCity,
+    showInCalendar: showPrayerInCalendar,
+    soundEnabled: prayerSound,
+    showSunnah: showSunnahInCalendar,
+    setCity: setPrayerCity,
+    setShowInCalendar: setShowPrayerInCalendar,
+    setSoundEnabled: setPrayerSound,
+    setShowSunnah: setShowSunnahInCalendar,
+  } = usePrayerSettings();
 
   const [isCityModalOpen, setIsCityModalOpen] = useState(false);
 
   function handleTogglePrayerInCalendar() {
     const nextVal = !showPrayerInCalendar;
     setShowPrayerInCalendar(nextVal);
-    try {
-      localStorage.setItem("mylife_calendar_show_prayer", String(nextVal));
-    } catch {
-      // fallback
-    }
     toast(
       nextVal
-        ? "Waktu Sholat & Adzan diaktifkan pada To-Do List Kalender! 🕌"
-        : "Waktu Sholat disembunyikan dari Kalender",
+        ? "Waktu Sholat & Adzan diaktifkan pada To-Do List Agenda! 🕌"
+        : "Waktu Sholat disembunyikan dari Agenda",
       "success"
     );
   }
@@ -145,11 +108,6 @@ export function UserPreferenceControls({ initialPref }: { initialPref: Preferenc
   function handleTogglePrayerSound() {
     const nextVal = !prayerSound;
     setPrayerSound(nextVal);
-    try {
-      localStorage.setItem("mylife_prayer_sound_enabled", String(nextVal));
-    } catch {
-      // fallback
-    }
     if (nextVal) playTestChime();
     toast(nextVal ? "Nada notifikasi adzan diaktifkan 🔔" : "Nada notifikasi adzan dibisukan 🔕", "info");
   }
@@ -157,14 +115,9 @@ export function UserPreferenceControls({ initialPref }: { initialPref: Preferenc
   function handleToggleSunnah() {
     const nextVal = !showSunnahInCalendar;
     setShowSunnahInCalendar(nextVal);
-    try {
-      localStorage.setItem("mylife_calendar_show_sunnah", String(nextVal));
-    } catch {
-      // fallback
-    }
     toast(
       nextVal
-        ? "Waktu Imsak & Dhuha diikutsertakan di kalender"
+        ? "Waktu Imsak & Dhuha diikutsertakan di Agenda"
         : "Hanya sholat 5 waktu wajib yang ditampilkan",
       "info"
     );
@@ -172,11 +125,6 @@ export function UserPreferenceControls({ initialPref }: { initialPref: Preferenc
 
   function handleSelectPrayerCity(city: IndonesianCity) {
     setPrayerCity(city);
-    try {
-      localStorage.setItem("mylife_prayer_city_id", city.id);
-    } catch {
-      // fallback
-    }
     toast(`Kota jadwal sholat diubah ke ${city.name} (${city.tzLabel}) 📍`, "success");
   }
 
@@ -292,7 +240,7 @@ export function UserPreferenceControls({ initialPref }: { initialPref: Preferenc
               </div>
               <div>
                 <span className="block text-sm font-semibold text-slate-900 dark:text-white">Notifikasi Proaktif Sistem</span>
-                <span className="block text-xs text-slate-500 dark:text-[#94A3B8]">Aktifkan pengingat cerdas otomatis untuk deadline, event kalender, dan evaluasi berkala.</span>
+                <span className="block text-xs text-slate-500 dark:text-[#94A3B8]">Aktifkan pengingat cerdas otomatis untuk deadline, agenda kegiatan, dan evaluasi berkala.</span>
               </div>
             </div>
             <div className="flex items-center self-end sm:self-center">
@@ -404,24 +352,24 @@ export function UserPreferenceControls({ initialPref }: { initialPref: Preferenc
         </div>
       </section>
 
-      {/* 3. Integrasi Jadwal Sholat & Adzan di Kalender & To-Do List */}
+      {/* 3. Integrasi Jadwal Sholat & Adzan di Agenda & To-Do List */}
       <section className="space-y-3">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
           <div className="flex items-center gap-2">
             <h2 className="text-base font-bold text-slate-900 dark:text-white tracking-tight">
-              Jadwal Sholat &amp; Integrasi Kalender
+              Jadwal Sholat &amp; Integrasi Agenda
             </h2>
             <span className="font-mono text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-700 dark:bg-emerald-500/15 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-500/30">
               Kemenag RI • MABIMS
             </span>
           </div>
           <p className="text-xs text-slate-500 dark:text-[#94A3B8]">
-            Sinkronkan waktu sholat otomatis dengan daftar to-do dan timeline kalender harian Anda.
+            Sinkronkan waktu sholat otomatis dengan daftar to-do dan timeline agenda harian Anda.
           </p>
         </div>
 
         <div className="rounded-2xl border border-slate-200 dark:border-white/[0.08] bg-white dark:bg-[#131825] divide-y divide-slate-200 dark:divide-white/[0.06] overflow-hidden shadow-sm dark:shadow-xl">
-          {/* Baris 1: Masukkan waktu sholat ke To-Do List Kalender */}
+          {/* Baris 1: Masukkan waktu sholat ke To-Do List Agenda */}
           <div className="p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4 hover:bg-slate-50 dark:hover:bg-[#1A2133]/40 transition-colors">
             <div className="flex items-start gap-3">
               <div className="p-2 rounded-xl bg-emerald-100 text-emerald-700 dark:bg-emerald-500/15 dark:text-emerald-400 mt-0.5 border border-emerald-200 dark:border-emerald-500/30">
@@ -430,7 +378,7 @@ export function UserPreferenceControls({ initialPref }: { initialPref: Preferenc
               <div>
                 <div className="flex items-center gap-2">
                   <span className="block text-sm font-semibold text-slate-900 dark:text-white">
-                    Tampilkan di To-Do List &amp; Kalender
+                    Tampilkan di To-Do List &amp; Agenda
                   </span>
                   {showPrayerInCalendar && (
                     <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30">
@@ -439,7 +387,7 @@ export function UserPreferenceControls({ initialPref }: { initialPref: Preferenc
                   )}
                 </div>
                 <span className="block text-xs text-slate-500 dark:text-[#94A3B8] max-w-xl">
-                  Memasukkan waktu sholat (Subuh, Dzuhur, Ashar, Maghrib, Isya) ke dalam alur to-do harian di Kalender secara kronologis, lengkap dengan kotak ceklis ibadah harian.
+                  Memasukkan waktu sholat (Subuh, Dzuhur, Ashar, Maghrib, Isya) ke dalam alur to-do harian di Agenda secara kronologis, lengkap dengan kotak ceklis ibadah harian.
                 </span>
               </div>
             </div>
@@ -544,7 +492,7 @@ export function UserPreferenceControls({ initialPref }: { initialPref: Preferenc
                   Sertakan Waktu Imsak &amp; Dhuha
                 </span>
                 <span className="block text-xs text-slate-500 dark:text-[#94A3B8]">
-                  Tambahkan juga penanda waktu Imsak dan Sholat Dhuha ke dalam to-do list kalender harian.
+                  Tambahkan juga penanda waktu Imsak dan Sholat Dhuha ke dalam to-do list agenda harian.
                 </span>
               </div>
             </div>
