@@ -112,7 +112,8 @@ export function PrayerTimesWidget() {
   ];
 
   return (
-    <section className="relative overflow-hidden rounded-3xl bg-white/90 dark:bg-[#131825]/90 border border-slate-200/90 dark:border-white/10 p-5 lg:p-6 shadow-sm dark:shadow-2xl backdrop-blur-xl transition-all">
+    <>
+      <section className="relative overflow-hidden rounded-3xl bg-white/90 dark:bg-[#131825]/90 border border-slate-200/90 dark:border-white/10 p-5 lg:p-6 shadow-sm dark:shadow-2xl backdrop-blur-xl transition-all">
       {/* Dynamic ambient background glow */}
       <div className="absolute -right-20 -bottom-20 w-72 h-72 bg-gradient-to-tl from-emerald-500/10 via-teal-500/5 to-transparent rounded-full blur-3xl pointer-events-none" />
       <div className="absolute -left-20 -top-20 w-72 h-72 bg-gradient-to-br from-indigo-500/10 via-transparent to-transparent rounded-full blur-3xl pointer-events-none" />
@@ -311,6 +312,7 @@ export function PrayerTimesWidget() {
           </span>
         </div>
       </div>
+    </section>
 
       {/* City Selection Modal */}
       <CitySelectorModal
@@ -319,6 +321,6 @@ export function PrayerTimesWidget() {
         selectedCity={selectedCity}
         onSelectCity={handleSelectCity}
       />
-    </section>
+    </>
   );
 }

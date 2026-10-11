@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useMemo, useEffect } from "react";
+import { createPortal } from "react-dom";
 import {
   INDONESIAN_CITIES,
   IndonesianCity,
@@ -63,7 +64,7 @@ export function CitySelectorModal({
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [isOpen, onClose]);
 
-  if (!isOpen) return null;
+  if (!isOpen || typeof document === "undefined") return null;
 
   // GPS Geolocation Handler
   const handleUseCurrentLocation = () => {
@@ -81,7 +82,7 @@ export function CitySelectorModal({
         const { latitude, longitude } = position.coords;
         const nearest = findNearestCity(latitude, longitude);
         onSelectCity(nearest);
-        onClose();
+        handleClose();
       },
       (err) => {
         setIsLocating(false);
@@ -95,13 +96,13 @@ export function CitySelectorModal({
     );
   };
 
-  return (
+  return createPortal(
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-md animate-in fade-in duration-200"
+      className="fixed inset-0 z-[9999] flex items-center justify-center p-4 sm:p-6 bg-black/75 backdrop-blur-md animate-in fade-in duration-200"
       onClick={handleClose}
     >
       <div
-        className="relative w-full max-w-lg overflow-hidden rounded-3xl bg-white dark:bg-[#131825] border border-slate-200 dark:border-white/10 shadow-2xl flex flex-col max-h-[85vh] transition-all"
+        className="relative w-full max-w-lg overflow-hidden rounded-3xl bg-white dark:bg-[#131825] border border-slate-200 dark:border-white/10 shadow-2xl flex flex-col max-h-[85vh] my-auto transition-all"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Subtle decorative glow */}
@@ -280,6 +281,7 @@ export function CitySelectorModal({
           )}
         </div>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 }
