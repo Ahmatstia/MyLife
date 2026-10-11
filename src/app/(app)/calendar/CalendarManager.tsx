@@ -5,6 +5,8 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useToast } from "@/app/components/ui/Toast";
 import { BackButton } from "@/app/components/ui/BackButton";
+import { calculatePrayerSchedule } from "@/lib/prayer/calculator";
+import { DEFAULT_CITY, getCityById, IndonesianCity } from "@/lib/prayer/cities";
 
 // ── Types ──────────────────────────────────────────────────────────
 export interface EventItem {
@@ -25,6 +27,9 @@ export interface EventItem {
   projectId?: string | null;
   task?: { id: string; title: string } | null;
   project?: { id: string; title: string } | null;
+  isPrayer?: boolean;
+  prayerId?: string;
+  prayerIcon?: string;
 }
 
 export interface ProjectOption {
@@ -214,6 +219,18 @@ export const CATEGORY_MAP: Record<
     icon: "🔔",
     glow: "",
   },
+  PRAYER: {
+    label: "Sholat",
+    dot: "#10b981",
+    badgeBg: "bg-emerald-500/15",
+    badgeBorder: "border-emerald-500/30",
+    badgeText: "text-emerald-300",
+    cardBg: "bg-emerald-950/20",
+    cardBorder: "border-emerald-500/25",
+    cardHover: "hover:border-emerald-500/40 hover:bg-emerald-950/30",
+    icon: "🕌",
+    glow: "",
+  },
 };
 
 const CATEGORIES = [
@@ -236,6 +253,11 @@ function ToDoListView({
   onSelectEvent,
   onDeleteEvent,
   onOpenModal,
+  prayerEvents = [],
+  onTogglePrayerCheck,
+  showPrayerTimes = true,
+  onToggleShowPrayerTimes,
+  prayerCity,
 }: {
   events: EventItem[];
   targetDay: Date;
@@ -249,6 +271,11 @@ function ToDoListView({
   onSelectEvent: (ev: EventItem) => void;
   onDeleteEvent: (id: string) => Promise<void>;
   onOpenModal: () => void;
+  prayerEvents?: EventItem[];
+  onTogglePrayerCheck?: (prayerId: string) => void;
+  showPrayerTimes?: boolean;
+  onToggleShowPrayerTimes?: () => void;
+  prayerCity?: IndonesianCity;
 }) {
   const [quickTitle, setQuickTitle] = useState("");
   const [quickMode, setQuickMode] = useState<"START_ONLY" | "ALL_DAY">("START_ONLY");
@@ -262,16 +289,24 @@ function ToDoListView({
     [events, targetDay]
   );
 
-  const totalCount = dayEvents.length;
-  const completedCount = dayEvents.filter((e) => e.isCompleted).length;
-  const pendingCount = totalCount - completedCount;
-  const progressPct = totalCount > 0 ? Math.round((completedCount / totalCount) * 100) : 0;
-
-  const scheduledEvents = dayEvents
-    .filter((e) => !e.isAllDay)
-    .sort((a, b) => new Date(a.startTime).getTime() - new Date(b.startTime).getTime());
+  const scheduledEvents = useMemo(() => {
+    const regular = dayEvents.filter((e) => !e.isAllDay);
+    const combined = [...regular, ...(prayerEvents || [])];
+    return combined.sort(
+      (a, b) => new Date(a.startTime).getTime() - new Date(b.startTime).getTime()
+    );
+  }, [dayEvents, prayerEvents]);
 
   const allDayEvents = dayEvents.filter((e) => e.isAllDay);
+
+  const allCountableItems = useMemo(() => {
+    return [...dayEvents, ...(prayerEvents || [])];
+  }, [dayEvents, prayerEvents]);
+
+  const totalCount = allCountableItems.length;
+  const completedCount = allCountableItems.filter((e) => e.isCompleted).length;
+  const pendingCount = totalCount - completedCount;
+  const progressPct = totalCount > 0 ? Math.round((completedCount / totalCount) * 100) : 0;
 
   async function handleFormSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -389,28 +424,55 @@ function ToDoListView({
             )}
           </div>
 
-          {/* Filter status */}
-          <div className="flex items-center gap-1 bg-zinc-950/80 p-1 rounded-2xl border border-white/[0.06]">
-            {(
-              [
-                { id: "ALL", label: `Semua (${totalCount})` },
-                { id: "PENDING", label: `Belum (${pendingCount})` },
-                { id: "DONE", label: `Selesai (${completedCount})` },
-              ] as const
-            ).map((s) => (
+          {/* Quick prayer toggle & Filter status */}
+          <div className="flex items-center gap-2 flex-wrap">
+            {showPrayerTimes !== undefined && onToggleShowPrayerTimes && (
               <button
-                key={s.id}
                 type="button"
-                onClick={() => setStatusFilter(s.id)}
-                className={`px-3 py-1 rounded-xl text-xs font-semibold transition-all ${
-                  statusFilter === s.id
-                    ? "bg-purple-600/30 text-purple-200 border border-purple-500/30 shadow-sm"
-                    : "text-zinc-400 hover:text-zinc-200"
+                onClick={onToggleShowPrayerTimes}
+                className={`flex items-center gap-1.5 px-3 py-1 rounded-xl text-xs font-semibold transition-all border ${
+                  showPrayerTimes
+                    ? "bg-emerald-500/15 text-emerald-300 border-emerald-500/30 shadow-xs"
+                    : "bg-zinc-950/80 text-zinc-500 border-white/[0.06] hover:text-zinc-300"
                 }`}
+                title={
+                  showPrayerTimes
+                    ? `Waktu Sholat aktif (${prayerCity?.name || "Jakarta"}). Klik untuk menyembunyikan.`
+                    : "Waktu Sholat disembunyikan. Klik untuk menampilkan."
+                }
               >
-                {s.label}
+                <span>🕌</span>
+                <span>Waktu Sholat: {showPrayerTimes ? "Aktif" : "Mati"}</span>
+                <span
+                  className={`w-1.5 h-1.5 rounded-full ${
+                    showPrayerTimes ? "bg-emerald-400 animate-pulse" : "bg-zinc-600"
+                  }`}
+                />
               </button>
-            ))}
+            )}
+
+            <div className="flex items-center gap-1 bg-zinc-950/80 p-1 rounded-2xl border border-white/[0.06]">
+              {(
+                [
+                  { id: "ALL", label: `Semua (${totalCount})` },
+                  { id: "PENDING", label: `Belum (${pendingCount})` },
+                  { id: "DONE", label: `Selesai (${completedCount})` },
+                ] as const
+              ).map((s) => (
+                <button
+                  key={s.id}
+                  type="button"
+                  onClick={() => setStatusFilter(s.id)}
+                  className={`px-3 py-1 rounded-xl text-xs font-semibold transition-all ${
+                    statusFilter === s.id
+                      ? "bg-purple-600/30 text-purple-200 border border-purple-500/30 shadow-sm"
+                      : "text-zinc-400 hover:text-zinc-200"
+                  }`}
+                >
+                  {s.label}
+                </button>
+              ))}
+            </div>
           </div>
         </div>
 
@@ -468,6 +530,8 @@ function ToDoListView({
                         className={`group flex items-center justify-between gap-3 p-3.5 sm:p-4 rounded-2xl border transition-all ${
                           isDone
                             ? "bg-zinc-950/40 border-white/[0.04] opacity-60 hover:opacity-90"
+                            : ev.isPrayer
+                            ? "bg-emerald-950/20 border-emerald-500/25 hover:border-emerald-500/40 hover:bg-emerald-950/30 shadow-sm"
                             : `${cat.cardBg} ${cat.cardBorder} ${cat.cardHover} shadow-sm`
                         }`}
                       >
@@ -475,7 +539,13 @@ function ToDoListView({
                           {/* Checkbox */}
                           <button
                             type="button"
-                            onClick={() => onToggleComplete(ev.id, isDone)}
+                            onClick={() => {
+                              if (ev.isPrayer) {
+                                onTogglePrayerCheck?.(ev.prayerId || ev.id);
+                              } else {
+                                onToggleComplete(ev.id, isDone);
+                              }
+                            }}
                             className={`w-6 h-6 rounded-lg border flex items-center justify-center transition-all shrink-0 cursor-pointer ${
                               isDone
                                 ? "bg-emerald-400 border-emerald-400 text-zinc-950 shadow-md shadow-emerald-400/30"
@@ -489,9 +559,15 @@ function ToDoListView({
                           </button>
 
                           {/* Time badge */}
-                          <div className="flex items-center gap-1 text-xs px-2.5 py-1 rounded-xl bg-zinc-950/80 border border-white/[0.06] text-purple-300 font-mono font-semibold shrink-0">
+                          <div
+                            className={`flex items-center gap-1 text-xs px-2.5 py-1 rounded-xl border font-mono font-semibold shrink-0 ${
+                              ev.isPrayer
+                                ? "bg-emerald-950/60 border-emerald-500/25 text-emerald-300"
+                                : "bg-zinc-950/80 border-white/[0.06] text-purple-300"
+                            }`}
+                          >
                             <span>{formatTimeStr(evStart)}</span>
-                            {isRange && (
+                            {isRange && !ev.isPrayer && (
                               <span className="text-zinc-500 font-normal">
                                 –{formatTimeStr(evEnd)}
                               </span>
@@ -503,19 +579,27 @@ function ToDoListView({
                             <div className="flex items-center gap-2 flex-wrap">
                               <span
                                 className={`text-sm font-semibold truncate ${
-                                  isDone ? "line-through text-zinc-500" : "text-white"
+                                  isDone
+                                    ? "line-through text-zinc-500"
+                                    : ev.isPrayer
+                                    ? "text-emerald-200"
+                                    : "text-white"
                                 }`}
                               >
-                                {ev.title}
+                                {ev.isPrayer ? `🕌 ${ev.title}` : ev.title}
                               </span>
-                              {ev.recurrence && ev.recurrence !== "NONE" && (
+                              {ev.isPrayer ? (
+                                <span className="text-[10px] px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-400 border border-emerald-500/25 font-bold uppercase tracking-wider">
+                                  Waktu Sholat
+                                </span>
+                              ) : ev.recurrence && ev.recurrence !== "NONE" ? (
                                 <span
                                   className="text-[11px] px-2 py-0.5 rounded-full bg-purple-500/10 text-purple-300 border border-purple-500/20 shrink-0 font-medium"
                                   title={recurrenceLabel[ev.recurrence]}
                                 >
                                   🔁 {recurrenceLabel[ev.recurrence] || "Rutin"}
                                 </span>
-                              )}
+                              ) : null}
                             </div>
                             {ev.description && (
                               <span className="text-xs text-zinc-400 truncate mt-0.5">
@@ -526,50 +610,65 @@ function ToDoListView({
                         </div>
 
                         {/* Right side actions */}
-                        <div className="flex items-center gap-2 shrink-0">
-                          <span
-                            className={`text-xs px-2.5 py-0.5 rounded-full ${cat.badgeBg} ${cat.badgeText} border ${cat.badgeBorder} hidden sm:inline-block font-medium`}
-                          >
-                            {cat.icon} {cat.label}
-                          </span>
-
-                          {/* Link to focus mode if tied to a task or important */}
-                          {ev.taskId && (
+                        {ev.isPrayer ? (
+                          <div className="flex items-center gap-2 shrink-0">
+                            <span className="text-xs px-2.5 py-0.5 rounded-full bg-emerald-500/15 text-emerald-300 border border-emerald-500/30 hidden sm:inline-block font-medium">
+                              🕌 Fardhu
+                            </span>
                             <Link
-                              href={`/focus?taskId=${ev.taskId}`}
-                              className="px-2.5 py-1 rounded-lg bg-purple-600/20 hover:bg-purple-600/30 text-purple-300 border border-purple-500/30 text-xs font-semibold transition-all flex items-center gap-1"
-                              title="Buka sesi fokus mendalam untuk tugas ini"
+                              href="/settings"
+                              className="p-1.5 hover:bg-emerald-500/20 rounded-lg text-emerald-400/80 hover:text-emerald-300 transition-colors"
+                              title="Atur preferensi jadwal sholat di Pengaturan"
                             >
-                              <span>Fokus</span>
-                              <span>🍅</span>
+                              <span className="text-xs">⚙️</span>
                             </Link>
-                          )}
-
-                          <div className="flex items-center gap-1 opacity-80 group-hover:opacity-100 transition-opacity">
-                            <button
-                              type="button"
-                              onClick={() => onSelectEvent(ev)}
-                              className="p-1.5 hover:bg-white/[0.08] rounded-lg text-zinc-400 hover:text-white transition-colors"
-                              title="Edit / Detail"
-                            >
-                              <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                                <path d="M12 20h9" />
-                                <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z" />
-                              </svg>
-                            </button>
-                            <button
-                              type="button"
-                              onClick={() => onDeleteEvent(ev.id)}
-                              className="p-1.5 hover:bg-rose-500/20 rounded-lg text-zinc-400 hover:text-rose-400 transition-colors"
-                              title="Hapus"
-                            >
-                              <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                                <polyline points="3 6 5 6 21 6" />
-                                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
-                              </svg>
-                            </button>
                           </div>
-                        </div>
+                        ) : (
+                          <div className="flex items-center gap-2 shrink-0">
+                            <span
+                              className={`text-xs px-2.5 py-0.5 rounded-full ${cat.badgeBg} ${cat.badgeText} border ${cat.badgeBorder} hidden sm:inline-block font-medium`}
+                            >
+                              {cat.icon} {cat.label}
+                            </span>
+
+                            {/* Link to focus mode if tied to a task or important */}
+                            {ev.taskId && (
+                              <Link
+                                href={`/focus?taskId=${ev.taskId}`}
+                                className="px-2.5 py-1 rounded-lg bg-purple-600/20 hover:bg-purple-600/30 text-purple-300 border border-purple-500/30 text-xs font-semibold transition-all flex items-center gap-1"
+                                title="Buka sesi fokus mendalam untuk tugas ini"
+                              >
+                                <span>Fokus</span>
+                                <span>🍅</span>
+                              </Link>
+                            )}
+
+                            <div className="flex items-center gap-1 opacity-80 group-hover:opacity-100 transition-opacity">
+                              <button
+                                type="button"
+                                onClick={() => onSelectEvent(ev)}
+                                className="p-1.5 hover:bg-white/[0.08] rounded-lg text-zinc-400 hover:text-white transition-colors"
+                                title="Edit / Detail"
+                              >
+                                <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                  <path d="M12 20h9" />
+                                  <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z" />
+                                </svg>
+                              </button>
+                              <button
+                                type="button"
+                                onClick={() => onDeleteEvent(ev.id)}
+                                className="p-1.5 hover:bg-rose-500/20 rounded-lg text-zinc-400 hover:text-rose-400 transition-colors"
+                                title="Hapus"
+                              >
+                                <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                  <polyline points="3 6 5 6 21 6" />
+                                  <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+                                </svg>
+                              </button>
+                            </div>
+                          </div>
+                        )}
                       </div>
                     );
                   })}
@@ -699,6 +798,8 @@ function DailyFlowView({
   onAddAtHour,
   onSelectEvent,
   onToggleComplete,
+  prayerEvents = [],
+  onTogglePrayerCheck,
 }: {
   events: EventItem[];
   now: Date;
@@ -706,11 +807,13 @@ function DailyFlowView({
   onAddAtHour: (h: number) => void;
   onSelectEvent: (ev: EventItem) => void;
   onToggleComplete: (id: string, currentCompleted: boolean) => Promise<void>;
+  prayerEvents?: EventItem[];
+  onTogglePrayerCheck?: (prayerId: string) => void;
 }) {
-  const dayEvents = useMemo(
-    () => projectRecurringEvents(events, targetDay),
-    [events, targetDay]
-  );
+  const dayEvents = useMemo(() => {
+    const regular = projectRecurringEvents(events, targetDay);
+    return [...regular, ...(prayerEvents || [])];
+  }, [events, targetDay, prayerEvents]);
   const isToday = sameDay(targetDay, now);
 
   const nowMinutes = now.getHours() * 60 + now.getMinutes();
@@ -863,8 +966,18 @@ function DailyFlowView({
               return (
                 <div
                   key={ev.id}
-                  onClick={() => onSelectEvent(ev)}
-                  className={`pointer-events-auto absolute left-0 right-0 rounded-xl px-3.5 py-2 cursor-pointer transition-all hover:scale-[1.008] hover:z-20 flex flex-col justify-between overflow-hidden border ${cat.cardBg} ${cat.cardBorder} ${isOngoing ? cat.glow : ""} ${isDone ? "opacity-50" : ""}`}
+                  onClick={() => {
+                    if (ev.isPrayer) {
+                      onTogglePrayerCheck?.(ev.prayerId || ev.id);
+                    } else {
+                      onSelectEvent(ev);
+                    }
+                  }}
+                  className={`pointer-events-auto absolute left-0 right-0 rounded-xl px-3.5 py-2 cursor-pointer transition-all hover:scale-[1.008] hover:z-20 flex flex-col justify-between overflow-hidden border ${
+                    ev.isPrayer
+                      ? "bg-emerald-950/40 border-emerald-500/30 hover:border-emerald-500/50"
+                      : `${cat.cardBg} ${cat.cardBorder} ${isOngoing ? cat.glow : ""}`
+                  } ${isDone ? "opacity-50" : ""}`}
                   style={{ top: `${topPx}px`, height: `${heightPx}px` }}
                 >
                   <div className="flex items-center justify-between gap-2">
@@ -874,7 +987,11 @@ function DailyFlowView({
                         type="button"
                         onClick={(e) => {
                           e.stopPropagation();
-                          onToggleComplete(ev.id, isDone);
+                          if (ev.isPrayer) {
+                            onTogglePrayerCheck?.(ev.prayerId || ev.id);
+                          } else {
+                            onToggleComplete(ev.id, isDone);
+                          }
                         }}
                         className={`w-4 h-4 rounded border flex items-center justify-center transition-all shrink-0 cursor-pointer ${
                           isDone
@@ -953,6 +1070,149 @@ export function CalendarManager({
     d.setHours(0, 0, 0, 0);
     return d;
   });
+
+  // Prayer Times in Calendar State
+  const [showPrayerTimes, setShowPrayerTimes] = useState<boolean>(() => {
+    if (typeof window === "undefined") return true;
+    try {
+      const saved = localStorage.getItem("mylife_calendar_show_prayer");
+      if (saved !== null) return saved === "true";
+    } catch {
+      // fallback
+    }
+    return true;
+  });
+
+  const [prayerCity, setPrayerCity] = useState<IndonesianCity>(() => {
+    if (typeof window === "undefined") return DEFAULT_CITY;
+    try {
+      const saved = localStorage.getItem("mylife_prayer_city_id");
+      if (saved) return getCityById(saved);
+    } catch {
+      // fallback
+    }
+    return DEFAULT_CITY;
+  });
+
+  const [showSunnah, setShowSunnah] = useState<boolean>(() => {
+    if (typeof window === "undefined") return false;
+    try {
+      const saved = localStorage.getItem("mylife_calendar_show_sunnah");
+      if (saved !== null) return saved === "true";
+    } catch {
+      // fallback
+    }
+    return false;
+  });
+
+  const selectedDateKey = formatLocalDateOnly(selectedDay);
+  const [prayerChecksMap, setPrayerChecksMap] = useState<Record<string, Record<string, boolean>>>({});
+
+  const prayerChecks = useMemo(() => {
+    if (prayerChecksMap[selectedDateKey]) return prayerChecksMap[selectedDateKey];
+    if (typeof window === "undefined") return {};
+    try {
+      const saved = localStorage.getItem(`mylife_prayer_checks_${selectedDateKey}`);
+      if (saved) return JSON.parse(saved);
+    } catch {
+      // fallback
+    }
+    return {};
+  }, [prayerChecksMap, selectedDateKey]);
+
+  useEffect(() => {
+    const handleStorage = () => {
+      try {
+        const savedShow = localStorage.getItem("mylife_calendar_show_prayer");
+        if (savedShow !== null) setShowPrayerTimes(savedShow === "true");
+        const savedCityId = localStorage.getItem("mylife_prayer_city_id");
+        if (savedCityId) setPrayerCity(getCityById(savedCityId));
+        const savedSunnah = localStorage.getItem("mylife_calendar_show_sunnah");
+        if (savedSunnah !== null) setShowSunnah(savedSunnah === "true");
+      } catch {
+        // fallback
+      }
+    };
+    window.addEventListener("storage", handleStorage);
+    return () => window.removeEventListener("storage", handleStorage);
+  }, []);
+
+  const handleTogglePrayerCheck = useCallback(
+    (prayerId: string) => {
+      setPrayerChecksMap((prev) => {
+        let currentForDate = prev[selectedDateKey];
+        if (!currentForDate && typeof window !== "undefined") {
+          try {
+            const saved = localStorage.getItem(`mylife_prayer_checks_${selectedDateKey}`);
+            if (saved) currentForDate = JSON.parse(saved);
+          } catch {
+            // fallback
+          }
+        }
+        currentForDate = currentForDate || {};
+        const nextForDate = { ...currentForDate, [prayerId]: !currentForDate[prayerId] };
+        try {
+          localStorage.setItem(
+            `mylife_prayer_checks_${selectedDateKey}`,
+            JSON.stringify(nextForDate)
+          );
+        } catch {
+          // fallback
+        }
+        return { ...prev, [selectedDateKey]: nextForDate };
+      });
+    },
+    [selectedDateKey]
+  );
+
+  const handleToggleShowPrayerTimes = () => {
+    const nextVal = !showPrayerTimes;
+    setShowPrayerTimes(nextVal);
+    try {
+      localStorage.setItem("mylife_calendar_show_prayer", String(nextVal));
+    } catch {
+      // fallback
+    }
+    toast(
+      nextVal
+        ? `Waktu Sholat (${prayerCity.name}) diaktifkan di To-Do List! 🕌`
+        : "Waktu Sholat disembunyikan dari Kalender",
+      "info"
+    );
+  };
+
+  const prayerSchedule = useMemo(() => {
+    return calculatePrayerSchedule(selectedDay, prayerCity);
+  }, [selectedDay, prayerCity]);
+
+  const prayerEvents: EventItem[] = useMemo(() => {
+    if (!showPrayerTimes) return [];
+    const items = [
+      ...(showSunnah ? [prayerSchedule.imsak] : []),
+      prayerSchedule.subuh,
+      ...(showSunnah ? [prayerSchedule.dhuha] : []),
+      prayerSchedule.dzuhur,
+      prayerSchedule.ashar,
+      prayerSchedule.maghrib,
+      prayerSchedule.isya,
+    ];
+
+    return items.map((p) => {
+      const isDone = !!prayerChecks[p.id];
+      return {
+        id: `prayer-${p.id}`,
+        prayerId: p.id,
+        title: `Sholat ${p.name}`,
+        startTime: p.time,
+        endTime: new Date(p.time.getTime() + 20 * 60000),
+        isAllDay: false,
+        eventType: "PRAYER",
+        isCompleted: isDone,
+        isPrayer: true,
+        prayerIcon: p.icon,
+      };
+    });
+  }, [showPrayerTimes, showSunnah, prayerSchedule, prayerChecks]);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingEventId, setEditingEventId] = useState<string | null>(null);
@@ -1475,6 +1735,11 @@ export function CalendarManager({
               onSelectEvent={openEditModal}
               onDeleteEvent={handleDeleteEvent}
               onOpenModal={() => openCreateModal(selectedDay)}
+              prayerEvents={prayerEvents}
+              onTogglePrayerCheck={handleTogglePrayerCheck}
+              showPrayerTimes={showPrayerTimes}
+              onToggleShowPrayerTimes={handleToggleShowPrayerTimes}
+              prayerCity={prayerCity}
             />
           )}
 
@@ -1487,6 +1752,8 @@ export function CalendarManager({
               onAddAtHour={(h) => openCreateModal(selectedDay, h)}
               onSelectEvent={openEditModal}
               onToggleComplete={handleToggleComplete}
+              prayerEvents={prayerEvents}
+              onTogglePrayerCheck={handleTogglePrayerCheck}
             />
           )}
 
