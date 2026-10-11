@@ -8,6 +8,7 @@ import { parseAmbientTask } from "@/ai/ambient/ambient-nlp";
 import { VoiceInputButton } from "@/app/components/ai/VoiceInputButton";
 import { RecentActivityFeed, type ActivityFeedItem } from "@/app/components/dashboard/RecentActivityFeed";
 // import { PendingCheckinWidget } from "@/app/components/habits-v2/PendingCheckinWidget";
+import { PrayerTimesWidget } from "@/app/components/prayer/PrayerTimesWidget";
 
 interface AreaOption {
   id: string;
@@ -666,7 +667,12 @@ export function TodayDashboardClient({
       </header>
 
       {/* ==================================================================== */}
-      {/* 2. PROACTIVE ALERT TICKER (JIKA ADA TENGGAT ATAU KONFLIK)           */}
+      {/* 2. JADWAL SHOLAT & ADZAN (100% OFFLINE, PILIH KOTA & ADZAN ALERT)  */}
+      {/* ==================================================================== */}
+      <PrayerTimesWidget />
+
+      {/* ==================================================================== */}
+      {/* 3. PROACTIVE ALERT TICKER (JIKA ADA TENGGAT ATAU KONFLIK)           */}
       {/* ==================================================================== */}
       {!alertDismissed && alertIssues.length > 0 && (
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 p-4 rounded-2xl bg-amber-500/10 border border-amber-500/25 text-amber-900 dark:text-amber-200 relative overflow-hidden shadow-xs animate-in fade-in duration-300">
