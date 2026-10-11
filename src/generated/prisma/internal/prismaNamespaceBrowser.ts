@@ -72,11 +72,22 @@ export const ModelName = {
   LifeChapter: 'LifeChapter',
   ChapterFocusArea: 'ChapterFocusArea',
   LifeReflection: 'LifeReflection',
-  Habit: 'Habit',
-  HabitTask: 'HabitTask',
-  HabitPhase: 'HabitPhase',
-  HabitLog: 'HabitLog',
-  HabitStreak: 'HabitStreak'
+  TrackedHabit: 'TrackedHabit',
+  HabitBreakProfile: 'HabitBreakProfile',
+  HabitEvent: 'HabitEvent',
+  HabitCheckin: 'HabitCheckin',
+  HabitStats: 'HabitStats',
+  HabitNotificationOutbox: 'HabitNotificationOutbox',
+  Trigger: 'Trigger',
+  HabitTrigger: 'HabitTrigger',
+  CopingPlan: 'CopingPlan',
+  HabitEventTrigger: 'HabitEventTrigger',
+  HabitMilestone: 'HabitMilestone',
+  SupportResource: 'SupportResource',
+  HabitBuildProfile: 'HabitBuildProfile',
+  AutomaticitySurvey: 'AutomaticitySurvey',
+  HabitReminder: 'HabitReminder',
+  HabitReflection: 'HabitReflection'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -473,92 +484,277 @@ export const LifeReflectionScalarFieldEnum = {
 export type LifeReflectionScalarFieldEnum = (typeof LifeReflectionScalarFieldEnum)[keyof typeof LifeReflectionScalarFieldEnum]
 
 
-export const HabitScalarFieldEnum = {
+export const TrackedHabitScalarFieldEnum = {
   id: 'id',
   userId: 'userId',
-  title: 'title',
-  description: 'description',
-  type: 'type',
-  difficulty: 'difficulty',
-  color: 'color',
-  icon: 'icon',
   areaId: 'areaId',
-  isActive: 'isActive',
-  checkInTime: 'checkInTime',
-  targetDays: 'targetDays',
-  triggerNotes: 'triggerNotes',
-  replacementHabit: 'replacementHabit',
-  whyQuit: 'whyQuit',
-  cue: 'cue',
-  reward: 'reward',
-  startDate: 'startDate',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
-} as const
-
-export type HabitScalarFieldEnum = (typeof HabitScalarFieldEnum)[keyof typeof HabitScalarFieldEnum]
-
-
-export const HabitTaskScalarFieldEnum = {
-  id: 'id',
-  userId: 'userId',
-  habitId: 'habitId',
-  title: 'title',
-  description: 'description',
-  isCompleted: 'isCompleted',
+  goalId: 'goalId',
+  kind: 'kind',
+  mode: 'mode',
+  name: 'name',
+  displayAlias: 'displayAlias',
   category: 'category',
-  order: 'order',
+  status: 'status',
+  stage: 'stage',
+  identityStatement: 'identityStatement',
+  timezone: 'timezone',
+  checkinLocalTime: 'checkinLocalTime',
+  startedAt: 'startedAt',
+  currentWindowStart: 'currentWindowStart',
+  nextCheckinAt: 'nextCheckinAt',
+  privacyLevel: 'privacyLevel',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  archivedAt: 'archivedAt'
+} as const
+
+export type TrackedHabitScalarFieldEnum = (typeof TrackedHabitScalarFieldEnum)[keyof typeof TrackedHabitScalarFieldEnum]
+
+
+export const HabitBreakProfileScalarFieldEnum = {
+  habitId: 'habitId',
+  whyReasons: 'whyReasons',
+  futureSelfNote: 'futureSelfNote',
+  rewardAnalysis: 'rewardAnalysis',
+  baselinePerDay: 'baselinePerDay',
+  costPerOccurrence: 'costPerOccurrence',
+  currency: 'currency',
+  minutesPerOccurrence: 'minutesPerOccurrence',
+  reduceDailyLimit: 'reduceDailyLimit',
+  reduceStepPercent: 'reduceStepPercent',
+  reduceStepEveryDays: 'reduceStepEveryDays',
+  relapseLapseCount: 'relapseLapseCount',
+  relapseWindowDays: 'relapseWindowDays',
+  highRiskCategory: 'highRiskCategory',
+  safetyAckAt: 'safetyAckAt',
+  relapseAckAt: 'relapseAckAt',
+  environmentChecklist: 'environmentChecklist'
+} as const
+
+export type HabitBreakProfileScalarFieldEnum = (typeof HabitBreakProfileScalarFieldEnum)[keyof typeof HabitBreakProfileScalarFieldEnum]
+
+
+export const HabitEventScalarFieldEnum = {
+  id: 'id',
+  habitId: 'habitId',
+  userId: 'userId',
+  type: 'type',
+  occurredAt: 'occurredAt',
+  loggedAt: 'loggedAt',
+  quantity: 'quantity',
+  intensityBefore: 'intensityBefore',
+  intensityAfter: 'intensityAfter',
+  outcome: 'outcome',
+  severity: 'severity',
+  mood: 'mood',
+  halt: 'halt',
+  locationLabel: 'locationLabel',
+  withWhom: 'withWhom',
+  note: 'note',
+  meta: 'meta',
+  source: 'source',
+  idempotencyKey: 'idempotencyKey',
+  deletedAt: 'deletedAt'
+} as const
+
+export type HabitEventScalarFieldEnum = (typeof HabitEventScalarFieldEnum)[keyof typeof HabitEventScalarFieldEnum]
+
+
+export const HabitCheckinScalarFieldEnum = {
+  id: 'id',
+  habitId: 'habitId',
+  windowStart: 'windowStart',
+  windowEnd: 'windowEnd',
+  periodDate: 'periodDate',
+  status: 'status',
+  quantity: 'quantity',
+  mood: 'mood',
+  note: 'note',
+  notifiedAt: 'notifiedAt',
+  respondedAt: 'respondedAt',
+  responseSource: 'responseSource'
+} as const
+
+export type HabitCheckinScalarFieldEnum = (typeof HabitCheckinScalarFieldEnum)[keyof typeof HabitCheckinScalarFieldEnum]
+
+
+export const HabitStatsScalarFieldEnum = {
+  habitId: 'habitId',
+  lastLapseAt: 'lastLapseAt',
+  currentStreakDays: 'currentStreakDays',
+  longestStreakDays: 'longestStreakDays',
+  confirmedCleanDays: 'confirmedCleanDays',
+  totalLapses: 'totalLapses',
+  urgesResisted: 'urgesResisted',
+  cleanRate30d: 'cleanRate30d',
+  consistency30d: 'consistency30d',
+  resilientStreak: 'resilientStreak',
+  moneySavedEst: 'moneySavedEst',
+  minutesSavedEst: 'minutesSavedEst',
+  relapsePattern: 'relapsePattern',
+  recomputedAt: 'recomputedAt'
+} as const
+
+export type HabitStatsScalarFieldEnum = (typeof HabitStatsScalarFieldEnum)[keyof typeof HabitStatsScalarFieldEnum]
+
+
+export const HabitNotificationOutboxScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  habitId: 'habitId',
+  kind: 'kind',
+  payload: 'payload',
+  scheduledAt: 'scheduledAt',
+  status: 'status',
+  attempts: 'attempts',
+  dedupeKey: 'dedupeKey',
+  lastError: 'lastError'
+} as const
+
+export type HabitNotificationOutboxScalarFieldEnum = (typeof HabitNotificationOutboxScalarFieldEnum)[keyof typeof HabitNotificationOutboxScalarFieldEnum]
+
+
+export const TriggerScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  category: 'category',
+  name: 'name',
+  description: 'description',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
 
-export type HabitTaskScalarFieldEnum = (typeof HabitTaskScalarFieldEnum)[keyof typeof HabitTaskScalarFieldEnum]
+export type TriggerScalarFieldEnum = (typeof TriggerScalarFieldEnum)[keyof typeof TriggerScalarFieldEnum]
 
 
-export const HabitPhaseScalarFieldEnum = {
+export const HabitTriggerScalarFieldEnum = {
   id: 'id',
   habitId: 'habitId',
-  order: 'order',
-  title: 'title',
-  description: 'description',
-  targetDays: 'targetDays',
-  afterRelapseDays: 'afterRelapseDays',
-  isCompleted: 'isCompleted',
-  completedAt: 'completedAt',
-  startedAt: 'startedAt',
-  psychTip: 'psychTip'
+  triggerId: 'triggerId',
+  intensity: 'intensity',
+  note: 'note',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
 } as const
 
-export type HabitPhaseScalarFieldEnum = (typeof HabitPhaseScalarFieldEnum)[keyof typeof HabitPhaseScalarFieldEnum]
+export type HabitTriggerScalarFieldEnum = (typeof HabitTriggerScalarFieldEnum)[keyof typeof HabitTriggerScalarFieldEnum]
 
 
-export const HabitLogScalarFieldEnum = {
+export const CopingPlanScalarFieldEnum = {
   id: 'id',
-  userId: 'userId',
   habitId: 'habitId',
-  date: 'date',
-  isSuccess: 'isSuccess',
-  mood: 'mood',
-  energyLevel: 'energyLevel',
-  notes: 'notes',
-  relapseTrigger: 'relapseTrigger',
+  habitTriggerId: 'habitTriggerId',
+  ifCondition: 'ifCondition',
+  thenAction: 'thenAction',
+  replacementHabitId: 'replacementHabitId',
+  timesUsed: 'timesUsed',
+  timesHelped: 'timesHelped',
+  order: 'order',
+  isActive: 'isActive',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type CopingPlanScalarFieldEnum = (typeof CopingPlanScalarFieldEnum)[keyof typeof CopingPlanScalarFieldEnum]
+
+
+export const HabitEventTriggerScalarFieldEnum = {
+  id: 'id',
+  eventId: 'eventId',
+  habitTriggerId: 'habitTriggerId',
   createdAt: 'createdAt'
 } as const
 
-export type HabitLogScalarFieldEnum = (typeof HabitLogScalarFieldEnum)[keyof typeof HabitLogScalarFieldEnum]
+export type HabitEventTriggerScalarFieldEnum = (typeof HabitEventTriggerScalarFieldEnum)[keyof typeof HabitEventTriggerScalarFieldEnum]
 
 
-export const HabitStreakScalarFieldEnum = {
+export const HabitMilestoneScalarFieldEnum = {
   id: 'id',
-  userId: 'userId',
   habitId: 'habitId',
-  startDate: 'startDate',
-  endDate: 'endDate',
-  days: 'days',
-  isCurrent: 'isCurrent'
+  code: 'code',
+  title: 'title',
+  achievedAt: 'achievedAt',
+  celebratedAt: 'celebratedAt',
+  createdAt: 'createdAt'
 } as const
 
-export type HabitStreakScalarFieldEnum = (typeof HabitStreakScalarFieldEnum)[keyof typeof HabitStreakScalarFieldEnum]
+export type HabitMilestoneScalarFieldEnum = (typeof HabitMilestoneScalarFieldEnum)[keyof typeof HabitMilestoneScalarFieldEnum]
+
+
+export const SupportResourceScalarFieldEnum = {
+  id: 'id',
+  country: 'country',
+  category: 'category',
+  name: 'name',
+  contact: 'contact',
+  description: 'description',
+  isVerified: 'isVerified',
+  verifiedAt: 'verifiedAt',
+  sourceUrl: 'sourceUrl',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type SupportResourceScalarFieldEnum = (typeof SupportResourceScalarFieldEnum)[keyof typeof SupportResourceScalarFieldEnum]
+
+
+export const HabitBuildProfileScalarFieldEnum = {
+  habitId: 'habitId',
+  anchorText: 'anchorText',
+  tinyBehavior: 'tinyBehavior',
+  celebrationText: 'celebrationText',
+  versions: 'versions',
+  scheduleType: 'scheduleType',
+  daysOfWeek: 'daysOfWeek',
+  timesPerWeek: 'timesPerWeek',
+  restDays: 'restDays',
+  replacesHabitId: 'replacesHabitId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type HabitBuildProfileScalarFieldEnum = (typeof HabitBuildProfileScalarFieldEnum)[keyof typeof HabitBuildProfileScalarFieldEnum]
+
+
+export const AutomaticitySurveyScalarFieldEnum = {
+  id: 'id',
+  habitId: 'habitId',
+  answeredAt: 'answeredAt',
+  score: 'score',
+  createdAt: 'createdAt'
+} as const
+
+export type AutomaticitySurveyScalarFieldEnum = (typeof AutomaticitySurveyScalarFieldEnum)[keyof typeof AutomaticitySurveyScalarFieldEnum]
+
+
+export const HabitReminderScalarFieldEnum = {
+  id: 'id',
+  habitId: 'habitId',
+  kind: 'kind',
+  localTime: 'localTime',
+  daysOfWeek: 'daysOfWeek',
+  nextFireAt: 'nextFireAt',
+  isActive: 'isActive',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type HabitReminderScalarFieldEnum = (typeof HabitReminderScalarFieldEnum)[keyof typeof HabitReminderScalarFieldEnum]
+
+
+export const HabitReflectionScalarFieldEnum = {
+  id: 'id',
+  habitId: 'habitId',
+  weekStart: 'weekStart',
+  summary: 'summary',
+  question: 'question',
+  answer: 'answer',
+  submittedAt: 'submittedAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type HabitReflectionScalarFieldEnum = (typeof HabitReflectionScalarFieldEnum)[keyof typeof HabitReflectionScalarFieldEnum]
 
 
 export const SortOrder = {
@@ -575,6 +771,13 @@ export const NullableJsonNullValueInput = {
 } as const
 
 export type NullableJsonNullValueInput = (typeof NullableJsonNullValueInput)[keyof typeof NullableJsonNullValueInput]
+
+
+export const JsonNullValueInput = {
+  JsonNull: JsonNull
+} as const
+
+export type JsonNullValueInput = (typeof JsonNullValueInput)[keyof typeof JsonNullValueInput]
 
 
 export const QueryMode = {

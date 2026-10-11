@@ -8,6 +8,7 @@ export default defineConfig({
     testTimeout: 120000,
     hookTimeout: 120000,
     globalSetup: "./tests/global-setup.ts",
+    setupFiles: ["./tests/support/test-db-setup.ts"],
     env: {
       AUTH_SECRET: "test-secret-for-vitest-only",
       AUTH_ACCESS_CODE: "test-access-code",

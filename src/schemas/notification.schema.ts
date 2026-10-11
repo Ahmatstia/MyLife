@@ -7,6 +7,7 @@ export const notificationTypeEnum = z.enum([
   "CALENDAR_EVENT",
   "MILESTONE_DEADLINE",
   "SYSTEM",
+  "HABIT_CHECKIN",
 ]);
 
 export const notificationSeverityEnum = z.enum(["INFO", "WARNING", "URGENT"]);

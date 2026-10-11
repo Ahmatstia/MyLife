@@ -1,7 +1,6 @@
 import { requirePageUser } from "@/lib/auth";
-import { getHabits } from "@/services/habit.service";
-import { getAreas } from "@/services/area.service";
-import { HabitsManager } from "@/app/(app)/habits/HabitsManager";
+import { getUserPreference } from "@/services/user-preference.service";
+import { HabitsV2App } from "@/app/components/habits-v2";
 
 export const dynamic = "force-dynamic";
 
@@ -12,12 +11,8 @@ export const metadata = {
 
 export default async function HabitsPage() {
   const user = await requirePageUser();
+  const pref = await getUserPreference(user.id);
 
-  const [habits, areas] = await Promise.all([
-    getHabits(user.id, { isActive: true }),
-    getAreas(user.id, { isActive: true }),
-  ]);
-
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  return <HabitsManager initialHabits={habits as any} areas={areas} />;
+  return <HabitsV2App userTimezone={pref?.timezone || "Asia/Jakarta"} />;
 }
+

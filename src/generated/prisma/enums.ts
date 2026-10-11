@@ -170,7 +170,8 @@ export const NotificationType = {
   WEEKLY_REVIEW_REMINDER: 'WEEKLY_REVIEW_REMINDER',
   CALENDAR_EVENT: 'CALENDAR_EVENT',
   MILESTONE_DEADLINE: 'MILESTONE_DEADLINE',
-  SYSTEM: 'SYSTEM'
+  SYSTEM: 'SYSTEM',
+  HABIT_CHECKIN: 'HABIT_CHECKIN'
 } as const
 
 export type NotificationType = (typeof NotificationType)[keyof typeof NotificationType]
@@ -185,19 +186,96 @@ export const NotificationSeverity = {
 export type NotificationSeverity = (typeof NotificationSeverity)[keyof typeof NotificationSeverity]
 
 
-export const HabitType = {
-  GOOD: 'GOOD',
-  BAD: 'BAD'
+export const HabitKind = {
+  BREAK: 'BREAK',
+  BUILD: 'BUILD'
 } as const
 
-export type HabitType = (typeof HabitType)[keyof typeof HabitType]
+export type HabitKind = (typeof HabitKind)[keyof typeof HabitKind]
 
 
-export const HabitDifficulty = {
-  EASY: 'EASY',
-  MEDIUM: 'MEDIUM',
-  HARD: 'HARD',
-  EXTREME: 'EXTREME'
+export const HabitMode = {
+  ABSTAIN: 'ABSTAIN',
+  REDUCE: 'REDUCE'
 } as const
 
-export type HabitDifficulty = (typeof HabitDifficulty)[keyof typeof HabitDifficulty]
+export type HabitMode = (typeof HabitMode)[keyof typeof HabitMode]
+
+
+export const HabitScheduleType = {
+  DAILY: 'DAILY',
+  DAYS_OF_WEEK: 'DAYS_OF_WEEK',
+  TIMES_PER_WEEK: 'TIMES_PER_WEEK'
+} as const
+
+export type HabitScheduleType = (typeof HabitScheduleType)[keyof typeof HabitScheduleType]
+
+
+export const HabitStatus = {
+  ACTIVE: 'ACTIVE',
+  PAUSED: 'PAUSED',
+  ARCHIVED: 'ARCHIVED'
+} as const
+
+export type HabitStatus = (typeof HabitStatus)[keyof typeof HabitStatus]
+
+
+export const HabitStage = {
+  CONTEMPLATION: 'CONTEMPLATION',
+  PREPARATION: 'PREPARATION',
+  ACTION: 'ACTION',
+  MAINTENANCE: 'MAINTENANCE'
+} as const
+
+export type HabitStage = (typeof HabitStage)[keyof typeof HabitStage]
+
+
+export const HabitEventType = {
+  URGE: 'URGE',
+  LAPSE: 'LAPSE',
+  OCCURRENCE: 'OCCURRENCE',
+  COMPLETION: 'COMPLETION',
+  SKIP: 'SKIP'
+} as const
+
+export type HabitEventType = (typeof HabitEventType)[keyof typeof HabitEventType]
+
+
+export const HabitCheckinStatus = {
+  PENDING: 'PENDING',
+  CLEAN: 'CLEAN',
+  LAPSED: 'LAPSED',
+  WITHIN_LIMIT: 'WITHIN_LIMIT',
+  OVER_LIMIT: 'OVER_LIMIT',
+  DONE: 'DONE',
+  SKIPPED: 'SKIPPED',
+  MISSED: 'MISSED',
+  UNCONFIRMED: 'UNCONFIRMED'
+} as const
+
+export type HabitCheckinStatus = (typeof HabitCheckinStatus)[keyof typeof HabitCheckinStatus]
+
+
+export const TriggerCategory = {
+  TIME: 'TIME',
+  PLACE: 'PLACE',
+  PERSON: 'PERSON',
+  EMOTION: 'EMOTION',
+  PHYSICAL: 'PHYSICAL',
+  ACTIVITY: 'ACTIVITY',
+  DEVICE: 'DEVICE',
+  OTHER: 'OTHER'
+} as const
+
+export type TriggerCategory = (typeof TriggerCategory)[keyof typeof TriggerCategory]
+
+
+export const HabitReminderKind = {
+  CHECKIN: 'CHECKIN',
+  EVENING_REFLECTION: 'EVENING_REFLECTION',
+  RISK_WINDOW: 'RISK_WINDOW',
+  WEEKLY_REVIEW: 'WEEKLY_REVIEW',
+  ANCHOR: 'ANCHOR'
+} as const
+
+export type HabitReminderKind = (typeof HabitReminderKind)[keyof typeof HabitReminderKind]

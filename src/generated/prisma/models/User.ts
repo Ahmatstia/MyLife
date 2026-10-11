@@ -217,10 +217,10 @@ export type UserWhereInput = {
   lifeVision?: Prisma.XOR<Prisma.LifeVisionNullableScalarRelationFilter, Prisma.LifeVisionWhereInput> | null
   lifeChapters?: Prisma.LifeChapterListRelationFilter
   lifeReflections?: Prisma.LifeReflectionListRelationFilter
-  habits?: Prisma.HabitListRelationFilter
-  habitTasks?: Prisma.HabitTaskListRelationFilter
-  habitLogs?: Prisma.HabitLogListRelationFilter
-  habitStreaks?: Prisma.HabitStreakListRelationFilter
+  trackedHabits?: Prisma.TrackedHabitListRelationFilter
+  habitEvents?: Prisma.HabitEventListRelationFilter
+  habitOutbox?: Prisma.HabitNotificationOutboxListRelationFilter
+  triggers?: Prisma.TriggerListRelationFilter
 }
 
 export type UserOrderByWithRelationInput = {
@@ -250,10 +250,10 @@ export type UserOrderByWithRelationInput = {
   lifeVision?: Prisma.LifeVisionOrderByWithRelationInput
   lifeChapters?: Prisma.LifeChapterOrderByRelationAggregateInput
   lifeReflections?: Prisma.LifeReflectionOrderByRelationAggregateInput
-  habits?: Prisma.HabitOrderByRelationAggregateInput
-  habitTasks?: Prisma.HabitTaskOrderByRelationAggregateInput
-  habitLogs?: Prisma.HabitLogOrderByRelationAggregateInput
-  habitStreaks?: Prisma.HabitStreakOrderByRelationAggregateInput
+  trackedHabits?: Prisma.TrackedHabitOrderByRelationAggregateInput
+  habitEvents?: Prisma.HabitEventOrderByRelationAggregateInput
+  habitOutbox?: Prisma.HabitNotificationOutboxOrderByRelationAggregateInput
+  triggers?: Prisma.TriggerOrderByRelationAggregateInput
 }
 
 export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -286,10 +286,10 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   lifeVision?: Prisma.XOR<Prisma.LifeVisionNullableScalarRelationFilter, Prisma.LifeVisionWhereInput> | null
   lifeChapters?: Prisma.LifeChapterListRelationFilter
   lifeReflections?: Prisma.LifeReflectionListRelationFilter
-  habits?: Prisma.HabitListRelationFilter
-  habitTasks?: Prisma.HabitTaskListRelationFilter
-  habitLogs?: Prisma.HabitLogListRelationFilter
-  habitStreaks?: Prisma.HabitStreakListRelationFilter
+  trackedHabits?: Prisma.TrackedHabitListRelationFilter
+  habitEvents?: Prisma.HabitEventListRelationFilter
+  habitOutbox?: Prisma.HabitNotificationOutboxListRelationFilter
+  triggers?: Prisma.TriggerListRelationFilter
 }, "id" | "email">
 
 export type UserOrderByWithAggregationInput = {
@@ -345,10 +345,10 @@ export type UserCreateInput = {
   lifeVision?: Prisma.LifeVisionCreateNestedOneWithoutUserInput
   lifeChapters?: Prisma.LifeChapterCreateNestedManyWithoutUserInput
   lifeReflections?: Prisma.LifeReflectionCreateNestedManyWithoutUserInput
-  habits?: Prisma.HabitCreateNestedManyWithoutUserInput
-  habitTasks?: Prisma.HabitTaskCreateNestedManyWithoutUserInput
-  habitLogs?: Prisma.HabitLogCreateNestedManyWithoutUserInput
-  habitStreaks?: Prisma.HabitStreakCreateNestedManyWithoutUserInput
+  trackedHabits?: Prisma.TrackedHabitCreateNestedManyWithoutUserInput
+  habitEvents?: Prisma.HabitEventCreateNestedManyWithoutUserInput
+  habitOutbox?: Prisma.HabitNotificationOutboxCreateNestedManyWithoutUserInput
+  triggers?: Prisma.TriggerCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateInput = {
@@ -378,10 +378,10 @@ export type UserUncheckedCreateInput = {
   lifeVision?: Prisma.LifeVisionUncheckedCreateNestedOneWithoutUserInput
   lifeChapters?: Prisma.LifeChapterUncheckedCreateNestedManyWithoutUserInput
   lifeReflections?: Prisma.LifeReflectionUncheckedCreateNestedManyWithoutUserInput
-  habits?: Prisma.HabitUncheckedCreateNestedManyWithoutUserInput
-  habitTasks?: Prisma.HabitTaskUncheckedCreateNestedManyWithoutUserInput
-  habitLogs?: Prisma.HabitLogUncheckedCreateNestedManyWithoutUserInput
-  habitStreaks?: Prisma.HabitStreakUncheckedCreateNestedManyWithoutUserInput
+  trackedHabits?: Prisma.TrackedHabitUncheckedCreateNestedManyWithoutUserInput
+  habitEvents?: Prisma.HabitEventUncheckedCreateNestedManyWithoutUserInput
+  habitOutbox?: Prisma.HabitNotificationOutboxUncheckedCreateNestedManyWithoutUserInput
+  triggers?: Prisma.TriggerUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserUpdateInput = {
@@ -411,10 +411,10 @@ export type UserUpdateInput = {
   lifeVision?: Prisma.LifeVisionUpdateOneWithoutUserNestedInput
   lifeChapters?: Prisma.LifeChapterUpdateManyWithoutUserNestedInput
   lifeReflections?: Prisma.LifeReflectionUpdateManyWithoutUserNestedInput
-  habits?: Prisma.HabitUpdateManyWithoutUserNestedInput
-  habitTasks?: Prisma.HabitTaskUpdateManyWithoutUserNestedInput
-  habitLogs?: Prisma.HabitLogUpdateManyWithoutUserNestedInput
-  habitStreaks?: Prisma.HabitStreakUpdateManyWithoutUserNestedInput
+  trackedHabits?: Prisma.TrackedHabitUpdateManyWithoutUserNestedInput
+  habitEvents?: Prisma.HabitEventUpdateManyWithoutUserNestedInput
+  habitOutbox?: Prisma.HabitNotificationOutboxUpdateManyWithoutUserNestedInput
+  triggers?: Prisma.TriggerUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateInput = {
@@ -444,10 +444,10 @@ export type UserUncheckedUpdateInput = {
   lifeVision?: Prisma.LifeVisionUncheckedUpdateOneWithoutUserNestedInput
   lifeChapters?: Prisma.LifeChapterUncheckedUpdateManyWithoutUserNestedInput
   lifeReflections?: Prisma.LifeReflectionUncheckedUpdateManyWithoutUserNestedInput
-  habits?: Prisma.HabitUncheckedUpdateManyWithoutUserNestedInput
-  habitTasks?: Prisma.HabitTaskUncheckedUpdateManyWithoutUserNestedInput
-  habitLogs?: Prisma.HabitLogUncheckedUpdateManyWithoutUserNestedInput
-  habitStreaks?: Prisma.HabitStreakUncheckedUpdateManyWithoutUserNestedInput
+  trackedHabits?: Prisma.TrackedHabitUncheckedUpdateManyWithoutUserNestedInput
+  habitEvents?: Prisma.HabitEventUncheckedUpdateManyWithoutUserNestedInput
+  habitOutbox?: Prisma.HabitNotificationOutboxUncheckedUpdateManyWithoutUserNestedInput
+  triggers?: Prisma.TriggerUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateManyInput = {
@@ -513,6 +513,11 @@ export type UserMinOrderByAggregateInput = {
 export type UserScalarRelationFilter = {
   is?: Prisma.UserWhereInput
   isNot?: Prisma.UserWhereInput
+}
+
+export type UserNullableScalarRelationFilter = {
+  is?: Prisma.UserWhereInput | null
+  isNot?: Prisma.UserWhereInput | null
 }
 
 export type StringFieldUpdateOperationsInput = {
@@ -793,60 +798,62 @@ export type UserUpdateOneRequiredWithoutLifeReflectionsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutLifeReflectionsInput, Prisma.UserUpdateWithoutLifeReflectionsInput>, Prisma.UserUncheckedUpdateWithoutLifeReflectionsInput>
 }
 
-export type UserCreateNestedOneWithoutHabitsInput = {
-  create?: Prisma.XOR<Prisma.UserCreateWithoutHabitsInput, Prisma.UserUncheckedCreateWithoutHabitsInput>
-  connectOrCreate?: Prisma.UserCreateOrConnectWithoutHabitsInput
+export type UserCreateNestedOneWithoutTrackedHabitsInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutTrackedHabitsInput, Prisma.UserUncheckedCreateWithoutTrackedHabitsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutTrackedHabitsInput
   connect?: Prisma.UserWhereUniqueInput
 }
 
-export type UserUpdateOneRequiredWithoutHabitsNestedInput = {
-  create?: Prisma.XOR<Prisma.UserCreateWithoutHabitsInput, Prisma.UserUncheckedCreateWithoutHabitsInput>
-  connectOrCreate?: Prisma.UserCreateOrConnectWithoutHabitsInput
-  upsert?: Prisma.UserUpsertWithoutHabitsInput
+export type UserUpdateOneRequiredWithoutTrackedHabitsNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutTrackedHabitsInput, Prisma.UserUncheckedCreateWithoutTrackedHabitsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutTrackedHabitsInput
+  upsert?: Prisma.UserUpsertWithoutTrackedHabitsInput
   connect?: Prisma.UserWhereUniqueInput
-  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutHabitsInput, Prisma.UserUpdateWithoutHabitsInput>, Prisma.UserUncheckedUpdateWithoutHabitsInput>
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutTrackedHabitsInput, Prisma.UserUpdateWithoutTrackedHabitsInput>, Prisma.UserUncheckedUpdateWithoutTrackedHabitsInput>
 }
 
-export type UserCreateNestedOneWithoutHabitTasksInput = {
-  create?: Prisma.XOR<Prisma.UserCreateWithoutHabitTasksInput, Prisma.UserUncheckedCreateWithoutHabitTasksInput>
-  connectOrCreate?: Prisma.UserCreateOrConnectWithoutHabitTasksInput
-  connect?: Prisma.UserWhereUniqueInput
-}
-
-export type UserUpdateOneRequiredWithoutHabitTasksNestedInput = {
-  create?: Prisma.XOR<Prisma.UserCreateWithoutHabitTasksInput, Prisma.UserUncheckedCreateWithoutHabitTasksInput>
-  connectOrCreate?: Prisma.UserCreateOrConnectWithoutHabitTasksInput
-  upsert?: Prisma.UserUpsertWithoutHabitTasksInput
-  connect?: Prisma.UserWhereUniqueInput
-  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutHabitTasksInput, Prisma.UserUpdateWithoutHabitTasksInput>, Prisma.UserUncheckedUpdateWithoutHabitTasksInput>
-}
-
-export type UserCreateNestedOneWithoutHabitLogsInput = {
-  create?: Prisma.XOR<Prisma.UserCreateWithoutHabitLogsInput, Prisma.UserUncheckedCreateWithoutHabitLogsInput>
-  connectOrCreate?: Prisma.UserCreateOrConnectWithoutHabitLogsInput
+export type UserCreateNestedOneWithoutHabitEventsInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutHabitEventsInput, Prisma.UserUncheckedCreateWithoutHabitEventsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutHabitEventsInput
   connect?: Prisma.UserWhereUniqueInput
 }
 
-export type UserUpdateOneRequiredWithoutHabitLogsNestedInput = {
-  create?: Prisma.XOR<Prisma.UserCreateWithoutHabitLogsInput, Prisma.UserUncheckedCreateWithoutHabitLogsInput>
-  connectOrCreate?: Prisma.UserCreateOrConnectWithoutHabitLogsInput
-  upsert?: Prisma.UserUpsertWithoutHabitLogsInput
+export type UserUpdateOneRequiredWithoutHabitEventsNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutHabitEventsInput, Prisma.UserUncheckedCreateWithoutHabitEventsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutHabitEventsInput
+  upsert?: Prisma.UserUpsertWithoutHabitEventsInput
   connect?: Prisma.UserWhereUniqueInput
-  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutHabitLogsInput, Prisma.UserUpdateWithoutHabitLogsInput>, Prisma.UserUncheckedUpdateWithoutHabitLogsInput>
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutHabitEventsInput, Prisma.UserUpdateWithoutHabitEventsInput>, Prisma.UserUncheckedUpdateWithoutHabitEventsInput>
 }
 
-export type UserCreateNestedOneWithoutHabitStreaksInput = {
-  create?: Prisma.XOR<Prisma.UserCreateWithoutHabitStreaksInput, Prisma.UserUncheckedCreateWithoutHabitStreaksInput>
-  connectOrCreate?: Prisma.UserCreateOrConnectWithoutHabitStreaksInput
+export type UserCreateNestedOneWithoutHabitOutboxInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutHabitOutboxInput, Prisma.UserUncheckedCreateWithoutHabitOutboxInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutHabitOutboxInput
   connect?: Prisma.UserWhereUniqueInput
 }
 
-export type UserUpdateOneRequiredWithoutHabitStreaksNestedInput = {
-  create?: Prisma.XOR<Prisma.UserCreateWithoutHabitStreaksInput, Prisma.UserUncheckedCreateWithoutHabitStreaksInput>
-  connectOrCreate?: Prisma.UserCreateOrConnectWithoutHabitStreaksInput
-  upsert?: Prisma.UserUpsertWithoutHabitStreaksInput
+export type UserUpdateOneRequiredWithoutHabitOutboxNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutHabitOutboxInput, Prisma.UserUncheckedCreateWithoutHabitOutboxInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutHabitOutboxInput
+  upsert?: Prisma.UserUpsertWithoutHabitOutboxInput
   connect?: Prisma.UserWhereUniqueInput
-  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutHabitStreaksInput, Prisma.UserUpdateWithoutHabitStreaksInput>, Prisma.UserUncheckedUpdateWithoutHabitStreaksInput>
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutHabitOutboxInput, Prisma.UserUpdateWithoutHabitOutboxInput>, Prisma.UserUncheckedUpdateWithoutHabitOutboxInput>
+}
+
+export type UserCreateNestedOneWithoutTriggersInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutTriggersInput, Prisma.UserUncheckedCreateWithoutTriggersInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutTriggersInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneWithoutTriggersNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutTriggersInput, Prisma.UserUncheckedCreateWithoutTriggersInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutTriggersInput
+  upsert?: Prisma.UserUpsertWithoutTriggersInput
+  disconnect?: Prisma.UserWhereInput | boolean
+  delete?: Prisma.UserWhereInput | boolean
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutTriggersInput, Prisma.UserUpdateWithoutTriggersInput>, Prisma.UserUncheckedUpdateWithoutTriggersInput>
 }
 
 export type UserCreateWithoutPreferenceInput = {
@@ -875,10 +882,10 @@ export type UserCreateWithoutPreferenceInput = {
   lifeVision?: Prisma.LifeVisionCreateNestedOneWithoutUserInput
   lifeChapters?: Prisma.LifeChapterCreateNestedManyWithoutUserInput
   lifeReflections?: Prisma.LifeReflectionCreateNestedManyWithoutUserInput
-  habits?: Prisma.HabitCreateNestedManyWithoutUserInput
-  habitTasks?: Prisma.HabitTaskCreateNestedManyWithoutUserInput
-  habitLogs?: Prisma.HabitLogCreateNestedManyWithoutUserInput
-  habitStreaks?: Prisma.HabitStreakCreateNestedManyWithoutUserInput
+  trackedHabits?: Prisma.TrackedHabitCreateNestedManyWithoutUserInput
+  habitEvents?: Prisma.HabitEventCreateNestedManyWithoutUserInput
+  habitOutbox?: Prisma.HabitNotificationOutboxCreateNestedManyWithoutUserInput
+  triggers?: Prisma.TriggerCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutPreferenceInput = {
@@ -907,10 +914,10 @@ export type UserUncheckedCreateWithoutPreferenceInput = {
   lifeVision?: Prisma.LifeVisionUncheckedCreateNestedOneWithoutUserInput
   lifeChapters?: Prisma.LifeChapterUncheckedCreateNestedManyWithoutUserInput
   lifeReflections?: Prisma.LifeReflectionUncheckedCreateNestedManyWithoutUserInput
-  habits?: Prisma.HabitUncheckedCreateNestedManyWithoutUserInput
-  habitTasks?: Prisma.HabitTaskUncheckedCreateNestedManyWithoutUserInput
-  habitLogs?: Prisma.HabitLogUncheckedCreateNestedManyWithoutUserInput
-  habitStreaks?: Prisma.HabitStreakUncheckedCreateNestedManyWithoutUserInput
+  trackedHabits?: Prisma.TrackedHabitUncheckedCreateNestedManyWithoutUserInput
+  habitEvents?: Prisma.HabitEventUncheckedCreateNestedManyWithoutUserInput
+  habitOutbox?: Prisma.HabitNotificationOutboxUncheckedCreateNestedManyWithoutUserInput
+  triggers?: Prisma.TriggerUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutPreferenceInput = {
@@ -955,10 +962,10 @@ export type UserUpdateWithoutPreferenceInput = {
   lifeVision?: Prisma.LifeVisionUpdateOneWithoutUserNestedInput
   lifeChapters?: Prisma.LifeChapterUpdateManyWithoutUserNestedInput
   lifeReflections?: Prisma.LifeReflectionUpdateManyWithoutUserNestedInput
-  habits?: Prisma.HabitUpdateManyWithoutUserNestedInput
-  habitTasks?: Prisma.HabitTaskUpdateManyWithoutUserNestedInput
-  habitLogs?: Prisma.HabitLogUpdateManyWithoutUserNestedInput
-  habitStreaks?: Prisma.HabitStreakUpdateManyWithoutUserNestedInput
+  trackedHabits?: Prisma.TrackedHabitUpdateManyWithoutUserNestedInput
+  habitEvents?: Prisma.HabitEventUpdateManyWithoutUserNestedInput
+  habitOutbox?: Prisma.HabitNotificationOutboxUpdateManyWithoutUserNestedInput
+  triggers?: Prisma.TriggerUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutPreferenceInput = {
@@ -987,10 +994,10 @@ export type UserUncheckedUpdateWithoutPreferenceInput = {
   lifeVision?: Prisma.LifeVisionUncheckedUpdateOneWithoutUserNestedInput
   lifeChapters?: Prisma.LifeChapterUncheckedUpdateManyWithoutUserNestedInput
   lifeReflections?: Prisma.LifeReflectionUncheckedUpdateManyWithoutUserNestedInput
-  habits?: Prisma.HabitUncheckedUpdateManyWithoutUserNestedInput
-  habitTasks?: Prisma.HabitTaskUncheckedUpdateManyWithoutUserNestedInput
-  habitLogs?: Prisma.HabitLogUncheckedUpdateManyWithoutUserNestedInput
-  habitStreaks?: Prisma.HabitStreakUncheckedUpdateManyWithoutUserNestedInput
+  trackedHabits?: Prisma.TrackedHabitUncheckedUpdateManyWithoutUserNestedInput
+  habitEvents?: Prisma.HabitEventUncheckedUpdateManyWithoutUserNestedInput
+  habitOutbox?: Prisma.HabitNotificationOutboxUncheckedUpdateManyWithoutUserNestedInput
+  triggers?: Prisma.TriggerUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutAreasInput = {
@@ -1019,10 +1026,10 @@ export type UserCreateWithoutAreasInput = {
   lifeVision?: Prisma.LifeVisionCreateNestedOneWithoutUserInput
   lifeChapters?: Prisma.LifeChapterCreateNestedManyWithoutUserInput
   lifeReflections?: Prisma.LifeReflectionCreateNestedManyWithoutUserInput
-  habits?: Prisma.HabitCreateNestedManyWithoutUserInput
-  habitTasks?: Prisma.HabitTaskCreateNestedManyWithoutUserInput
-  habitLogs?: Prisma.HabitLogCreateNestedManyWithoutUserInput
-  habitStreaks?: Prisma.HabitStreakCreateNestedManyWithoutUserInput
+  trackedHabits?: Prisma.TrackedHabitCreateNestedManyWithoutUserInput
+  habitEvents?: Prisma.HabitEventCreateNestedManyWithoutUserInput
+  habitOutbox?: Prisma.HabitNotificationOutboxCreateNestedManyWithoutUserInput
+  triggers?: Prisma.TriggerCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutAreasInput = {
@@ -1051,10 +1058,10 @@ export type UserUncheckedCreateWithoutAreasInput = {
   lifeVision?: Prisma.LifeVisionUncheckedCreateNestedOneWithoutUserInput
   lifeChapters?: Prisma.LifeChapterUncheckedCreateNestedManyWithoutUserInput
   lifeReflections?: Prisma.LifeReflectionUncheckedCreateNestedManyWithoutUserInput
-  habits?: Prisma.HabitUncheckedCreateNestedManyWithoutUserInput
-  habitTasks?: Prisma.HabitTaskUncheckedCreateNestedManyWithoutUserInput
-  habitLogs?: Prisma.HabitLogUncheckedCreateNestedManyWithoutUserInput
-  habitStreaks?: Prisma.HabitStreakUncheckedCreateNestedManyWithoutUserInput
+  trackedHabits?: Prisma.TrackedHabitUncheckedCreateNestedManyWithoutUserInput
+  habitEvents?: Prisma.HabitEventUncheckedCreateNestedManyWithoutUserInput
+  habitOutbox?: Prisma.HabitNotificationOutboxUncheckedCreateNestedManyWithoutUserInput
+  triggers?: Prisma.TriggerUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutAreasInput = {
@@ -1099,10 +1106,10 @@ export type UserUpdateWithoutAreasInput = {
   lifeVision?: Prisma.LifeVisionUpdateOneWithoutUserNestedInput
   lifeChapters?: Prisma.LifeChapterUpdateManyWithoutUserNestedInput
   lifeReflections?: Prisma.LifeReflectionUpdateManyWithoutUserNestedInput
-  habits?: Prisma.HabitUpdateManyWithoutUserNestedInput
-  habitTasks?: Prisma.HabitTaskUpdateManyWithoutUserNestedInput
-  habitLogs?: Prisma.HabitLogUpdateManyWithoutUserNestedInput
-  habitStreaks?: Prisma.HabitStreakUpdateManyWithoutUserNestedInput
+  trackedHabits?: Prisma.TrackedHabitUpdateManyWithoutUserNestedInput
+  habitEvents?: Prisma.HabitEventUpdateManyWithoutUserNestedInput
+  habitOutbox?: Prisma.HabitNotificationOutboxUpdateManyWithoutUserNestedInput
+  triggers?: Prisma.TriggerUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutAreasInput = {
@@ -1131,10 +1138,10 @@ export type UserUncheckedUpdateWithoutAreasInput = {
   lifeVision?: Prisma.LifeVisionUncheckedUpdateOneWithoutUserNestedInput
   lifeChapters?: Prisma.LifeChapterUncheckedUpdateManyWithoutUserNestedInput
   lifeReflections?: Prisma.LifeReflectionUncheckedUpdateManyWithoutUserNestedInput
-  habits?: Prisma.HabitUncheckedUpdateManyWithoutUserNestedInput
-  habitTasks?: Prisma.HabitTaskUncheckedUpdateManyWithoutUserNestedInput
-  habitLogs?: Prisma.HabitLogUncheckedUpdateManyWithoutUserNestedInput
-  habitStreaks?: Prisma.HabitStreakUncheckedUpdateManyWithoutUserNestedInput
+  trackedHabits?: Prisma.TrackedHabitUncheckedUpdateManyWithoutUserNestedInput
+  habitEvents?: Prisma.HabitEventUncheckedUpdateManyWithoutUserNestedInput
+  habitOutbox?: Prisma.HabitNotificationOutboxUncheckedUpdateManyWithoutUserNestedInput
+  triggers?: Prisma.TriggerUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutGoalsInput = {
@@ -1163,10 +1170,10 @@ export type UserCreateWithoutGoalsInput = {
   lifeVision?: Prisma.LifeVisionCreateNestedOneWithoutUserInput
   lifeChapters?: Prisma.LifeChapterCreateNestedManyWithoutUserInput
   lifeReflections?: Prisma.LifeReflectionCreateNestedManyWithoutUserInput
-  habits?: Prisma.HabitCreateNestedManyWithoutUserInput
-  habitTasks?: Prisma.HabitTaskCreateNestedManyWithoutUserInput
-  habitLogs?: Prisma.HabitLogCreateNestedManyWithoutUserInput
-  habitStreaks?: Prisma.HabitStreakCreateNestedManyWithoutUserInput
+  trackedHabits?: Prisma.TrackedHabitCreateNestedManyWithoutUserInput
+  habitEvents?: Prisma.HabitEventCreateNestedManyWithoutUserInput
+  habitOutbox?: Prisma.HabitNotificationOutboxCreateNestedManyWithoutUserInput
+  triggers?: Prisma.TriggerCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutGoalsInput = {
@@ -1195,10 +1202,10 @@ export type UserUncheckedCreateWithoutGoalsInput = {
   lifeVision?: Prisma.LifeVisionUncheckedCreateNestedOneWithoutUserInput
   lifeChapters?: Prisma.LifeChapterUncheckedCreateNestedManyWithoutUserInput
   lifeReflections?: Prisma.LifeReflectionUncheckedCreateNestedManyWithoutUserInput
-  habits?: Prisma.HabitUncheckedCreateNestedManyWithoutUserInput
-  habitTasks?: Prisma.HabitTaskUncheckedCreateNestedManyWithoutUserInput
-  habitLogs?: Prisma.HabitLogUncheckedCreateNestedManyWithoutUserInput
-  habitStreaks?: Prisma.HabitStreakUncheckedCreateNestedManyWithoutUserInput
+  trackedHabits?: Prisma.TrackedHabitUncheckedCreateNestedManyWithoutUserInput
+  habitEvents?: Prisma.HabitEventUncheckedCreateNestedManyWithoutUserInput
+  habitOutbox?: Prisma.HabitNotificationOutboxUncheckedCreateNestedManyWithoutUserInput
+  triggers?: Prisma.TriggerUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutGoalsInput = {
@@ -1243,10 +1250,10 @@ export type UserUpdateWithoutGoalsInput = {
   lifeVision?: Prisma.LifeVisionUpdateOneWithoutUserNestedInput
   lifeChapters?: Prisma.LifeChapterUpdateManyWithoutUserNestedInput
   lifeReflections?: Prisma.LifeReflectionUpdateManyWithoutUserNestedInput
-  habits?: Prisma.HabitUpdateManyWithoutUserNestedInput
-  habitTasks?: Prisma.HabitTaskUpdateManyWithoutUserNestedInput
-  habitLogs?: Prisma.HabitLogUpdateManyWithoutUserNestedInput
-  habitStreaks?: Prisma.HabitStreakUpdateManyWithoutUserNestedInput
+  trackedHabits?: Prisma.TrackedHabitUpdateManyWithoutUserNestedInput
+  habitEvents?: Prisma.HabitEventUpdateManyWithoutUserNestedInput
+  habitOutbox?: Prisma.HabitNotificationOutboxUpdateManyWithoutUserNestedInput
+  triggers?: Prisma.TriggerUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutGoalsInput = {
@@ -1275,10 +1282,10 @@ export type UserUncheckedUpdateWithoutGoalsInput = {
   lifeVision?: Prisma.LifeVisionUncheckedUpdateOneWithoutUserNestedInput
   lifeChapters?: Prisma.LifeChapterUncheckedUpdateManyWithoutUserNestedInput
   lifeReflections?: Prisma.LifeReflectionUncheckedUpdateManyWithoutUserNestedInput
-  habits?: Prisma.HabitUncheckedUpdateManyWithoutUserNestedInput
-  habitTasks?: Prisma.HabitTaskUncheckedUpdateManyWithoutUserNestedInput
-  habitLogs?: Prisma.HabitLogUncheckedUpdateManyWithoutUserNestedInput
-  habitStreaks?: Prisma.HabitStreakUncheckedUpdateManyWithoutUserNestedInput
+  trackedHabits?: Prisma.TrackedHabitUncheckedUpdateManyWithoutUserNestedInput
+  habitEvents?: Prisma.HabitEventUncheckedUpdateManyWithoutUserNestedInput
+  habitOutbox?: Prisma.HabitNotificationOutboxUncheckedUpdateManyWithoutUserNestedInput
+  triggers?: Prisma.TriggerUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutObjectivesInput = {
@@ -1307,10 +1314,10 @@ export type UserCreateWithoutObjectivesInput = {
   lifeVision?: Prisma.LifeVisionCreateNestedOneWithoutUserInput
   lifeChapters?: Prisma.LifeChapterCreateNestedManyWithoutUserInput
   lifeReflections?: Prisma.LifeReflectionCreateNestedManyWithoutUserInput
-  habits?: Prisma.HabitCreateNestedManyWithoutUserInput
-  habitTasks?: Prisma.HabitTaskCreateNestedManyWithoutUserInput
-  habitLogs?: Prisma.HabitLogCreateNestedManyWithoutUserInput
-  habitStreaks?: Prisma.HabitStreakCreateNestedManyWithoutUserInput
+  trackedHabits?: Prisma.TrackedHabitCreateNestedManyWithoutUserInput
+  habitEvents?: Prisma.HabitEventCreateNestedManyWithoutUserInput
+  habitOutbox?: Prisma.HabitNotificationOutboxCreateNestedManyWithoutUserInput
+  triggers?: Prisma.TriggerCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutObjectivesInput = {
@@ -1339,10 +1346,10 @@ export type UserUncheckedCreateWithoutObjectivesInput = {
   lifeVision?: Prisma.LifeVisionUncheckedCreateNestedOneWithoutUserInput
   lifeChapters?: Prisma.LifeChapterUncheckedCreateNestedManyWithoutUserInput
   lifeReflections?: Prisma.LifeReflectionUncheckedCreateNestedManyWithoutUserInput
-  habits?: Prisma.HabitUncheckedCreateNestedManyWithoutUserInput
-  habitTasks?: Prisma.HabitTaskUncheckedCreateNestedManyWithoutUserInput
-  habitLogs?: Prisma.HabitLogUncheckedCreateNestedManyWithoutUserInput
-  habitStreaks?: Prisma.HabitStreakUncheckedCreateNestedManyWithoutUserInput
+  trackedHabits?: Prisma.TrackedHabitUncheckedCreateNestedManyWithoutUserInput
+  habitEvents?: Prisma.HabitEventUncheckedCreateNestedManyWithoutUserInput
+  habitOutbox?: Prisma.HabitNotificationOutboxUncheckedCreateNestedManyWithoutUserInput
+  triggers?: Prisma.TriggerUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutObjectivesInput = {
@@ -1387,10 +1394,10 @@ export type UserUpdateWithoutObjectivesInput = {
   lifeVision?: Prisma.LifeVisionUpdateOneWithoutUserNestedInput
   lifeChapters?: Prisma.LifeChapterUpdateManyWithoutUserNestedInput
   lifeReflections?: Prisma.LifeReflectionUpdateManyWithoutUserNestedInput
-  habits?: Prisma.HabitUpdateManyWithoutUserNestedInput
-  habitTasks?: Prisma.HabitTaskUpdateManyWithoutUserNestedInput
-  habitLogs?: Prisma.HabitLogUpdateManyWithoutUserNestedInput
-  habitStreaks?: Prisma.HabitStreakUpdateManyWithoutUserNestedInput
+  trackedHabits?: Prisma.TrackedHabitUpdateManyWithoutUserNestedInput
+  habitEvents?: Prisma.HabitEventUpdateManyWithoutUserNestedInput
+  habitOutbox?: Prisma.HabitNotificationOutboxUpdateManyWithoutUserNestedInput
+  triggers?: Prisma.TriggerUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutObjectivesInput = {
@@ -1419,10 +1426,10 @@ export type UserUncheckedUpdateWithoutObjectivesInput = {
   lifeVision?: Prisma.LifeVisionUncheckedUpdateOneWithoutUserNestedInput
   lifeChapters?: Prisma.LifeChapterUncheckedUpdateManyWithoutUserNestedInput
   lifeReflections?: Prisma.LifeReflectionUncheckedUpdateManyWithoutUserNestedInput
-  habits?: Prisma.HabitUncheckedUpdateManyWithoutUserNestedInput
-  habitTasks?: Prisma.HabitTaskUncheckedUpdateManyWithoutUserNestedInput
-  habitLogs?: Prisma.HabitLogUncheckedUpdateManyWithoutUserNestedInput
-  habitStreaks?: Prisma.HabitStreakUncheckedUpdateManyWithoutUserNestedInput
+  trackedHabits?: Prisma.TrackedHabitUncheckedUpdateManyWithoutUserNestedInput
+  habitEvents?: Prisma.HabitEventUncheckedUpdateManyWithoutUserNestedInput
+  habitOutbox?: Prisma.HabitNotificationOutboxUncheckedUpdateManyWithoutUserNestedInput
+  triggers?: Prisma.TriggerUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutProjectsInput = {
@@ -1451,10 +1458,10 @@ export type UserCreateWithoutProjectsInput = {
   lifeVision?: Prisma.LifeVisionCreateNestedOneWithoutUserInput
   lifeChapters?: Prisma.LifeChapterCreateNestedManyWithoutUserInput
   lifeReflections?: Prisma.LifeReflectionCreateNestedManyWithoutUserInput
-  habits?: Prisma.HabitCreateNestedManyWithoutUserInput
-  habitTasks?: Prisma.HabitTaskCreateNestedManyWithoutUserInput
-  habitLogs?: Prisma.HabitLogCreateNestedManyWithoutUserInput
-  habitStreaks?: Prisma.HabitStreakCreateNestedManyWithoutUserInput
+  trackedHabits?: Prisma.TrackedHabitCreateNestedManyWithoutUserInput
+  habitEvents?: Prisma.HabitEventCreateNestedManyWithoutUserInput
+  habitOutbox?: Prisma.HabitNotificationOutboxCreateNestedManyWithoutUserInput
+  triggers?: Prisma.TriggerCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutProjectsInput = {
@@ -1483,10 +1490,10 @@ export type UserUncheckedCreateWithoutProjectsInput = {
   lifeVision?: Prisma.LifeVisionUncheckedCreateNestedOneWithoutUserInput
   lifeChapters?: Prisma.LifeChapterUncheckedCreateNestedManyWithoutUserInput
   lifeReflections?: Prisma.LifeReflectionUncheckedCreateNestedManyWithoutUserInput
-  habits?: Prisma.HabitUncheckedCreateNestedManyWithoutUserInput
-  habitTasks?: Prisma.HabitTaskUncheckedCreateNestedManyWithoutUserInput
-  habitLogs?: Prisma.HabitLogUncheckedCreateNestedManyWithoutUserInput
-  habitStreaks?: Prisma.HabitStreakUncheckedCreateNestedManyWithoutUserInput
+  trackedHabits?: Prisma.TrackedHabitUncheckedCreateNestedManyWithoutUserInput
+  habitEvents?: Prisma.HabitEventUncheckedCreateNestedManyWithoutUserInput
+  habitOutbox?: Prisma.HabitNotificationOutboxUncheckedCreateNestedManyWithoutUserInput
+  triggers?: Prisma.TriggerUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutProjectsInput = {
@@ -1531,10 +1538,10 @@ export type UserUpdateWithoutProjectsInput = {
   lifeVision?: Prisma.LifeVisionUpdateOneWithoutUserNestedInput
   lifeChapters?: Prisma.LifeChapterUpdateManyWithoutUserNestedInput
   lifeReflections?: Prisma.LifeReflectionUpdateManyWithoutUserNestedInput
-  habits?: Prisma.HabitUpdateManyWithoutUserNestedInput
-  habitTasks?: Prisma.HabitTaskUpdateManyWithoutUserNestedInput
-  habitLogs?: Prisma.HabitLogUpdateManyWithoutUserNestedInput
-  habitStreaks?: Prisma.HabitStreakUpdateManyWithoutUserNestedInput
+  trackedHabits?: Prisma.TrackedHabitUpdateManyWithoutUserNestedInput
+  habitEvents?: Prisma.HabitEventUpdateManyWithoutUserNestedInput
+  habitOutbox?: Prisma.HabitNotificationOutboxUpdateManyWithoutUserNestedInput
+  triggers?: Prisma.TriggerUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutProjectsInput = {
@@ -1563,10 +1570,10 @@ export type UserUncheckedUpdateWithoutProjectsInput = {
   lifeVision?: Prisma.LifeVisionUncheckedUpdateOneWithoutUserNestedInput
   lifeChapters?: Prisma.LifeChapterUncheckedUpdateManyWithoutUserNestedInput
   lifeReflections?: Prisma.LifeReflectionUncheckedUpdateManyWithoutUserNestedInput
-  habits?: Prisma.HabitUncheckedUpdateManyWithoutUserNestedInput
-  habitTasks?: Prisma.HabitTaskUncheckedUpdateManyWithoutUserNestedInput
-  habitLogs?: Prisma.HabitLogUncheckedUpdateManyWithoutUserNestedInput
-  habitStreaks?: Prisma.HabitStreakUncheckedUpdateManyWithoutUserNestedInput
+  trackedHabits?: Prisma.TrackedHabitUncheckedUpdateManyWithoutUserNestedInput
+  habitEvents?: Prisma.HabitEventUncheckedUpdateManyWithoutUserNestedInput
+  habitOutbox?: Prisma.HabitNotificationOutboxUncheckedUpdateManyWithoutUserNestedInput
+  triggers?: Prisma.TriggerUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutStagesInput = {
@@ -1595,10 +1602,10 @@ export type UserCreateWithoutStagesInput = {
   lifeVision?: Prisma.LifeVisionCreateNestedOneWithoutUserInput
   lifeChapters?: Prisma.LifeChapterCreateNestedManyWithoutUserInput
   lifeReflections?: Prisma.LifeReflectionCreateNestedManyWithoutUserInput
-  habits?: Prisma.HabitCreateNestedManyWithoutUserInput
-  habitTasks?: Prisma.HabitTaskCreateNestedManyWithoutUserInput
-  habitLogs?: Prisma.HabitLogCreateNestedManyWithoutUserInput
-  habitStreaks?: Prisma.HabitStreakCreateNestedManyWithoutUserInput
+  trackedHabits?: Prisma.TrackedHabitCreateNestedManyWithoutUserInput
+  habitEvents?: Prisma.HabitEventCreateNestedManyWithoutUserInput
+  habitOutbox?: Prisma.HabitNotificationOutboxCreateNestedManyWithoutUserInput
+  triggers?: Prisma.TriggerCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutStagesInput = {
@@ -1627,10 +1634,10 @@ export type UserUncheckedCreateWithoutStagesInput = {
   lifeVision?: Prisma.LifeVisionUncheckedCreateNestedOneWithoutUserInput
   lifeChapters?: Prisma.LifeChapterUncheckedCreateNestedManyWithoutUserInput
   lifeReflections?: Prisma.LifeReflectionUncheckedCreateNestedManyWithoutUserInput
-  habits?: Prisma.HabitUncheckedCreateNestedManyWithoutUserInput
-  habitTasks?: Prisma.HabitTaskUncheckedCreateNestedManyWithoutUserInput
-  habitLogs?: Prisma.HabitLogUncheckedCreateNestedManyWithoutUserInput
-  habitStreaks?: Prisma.HabitStreakUncheckedCreateNestedManyWithoutUserInput
+  trackedHabits?: Prisma.TrackedHabitUncheckedCreateNestedManyWithoutUserInput
+  habitEvents?: Prisma.HabitEventUncheckedCreateNestedManyWithoutUserInput
+  habitOutbox?: Prisma.HabitNotificationOutboxUncheckedCreateNestedManyWithoutUserInput
+  triggers?: Prisma.TriggerUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutStagesInput = {
@@ -1675,10 +1682,10 @@ export type UserUpdateWithoutStagesInput = {
   lifeVision?: Prisma.LifeVisionUpdateOneWithoutUserNestedInput
   lifeChapters?: Prisma.LifeChapterUpdateManyWithoutUserNestedInput
   lifeReflections?: Prisma.LifeReflectionUpdateManyWithoutUserNestedInput
-  habits?: Prisma.HabitUpdateManyWithoutUserNestedInput
-  habitTasks?: Prisma.HabitTaskUpdateManyWithoutUserNestedInput
-  habitLogs?: Prisma.HabitLogUpdateManyWithoutUserNestedInput
-  habitStreaks?: Prisma.HabitStreakUpdateManyWithoutUserNestedInput
+  trackedHabits?: Prisma.TrackedHabitUpdateManyWithoutUserNestedInput
+  habitEvents?: Prisma.HabitEventUpdateManyWithoutUserNestedInput
+  habitOutbox?: Prisma.HabitNotificationOutboxUpdateManyWithoutUserNestedInput
+  triggers?: Prisma.TriggerUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutStagesInput = {
@@ -1707,10 +1714,10 @@ export type UserUncheckedUpdateWithoutStagesInput = {
   lifeVision?: Prisma.LifeVisionUncheckedUpdateOneWithoutUserNestedInput
   lifeChapters?: Prisma.LifeChapterUncheckedUpdateManyWithoutUserNestedInput
   lifeReflections?: Prisma.LifeReflectionUncheckedUpdateManyWithoutUserNestedInput
-  habits?: Prisma.HabitUncheckedUpdateManyWithoutUserNestedInput
-  habitTasks?: Prisma.HabitTaskUncheckedUpdateManyWithoutUserNestedInput
-  habitLogs?: Prisma.HabitLogUncheckedUpdateManyWithoutUserNestedInput
-  habitStreaks?: Prisma.HabitStreakUncheckedUpdateManyWithoutUserNestedInput
+  trackedHabits?: Prisma.TrackedHabitUncheckedUpdateManyWithoutUserNestedInput
+  habitEvents?: Prisma.HabitEventUncheckedUpdateManyWithoutUserNestedInput
+  habitOutbox?: Prisma.HabitNotificationOutboxUncheckedUpdateManyWithoutUserNestedInput
+  triggers?: Prisma.TriggerUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutMilestonesInput = {
@@ -1739,10 +1746,10 @@ export type UserCreateWithoutMilestonesInput = {
   lifeVision?: Prisma.LifeVisionCreateNestedOneWithoutUserInput
   lifeChapters?: Prisma.LifeChapterCreateNestedManyWithoutUserInput
   lifeReflections?: Prisma.LifeReflectionCreateNestedManyWithoutUserInput
-  habits?: Prisma.HabitCreateNestedManyWithoutUserInput
-  habitTasks?: Prisma.HabitTaskCreateNestedManyWithoutUserInput
-  habitLogs?: Prisma.HabitLogCreateNestedManyWithoutUserInput
-  habitStreaks?: Prisma.HabitStreakCreateNestedManyWithoutUserInput
+  trackedHabits?: Prisma.TrackedHabitCreateNestedManyWithoutUserInput
+  habitEvents?: Prisma.HabitEventCreateNestedManyWithoutUserInput
+  habitOutbox?: Prisma.HabitNotificationOutboxCreateNestedManyWithoutUserInput
+  triggers?: Prisma.TriggerCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutMilestonesInput = {
@@ -1771,10 +1778,10 @@ export type UserUncheckedCreateWithoutMilestonesInput = {
   lifeVision?: Prisma.LifeVisionUncheckedCreateNestedOneWithoutUserInput
   lifeChapters?: Prisma.LifeChapterUncheckedCreateNestedManyWithoutUserInput
   lifeReflections?: Prisma.LifeReflectionUncheckedCreateNestedManyWithoutUserInput
-  habits?: Prisma.HabitUncheckedCreateNestedManyWithoutUserInput
-  habitTasks?: Prisma.HabitTaskUncheckedCreateNestedManyWithoutUserInput
-  habitLogs?: Prisma.HabitLogUncheckedCreateNestedManyWithoutUserInput
-  habitStreaks?: Prisma.HabitStreakUncheckedCreateNestedManyWithoutUserInput
+  trackedHabits?: Prisma.TrackedHabitUncheckedCreateNestedManyWithoutUserInput
+  habitEvents?: Prisma.HabitEventUncheckedCreateNestedManyWithoutUserInput
+  habitOutbox?: Prisma.HabitNotificationOutboxUncheckedCreateNestedManyWithoutUserInput
+  triggers?: Prisma.TriggerUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutMilestonesInput = {
@@ -1819,10 +1826,10 @@ export type UserUpdateWithoutMilestonesInput = {
   lifeVision?: Prisma.LifeVisionUpdateOneWithoutUserNestedInput
   lifeChapters?: Prisma.LifeChapterUpdateManyWithoutUserNestedInput
   lifeReflections?: Prisma.LifeReflectionUpdateManyWithoutUserNestedInput
-  habits?: Prisma.HabitUpdateManyWithoutUserNestedInput
-  habitTasks?: Prisma.HabitTaskUpdateManyWithoutUserNestedInput
-  habitLogs?: Prisma.HabitLogUpdateManyWithoutUserNestedInput
-  habitStreaks?: Prisma.HabitStreakUpdateManyWithoutUserNestedInput
+  trackedHabits?: Prisma.TrackedHabitUpdateManyWithoutUserNestedInput
+  habitEvents?: Prisma.HabitEventUpdateManyWithoutUserNestedInput
+  habitOutbox?: Prisma.HabitNotificationOutboxUpdateManyWithoutUserNestedInput
+  triggers?: Prisma.TriggerUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutMilestonesInput = {
@@ -1851,10 +1858,10 @@ export type UserUncheckedUpdateWithoutMilestonesInput = {
   lifeVision?: Prisma.LifeVisionUncheckedUpdateOneWithoutUserNestedInput
   lifeChapters?: Prisma.LifeChapterUncheckedUpdateManyWithoutUserNestedInput
   lifeReflections?: Prisma.LifeReflectionUncheckedUpdateManyWithoutUserNestedInput
-  habits?: Prisma.HabitUncheckedUpdateManyWithoutUserNestedInput
-  habitTasks?: Prisma.HabitTaskUncheckedUpdateManyWithoutUserNestedInput
-  habitLogs?: Prisma.HabitLogUncheckedUpdateManyWithoutUserNestedInput
-  habitStreaks?: Prisma.HabitStreakUncheckedUpdateManyWithoutUserNestedInput
+  trackedHabits?: Prisma.TrackedHabitUncheckedUpdateManyWithoutUserNestedInput
+  habitEvents?: Prisma.HabitEventUncheckedUpdateManyWithoutUserNestedInput
+  habitOutbox?: Prisma.HabitNotificationOutboxUncheckedUpdateManyWithoutUserNestedInput
+  triggers?: Prisma.TriggerUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutTasksInput = {
@@ -1883,10 +1890,10 @@ export type UserCreateWithoutTasksInput = {
   lifeVision?: Prisma.LifeVisionCreateNestedOneWithoutUserInput
   lifeChapters?: Prisma.LifeChapterCreateNestedManyWithoutUserInput
   lifeReflections?: Prisma.LifeReflectionCreateNestedManyWithoutUserInput
-  habits?: Prisma.HabitCreateNestedManyWithoutUserInput
-  habitTasks?: Prisma.HabitTaskCreateNestedManyWithoutUserInput
-  habitLogs?: Prisma.HabitLogCreateNestedManyWithoutUserInput
-  habitStreaks?: Prisma.HabitStreakCreateNestedManyWithoutUserInput
+  trackedHabits?: Prisma.TrackedHabitCreateNestedManyWithoutUserInput
+  habitEvents?: Prisma.HabitEventCreateNestedManyWithoutUserInput
+  habitOutbox?: Prisma.HabitNotificationOutboxCreateNestedManyWithoutUserInput
+  triggers?: Prisma.TriggerCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutTasksInput = {
@@ -1915,10 +1922,10 @@ export type UserUncheckedCreateWithoutTasksInput = {
   lifeVision?: Prisma.LifeVisionUncheckedCreateNestedOneWithoutUserInput
   lifeChapters?: Prisma.LifeChapterUncheckedCreateNestedManyWithoutUserInput
   lifeReflections?: Prisma.LifeReflectionUncheckedCreateNestedManyWithoutUserInput
-  habits?: Prisma.HabitUncheckedCreateNestedManyWithoutUserInput
-  habitTasks?: Prisma.HabitTaskUncheckedCreateNestedManyWithoutUserInput
-  habitLogs?: Prisma.HabitLogUncheckedCreateNestedManyWithoutUserInput
-  habitStreaks?: Prisma.HabitStreakUncheckedCreateNestedManyWithoutUserInput
+  trackedHabits?: Prisma.TrackedHabitUncheckedCreateNestedManyWithoutUserInput
+  habitEvents?: Prisma.HabitEventUncheckedCreateNestedManyWithoutUserInput
+  habitOutbox?: Prisma.HabitNotificationOutboxUncheckedCreateNestedManyWithoutUserInput
+  triggers?: Prisma.TriggerUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutTasksInput = {
@@ -1963,10 +1970,10 @@ export type UserUpdateWithoutTasksInput = {
   lifeVision?: Prisma.LifeVisionUpdateOneWithoutUserNestedInput
   lifeChapters?: Prisma.LifeChapterUpdateManyWithoutUserNestedInput
   lifeReflections?: Prisma.LifeReflectionUpdateManyWithoutUserNestedInput
-  habits?: Prisma.HabitUpdateManyWithoutUserNestedInput
-  habitTasks?: Prisma.HabitTaskUpdateManyWithoutUserNestedInput
-  habitLogs?: Prisma.HabitLogUpdateManyWithoutUserNestedInput
-  habitStreaks?: Prisma.HabitStreakUpdateManyWithoutUserNestedInput
+  trackedHabits?: Prisma.TrackedHabitUpdateManyWithoutUserNestedInput
+  habitEvents?: Prisma.HabitEventUpdateManyWithoutUserNestedInput
+  habitOutbox?: Prisma.HabitNotificationOutboxUpdateManyWithoutUserNestedInput
+  triggers?: Prisma.TriggerUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutTasksInput = {
@@ -1995,10 +2002,10 @@ export type UserUncheckedUpdateWithoutTasksInput = {
   lifeVision?: Prisma.LifeVisionUncheckedUpdateOneWithoutUserNestedInput
   lifeChapters?: Prisma.LifeChapterUncheckedUpdateManyWithoutUserNestedInput
   lifeReflections?: Prisma.LifeReflectionUncheckedUpdateManyWithoutUserNestedInput
-  habits?: Prisma.HabitUncheckedUpdateManyWithoutUserNestedInput
-  habitTasks?: Prisma.HabitTaskUncheckedUpdateManyWithoutUserNestedInput
-  habitLogs?: Prisma.HabitLogUncheckedUpdateManyWithoutUserNestedInput
-  habitStreaks?: Prisma.HabitStreakUncheckedUpdateManyWithoutUserNestedInput
+  trackedHabits?: Prisma.TrackedHabitUncheckedUpdateManyWithoutUserNestedInput
+  habitEvents?: Prisma.HabitEventUncheckedUpdateManyWithoutUserNestedInput
+  habitOutbox?: Prisma.HabitNotificationOutboxUncheckedUpdateManyWithoutUserNestedInput
+  triggers?: Prisma.TriggerUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutSessionsInput = {
@@ -2027,10 +2034,10 @@ export type UserCreateWithoutSessionsInput = {
   lifeVision?: Prisma.LifeVisionCreateNestedOneWithoutUserInput
   lifeChapters?: Prisma.LifeChapterCreateNestedManyWithoutUserInput
   lifeReflections?: Prisma.LifeReflectionCreateNestedManyWithoutUserInput
-  habits?: Prisma.HabitCreateNestedManyWithoutUserInput
-  habitTasks?: Prisma.HabitTaskCreateNestedManyWithoutUserInput
-  habitLogs?: Prisma.HabitLogCreateNestedManyWithoutUserInput
-  habitStreaks?: Prisma.HabitStreakCreateNestedManyWithoutUserInput
+  trackedHabits?: Prisma.TrackedHabitCreateNestedManyWithoutUserInput
+  habitEvents?: Prisma.HabitEventCreateNestedManyWithoutUserInput
+  habitOutbox?: Prisma.HabitNotificationOutboxCreateNestedManyWithoutUserInput
+  triggers?: Prisma.TriggerCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutSessionsInput = {
@@ -2059,10 +2066,10 @@ export type UserUncheckedCreateWithoutSessionsInput = {
   lifeVision?: Prisma.LifeVisionUncheckedCreateNestedOneWithoutUserInput
   lifeChapters?: Prisma.LifeChapterUncheckedCreateNestedManyWithoutUserInput
   lifeReflections?: Prisma.LifeReflectionUncheckedCreateNestedManyWithoutUserInput
-  habits?: Prisma.HabitUncheckedCreateNestedManyWithoutUserInput
-  habitTasks?: Prisma.HabitTaskUncheckedCreateNestedManyWithoutUserInput
-  habitLogs?: Prisma.HabitLogUncheckedCreateNestedManyWithoutUserInput
-  habitStreaks?: Prisma.HabitStreakUncheckedCreateNestedManyWithoutUserInput
+  trackedHabits?: Prisma.TrackedHabitUncheckedCreateNestedManyWithoutUserInput
+  habitEvents?: Prisma.HabitEventUncheckedCreateNestedManyWithoutUserInput
+  habitOutbox?: Prisma.HabitNotificationOutboxUncheckedCreateNestedManyWithoutUserInput
+  triggers?: Prisma.TriggerUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutSessionsInput = {
@@ -2107,10 +2114,10 @@ export type UserUpdateWithoutSessionsInput = {
   lifeVision?: Prisma.LifeVisionUpdateOneWithoutUserNestedInput
   lifeChapters?: Prisma.LifeChapterUpdateManyWithoutUserNestedInput
   lifeReflections?: Prisma.LifeReflectionUpdateManyWithoutUserNestedInput
-  habits?: Prisma.HabitUpdateManyWithoutUserNestedInput
-  habitTasks?: Prisma.HabitTaskUpdateManyWithoutUserNestedInput
-  habitLogs?: Prisma.HabitLogUpdateManyWithoutUserNestedInput
-  habitStreaks?: Prisma.HabitStreakUpdateManyWithoutUserNestedInput
+  trackedHabits?: Prisma.TrackedHabitUpdateManyWithoutUserNestedInput
+  habitEvents?: Prisma.HabitEventUpdateManyWithoutUserNestedInput
+  habitOutbox?: Prisma.HabitNotificationOutboxUpdateManyWithoutUserNestedInput
+  triggers?: Prisma.TriggerUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutSessionsInput = {
@@ -2139,10 +2146,10 @@ export type UserUncheckedUpdateWithoutSessionsInput = {
   lifeVision?: Prisma.LifeVisionUncheckedUpdateOneWithoutUserNestedInput
   lifeChapters?: Prisma.LifeChapterUncheckedUpdateManyWithoutUserNestedInput
   lifeReflections?: Prisma.LifeReflectionUncheckedUpdateManyWithoutUserNestedInput
-  habits?: Prisma.HabitUncheckedUpdateManyWithoutUserNestedInput
-  habitTasks?: Prisma.HabitTaskUncheckedUpdateManyWithoutUserNestedInput
-  habitLogs?: Prisma.HabitLogUncheckedUpdateManyWithoutUserNestedInput
-  habitStreaks?: Prisma.HabitStreakUncheckedUpdateManyWithoutUserNestedInput
+  trackedHabits?: Prisma.TrackedHabitUncheckedUpdateManyWithoutUserNestedInput
+  habitEvents?: Prisma.HabitEventUncheckedUpdateManyWithoutUserNestedInput
+  habitOutbox?: Prisma.HabitNotificationOutboxUncheckedUpdateManyWithoutUserNestedInput
+  triggers?: Prisma.TriggerUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutDailyFocusesInput = {
@@ -2171,10 +2178,10 @@ export type UserCreateWithoutDailyFocusesInput = {
   lifeVision?: Prisma.LifeVisionCreateNestedOneWithoutUserInput
   lifeChapters?: Prisma.LifeChapterCreateNestedManyWithoutUserInput
   lifeReflections?: Prisma.LifeReflectionCreateNestedManyWithoutUserInput
-  habits?: Prisma.HabitCreateNestedManyWithoutUserInput
-  habitTasks?: Prisma.HabitTaskCreateNestedManyWithoutUserInput
-  habitLogs?: Prisma.HabitLogCreateNestedManyWithoutUserInput
-  habitStreaks?: Prisma.HabitStreakCreateNestedManyWithoutUserInput
+  trackedHabits?: Prisma.TrackedHabitCreateNestedManyWithoutUserInput
+  habitEvents?: Prisma.HabitEventCreateNestedManyWithoutUserInput
+  habitOutbox?: Prisma.HabitNotificationOutboxCreateNestedManyWithoutUserInput
+  triggers?: Prisma.TriggerCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutDailyFocusesInput = {
@@ -2203,10 +2210,10 @@ export type UserUncheckedCreateWithoutDailyFocusesInput = {
   lifeVision?: Prisma.LifeVisionUncheckedCreateNestedOneWithoutUserInput
   lifeChapters?: Prisma.LifeChapterUncheckedCreateNestedManyWithoutUserInput
   lifeReflections?: Prisma.LifeReflectionUncheckedCreateNestedManyWithoutUserInput
-  habits?: Prisma.HabitUncheckedCreateNestedManyWithoutUserInput
-  habitTasks?: Prisma.HabitTaskUncheckedCreateNestedManyWithoutUserInput
-  habitLogs?: Prisma.HabitLogUncheckedCreateNestedManyWithoutUserInput
-  habitStreaks?: Prisma.HabitStreakUncheckedCreateNestedManyWithoutUserInput
+  trackedHabits?: Prisma.TrackedHabitUncheckedCreateNestedManyWithoutUserInput
+  habitEvents?: Prisma.HabitEventUncheckedCreateNestedManyWithoutUserInput
+  habitOutbox?: Prisma.HabitNotificationOutboxUncheckedCreateNestedManyWithoutUserInput
+  triggers?: Prisma.TriggerUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutDailyFocusesInput = {
@@ -2251,10 +2258,10 @@ export type UserUpdateWithoutDailyFocusesInput = {
   lifeVision?: Prisma.LifeVisionUpdateOneWithoutUserNestedInput
   lifeChapters?: Prisma.LifeChapterUpdateManyWithoutUserNestedInput
   lifeReflections?: Prisma.LifeReflectionUpdateManyWithoutUserNestedInput
-  habits?: Prisma.HabitUpdateManyWithoutUserNestedInput
-  habitTasks?: Prisma.HabitTaskUpdateManyWithoutUserNestedInput
-  habitLogs?: Prisma.HabitLogUpdateManyWithoutUserNestedInput
-  habitStreaks?: Prisma.HabitStreakUpdateManyWithoutUserNestedInput
+  trackedHabits?: Prisma.TrackedHabitUpdateManyWithoutUserNestedInput
+  habitEvents?: Prisma.HabitEventUpdateManyWithoutUserNestedInput
+  habitOutbox?: Prisma.HabitNotificationOutboxUpdateManyWithoutUserNestedInput
+  triggers?: Prisma.TriggerUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutDailyFocusesInput = {
@@ -2283,10 +2290,10 @@ export type UserUncheckedUpdateWithoutDailyFocusesInput = {
   lifeVision?: Prisma.LifeVisionUncheckedUpdateOneWithoutUserNestedInput
   lifeChapters?: Prisma.LifeChapterUncheckedUpdateManyWithoutUserNestedInput
   lifeReflections?: Prisma.LifeReflectionUncheckedUpdateManyWithoutUserNestedInput
-  habits?: Prisma.HabitUncheckedUpdateManyWithoutUserNestedInput
-  habitTasks?: Prisma.HabitTaskUncheckedUpdateManyWithoutUserNestedInput
-  habitLogs?: Prisma.HabitLogUncheckedUpdateManyWithoutUserNestedInput
-  habitStreaks?: Prisma.HabitStreakUncheckedUpdateManyWithoutUserNestedInput
+  trackedHabits?: Prisma.TrackedHabitUncheckedUpdateManyWithoutUserNestedInput
+  habitEvents?: Prisma.HabitEventUncheckedUpdateManyWithoutUserNestedInput
+  habitOutbox?: Prisma.HabitNotificationOutboxUncheckedUpdateManyWithoutUserNestedInput
+  triggers?: Prisma.TriggerUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutReviewsInput = {
@@ -2315,10 +2322,10 @@ export type UserCreateWithoutReviewsInput = {
   lifeVision?: Prisma.LifeVisionCreateNestedOneWithoutUserInput
   lifeChapters?: Prisma.LifeChapterCreateNestedManyWithoutUserInput
   lifeReflections?: Prisma.LifeReflectionCreateNestedManyWithoutUserInput
-  habits?: Prisma.HabitCreateNestedManyWithoutUserInput
-  habitTasks?: Prisma.HabitTaskCreateNestedManyWithoutUserInput
-  habitLogs?: Prisma.HabitLogCreateNestedManyWithoutUserInput
-  habitStreaks?: Prisma.HabitStreakCreateNestedManyWithoutUserInput
+  trackedHabits?: Prisma.TrackedHabitCreateNestedManyWithoutUserInput
+  habitEvents?: Prisma.HabitEventCreateNestedManyWithoutUserInput
+  habitOutbox?: Prisma.HabitNotificationOutboxCreateNestedManyWithoutUserInput
+  triggers?: Prisma.TriggerCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutReviewsInput = {
@@ -2347,10 +2354,10 @@ export type UserUncheckedCreateWithoutReviewsInput = {
   lifeVision?: Prisma.LifeVisionUncheckedCreateNestedOneWithoutUserInput
   lifeChapters?: Prisma.LifeChapterUncheckedCreateNestedManyWithoutUserInput
   lifeReflections?: Prisma.LifeReflectionUncheckedCreateNestedManyWithoutUserInput
-  habits?: Prisma.HabitUncheckedCreateNestedManyWithoutUserInput
-  habitTasks?: Prisma.HabitTaskUncheckedCreateNestedManyWithoutUserInput
-  habitLogs?: Prisma.HabitLogUncheckedCreateNestedManyWithoutUserInput
-  habitStreaks?: Prisma.HabitStreakUncheckedCreateNestedManyWithoutUserInput
+  trackedHabits?: Prisma.TrackedHabitUncheckedCreateNestedManyWithoutUserInput
+  habitEvents?: Prisma.HabitEventUncheckedCreateNestedManyWithoutUserInput
+  habitOutbox?: Prisma.HabitNotificationOutboxUncheckedCreateNestedManyWithoutUserInput
+  triggers?: Prisma.TriggerUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutReviewsInput = {
@@ -2395,10 +2402,10 @@ export type UserUpdateWithoutReviewsInput = {
   lifeVision?: Prisma.LifeVisionUpdateOneWithoutUserNestedInput
   lifeChapters?: Prisma.LifeChapterUpdateManyWithoutUserNestedInput
   lifeReflections?: Prisma.LifeReflectionUpdateManyWithoutUserNestedInput
-  habits?: Prisma.HabitUpdateManyWithoutUserNestedInput
-  habitTasks?: Prisma.HabitTaskUpdateManyWithoutUserNestedInput
-  habitLogs?: Prisma.HabitLogUpdateManyWithoutUserNestedInput
-  habitStreaks?: Prisma.HabitStreakUpdateManyWithoutUserNestedInput
+  trackedHabits?: Prisma.TrackedHabitUpdateManyWithoutUserNestedInput
+  habitEvents?: Prisma.HabitEventUpdateManyWithoutUserNestedInput
+  habitOutbox?: Prisma.HabitNotificationOutboxUpdateManyWithoutUserNestedInput
+  triggers?: Prisma.TriggerUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutReviewsInput = {
@@ -2427,10 +2434,10 @@ export type UserUncheckedUpdateWithoutReviewsInput = {
   lifeVision?: Prisma.LifeVisionUncheckedUpdateOneWithoutUserNestedInput
   lifeChapters?: Prisma.LifeChapterUncheckedUpdateManyWithoutUserNestedInput
   lifeReflections?: Prisma.LifeReflectionUncheckedUpdateManyWithoutUserNestedInput
-  habits?: Prisma.HabitUncheckedUpdateManyWithoutUserNestedInput
-  habitTasks?: Prisma.HabitTaskUncheckedUpdateManyWithoutUserNestedInput
-  habitLogs?: Prisma.HabitLogUncheckedUpdateManyWithoutUserNestedInput
-  habitStreaks?: Prisma.HabitStreakUncheckedUpdateManyWithoutUserNestedInput
+  trackedHabits?: Prisma.TrackedHabitUncheckedUpdateManyWithoutUserNestedInput
+  habitEvents?: Prisma.HabitEventUncheckedUpdateManyWithoutUserNestedInput
+  habitOutbox?: Prisma.HabitNotificationOutboxUncheckedUpdateManyWithoutUserNestedInput
+  triggers?: Prisma.TriggerUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutCalendarEventsInput = {
@@ -2459,10 +2466,10 @@ export type UserCreateWithoutCalendarEventsInput = {
   lifeVision?: Prisma.LifeVisionCreateNestedOneWithoutUserInput
   lifeChapters?: Prisma.LifeChapterCreateNestedManyWithoutUserInput
   lifeReflections?: Prisma.LifeReflectionCreateNestedManyWithoutUserInput
-  habits?: Prisma.HabitCreateNestedManyWithoutUserInput
-  habitTasks?: Prisma.HabitTaskCreateNestedManyWithoutUserInput
-  habitLogs?: Prisma.HabitLogCreateNestedManyWithoutUserInput
-  habitStreaks?: Prisma.HabitStreakCreateNestedManyWithoutUserInput
+  trackedHabits?: Prisma.TrackedHabitCreateNestedManyWithoutUserInput
+  habitEvents?: Prisma.HabitEventCreateNestedManyWithoutUserInput
+  habitOutbox?: Prisma.HabitNotificationOutboxCreateNestedManyWithoutUserInput
+  triggers?: Prisma.TriggerCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutCalendarEventsInput = {
@@ -2491,10 +2498,10 @@ export type UserUncheckedCreateWithoutCalendarEventsInput = {
   lifeVision?: Prisma.LifeVisionUncheckedCreateNestedOneWithoutUserInput
   lifeChapters?: Prisma.LifeChapterUncheckedCreateNestedManyWithoutUserInput
   lifeReflections?: Prisma.LifeReflectionUncheckedCreateNestedManyWithoutUserInput
-  habits?: Prisma.HabitUncheckedCreateNestedManyWithoutUserInput
-  habitTasks?: Prisma.HabitTaskUncheckedCreateNestedManyWithoutUserInput
-  habitLogs?: Prisma.HabitLogUncheckedCreateNestedManyWithoutUserInput
-  habitStreaks?: Prisma.HabitStreakUncheckedCreateNestedManyWithoutUserInput
+  trackedHabits?: Prisma.TrackedHabitUncheckedCreateNestedManyWithoutUserInput
+  habitEvents?: Prisma.HabitEventUncheckedCreateNestedManyWithoutUserInput
+  habitOutbox?: Prisma.HabitNotificationOutboxUncheckedCreateNestedManyWithoutUserInput
+  triggers?: Prisma.TriggerUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutCalendarEventsInput = {
@@ -2539,10 +2546,10 @@ export type UserUpdateWithoutCalendarEventsInput = {
   lifeVision?: Prisma.LifeVisionUpdateOneWithoutUserNestedInput
   lifeChapters?: Prisma.LifeChapterUpdateManyWithoutUserNestedInput
   lifeReflections?: Prisma.LifeReflectionUpdateManyWithoutUserNestedInput
-  habits?: Prisma.HabitUpdateManyWithoutUserNestedInput
-  habitTasks?: Prisma.HabitTaskUpdateManyWithoutUserNestedInput
-  habitLogs?: Prisma.HabitLogUpdateManyWithoutUserNestedInput
-  habitStreaks?: Prisma.HabitStreakUpdateManyWithoutUserNestedInput
+  trackedHabits?: Prisma.TrackedHabitUpdateManyWithoutUserNestedInput
+  habitEvents?: Prisma.HabitEventUpdateManyWithoutUserNestedInput
+  habitOutbox?: Prisma.HabitNotificationOutboxUpdateManyWithoutUserNestedInput
+  triggers?: Prisma.TriggerUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutCalendarEventsInput = {
@@ -2571,10 +2578,10 @@ export type UserUncheckedUpdateWithoutCalendarEventsInput = {
   lifeVision?: Prisma.LifeVisionUncheckedUpdateOneWithoutUserNestedInput
   lifeChapters?: Prisma.LifeChapterUncheckedUpdateManyWithoutUserNestedInput
   lifeReflections?: Prisma.LifeReflectionUncheckedUpdateManyWithoutUserNestedInput
-  habits?: Prisma.HabitUncheckedUpdateManyWithoutUserNestedInput
-  habitTasks?: Prisma.HabitTaskUncheckedUpdateManyWithoutUserNestedInput
-  habitLogs?: Prisma.HabitLogUncheckedUpdateManyWithoutUserNestedInput
-  habitStreaks?: Prisma.HabitStreakUncheckedUpdateManyWithoutUserNestedInput
+  trackedHabits?: Prisma.TrackedHabitUncheckedUpdateManyWithoutUserNestedInput
+  habitEvents?: Prisma.HabitEventUncheckedUpdateManyWithoutUserNestedInput
+  habitOutbox?: Prisma.HabitNotificationOutboxUncheckedUpdateManyWithoutUserNestedInput
+  triggers?: Prisma.TriggerUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutActivitiesInput = {
@@ -2603,10 +2610,10 @@ export type UserCreateWithoutActivitiesInput = {
   lifeVision?: Prisma.LifeVisionCreateNestedOneWithoutUserInput
   lifeChapters?: Prisma.LifeChapterCreateNestedManyWithoutUserInput
   lifeReflections?: Prisma.LifeReflectionCreateNestedManyWithoutUserInput
-  habits?: Prisma.HabitCreateNestedManyWithoutUserInput
-  habitTasks?: Prisma.HabitTaskCreateNestedManyWithoutUserInput
-  habitLogs?: Prisma.HabitLogCreateNestedManyWithoutUserInput
-  habitStreaks?: Prisma.HabitStreakCreateNestedManyWithoutUserInput
+  trackedHabits?: Prisma.TrackedHabitCreateNestedManyWithoutUserInput
+  habitEvents?: Prisma.HabitEventCreateNestedManyWithoutUserInput
+  habitOutbox?: Prisma.HabitNotificationOutboxCreateNestedManyWithoutUserInput
+  triggers?: Prisma.TriggerCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutActivitiesInput = {
@@ -2635,10 +2642,10 @@ export type UserUncheckedCreateWithoutActivitiesInput = {
   lifeVision?: Prisma.LifeVisionUncheckedCreateNestedOneWithoutUserInput
   lifeChapters?: Prisma.LifeChapterUncheckedCreateNestedManyWithoutUserInput
   lifeReflections?: Prisma.LifeReflectionUncheckedCreateNestedManyWithoutUserInput
-  habits?: Prisma.HabitUncheckedCreateNestedManyWithoutUserInput
-  habitTasks?: Prisma.HabitTaskUncheckedCreateNestedManyWithoutUserInput
-  habitLogs?: Prisma.HabitLogUncheckedCreateNestedManyWithoutUserInput
-  habitStreaks?: Prisma.HabitStreakUncheckedCreateNestedManyWithoutUserInput
+  trackedHabits?: Prisma.TrackedHabitUncheckedCreateNestedManyWithoutUserInput
+  habitEvents?: Prisma.HabitEventUncheckedCreateNestedManyWithoutUserInput
+  habitOutbox?: Prisma.HabitNotificationOutboxUncheckedCreateNestedManyWithoutUserInput
+  triggers?: Prisma.TriggerUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutActivitiesInput = {
@@ -2683,10 +2690,10 @@ export type UserUpdateWithoutActivitiesInput = {
   lifeVision?: Prisma.LifeVisionUpdateOneWithoutUserNestedInput
   lifeChapters?: Prisma.LifeChapterUpdateManyWithoutUserNestedInput
   lifeReflections?: Prisma.LifeReflectionUpdateManyWithoutUserNestedInput
-  habits?: Prisma.HabitUpdateManyWithoutUserNestedInput
-  habitTasks?: Prisma.HabitTaskUpdateManyWithoutUserNestedInput
-  habitLogs?: Prisma.HabitLogUpdateManyWithoutUserNestedInput
-  habitStreaks?: Prisma.HabitStreakUpdateManyWithoutUserNestedInput
+  trackedHabits?: Prisma.TrackedHabitUpdateManyWithoutUserNestedInput
+  habitEvents?: Prisma.HabitEventUpdateManyWithoutUserNestedInput
+  habitOutbox?: Prisma.HabitNotificationOutboxUpdateManyWithoutUserNestedInput
+  triggers?: Prisma.TriggerUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutActivitiesInput = {
@@ -2715,10 +2722,10 @@ export type UserUncheckedUpdateWithoutActivitiesInput = {
   lifeVision?: Prisma.LifeVisionUncheckedUpdateOneWithoutUserNestedInput
   lifeChapters?: Prisma.LifeChapterUncheckedUpdateManyWithoutUserNestedInput
   lifeReflections?: Prisma.LifeReflectionUncheckedUpdateManyWithoutUserNestedInput
-  habits?: Prisma.HabitUncheckedUpdateManyWithoutUserNestedInput
-  habitTasks?: Prisma.HabitTaskUncheckedUpdateManyWithoutUserNestedInput
-  habitLogs?: Prisma.HabitLogUncheckedUpdateManyWithoutUserNestedInput
-  habitStreaks?: Prisma.HabitStreakUncheckedUpdateManyWithoutUserNestedInput
+  trackedHabits?: Prisma.TrackedHabitUncheckedUpdateManyWithoutUserNestedInput
+  habitEvents?: Prisma.HabitEventUncheckedUpdateManyWithoutUserNestedInput
+  habitOutbox?: Prisma.HabitNotificationOutboxUncheckedUpdateManyWithoutUserNestedInput
+  triggers?: Prisma.TriggerUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutCapturesInput = {
@@ -2747,10 +2754,10 @@ export type UserCreateWithoutCapturesInput = {
   lifeVision?: Prisma.LifeVisionCreateNestedOneWithoutUserInput
   lifeChapters?: Prisma.LifeChapterCreateNestedManyWithoutUserInput
   lifeReflections?: Prisma.LifeReflectionCreateNestedManyWithoutUserInput
-  habits?: Prisma.HabitCreateNestedManyWithoutUserInput
-  habitTasks?: Prisma.HabitTaskCreateNestedManyWithoutUserInput
-  habitLogs?: Prisma.HabitLogCreateNestedManyWithoutUserInput
-  habitStreaks?: Prisma.HabitStreakCreateNestedManyWithoutUserInput
+  trackedHabits?: Prisma.TrackedHabitCreateNestedManyWithoutUserInput
+  habitEvents?: Prisma.HabitEventCreateNestedManyWithoutUserInput
+  habitOutbox?: Prisma.HabitNotificationOutboxCreateNestedManyWithoutUserInput
+  triggers?: Prisma.TriggerCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutCapturesInput = {
@@ -2779,10 +2786,10 @@ export type UserUncheckedCreateWithoutCapturesInput = {
   lifeVision?: Prisma.LifeVisionUncheckedCreateNestedOneWithoutUserInput
   lifeChapters?: Prisma.LifeChapterUncheckedCreateNestedManyWithoutUserInput
   lifeReflections?: Prisma.LifeReflectionUncheckedCreateNestedManyWithoutUserInput
-  habits?: Prisma.HabitUncheckedCreateNestedManyWithoutUserInput
-  habitTasks?: Prisma.HabitTaskUncheckedCreateNestedManyWithoutUserInput
-  habitLogs?: Prisma.HabitLogUncheckedCreateNestedManyWithoutUserInput
-  habitStreaks?: Prisma.HabitStreakUncheckedCreateNestedManyWithoutUserInput
+  trackedHabits?: Prisma.TrackedHabitUncheckedCreateNestedManyWithoutUserInput
+  habitEvents?: Prisma.HabitEventUncheckedCreateNestedManyWithoutUserInput
+  habitOutbox?: Prisma.HabitNotificationOutboxUncheckedCreateNestedManyWithoutUserInput
+  triggers?: Prisma.TriggerUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutCapturesInput = {
@@ -2827,10 +2834,10 @@ export type UserUpdateWithoutCapturesInput = {
   lifeVision?: Prisma.LifeVisionUpdateOneWithoutUserNestedInput
   lifeChapters?: Prisma.LifeChapterUpdateManyWithoutUserNestedInput
   lifeReflections?: Prisma.LifeReflectionUpdateManyWithoutUserNestedInput
-  habits?: Prisma.HabitUpdateManyWithoutUserNestedInput
-  habitTasks?: Prisma.HabitTaskUpdateManyWithoutUserNestedInput
-  habitLogs?: Prisma.HabitLogUpdateManyWithoutUserNestedInput
-  habitStreaks?: Prisma.HabitStreakUpdateManyWithoutUserNestedInput
+  trackedHabits?: Prisma.TrackedHabitUpdateManyWithoutUserNestedInput
+  habitEvents?: Prisma.HabitEventUpdateManyWithoutUserNestedInput
+  habitOutbox?: Prisma.HabitNotificationOutboxUpdateManyWithoutUserNestedInput
+  triggers?: Prisma.TriggerUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutCapturesInput = {
@@ -2859,10 +2866,10 @@ export type UserUncheckedUpdateWithoutCapturesInput = {
   lifeVision?: Prisma.LifeVisionUncheckedUpdateOneWithoutUserNestedInput
   lifeChapters?: Prisma.LifeChapterUncheckedUpdateManyWithoutUserNestedInput
   lifeReflections?: Prisma.LifeReflectionUncheckedUpdateManyWithoutUserNestedInput
-  habits?: Prisma.HabitUncheckedUpdateManyWithoutUserNestedInput
-  habitTasks?: Prisma.HabitTaskUncheckedUpdateManyWithoutUserNestedInput
-  habitLogs?: Prisma.HabitLogUncheckedUpdateManyWithoutUserNestedInput
-  habitStreaks?: Prisma.HabitStreakUncheckedUpdateManyWithoutUserNestedInput
+  trackedHabits?: Prisma.TrackedHabitUncheckedUpdateManyWithoutUserNestedInput
+  habitEvents?: Prisma.HabitEventUncheckedUpdateManyWithoutUserNestedInput
+  habitOutbox?: Prisma.HabitNotificationOutboxUncheckedUpdateManyWithoutUserNestedInput
+  triggers?: Prisma.TriggerUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutNotificationsInput = {
@@ -2891,10 +2898,10 @@ export type UserCreateWithoutNotificationsInput = {
   lifeVision?: Prisma.LifeVisionCreateNestedOneWithoutUserInput
   lifeChapters?: Prisma.LifeChapterCreateNestedManyWithoutUserInput
   lifeReflections?: Prisma.LifeReflectionCreateNestedManyWithoutUserInput
-  habits?: Prisma.HabitCreateNestedManyWithoutUserInput
-  habitTasks?: Prisma.HabitTaskCreateNestedManyWithoutUserInput
-  habitLogs?: Prisma.HabitLogCreateNestedManyWithoutUserInput
-  habitStreaks?: Prisma.HabitStreakCreateNestedManyWithoutUserInput
+  trackedHabits?: Prisma.TrackedHabitCreateNestedManyWithoutUserInput
+  habitEvents?: Prisma.HabitEventCreateNestedManyWithoutUserInput
+  habitOutbox?: Prisma.HabitNotificationOutboxCreateNestedManyWithoutUserInput
+  triggers?: Prisma.TriggerCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutNotificationsInput = {
@@ -2923,10 +2930,10 @@ export type UserUncheckedCreateWithoutNotificationsInput = {
   lifeVision?: Prisma.LifeVisionUncheckedCreateNestedOneWithoutUserInput
   lifeChapters?: Prisma.LifeChapterUncheckedCreateNestedManyWithoutUserInput
   lifeReflections?: Prisma.LifeReflectionUncheckedCreateNestedManyWithoutUserInput
-  habits?: Prisma.HabitUncheckedCreateNestedManyWithoutUserInput
-  habitTasks?: Prisma.HabitTaskUncheckedCreateNestedManyWithoutUserInput
-  habitLogs?: Prisma.HabitLogUncheckedCreateNestedManyWithoutUserInput
-  habitStreaks?: Prisma.HabitStreakUncheckedCreateNestedManyWithoutUserInput
+  trackedHabits?: Prisma.TrackedHabitUncheckedCreateNestedManyWithoutUserInput
+  habitEvents?: Prisma.HabitEventUncheckedCreateNestedManyWithoutUserInput
+  habitOutbox?: Prisma.HabitNotificationOutboxUncheckedCreateNestedManyWithoutUserInput
+  triggers?: Prisma.TriggerUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutNotificationsInput = {
@@ -2971,10 +2978,10 @@ export type UserUpdateWithoutNotificationsInput = {
   lifeVision?: Prisma.LifeVisionUpdateOneWithoutUserNestedInput
   lifeChapters?: Prisma.LifeChapterUpdateManyWithoutUserNestedInput
   lifeReflections?: Prisma.LifeReflectionUpdateManyWithoutUserNestedInput
-  habits?: Prisma.HabitUpdateManyWithoutUserNestedInput
-  habitTasks?: Prisma.HabitTaskUpdateManyWithoutUserNestedInput
-  habitLogs?: Prisma.HabitLogUpdateManyWithoutUserNestedInput
-  habitStreaks?: Prisma.HabitStreakUpdateManyWithoutUserNestedInput
+  trackedHabits?: Prisma.TrackedHabitUpdateManyWithoutUserNestedInput
+  habitEvents?: Prisma.HabitEventUpdateManyWithoutUserNestedInput
+  habitOutbox?: Prisma.HabitNotificationOutboxUpdateManyWithoutUserNestedInput
+  triggers?: Prisma.TriggerUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutNotificationsInput = {
@@ -3003,10 +3010,10 @@ export type UserUncheckedUpdateWithoutNotificationsInput = {
   lifeVision?: Prisma.LifeVisionUncheckedUpdateOneWithoutUserNestedInput
   lifeChapters?: Prisma.LifeChapterUncheckedUpdateManyWithoutUserNestedInput
   lifeReflections?: Prisma.LifeReflectionUncheckedUpdateManyWithoutUserNestedInput
-  habits?: Prisma.HabitUncheckedUpdateManyWithoutUserNestedInput
-  habitTasks?: Prisma.HabitTaskUncheckedUpdateManyWithoutUserNestedInput
-  habitLogs?: Prisma.HabitLogUncheckedUpdateManyWithoutUserNestedInput
-  habitStreaks?: Prisma.HabitStreakUncheckedUpdateManyWithoutUserNestedInput
+  trackedHabits?: Prisma.TrackedHabitUncheckedUpdateManyWithoutUserNestedInput
+  habitEvents?: Prisma.HabitEventUncheckedUpdateManyWithoutUserNestedInput
+  habitOutbox?: Prisma.HabitNotificationOutboxUncheckedUpdateManyWithoutUserNestedInput
+  triggers?: Prisma.TriggerUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutLifeIdentityInput = {
@@ -3035,10 +3042,10 @@ export type UserCreateWithoutLifeIdentityInput = {
   lifeVision?: Prisma.LifeVisionCreateNestedOneWithoutUserInput
   lifeChapters?: Prisma.LifeChapterCreateNestedManyWithoutUserInput
   lifeReflections?: Prisma.LifeReflectionCreateNestedManyWithoutUserInput
-  habits?: Prisma.HabitCreateNestedManyWithoutUserInput
-  habitTasks?: Prisma.HabitTaskCreateNestedManyWithoutUserInput
-  habitLogs?: Prisma.HabitLogCreateNestedManyWithoutUserInput
-  habitStreaks?: Prisma.HabitStreakCreateNestedManyWithoutUserInput
+  trackedHabits?: Prisma.TrackedHabitCreateNestedManyWithoutUserInput
+  habitEvents?: Prisma.HabitEventCreateNestedManyWithoutUserInput
+  habitOutbox?: Prisma.HabitNotificationOutboxCreateNestedManyWithoutUserInput
+  triggers?: Prisma.TriggerCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutLifeIdentityInput = {
@@ -3067,10 +3074,10 @@ export type UserUncheckedCreateWithoutLifeIdentityInput = {
   lifeVision?: Prisma.LifeVisionUncheckedCreateNestedOneWithoutUserInput
   lifeChapters?: Prisma.LifeChapterUncheckedCreateNestedManyWithoutUserInput
   lifeReflections?: Prisma.LifeReflectionUncheckedCreateNestedManyWithoutUserInput
-  habits?: Prisma.HabitUncheckedCreateNestedManyWithoutUserInput
-  habitTasks?: Prisma.HabitTaskUncheckedCreateNestedManyWithoutUserInput
-  habitLogs?: Prisma.HabitLogUncheckedCreateNestedManyWithoutUserInput
-  habitStreaks?: Prisma.HabitStreakUncheckedCreateNestedManyWithoutUserInput
+  trackedHabits?: Prisma.TrackedHabitUncheckedCreateNestedManyWithoutUserInput
+  habitEvents?: Prisma.HabitEventUncheckedCreateNestedManyWithoutUserInput
+  habitOutbox?: Prisma.HabitNotificationOutboxUncheckedCreateNestedManyWithoutUserInput
+  triggers?: Prisma.TriggerUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutLifeIdentityInput = {
@@ -3115,10 +3122,10 @@ export type UserUpdateWithoutLifeIdentityInput = {
   lifeVision?: Prisma.LifeVisionUpdateOneWithoutUserNestedInput
   lifeChapters?: Prisma.LifeChapterUpdateManyWithoutUserNestedInput
   lifeReflections?: Prisma.LifeReflectionUpdateManyWithoutUserNestedInput
-  habits?: Prisma.HabitUpdateManyWithoutUserNestedInput
-  habitTasks?: Prisma.HabitTaskUpdateManyWithoutUserNestedInput
-  habitLogs?: Prisma.HabitLogUpdateManyWithoutUserNestedInput
-  habitStreaks?: Prisma.HabitStreakUpdateManyWithoutUserNestedInput
+  trackedHabits?: Prisma.TrackedHabitUpdateManyWithoutUserNestedInput
+  habitEvents?: Prisma.HabitEventUpdateManyWithoutUserNestedInput
+  habitOutbox?: Prisma.HabitNotificationOutboxUpdateManyWithoutUserNestedInput
+  triggers?: Prisma.TriggerUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutLifeIdentityInput = {
@@ -3147,10 +3154,10 @@ export type UserUncheckedUpdateWithoutLifeIdentityInput = {
   lifeVision?: Prisma.LifeVisionUncheckedUpdateOneWithoutUserNestedInput
   lifeChapters?: Prisma.LifeChapterUncheckedUpdateManyWithoutUserNestedInput
   lifeReflections?: Prisma.LifeReflectionUncheckedUpdateManyWithoutUserNestedInput
-  habits?: Prisma.HabitUncheckedUpdateManyWithoutUserNestedInput
-  habitTasks?: Prisma.HabitTaskUncheckedUpdateManyWithoutUserNestedInput
-  habitLogs?: Prisma.HabitLogUncheckedUpdateManyWithoutUserNestedInput
-  habitStreaks?: Prisma.HabitStreakUncheckedUpdateManyWithoutUserNestedInput
+  trackedHabits?: Prisma.TrackedHabitUncheckedUpdateManyWithoutUserNestedInput
+  habitEvents?: Prisma.HabitEventUncheckedUpdateManyWithoutUserNestedInput
+  habitOutbox?: Prisma.HabitNotificationOutboxUncheckedUpdateManyWithoutUserNestedInput
+  triggers?: Prisma.TriggerUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutLifeVisionInput = {
@@ -3179,10 +3186,10 @@ export type UserCreateWithoutLifeVisionInput = {
   lifeIdentity?: Prisma.LifeIdentityCreateNestedOneWithoutUserInput
   lifeChapters?: Prisma.LifeChapterCreateNestedManyWithoutUserInput
   lifeReflections?: Prisma.LifeReflectionCreateNestedManyWithoutUserInput
-  habits?: Prisma.HabitCreateNestedManyWithoutUserInput
-  habitTasks?: Prisma.HabitTaskCreateNestedManyWithoutUserInput
-  habitLogs?: Prisma.HabitLogCreateNestedManyWithoutUserInput
-  habitStreaks?: Prisma.HabitStreakCreateNestedManyWithoutUserInput
+  trackedHabits?: Prisma.TrackedHabitCreateNestedManyWithoutUserInput
+  habitEvents?: Prisma.HabitEventCreateNestedManyWithoutUserInput
+  habitOutbox?: Prisma.HabitNotificationOutboxCreateNestedManyWithoutUserInput
+  triggers?: Prisma.TriggerCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutLifeVisionInput = {
@@ -3211,10 +3218,10 @@ export type UserUncheckedCreateWithoutLifeVisionInput = {
   lifeIdentity?: Prisma.LifeIdentityUncheckedCreateNestedOneWithoutUserInput
   lifeChapters?: Prisma.LifeChapterUncheckedCreateNestedManyWithoutUserInput
   lifeReflections?: Prisma.LifeReflectionUncheckedCreateNestedManyWithoutUserInput
-  habits?: Prisma.HabitUncheckedCreateNestedManyWithoutUserInput
-  habitTasks?: Prisma.HabitTaskUncheckedCreateNestedManyWithoutUserInput
-  habitLogs?: Prisma.HabitLogUncheckedCreateNestedManyWithoutUserInput
-  habitStreaks?: Prisma.HabitStreakUncheckedCreateNestedManyWithoutUserInput
+  trackedHabits?: Prisma.TrackedHabitUncheckedCreateNestedManyWithoutUserInput
+  habitEvents?: Prisma.HabitEventUncheckedCreateNestedManyWithoutUserInput
+  habitOutbox?: Prisma.HabitNotificationOutboxUncheckedCreateNestedManyWithoutUserInput
+  triggers?: Prisma.TriggerUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutLifeVisionInput = {
@@ -3259,10 +3266,10 @@ export type UserUpdateWithoutLifeVisionInput = {
   lifeIdentity?: Prisma.LifeIdentityUpdateOneWithoutUserNestedInput
   lifeChapters?: Prisma.LifeChapterUpdateManyWithoutUserNestedInput
   lifeReflections?: Prisma.LifeReflectionUpdateManyWithoutUserNestedInput
-  habits?: Prisma.HabitUpdateManyWithoutUserNestedInput
-  habitTasks?: Prisma.HabitTaskUpdateManyWithoutUserNestedInput
-  habitLogs?: Prisma.HabitLogUpdateManyWithoutUserNestedInput
-  habitStreaks?: Prisma.HabitStreakUpdateManyWithoutUserNestedInput
+  trackedHabits?: Prisma.TrackedHabitUpdateManyWithoutUserNestedInput
+  habitEvents?: Prisma.HabitEventUpdateManyWithoutUserNestedInput
+  habitOutbox?: Prisma.HabitNotificationOutboxUpdateManyWithoutUserNestedInput
+  triggers?: Prisma.TriggerUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutLifeVisionInput = {
@@ -3291,10 +3298,10 @@ export type UserUncheckedUpdateWithoutLifeVisionInput = {
   lifeIdentity?: Prisma.LifeIdentityUncheckedUpdateOneWithoutUserNestedInput
   lifeChapters?: Prisma.LifeChapterUncheckedUpdateManyWithoutUserNestedInput
   lifeReflections?: Prisma.LifeReflectionUncheckedUpdateManyWithoutUserNestedInput
-  habits?: Prisma.HabitUncheckedUpdateManyWithoutUserNestedInput
-  habitTasks?: Prisma.HabitTaskUncheckedUpdateManyWithoutUserNestedInput
-  habitLogs?: Prisma.HabitLogUncheckedUpdateManyWithoutUserNestedInput
-  habitStreaks?: Prisma.HabitStreakUncheckedUpdateManyWithoutUserNestedInput
+  trackedHabits?: Prisma.TrackedHabitUncheckedUpdateManyWithoutUserNestedInput
+  habitEvents?: Prisma.HabitEventUncheckedUpdateManyWithoutUserNestedInput
+  habitOutbox?: Prisma.HabitNotificationOutboxUncheckedUpdateManyWithoutUserNestedInput
+  triggers?: Prisma.TriggerUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutLifeChaptersInput = {
@@ -3323,10 +3330,10 @@ export type UserCreateWithoutLifeChaptersInput = {
   lifeIdentity?: Prisma.LifeIdentityCreateNestedOneWithoutUserInput
   lifeVision?: Prisma.LifeVisionCreateNestedOneWithoutUserInput
   lifeReflections?: Prisma.LifeReflectionCreateNestedManyWithoutUserInput
-  habits?: Prisma.HabitCreateNestedManyWithoutUserInput
-  habitTasks?: Prisma.HabitTaskCreateNestedManyWithoutUserInput
-  habitLogs?: Prisma.HabitLogCreateNestedManyWithoutUserInput
-  habitStreaks?: Prisma.HabitStreakCreateNestedManyWithoutUserInput
+  trackedHabits?: Prisma.TrackedHabitCreateNestedManyWithoutUserInput
+  habitEvents?: Prisma.HabitEventCreateNestedManyWithoutUserInput
+  habitOutbox?: Prisma.HabitNotificationOutboxCreateNestedManyWithoutUserInput
+  triggers?: Prisma.TriggerCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutLifeChaptersInput = {
@@ -3355,10 +3362,10 @@ export type UserUncheckedCreateWithoutLifeChaptersInput = {
   lifeIdentity?: Prisma.LifeIdentityUncheckedCreateNestedOneWithoutUserInput
   lifeVision?: Prisma.LifeVisionUncheckedCreateNestedOneWithoutUserInput
   lifeReflections?: Prisma.LifeReflectionUncheckedCreateNestedManyWithoutUserInput
-  habits?: Prisma.HabitUncheckedCreateNestedManyWithoutUserInput
-  habitTasks?: Prisma.HabitTaskUncheckedCreateNestedManyWithoutUserInput
-  habitLogs?: Prisma.HabitLogUncheckedCreateNestedManyWithoutUserInput
-  habitStreaks?: Prisma.HabitStreakUncheckedCreateNestedManyWithoutUserInput
+  trackedHabits?: Prisma.TrackedHabitUncheckedCreateNestedManyWithoutUserInput
+  habitEvents?: Prisma.HabitEventUncheckedCreateNestedManyWithoutUserInput
+  habitOutbox?: Prisma.HabitNotificationOutboxUncheckedCreateNestedManyWithoutUserInput
+  triggers?: Prisma.TriggerUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutLifeChaptersInput = {
@@ -3403,10 +3410,10 @@ export type UserUpdateWithoutLifeChaptersInput = {
   lifeIdentity?: Prisma.LifeIdentityUpdateOneWithoutUserNestedInput
   lifeVision?: Prisma.LifeVisionUpdateOneWithoutUserNestedInput
   lifeReflections?: Prisma.LifeReflectionUpdateManyWithoutUserNestedInput
-  habits?: Prisma.HabitUpdateManyWithoutUserNestedInput
-  habitTasks?: Prisma.HabitTaskUpdateManyWithoutUserNestedInput
-  habitLogs?: Prisma.HabitLogUpdateManyWithoutUserNestedInput
-  habitStreaks?: Prisma.HabitStreakUpdateManyWithoutUserNestedInput
+  trackedHabits?: Prisma.TrackedHabitUpdateManyWithoutUserNestedInput
+  habitEvents?: Prisma.HabitEventUpdateManyWithoutUserNestedInput
+  habitOutbox?: Prisma.HabitNotificationOutboxUpdateManyWithoutUserNestedInput
+  triggers?: Prisma.TriggerUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutLifeChaptersInput = {
@@ -3435,10 +3442,10 @@ export type UserUncheckedUpdateWithoutLifeChaptersInput = {
   lifeIdentity?: Prisma.LifeIdentityUncheckedUpdateOneWithoutUserNestedInput
   lifeVision?: Prisma.LifeVisionUncheckedUpdateOneWithoutUserNestedInput
   lifeReflections?: Prisma.LifeReflectionUncheckedUpdateManyWithoutUserNestedInput
-  habits?: Prisma.HabitUncheckedUpdateManyWithoutUserNestedInput
-  habitTasks?: Prisma.HabitTaskUncheckedUpdateManyWithoutUserNestedInput
-  habitLogs?: Prisma.HabitLogUncheckedUpdateManyWithoutUserNestedInput
-  habitStreaks?: Prisma.HabitStreakUncheckedUpdateManyWithoutUserNestedInput
+  trackedHabits?: Prisma.TrackedHabitUncheckedUpdateManyWithoutUserNestedInput
+  habitEvents?: Prisma.HabitEventUncheckedUpdateManyWithoutUserNestedInput
+  habitOutbox?: Prisma.HabitNotificationOutboxUncheckedUpdateManyWithoutUserNestedInput
+  triggers?: Prisma.TriggerUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutLifeReflectionsInput = {
@@ -3467,10 +3474,10 @@ export type UserCreateWithoutLifeReflectionsInput = {
   lifeIdentity?: Prisma.LifeIdentityCreateNestedOneWithoutUserInput
   lifeVision?: Prisma.LifeVisionCreateNestedOneWithoutUserInput
   lifeChapters?: Prisma.LifeChapterCreateNestedManyWithoutUserInput
-  habits?: Prisma.HabitCreateNestedManyWithoutUserInput
-  habitTasks?: Prisma.HabitTaskCreateNestedManyWithoutUserInput
-  habitLogs?: Prisma.HabitLogCreateNestedManyWithoutUserInput
-  habitStreaks?: Prisma.HabitStreakCreateNestedManyWithoutUserInput
+  trackedHabits?: Prisma.TrackedHabitCreateNestedManyWithoutUserInput
+  habitEvents?: Prisma.HabitEventCreateNestedManyWithoutUserInput
+  habitOutbox?: Prisma.HabitNotificationOutboxCreateNestedManyWithoutUserInput
+  triggers?: Prisma.TriggerCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutLifeReflectionsInput = {
@@ -3499,10 +3506,10 @@ export type UserUncheckedCreateWithoutLifeReflectionsInput = {
   lifeIdentity?: Prisma.LifeIdentityUncheckedCreateNestedOneWithoutUserInput
   lifeVision?: Prisma.LifeVisionUncheckedCreateNestedOneWithoutUserInput
   lifeChapters?: Prisma.LifeChapterUncheckedCreateNestedManyWithoutUserInput
-  habits?: Prisma.HabitUncheckedCreateNestedManyWithoutUserInput
-  habitTasks?: Prisma.HabitTaskUncheckedCreateNestedManyWithoutUserInput
-  habitLogs?: Prisma.HabitLogUncheckedCreateNestedManyWithoutUserInput
-  habitStreaks?: Prisma.HabitStreakUncheckedCreateNestedManyWithoutUserInput
+  trackedHabits?: Prisma.TrackedHabitUncheckedCreateNestedManyWithoutUserInput
+  habitEvents?: Prisma.HabitEventUncheckedCreateNestedManyWithoutUserInput
+  habitOutbox?: Prisma.HabitNotificationOutboxUncheckedCreateNestedManyWithoutUserInput
+  triggers?: Prisma.TriggerUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutLifeReflectionsInput = {
@@ -3547,10 +3554,10 @@ export type UserUpdateWithoutLifeReflectionsInput = {
   lifeIdentity?: Prisma.LifeIdentityUpdateOneWithoutUserNestedInput
   lifeVision?: Prisma.LifeVisionUpdateOneWithoutUserNestedInput
   lifeChapters?: Prisma.LifeChapterUpdateManyWithoutUserNestedInput
-  habits?: Prisma.HabitUpdateManyWithoutUserNestedInput
-  habitTasks?: Prisma.HabitTaskUpdateManyWithoutUserNestedInput
-  habitLogs?: Prisma.HabitLogUpdateManyWithoutUserNestedInput
-  habitStreaks?: Prisma.HabitStreakUpdateManyWithoutUserNestedInput
+  trackedHabits?: Prisma.TrackedHabitUpdateManyWithoutUserNestedInput
+  habitEvents?: Prisma.HabitEventUpdateManyWithoutUserNestedInput
+  habitOutbox?: Prisma.HabitNotificationOutboxUpdateManyWithoutUserNestedInput
+  triggers?: Prisma.TriggerUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutLifeReflectionsInput = {
@@ -3579,13 +3586,13 @@ export type UserUncheckedUpdateWithoutLifeReflectionsInput = {
   lifeIdentity?: Prisma.LifeIdentityUncheckedUpdateOneWithoutUserNestedInput
   lifeVision?: Prisma.LifeVisionUncheckedUpdateOneWithoutUserNestedInput
   lifeChapters?: Prisma.LifeChapterUncheckedUpdateManyWithoutUserNestedInput
-  habits?: Prisma.HabitUncheckedUpdateManyWithoutUserNestedInput
-  habitTasks?: Prisma.HabitTaskUncheckedUpdateManyWithoutUserNestedInput
-  habitLogs?: Prisma.HabitLogUncheckedUpdateManyWithoutUserNestedInput
-  habitStreaks?: Prisma.HabitStreakUncheckedUpdateManyWithoutUserNestedInput
+  trackedHabits?: Prisma.TrackedHabitUncheckedUpdateManyWithoutUserNestedInput
+  habitEvents?: Prisma.HabitEventUncheckedUpdateManyWithoutUserNestedInput
+  habitOutbox?: Prisma.HabitNotificationOutboxUncheckedUpdateManyWithoutUserNestedInput
+  triggers?: Prisma.TriggerUncheckedUpdateManyWithoutUserNestedInput
 }
 
-export type UserCreateWithoutHabitsInput = {
+export type UserCreateWithoutTrackedHabitsInput = {
   id?: string
   email: string
   passwordHash?: string | null
@@ -3612,12 +3619,12 @@ export type UserCreateWithoutHabitsInput = {
   lifeVision?: Prisma.LifeVisionCreateNestedOneWithoutUserInput
   lifeChapters?: Prisma.LifeChapterCreateNestedManyWithoutUserInput
   lifeReflections?: Prisma.LifeReflectionCreateNestedManyWithoutUserInput
-  habitTasks?: Prisma.HabitTaskCreateNestedManyWithoutUserInput
-  habitLogs?: Prisma.HabitLogCreateNestedManyWithoutUserInput
-  habitStreaks?: Prisma.HabitStreakCreateNestedManyWithoutUserInput
+  habitEvents?: Prisma.HabitEventCreateNestedManyWithoutUserInput
+  habitOutbox?: Prisma.HabitNotificationOutboxCreateNestedManyWithoutUserInput
+  triggers?: Prisma.TriggerCreateNestedManyWithoutUserInput
 }
 
-export type UserUncheckedCreateWithoutHabitsInput = {
+export type UserUncheckedCreateWithoutTrackedHabitsInput = {
   id?: string
   email: string
   passwordHash?: string | null
@@ -3644,28 +3651,28 @@ export type UserUncheckedCreateWithoutHabitsInput = {
   lifeVision?: Prisma.LifeVisionUncheckedCreateNestedOneWithoutUserInput
   lifeChapters?: Prisma.LifeChapterUncheckedCreateNestedManyWithoutUserInput
   lifeReflections?: Prisma.LifeReflectionUncheckedCreateNestedManyWithoutUserInput
-  habitTasks?: Prisma.HabitTaskUncheckedCreateNestedManyWithoutUserInput
-  habitLogs?: Prisma.HabitLogUncheckedCreateNestedManyWithoutUserInput
-  habitStreaks?: Prisma.HabitStreakUncheckedCreateNestedManyWithoutUserInput
+  habitEvents?: Prisma.HabitEventUncheckedCreateNestedManyWithoutUserInput
+  habitOutbox?: Prisma.HabitNotificationOutboxUncheckedCreateNestedManyWithoutUserInput
+  triggers?: Prisma.TriggerUncheckedCreateNestedManyWithoutUserInput
 }
 
-export type UserCreateOrConnectWithoutHabitsInput = {
+export type UserCreateOrConnectWithoutTrackedHabitsInput = {
   where: Prisma.UserWhereUniqueInput
-  create: Prisma.XOR<Prisma.UserCreateWithoutHabitsInput, Prisma.UserUncheckedCreateWithoutHabitsInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutTrackedHabitsInput, Prisma.UserUncheckedCreateWithoutTrackedHabitsInput>
 }
 
-export type UserUpsertWithoutHabitsInput = {
-  update: Prisma.XOR<Prisma.UserUpdateWithoutHabitsInput, Prisma.UserUncheckedUpdateWithoutHabitsInput>
-  create: Prisma.XOR<Prisma.UserCreateWithoutHabitsInput, Prisma.UserUncheckedCreateWithoutHabitsInput>
+export type UserUpsertWithoutTrackedHabitsInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutTrackedHabitsInput, Prisma.UserUncheckedUpdateWithoutTrackedHabitsInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutTrackedHabitsInput, Prisma.UserUncheckedCreateWithoutTrackedHabitsInput>
   where?: Prisma.UserWhereInput
 }
 
-export type UserUpdateToOneWithWhereWithoutHabitsInput = {
+export type UserUpdateToOneWithWhereWithoutTrackedHabitsInput = {
   where?: Prisma.UserWhereInput
-  data: Prisma.XOR<Prisma.UserUpdateWithoutHabitsInput, Prisma.UserUncheckedUpdateWithoutHabitsInput>
+  data: Prisma.XOR<Prisma.UserUpdateWithoutTrackedHabitsInput, Prisma.UserUncheckedUpdateWithoutTrackedHabitsInput>
 }
 
-export type UserUpdateWithoutHabitsInput = {
+export type UserUpdateWithoutTrackedHabitsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -3692,12 +3699,12 @@ export type UserUpdateWithoutHabitsInput = {
   lifeVision?: Prisma.LifeVisionUpdateOneWithoutUserNestedInput
   lifeChapters?: Prisma.LifeChapterUpdateManyWithoutUserNestedInput
   lifeReflections?: Prisma.LifeReflectionUpdateManyWithoutUserNestedInput
-  habitTasks?: Prisma.HabitTaskUpdateManyWithoutUserNestedInput
-  habitLogs?: Prisma.HabitLogUpdateManyWithoutUserNestedInput
-  habitStreaks?: Prisma.HabitStreakUpdateManyWithoutUserNestedInput
+  habitEvents?: Prisma.HabitEventUpdateManyWithoutUserNestedInput
+  habitOutbox?: Prisma.HabitNotificationOutboxUpdateManyWithoutUserNestedInput
+  triggers?: Prisma.TriggerUpdateManyWithoutUserNestedInput
 }
 
-export type UserUncheckedUpdateWithoutHabitsInput = {
+export type UserUncheckedUpdateWithoutTrackedHabitsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -3724,12 +3731,12 @@ export type UserUncheckedUpdateWithoutHabitsInput = {
   lifeVision?: Prisma.LifeVisionUncheckedUpdateOneWithoutUserNestedInput
   lifeChapters?: Prisma.LifeChapterUncheckedUpdateManyWithoutUserNestedInput
   lifeReflections?: Prisma.LifeReflectionUncheckedUpdateManyWithoutUserNestedInput
-  habitTasks?: Prisma.HabitTaskUncheckedUpdateManyWithoutUserNestedInput
-  habitLogs?: Prisma.HabitLogUncheckedUpdateManyWithoutUserNestedInput
-  habitStreaks?: Prisma.HabitStreakUncheckedUpdateManyWithoutUserNestedInput
+  habitEvents?: Prisma.HabitEventUncheckedUpdateManyWithoutUserNestedInput
+  habitOutbox?: Prisma.HabitNotificationOutboxUncheckedUpdateManyWithoutUserNestedInput
+  triggers?: Prisma.TriggerUncheckedUpdateManyWithoutUserNestedInput
 }
 
-export type UserCreateWithoutHabitTasksInput = {
+export type UserCreateWithoutHabitEventsInput = {
   id?: string
   email: string
   passwordHash?: string | null
@@ -3756,12 +3763,12 @@ export type UserCreateWithoutHabitTasksInput = {
   lifeVision?: Prisma.LifeVisionCreateNestedOneWithoutUserInput
   lifeChapters?: Prisma.LifeChapterCreateNestedManyWithoutUserInput
   lifeReflections?: Prisma.LifeReflectionCreateNestedManyWithoutUserInput
-  habits?: Prisma.HabitCreateNestedManyWithoutUserInput
-  habitLogs?: Prisma.HabitLogCreateNestedManyWithoutUserInput
-  habitStreaks?: Prisma.HabitStreakCreateNestedManyWithoutUserInput
+  trackedHabits?: Prisma.TrackedHabitCreateNestedManyWithoutUserInput
+  habitOutbox?: Prisma.HabitNotificationOutboxCreateNestedManyWithoutUserInput
+  triggers?: Prisma.TriggerCreateNestedManyWithoutUserInput
 }
 
-export type UserUncheckedCreateWithoutHabitTasksInput = {
+export type UserUncheckedCreateWithoutHabitEventsInput = {
   id?: string
   email: string
   passwordHash?: string | null
@@ -3788,28 +3795,28 @@ export type UserUncheckedCreateWithoutHabitTasksInput = {
   lifeVision?: Prisma.LifeVisionUncheckedCreateNestedOneWithoutUserInput
   lifeChapters?: Prisma.LifeChapterUncheckedCreateNestedManyWithoutUserInput
   lifeReflections?: Prisma.LifeReflectionUncheckedCreateNestedManyWithoutUserInput
-  habits?: Prisma.HabitUncheckedCreateNestedManyWithoutUserInput
-  habitLogs?: Prisma.HabitLogUncheckedCreateNestedManyWithoutUserInput
-  habitStreaks?: Prisma.HabitStreakUncheckedCreateNestedManyWithoutUserInput
+  trackedHabits?: Prisma.TrackedHabitUncheckedCreateNestedManyWithoutUserInput
+  habitOutbox?: Prisma.HabitNotificationOutboxUncheckedCreateNestedManyWithoutUserInput
+  triggers?: Prisma.TriggerUncheckedCreateNestedManyWithoutUserInput
 }
 
-export type UserCreateOrConnectWithoutHabitTasksInput = {
+export type UserCreateOrConnectWithoutHabitEventsInput = {
   where: Prisma.UserWhereUniqueInput
-  create: Prisma.XOR<Prisma.UserCreateWithoutHabitTasksInput, Prisma.UserUncheckedCreateWithoutHabitTasksInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutHabitEventsInput, Prisma.UserUncheckedCreateWithoutHabitEventsInput>
 }
 
-export type UserUpsertWithoutHabitTasksInput = {
-  update: Prisma.XOR<Prisma.UserUpdateWithoutHabitTasksInput, Prisma.UserUncheckedUpdateWithoutHabitTasksInput>
-  create: Prisma.XOR<Prisma.UserCreateWithoutHabitTasksInput, Prisma.UserUncheckedCreateWithoutHabitTasksInput>
+export type UserUpsertWithoutHabitEventsInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutHabitEventsInput, Prisma.UserUncheckedUpdateWithoutHabitEventsInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutHabitEventsInput, Prisma.UserUncheckedCreateWithoutHabitEventsInput>
   where?: Prisma.UserWhereInput
 }
 
-export type UserUpdateToOneWithWhereWithoutHabitTasksInput = {
+export type UserUpdateToOneWithWhereWithoutHabitEventsInput = {
   where?: Prisma.UserWhereInput
-  data: Prisma.XOR<Prisma.UserUpdateWithoutHabitTasksInput, Prisma.UserUncheckedUpdateWithoutHabitTasksInput>
+  data: Prisma.XOR<Prisma.UserUpdateWithoutHabitEventsInput, Prisma.UserUncheckedUpdateWithoutHabitEventsInput>
 }
 
-export type UserUpdateWithoutHabitTasksInput = {
+export type UserUpdateWithoutHabitEventsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -3836,12 +3843,12 @@ export type UserUpdateWithoutHabitTasksInput = {
   lifeVision?: Prisma.LifeVisionUpdateOneWithoutUserNestedInput
   lifeChapters?: Prisma.LifeChapterUpdateManyWithoutUserNestedInput
   lifeReflections?: Prisma.LifeReflectionUpdateManyWithoutUserNestedInput
-  habits?: Prisma.HabitUpdateManyWithoutUserNestedInput
-  habitLogs?: Prisma.HabitLogUpdateManyWithoutUserNestedInput
-  habitStreaks?: Prisma.HabitStreakUpdateManyWithoutUserNestedInput
+  trackedHabits?: Prisma.TrackedHabitUpdateManyWithoutUserNestedInput
+  habitOutbox?: Prisma.HabitNotificationOutboxUpdateManyWithoutUserNestedInput
+  triggers?: Prisma.TriggerUpdateManyWithoutUserNestedInput
 }
 
-export type UserUncheckedUpdateWithoutHabitTasksInput = {
+export type UserUncheckedUpdateWithoutHabitEventsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -3868,12 +3875,12 @@ export type UserUncheckedUpdateWithoutHabitTasksInput = {
   lifeVision?: Prisma.LifeVisionUncheckedUpdateOneWithoutUserNestedInput
   lifeChapters?: Prisma.LifeChapterUncheckedUpdateManyWithoutUserNestedInput
   lifeReflections?: Prisma.LifeReflectionUncheckedUpdateManyWithoutUserNestedInput
-  habits?: Prisma.HabitUncheckedUpdateManyWithoutUserNestedInput
-  habitLogs?: Prisma.HabitLogUncheckedUpdateManyWithoutUserNestedInput
-  habitStreaks?: Prisma.HabitStreakUncheckedUpdateManyWithoutUserNestedInput
+  trackedHabits?: Prisma.TrackedHabitUncheckedUpdateManyWithoutUserNestedInput
+  habitOutbox?: Prisma.HabitNotificationOutboxUncheckedUpdateManyWithoutUserNestedInput
+  triggers?: Prisma.TriggerUncheckedUpdateManyWithoutUserNestedInput
 }
 
-export type UserCreateWithoutHabitLogsInput = {
+export type UserCreateWithoutHabitOutboxInput = {
   id?: string
   email: string
   passwordHash?: string | null
@@ -3900,12 +3907,12 @@ export type UserCreateWithoutHabitLogsInput = {
   lifeVision?: Prisma.LifeVisionCreateNestedOneWithoutUserInput
   lifeChapters?: Prisma.LifeChapterCreateNestedManyWithoutUserInput
   lifeReflections?: Prisma.LifeReflectionCreateNestedManyWithoutUserInput
-  habits?: Prisma.HabitCreateNestedManyWithoutUserInput
-  habitTasks?: Prisma.HabitTaskCreateNestedManyWithoutUserInput
-  habitStreaks?: Prisma.HabitStreakCreateNestedManyWithoutUserInput
+  trackedHabits?: Prisma.TrackedHabitCreateNestedManyWithoutUserInput
+  habitEvents?: Prisma.HabitEventCreateNestedManyWithoutUserInput
+  triggers?: Prisma.TriggerCreateNestedManyWithoutUserInput
 }
 
-export type UserUncheckedCreateWithoutHabitLogsInput = {
+export type UserUncheckedCreateWithoutHabitOutboxInput = {
   id?: string
   email: string
   passwordHash?: string | null
@@ -3932,28 +3939,28 @@ export type UserUncheckedCreateWithoutHabitLogsInput = {
   lifeVision?: Prisma.LifeVisionUncheckedCreateNestedOneWithoutUserInput
   lifeChapters?: Prisma.LifeChapterUncheckedCreateNestedManyWithoutUserInput
   lifeReflections?: Prisma.LifeReflectionUncheckedCreateNestedManyWithoutUserInput
-  habits?: Prisma.HabitUncheckedCreateNestedManyWithoutUserInput
-  habitTasks?: Prisma.HabitTaskUncheckedCreateNestedManyWithoutUserInput
-  habitStreaks?: Prisma.HabitStreakUncheckedCreateNestedManyWithoutUserInput
+  trackedHabits?: Prisma.TrackedHabitUncheckedCreateNestedManyWithoutUserInput
+  habitEvents?: Prisma.HabitEventUncheckedCreateNestedManyWithoutUserInput
+  triggers?: Prisma.TriggerUncheckedCreateNestedManyWithoutUserInput
 }
 
-export type UserCreateOrConnectWithoutHabitLogsInput = {
+export type UserCreateOrConnectWithoutHabitOutboxInput = {
   where: Prisma.UserWhereUniqueInput
-  create: Prisma.XOR<Prisma.UserCreateWithoutHabitLogsInput, Prisma.UserUncheckedCreateWithoutHabitLogsInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutHabitOutboxInput, Prisma.UserUncheckedCreateWithoutHabitOutboxInput>
 }
 
-export type UserUpsertWithoutHabitLogsInput = {
-  update: Prisma.XOR<Prisma.UserUpdateWithoutHabitLogsInput, Prisma.UserUncheckedUpdateWithoutHabitLogsInput>
-  create: Prisma.XOR<Prisma.UserCreateWithoutHabitLogsInput, Prisma.UserUncheckedCreateWithoutHabitLogsInput>
+export type UserUpsertWithoutHabitOutboxInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutHabitOutboxInput, Prisma.UserUncheckedUpdateWithoutHabitOutboxInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutHabitOutboxInput, Prisma.UserUncheckedCreateWithoutHabitOutboxInput>
   where?: Prisma.UserWhereInput
 }
 
-export type UserUpdateToOneWithWhereWithoutHabitLogsInput = {
+export type UserUpdateToOneWithWhereWithoutHabitOutboxInput = {
   where?: Prisma.UserWhereInput
-  data: Prisma.XOR<Prisma.UserUpdateWithoutHabitLogsInput, Prisma.UserUncheckedUpdateWithoutHabitLogsInput>
+  data: Prisma.XOR<Prisma.UserUpdateWithoutHabitOutboxInput, Prisma.UserUncheckedUpdateWithoutHabitOutboxInput>
 }
 
-export type UserUpdateWithoutHabitLogsInput = {
+export type UserUpdateWithoutHabitOutboxInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -3980,12 +3987,12 @@ export type UserUpdateWithoutHabitLogsInput = {
   lifeVision?: Prisma.LifeVisionUpdateOneWithoutUserNestedInput
   lifeChapters?: Prisma.LifeChapterUpdateManyWithoutUserNestedInput
   lifeReflections?: Prisma.LifeReflectionUpdateManyWithoutUserNestedInput
-  habits?: Prisma.HabitUpdateManyWithoutUserNestedInput
-  habitTasks?: Prisma.HabitTaskUpdateManyWithoutUserNestedInput
-  habitStreaks?: Prisma.HabitStreakUpdateManyWithoutUserNestedInput
+  trackedHabits?: Prisma.TrackedHabitUpdateManyWithoutUserNestedInput
+  habitEvents?: Prisma.HabitEventUpdateManyWithoutUserNestedInput
+  triggers?: Prisma.TriggerUpdateManyWithoutUserNestedInput
 }
 
-export type UserUncheckedUpdateWithoutHabitLogsInput = {
+export type UserUncheckedUpdateWithoutHabitOutboxInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -4012,12 +4019,12 @@ export type UserUncheckedUpdateWithoutHabitLogsInput = {
   lifeVision?: Prisma.LifeVisionUncheckedUpdateOneWithoutUserNestedInput
   lifeChapters?: Prisma.LifeChapterUncheckedUpdateManyWithoutUserNestedInput
   lifeReflections?: Prisma.LifeReflectionUncheckedUpdateManyWithoutUserNestedInput
-  habits?: Prisma.HabitUncheckedUpdateManyWithoutUserNestedInput
-  habitTasks?: Prisma.HabitTaskUncheckedUpdateManyWithoutUserNestedInput
-  habitStreaks?: Prisma.HabitStreakUncheckedUpdateManyWithoutUserNestedInput
+  trackedHabits?: Prisma.TrackedHabitUncheckedUpdateManyWithoutUserNestedInput
+  habitEvents?: Prisma.HabitEventUncheckedUpdateManyWithoutUserNestedInput
+  triggers?: Prisma.TriggerUncheckedUpdateManyWithoutUserNestedInput
 }
 
-export type UserCreateWithoutHabitStreaksInput = {
+export type UserCreateWithoutTriggersInput = {
   id?: string
   email: string
   passwordHash?: string | null
@@ -4044,12 +4051,12 @@ export type UserCreateWithoutHabitStreaksInput = {
   lifeVision?: Prisma.LifeVisionCreateNestedOneWithoutUserInput
   lifeChapters?: Prisma.LifeChapterCreateNestedManyWithoutUserInput
   lifeReflections?: Prisma.LifeReflectionCreateNestedManyWithoutUserInput
-  habits?: Prisma.HabitCreateNestedManyWithoutUserInput
-  habitTasks?: Prisma.HabitTaskCreateNestedManyWithoutUserInput
-  habitLogs?: Prisma.HabitLogCreateNestedManyWithoutUserInput
+  trackedHabits?: Prisma.TrackedHabitCreateNestedManyWithoutUserInput
+  habitEvents?: Prisma.HabitEventCreateNestedManyWithoutUserInput
+  habitOutbox?: Prisma.HabitNotificationOutboxCreateNestedManyWithoutUserInput
 }
 
-export type UserUncheckedCreateWithoutHabitStreaksInput = {
+export type UserUncheckedCreateWithoutTriggersInput = {
   id?: string
   email: string
   passwordHash?: string | null
@@ -4076,28 +4083,28 @@ export type UserUncheckedCreateWithoutHabitStreaksInput = {
   lifeVision?: Prisma.LifeVisionUncheckedCreateNestedOneWithoutUserInput
   lifeChapters?: Prisma.LifeChapterUncheckedCreateNestedManyWithoutUserInput
   lifeReflections?: Prisma.LifeReflectionUncheckedCreateNestedManyWithoutUserInput
-  habits?: Prisma.HabitUncheckedCreateNestedManyWithoutUserInput
-  habitTasks?: Prisma.HabitTaskUncheckedCreateNestedManyWithoutUserInput
-  habitLogs?: Prisma.HabitLogUncheckedCreateNestedManyWithoutUserInput
+  trackedHabits?: Prisma.TrackedHabitUncheckedCreateNestedManyWithoutUserInput
+  habitEvents?: Prisma.HabitEventUncheckedCreateNestedManyWithoutUserInput
+  habitOutbox?: Prisma.HabitNotificationOutboxUncheckedCreateNestedManyWithoutUserInput
 }
 
-export type UserCreateOrConnectWithoutHabitStreaksInput = {
+export type UserCreateOrConnectWithoutTriggersInput = {
   where: Prisma.UserWhereUniqueInput
-  create: Prisma.XOR<Prisma.UserCreateWithoutHabitStreaksInput, Prisma.UserUncheckedCreateWithoutHabitStreaksInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutTriggersInput, Prisma.UserUncheckedCreateWithoutTriggersInput>
 }
 
-export type UserUpsertWithoutHabitStreaksInput = {
-  update: Prisma.XOR<Prisma.UserUpdateWithoutHabitStreaksInput, Prisma.UserUncheckedUpdateWithoutHabitStreaksInput>
-  create: Prisma.XOR<Prisma.UserCreateWithoutHabitStreaksInput, Prisma.UserUncheckedCreateWithoutHabitStreaksInput>
+export type UserUpsertWithoutTriggersInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutTriggersInput, Prisma.UserUncheckedUpdateWithoutTriggersInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutTriggersInput, Prisma.UserUncheckedCreateWithoutTriggersInput>
   where?: Prisma.UserWhereInput
 }
 
-export type UserUpdateToOneWithWhereWithoutHabitStreaksInput = {
+export type UserUpdateToOneWithWhereWithoutTriggersInput = {
   where?: Prisma.UserWhereInput
-  data: Prisma.XOR<Prisma.UserUpdateWithoutHabitStreaksInput, Prisma.UserUncheckedUpdateWithoutHabitStreaksInput>
+  data: Prisma.XOR<Prisma.UserUpdateWithoutTriggersInput, Prisma.UserUncheckedUpdateWithoutTriggersInput>
 }
 
-export type UserUpdateWithoutHabitStreaksInput = {
+export type UserUpdateWithoutTriggersInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -4124,12 +4131,12 @@ export type UserUpdateWithoutHabitStreaksInput = {
   lifeVision?: Prisma.LifeVisionUpdateOneWithoutUserNestedInput
   lifeChapters?: Prisma.LifeChapterUpdateManyWithoutUserNestedInput
   lifeReflections?: Prisma.LifeReflectionUpdateManyWithoutUserNestedInput
-  habits?: Prisma.HabitUpdateManyWithoutUserNestedInput
-  habitTasks?: Prisma.HabitTaskUpdateManyWithoutUserNestedInput
-  habitLogs?: Prisma.HabitLogUpdateManyWithoutUserNestedInput
+  trackedHabits?: Prisma.TrackedHabitUpdateManyWithoutUserNestedInput
+  habitEvents?: Prisma.HabitEventUpdateManyWithoutUserNestedInput
+  habitOutbox?: Prisma.HabitNotificationOutboxUpdateManyWithoutUserNestedInput
 }
 
-export type UserUncheckedUpdateWithoutHabitStreaksInput = {
+export type UserUncheckedUpdateWithoutTriggersInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -4156,9 +4163,9 @@ export type UserUncheckedUpdateWithoutHabitStreaksInput = {
   lifeVision?: Prisma.LifeVisionUncheckedUpdateOneWithoutUserNestedInput
   lifeChapters?: Prisma.LifeChapterUncheckedUpdateManyWithoutUserNestedInput
   lifeReflections?: Prisma.LifeReflectionUncheckedUpdateManyWithoutUserNestedInput
-  habits?: Prisma.HabitUncheckedUpdateManyWithoutUserNestedInput
-  habitTasks?: Prisma.HabitTaskUncheckedUpdateManyWithoutUserNestedInput
-  habitLogs?: Prisma.HabitLogUncheckedUpdateManyWithoutUserNestedInput
+  trackedHabits?: Prisma.TrackedHabitUncheckedUpdateManyWithoutUserNestedInput
+  habitEvents?: Prisma.HabitEventUncheckedUpdateManyWithoutUserNestedInput
+  habitOutbox?: Prisma.HabitNotificationOutboxUncheckedUpdateManyWithoutUserNestedInput
 }
 
 
@@ -4183,10 +4190,10 @@ export type UserCountOutputType = {
   notifications: number
   lifeChapters: number
   lifeReflections: number
-  habits: number
-  habitTasks: number
-  habitLogs: number
-  habitStreaks: number
+  trackedHabits: number
+  habitEvents: number
+  habitOutbox: number
+  triggers: number
 }
 
 export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -4206,10 +4213,10 @@ export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.I
   notifications?: boolean | UserCountOutputTypeCountNotificationsArgs
   lifeChapters?: boolean | UserCountOutputTypeCountLifeChaptersArgs
   lifeReflections?: boolean | UserCountOutputTypeCountLifeReflectionsArgs
-  habits?: boolean | UserCountOutputTypeCountHabitsArgs
-  habitTasks?: boolean | UserCountOutputTypeCountHabitTasksArgs
-  habitLogs?: boolean | UserCountOutputTypeCountHabitLogsArgs
-  habitStreaks?: boolean | UserCountOutputTypeCountHabitStreaksArgs
+  trackedHabits?: boolean | UserCountOutputTypeCountTrackedHabitsArgs
+  habitEvents?: boolean | UserCountOutputTypeCountHabitEventsArgs
+  habitOutbox?: boolean | UserCountOutputTypeCountHabitOutboxArgs
+  triggers?: boolean | UserCountOutputTypeCountTriggersArgs
 }
 
 /**
@@ -4337,29 +4344,29 @@ export type UserCountOutputTypeCountLifeReflectionsArgs<ExtArgs extends runtime.
 /**
  * UserCountOutputType without action
  */
-export type UserCountOutputTypeCountHabitsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  where?: Prisma.HabitWhereInput
+export type UserCountOutputTypeCountTrackedHabitsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.TrackedHabitWhereInput
 }
 
 /**
  * UserCountOutputType without action
  */
-export type UserCountOutputTypeCountHabitTasksArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  where?: Prisma.HabitTaskWhereInput
+export type UserCountOutputTypeCountHabitEventsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.HabitEventWhereInput
 }
 
 /**
  * UserCountOutputType without action
  */
-export type UserCountOutputTypeCountHabitLogsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  where?: Prisma.HabitLogWhereInput
+export type UserCountOutputTypeCountHabitOutboxArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.HabitNotificationOutboxWhereInput
 }
 
 /**
  * UserCountOutputType without action
  */
-export type UserCountOutputTypeCountHabitStreaksArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  where?: Prisma.HabitStreakWhereInput
+export type UserCountOutputTypeCountTriggersArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.TriggerWhereInput
 }
 
 
@@ -4390,10 +4397,10 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   lifeVision?: boolean | Prisma.User$lifeVisionArgs<ExtArgs>
   lifeChapters?: boolean | Prisma.User$lifeChaptersArgs<ExtArgs>
   lifeReflections?: boolean | Prisma.User$lifeReflectionsArgs<ExtArgs>
-  habits?: boolean | Prisma.User$habitsArgs<ExtArgs>
-  habitTasks?: boolean | Prisma.User$habitTasksArgs<ExtArgs>
-  habitLogs?: boolean | Prisma.User$habitLogsArgs<ExtArgs>
-  habitStreaks?: boolean | Prisma.User$habitStreaksArgs<ExtArgs>
+  trackedHabits?: boolean | Prisma.User$trackedHabitsArgs<ExtArgs>
+  habitEvents?: boolean | Prisma.User$habitEventsArgs<ExtArgs>
+  habitOutbox?: boolean | Prisma.User$habitOutboxArgs<ExtArgs>
+  triggers?: boolean | Prisma.User$triggersArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["user"]>
 
@@ -4448,10 +4455,10 @@ export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   lifeVision?: boolean | Prisma.User$lifeVisionArgs<ExtArgs>
   lifeChapters?: boolean | Prisma.User$lifeChaptersArgs<ExtArgs>
   lifeReflections?: boolean | Prisma.User$lifeReflectionsArgs<ExtArgs>
-  habits?: boolean | Prisma.User$habitsArgs<ExtArgs>
-  habitTasks?: boolean | Prisma.User$habitTasksArgs<ExtArgs>
-  habitLogs?: boolean | Prisma.User$habitLogsArgs<ExtArgs>
-  habitStreaks?: boolean | Prisma.User$habitStreaksArgs<ExtArgs>
+  trackedHabits?: boolean | Prisma.User$trackedHabitsArgs<ExtArgs>
+  habitEvents?: boolean | Prisma.User$habitEventsArgs<ExtArgs>
+  habitOutbox?: boolean | Prisma.User$habitOutboxArgs<ExtArgs>
+  triggers?: boolean | Prisma.User$triggersArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type UserIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
@@ -4479,10 +4486,10 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     lifeVision: Prisma.$LifeVisionPayload<ExtArgs> | null
     lifeChapters: Prisma.$LifeChapterPayload<ExtArgs>[]
     lifeReflections: Prisma.$LifeReflectionPayload<ExtArgs>[]
-    habits: Prisma.$HabitPayload<ExtArgs>[]
-    habitTasks: Prisma.$HabitTaskPayload<ExtArgs>[]
-    habitLogs: Prisma.$HabitLogPayload<ExtArgs>[]
-    habitStreaks: Prisma.$HabitStreakPayload<ExtArgs>[]
+    trackedHabits: Prisma.$TrackedHabitPayload<ExtArgs>[]
+    habitEvents: Prisma.$HabitEventPayload<ExtArgs>[]
+    habitOutbox: Prisma.$HabitNotificationOutboxPayload<ExtArgs>[]
+    triggers: Prisma.$TriggerPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -4905,10 +4912,10 @@ export interface Prisma__UserClient<T, Null = never, ExtArgs extends runtime.Typ
   lifeVision<T extends Prisma.User$lifeVisionArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$lifeVisionArgs<ExtArgs>>): Prisma.Prisma__LifeVisionClient<runtime.Types.Result.GetResult<Prisma.$LifeVisionPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   lifeChapters<T extends Prisma.User$lifeChaptersArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$lifeChaptersArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$LifeChapterPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   lifeReflections<T extends Prisma.User$lifeReflectionsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$lifeReflectionsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$LifeReflectionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-  habits<T extends Prisma.User$habitsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$habitsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$HabitPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-  habitTasks<T extends Prisma.User$habitTasksArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$habitTasksArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$HabitTaskPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-  habitLogs<T extends Prisma.User$habitLogsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$habitLogsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$HabitLogPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-  habitStreaks<T extends Prisma.User$habitStreaksArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$habitStreaksArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$HabitStreakPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  trackedHabits<T extends Prisma.User$trackedHabitsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$trackedHabitsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$TrackedHabitPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  habitEvents<T extends Prisma.User$habitEventsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$habitEventsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$HabitEventPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  habitOutbox<T extends Prisma.User$habitOutboxArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$habitOutboxArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$HabitNotificationOutboxPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  triggers<T extends Prisma.User$triggersArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$triggersArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$TriggerPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -5779,99 +5786,99 @@ export type User$lifeReflectionsArgs<ExtArgs extends runtime.Types.Extensions.In
 }
 
 /**
- * User.habits
+ * User.trackedHabits
  */
-export type User$habitsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+export type User$trackedHabitsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   /**
-   * Select specific fields to fetch from the Habit
+   * Select specific fields to fetch from the TrackedHabit
    */
-  select?: Prisma.HabitSelect<ExtArgs> | null
+  select?: Prisma.TrackedHabitSelect<ExtArgs> | null
   /**
-   * Omit specific fields from the Habit
+   * Omit specific fields from the TrackedHabit
    */
-  omit?: Prisma.HabitOmit<ExtArgs> | null
+  omit?: Prisma.TrackedHabitOmit<ExtArgs> | null
   /**
    * Choose, which related nodes to fetch as well
    */
-  include?: Prisma.HabitInclude<ExtArgs> | null
-  where?: Prisma.HabitWhereInput
-  orderBy?: Prisma.HabitOrderByWithRelationInput | Prisma.HabitOrderByWithRelationInput[]
-  cursor?: Prisma.HabitWhereUniqueInput
+  include?: Prisma.TrackedHabitInclude<ExtArgs> | null
+  where?: Prisma.TrackedHabitWhereInput
+  orderBy?: Prisma.TrackedHabitOrderByWithRelationInput | Prisma.TrackedHabitOrderByWithRelationInput[]
+  cursor?: Prisma.TrackedHabitWhereUniqueInput
   take?: number
   skip?: number
-  distinct?: Prisma.HabitScalarFieldEnum | Prisma.HabitScalarFieldEnum[]
+  distinct?: Prisma.TrackedHabitScalarFieldEnum | Prisma.TrackedHabitScalarFieldEnum[]
 }
 
 /**
- * User.habitTasks
+ * User.habitEvents
  */
-export type User$habitTasksArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+export type User$habitEventsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   /**
-   * Select specific fields to fetch from the HabitTask
+   * Select specific fields to fetch from the HabitEvent
    */
-  select?: Prisma.HabitTaskSelect<ExtArgs> | null
+  select?: Prisma.HabitEventSelect<ExtArgs> | null
   /**
-   * Omit specific fields from the HabitTask
+   * Omit specific fields from the HabitEvent
    */
-  omit?: Prisma.HabitTaskOmit<ExtArgs> | null
+  omit?: Prisma.HabitEventOmit<ExtArgs> | null
   /**
    * Choose, which related nodes to fetch as well
    */
-  include?: Prisma.HabitTaskInclude<ExtArgs> | null
-  where?: Prisma.HabitTaskWhereInput
-  orderBy?: Prisma.HabitTaskOrderByWithRelationInput | Prisma.HabitTaskOrderByWithRelationInput[]
-  cursor?: Prisma.HabitTaskWhereUniqueInput
+  include?: Prisma.HabitEventInclude<ExtArgs> | null
+  where?: Prisma.HabitEventWhereInput
+  orderBy?: Prisma.HabitEventOrderByWithRelationInput | Prisma.HabitEventOrderByWithRelationInput[]
+  cursor?: Prisma.HabitEventWhereUniqueInput
   take?: number
   skip?: number
-  distinct?: Prisma.HabitTaskScalarFieldEnum | Prisma.HabitTaskScalarFieldEnum[]
+  distinct?: Prisma.HabitEventScalarFieldEnum | Prisma.HabitEventScalarFieldEnum[]
 }
 
 /**
- * User.habitLogs
+ * User.habitOutbox
  */
-export type User$habitLogsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+export type User$habitOutboxArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   /**
-   * Select specific fields to fetch from the HabitLog
+   * Select specific fields to fetch from the HabitNotificationOutbox
    */
-  select?: Prisma.HabitLogSelect<ExtArgs> | null
+  select?: Prisma.HabitNotificationOutboxSelect<ExtArgs> | null
   /**
-   * Omit specific fields from the HabitLog
+   * Omit specific fields from the HabitNotificationOutbox
    */
-  omit?: Prisma.HabitLogOmit<ExtArgs> | null
+  omit?: Prisma.HabitNotificationOutboxOmit<ExtArgs> | null
   /**
    * Choose, which related nodes to fetch as well
    */
-  include?: Prisma.HabitLogInclude<ExtArgs> | null
-  where?: Prisma.HabitLogWhereInput
-  orderBy?: Prisma.HabitLogOrderByWithRelationInput | Prisma.HabitLogOrderByWithRelationInput[]
-  cursor?: Prisma.HabitLogWhereUniqueInput
+  include?: Prisma.HabitNotificationOutboxInclude<ExtArgs> | null
+  where?: Prisma.HabitNotificationOutboxWhereInput
+  orderBy?: Prisma.HabitNotificationOutboxOrderByWithRelationInput | Prisma.HabitNotificationOutboxOrderByWithRelationInput[]
+  cursor?: Prisma.HabitNotificationOutboxWhereUniqueInput
   take?: number
   skip?: number
-  distinct?: Prisma.HabitLogScalarFieldEnum | Prisma.HabitLogScalarFieldEnum[]
+  distinct?: Prisma.HabitNotificationOutboxScalarFieldEnum | Prisma.HabitNotificationOutboxScalarFieldEnum[]
 }
 
 /**
- * User.habitStreaks
+ * User.triggers
  */
-export type User$habitStreaksArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+export type User$triggersArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   /**
-   * Select specific fields to fetch from the HabitStreak
+   * Select specific fields to fetch from the Trigger
    */
-  select?: Prisma.HabitStreakSelect<ExtArgs> | null
+  select?: Prisma.TriggerSelect<ExtArgs> | null
   /**
-   * Omit specific fields from the HabitStreak
+   * Omit specific fields from the Trigger
    */
-  omit?: Prisma.HabitStreakOmit<ExtArgs> | null
+  omit?: Prisma.TriggerOmit<ExtArgs> | null
   /**
    * Choose, which related nodes to fetch as well
    */
-  include?: Prisma.HabitStreakInclude<ExtArgs> | null
-  where?: Prisma.HabitStreakWhereInput
-  orderBy?: Prisma.HabitStreakOrderByWithRelationInput | Prisma.HabitStreakOrderByWithRelationInput[]
-  cursor?: Prisma.HabitStreakWhereUniqueInput
+  include?: Prisma.TriggerInclude<ExtArgs> | null
+  where?: Prisma.TriggerWhereInput
+  orderBy?: Prisma.TriggerOrderByWithRelationInput | Prisma.TriggerOrderByWithRelationInput[]
+  cursor?: Prisma.TriggerWhereUniqueInput
   take?: number
   skip?: number
-  distinct?: Prisma.HabitStreakScalarFieldEnum | Prisma.HabitStreakScalarFieldEnum[]
+  distinct?: Prisma.TriggerScalarFieldEnum | Prisma.TriggerScalarFieldEnum[]
 }
 
 /**

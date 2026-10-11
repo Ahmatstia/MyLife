@@ -152,7 +152,7 @@ export default async function SettingsPage() {
               Ekspor & Cadangan Mandiri Seluruh Data
             </h2>
             <p className="text-xs text-[#94A3B8] leading-relaxed">
-              Anda memegang kendali penuh atas data Anda. Unduh salinan lengkap seluruh Target, Tugas, Sesi Fokus, Catatan Cepat, Kalender, dan Riwayat Evaluasi Anda dalam format file JSON standar kapan saja.
+              Anda memegang kendali penuh atas data Anda. Unduh salinan lengkap seluruh Target, Tugas, Sesi Fokus, Catatan Cepat, Agenda, dan Riwayat Evaluasi Anda dalam format file JSON standar kapan saja.
             </p>
           </div>
 

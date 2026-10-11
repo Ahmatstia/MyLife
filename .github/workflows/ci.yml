@@ -14,7 +14,7 @@ jobs:
         env:
           POSTGRES_USER: postgres
           POSTGRES_PASSWORD: postgres
-          POSTGRES_DB: test
+          POSTGRES_DB: mylife_test
         ports:
           - 5432:5432
         options: >-
@@ -23,9 +23,10 @@ jobs:
           --health-timeout 5s
           --health-retries 5
     env:
-      # Nilai TEST saja untuk static validation & build. Bukan secret produksi.
-      DATABASE_URL: "postgresql://postgres:postgres@localhost:5432/test?schema=public"
-      DIRECT_URL: "postgresql://postgres:postgres@localhost:5432/test?schema=public"
+      DATABASE_URL: "postgresql://postgres:postgres@localhost:5432/dummy_app?schema=public"
+      DIRECT_URL: "postgresql://postgres:postgres@localhost:5432/dummy_app?schema=public"
+      TEST_DATABASE_URL: "postgresql://postgres:postgres@localhost:5432/mylife_test?schema=public"
+      TEST_DB_ALLOWED_HOSTS: "localhost,127.0.0.1"
       AUTH_SECRET: "ci-test-secret-0123456789abcdef0123456789abcdef"
       AUTH_ACCESS_CODE: "ci-test-access-code"
     steps:
@@ -46,7 +47,7 @@ jobs:
 
       - name: Setup test database schema
         run: |
-          npx prisma db push
+          npm run db:test:prepare
           npx tsx scripts/setup-db-constraints.ts
 
       - name: Typecheck

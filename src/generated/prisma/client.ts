@@ -147,27 +147,82 @@ export type ChapterFocusArea = Prisma.ChapterFocusAreaModel
  */
 export type LifeReflection = Prisma.LifeReflectionModel
 /**
- * Model Habit
+ * Model TrackedHabit
  * 
  */
-export type Habit = Prisma.HabitModel
+export type TrackedHabit = Prisma.TrackedHabitModel
 /**
- * Model HabitTask
+ * Model HabitBreakProfile
  * 
  */
-export type HabitTask = Prisma.HabitTaskModel
+export type HabitBreakProfile = Prisma.HabitBreakProfileModel
 /**
- * Model HabitPhase
+ * Model HabitEvent
  * 
  */
-export type HabitPhase = Prisma.HabitPhaseModel
+export type HabitEvent = Prisma.HabitEventModel
 /**
- * Model HabitLog
+ * Model HabitCheckin
  * 
  */
-export type HabitLog = Prisma.HabitLogModel
+export type HabitCheckin = Prisma.HabitCheckinModel
 /**
- * Model HabitStreak
+ * Model HabitStats
  * 
  */
-export type HabitStreak = Prisma.HabitStreakModel
+export type HabitStats = Prisma.HabitStatsModel
+/**
+ * Model HabitNotificationOutbox
+ * 
+ */
+export type HabitNotificationOutbox = Prisma.HabitNotificationOutboxModel
+/**
+ * Model Trigger
+ * 
+ */
+export type Trigger = Prisma.TriggerModel
+/**
+ * Model HabitTrigger
+ * 
+ */
+export type HabitTrigger = Prisma.HabitTriggerModel
+/**
+ * Model CopingPlan
+ * 
+ */
+export type CopingPlan = Prisma.CopingPlanModel
+/**
+ * Model HabitEventTrigger
+ * 
+ */
+export type HabitEventTrigger = Prisma.HabitEventTriggerModel
+/**
+ * Model HabitMilestone
+ * 
+ */
+export type HabitMilestone = Prisma.HabitMilestoneModel
+/**
+ * Model SupportResource
+ * 
+ */
+export type SupportResource = Prisma.SupportResourceModel
+/**
+ * Model HabitBuildProfile
+ * 
+ */
+export type HabitBuildProfile = Prisma.HabitBuildProfileModel
+/**
+ * Model AutomaticitySurvey
+ * 
+ */
+export type AutomaticitySurvey = Prisma.AutomaticitySurveyModel
+/**
+ * Model HabitReminder
+ * 
+ */
+export type HabitReminder = Prisma.HabitReminderModel
+/**
+ * Model HabitReflection
+ * 
+ */
+export type HabitReflection = Prisma.HabitReflectionModel
