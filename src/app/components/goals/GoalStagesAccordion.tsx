@@ -83,7 +83,7 @@ export function GoalStagesAccordion({
       {/* Section Header & Global Accordion Controls */}
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div className="flex items-center gap-2.5">
-          <div className="w-8 h-8 rounded-lg bg-purple-500/10 border border-purple-500/20 flex items-center justify-center text-purple-400">
+          <div className="w-8 h-8 rounded-lg bg-teal-500/10 border border-teal-500/20 flex items-center justify-center text-teal-400">
             <span className="material-symbols-outlined text-[18px]">account_tree</span>
           </div>
           <div>
@@ -101,7 +101,7 @@ export function GoalStagesAccordion({
           <button
             type="button"
             onClick={allOpen ? handleCollapseAll : handleExpandAll}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#131825] hover:bg-[#1A2133] text-gray-300 hover:text-white border border-white/[0.08] hover:border-white/[0.15] font-mono text-xs transition-colors duration-150 cursor-pointer shadow-sm"
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#0d1b20] hover:bg-[#14272e] text-gray-300 hover:text-white border border-teal-500/20 font-mono text-xs transition-colors duration-150 cursor-pointer shadow-sm"
             title={allOpen ? "Tutup Semua Tahapan" : "Buka Semua Tahapan"}
           >
             <span className="material-symbols-outlined text-[16px]">
@@ -135,8 +135,8 @@ export function GoalStagesAccordion({
                   isCompleted
                     ? "bg-emerald-500/20 text-emerald-400 border border-emerald-500/40 hover:bg-emerald-500/30"
                     : isCurrent
-                    ? "bg-purple-600 text-white border border-purple-400/50 hover:bg-purple-500 shadow-md"
-                    : "bg-[#131825] text-gray-400 border border-white/[0.08] hover:border-white/[0.2] hover:text-white"
+                    ? "bg-teal-600 text-white border border-teal-400/50 hover:bg-teal-500 shadow-md"
+                    : "bg-[#0d1b20] text-gray-400 border border-teal-500/15 hover:border-teal-500/30 hover:text-white"
                 }`}
                 title={isOpen ? "Klik untuk meminimalkan" : "Klik untuk membuka rincian"}
               >
@@ -149,12 +149,12 @@ export function GoalStagesAccordion({
 
               {/* Main Stage Card - Hardware accelerated, no transition-all layout thrashing */}
               <div
-                className={`flex-1 w-full rounded-2xl bg-[#131825] border transition-colors duration-150 overflow-hidden transform-gpu ${
+                className={`flex-1 w-full rounded-2xl bg-[#0d1b20]/90 border transition-colors duration-150 overflow-hidden transform-gpu ${
                   isCurrent
-                    ? "border-purple-500/50 shadow-md shadow-purple-950/20"
+                    ? "border-teal-500/50 shadow-md shadow-teal-950/20"
                     : isCompleted
                     ? "border-emerald-500/20"
-                    : "border-white/[0.08] hover:border-white/[0.14]"
+                    : "border-teal-500/15 hover:border-teal-500/30"
                 }`}
               >
                 {/* Clickable Header Bar (Minimalist View) */}
@@ -180,7 +180,7 @@ export function GoalStagesAccordion({
                           isCompleted
                             ? "text-emerald-400 bg-emerald-500/10 border border-emerald-500/20"
                             : isCurrent
-                            ? "text-purple-300 bg-purple-500/15 border border-purple-500/30"
+                            ? "text-teal-300 bg-teal-500/15 border border-teal-500/30"
                             : "text-gray-400 bg-white/[0.05]"
                         }`}
                       >
@@ -213,18 +213,18 @@ export function GoalStagesAccordion({
                   {/* Right: Progress Mini Bar & Chevron Toggle */}
                   <div className="flex items-center gap-3 shrink-0 ml-auto">
                     {/* Mini visual progress indicator */}
-                    <div className="hidden sm:flex items-center gap-2.5 px-3 py-1.5 rounded-lg bg-[#0B0D13]/70 border border-white/[0.05]">
+                    <div className="hidden sm:flex items-center gap-2.5 px-3 py-1.5 rounded-lg bg-[#081013]/70 border border-white/[0.05]">
                       <div className="w-16 h-1.5 rounded-full bg-white/[0.08] overflow-hidden">
                         <div
                           className={`h-full rounded-full transition-[width] duration-300 ${
-                            isCompleted ? "bg-emerald-400" : isCurrent ? "bg-purple-500" : "bg-gray-400"
+                            isCompleted ? "bg-emerald-400" : isCurrent ? "bg-teal-500" : "bg-gray-400"
                           }`}
                           style={{ width: `${stageProgress}%` }}
                         />
                       </div>
                       <span
                         className={`font-mono text-xs font-bold ${
-                          isCompleted ? "text-emerald-400" : isCurrent ? "text-purple-300" : "text-gray-400"
+                          isCompleted ? "text-emerald-400" : isCurrent ? "text-teal-300" : "text-gray-400"
                         }`}
                       >
                         {stageProgress}%
@@ -235,7 +235,7 @@ export function GoalStagesAccordion({
                     <div
                       className={`w-8 h-8 rounded-lg flex items-center justify-center transition-transform duration-150 ${
                         isOpen
-                          ? "bg-purple-500/20 text-purple-300 rotate-180"
+                          ? "bg-teal-500/20 text-teal-300 rotate-180"
                           : "bg-white/[0.05] text-gray-400 hover:text-white"
                       }`}
                       title={isOpen ? "Ciutkan tahapan" : "Buka rincian tahapan"}
@@ -263,13 +263,13 @@ export function GoalStagesAccordion({
                       )}
 
                       {/* Detailed Metric Card */}
-                      <div className="p-3 rounded-xl bg-[#0B0D13]/80 border border-white/[0.06] flex items-center gap-3 shrink-0 ml-auto">
+                      <div className="p-3 rounded-xl bg-[#081013]/80 border border-white/[0.06] flex items-center gap-3 shrink-0 ml-auto">
                         <div
                           className={`w-10 h-10 rounded-full flex items-center justify-center font-mono text-xs font-bold ${
                             isCompleted
                               ? "bg-emerald-500/20 text-emerald-400"
                               : isCurrent
-                              ? "bg-purple-500/20 text-purple-300"
+                              ? "bg-teal-500/20 text-teal-300"
                               : "bg-white/[0.05] text-gray-400"
                           }`}
                         >

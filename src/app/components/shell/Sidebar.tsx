@@ -23,31 +23,30 @@ const navigationGroups: NavGroup[] = [
   {
     title: "Pusat",
     items: [
-      { href: "/", label: "Beranda", verb: "Utama", icon: "home", color: "text-[#8B5CF6]" },
+      { href: "/", label: "Beranda", verb: "Utama", icon: "home", color: "text-teal-400" },
     ],
   },
   {
     title: "Eksekusi Harian",
     items: [
-      { href: "/today", label: "Hari Ini", verb: "Harian", icon: "sun", color: "text-[#F59E0B]" },
-      { href: "/focus", label: "Fokus", verb: "Pomodoro", icon: "target", color: "text-[#d0bcff]" },
-      { href: "/calendar", label: "Agenda", verb: "Jadwal", icon: "calendar", color: "text-[#38bdf8]" },
+      { href: "/today", label: "Hari Ini", verb: "Harian", icon: "sun", color: "text-teal-400" },
+      { href: "/focus", label: "Fokus", verb: "Pomodoro", icon: "target", color: "text-teal-400" },
+      { href: "/calendar", label: "Agenda", verb: "Jadwal", icon: "calendar", color: "text-teal-400" },
     ],
   },
   {
     title: "Perencanaan",
     items: [
-      { href: "/goals", label: "Target", verb: "Sasaran", icon: "flag", color: "text-[#a078ff]" },
-      // { href: "/habits", label: "Habit Tracker", verb: "Kebiasaan", icon: "flame", color: "text-[#f43f5e]" },
-      { href: "/capture", label: "Inbox", verb: "Catat", icon: "inbox", color: "text-[#F59E0B]" },
+      { href: "/goals", label: "Target", verb: "Sasaran", icon: "flag", color: "text-teal-400" },
+      { href: "/capture", label: "Inbox", verb: "Catat", icon: "inbox", color: "text-teal-400" },
     ],
   },
   {
     title: "Evaluasi & AI",
     items: [
-      { href: "/progress", label: "Progress & Refleksi", verb: "Evaluasi", icon: "chart", color: "text-[#4edea3]" },
-      { href: "/assistant", label: "LexaPie AI", verb: "Asisten", icon: "sparkles", color: "text-[#a078ff]" },
-      { href: "/notifications", label: "Notifikasi", verb: "Info", icon: "bell", color: "text-[#F43F5E]" },
+      { href: "/progress", label: "Progress & Refleksi", verb: "Evaluasi", icon: "chart", color: "text-teal-400" },
+      { href: "/assistant", label: "LexaPie AI", verb: "Asisten", icon: "sparkles", color: "text-teal-400" },
+      { href: "/notifications", label: "Notifikasi", verb: "Info", icon: "bell", color: "text-teal-400" },
     ],
   },
 ];
@@ -198,7 +197,7 @@ export function Sidebar({
             }`}
           >
             <svg
-              className={`w-3.5 h-3.5 transition-transform duration-300 ${isPinned ? "text-[#d0bcff] rotate-45" : "text-slate-500 dark:text-[#94a3b8]"}`}
+              className={`w-3.5 h-3.5 transition-transform duration-300 ${isPinned ? "text-teal-400 rotate-45" : "text-slate-500 dark:text-[#94a3b8]"}`}
               viewBox="0 0 24 24"
               fill={isPinned ? "currentColor" : "none"}
               stroke="currentColor"
@@ -249,18 +248,18 @@ export function Sidebar({
                     isExpanded ? "px-2.5 gap-2.5 w-full" : "w-10 justify-center mx-auto px-0"
                   } ${
                     active
-                      ? "bg-[#8B5CF6]/15 text-[#6d28d9] dark:text-white border border-[#8B5CF6]/35 shadow-sm"
+                      ? "bg-teal-500/15 text-teal-800 dark:text-teal-200 border border-teal-500/30 shadow-xs"
                       : "text-slate-600 dark:text-[#94a3b8] hover:bg-slate-100 dark:hover:bg-white/[0.06] hover:text-slate-900 dark:hover:text-white border border-transparent"
                   }`}
                 >
                   {active && (
                     <span
                       aria-hidden="true"
-                      className="absolute left-0 top-1/2 h-4 w-0.5 -translate-y-1/2 rounded-r-full bg-[#8B5CF6] shadow-[0_0_8px_#8B5CF6]"
+                      className="absolute left-0 top-1/2 h-4 w-0.5 -translate-y-1/2 rounded-r-full bg-teal-400 shadow-[0_0_8px_rgba(20,184,166,0.6)]"
                     />
                   )}
                   {isPending ? (
-                    <span className="flex h-5 w-5 shrink-0 items-center justify-center animate-spin text-[#8B5CF6]">
+                    <span className="flex h-5 w-5 shrink-0 items-center justify-center animate-spin text-teal-400">
                       <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
                         <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" />
                         <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z" />
@@ -269,7 +268,7 @@ export function Sidebar({
                   ) : (
                     <span
                       className={`flex h-5 w-5 shrink-0 items-center justify-center transition-colors ${
-                        active ? item.color : "text-slate-400 dark:text-[#94a3b8] group-hover:text-slate-700 dark:group-hover:text-white"
+                        active ? "text-teal-400" : "text-slate-400 dark:text-[#94a3b8] group-hover:text-slate-700 dark:group-hover:text-white"
                       }`}
                     >
                       <Icon name={item.icon} size={17} />
@@ -326,19 +325,19 @@ export function Sidebar({
             isExpanded ? "px-2.5 gap-2.5 w-full" : "w-10 justify-center mx-auto px-0"
           } ${
             isActive("/tutorial", pathname) || pendingHref === "/tutorial"
-              ? "bg-[#8B5CF6]/15 border-[#8B5CF6]/35 text-[#6d28d9] dark:text-white"
+              ? "bg-teal-500/15 border-teal-500/30 text-teal-800 dark:text-teal-200"
               : "text-slate-600 dark:text-[#94a3b8] hover:bg-slate-100 dark:hover:bg-white/[0.06] hover:text-slate-900 dark:hover:text-white border-transparent"
           }`}
         >
           {pendingHref === "/tutorial" ? (
-            <span className="flex h-5 w-5 shrink-0 items-center justify-center animate-spin text-[#8B5CF6]">
+            <span className="flex h-5 w-5 shrink-0 items-center justify-center animate-spin text-teal-400">
               <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
                 <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" />
                 <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z" />
               </svg>
             </span>
           ) : (
-            <span className="flex h-5 w-5 shrink-0 items-center justify-center text-[#F59E0B]">
+            <span className="flex h-5 w-5 shrink-0 items-center justify-center text-teal-400">
               <Icon name="bookOpen" size={16} />
             </span>
           )}
@@ -365,12 +364,12 @@ export function Sidebar({
             isExpanded ? "px-2.5 gap-2.5 w-full" : "w-10 justify-center mx-auto px-0"
           } ${
             isActive("/settings", pathname) || pendingHref === "/settings"
-              ? "bg-[#8B5CF6]/15 border-[#8B5CF6]/35 text-[#6d28d9] dark:text-white"
+              ? "bg-teal-500/15 border-teal-500/30 text-teal-800 dark:text-teal-200"
               : "text-slate-600 dark:text-[#94a3b8] hover:bg-slate-100 dark:hover:bg-white/[0.06] hover:text-slate-900 dark:hover:text-white border-transparent"
           }`}
         >
           {pendingHref === "/settings" ? (
-            <span className="flex h-5 w-5 shrink-0 items-center justify-center animate-spin text-[#8B5CF6]">
+            <span className="flex h-5 w-5 shrink-0 items-center justify-center animate-spin text-teal-400">
               <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
                 <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" />
                 <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z" />
@@ -402,7 +401,7 @@ export function Sidebar({
           }`}
           title={!isExpanded ? user.name || "Akun" : undefined}
         >
-          <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-[#8B5CF6] to-[#6366F1] text-[11px] font-bold text-white shadow-sm">
+          <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-teal-500 to-teal-700 text-[11px] font-bold text-white shadow-xs">
             {initials}
           </span>
           <div

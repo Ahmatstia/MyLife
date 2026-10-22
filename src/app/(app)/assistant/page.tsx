@@ -15,7 +15,7 @@ export default async function AssistantPage() {
     <div className="flex h-[calc(100vh-3.5rem-5rem)] flex-col lg:h-[calc(100vh-3.5rem-2.5rem)]">
       {/* Header */}
       <div className="flex items-center gap-3 border-b border-white/[0.07] pb-4 mb-4">
-        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-[#8B5CF6] to-[#6366F1] shadow-[0_0_20px_rgba(139,92,246,0.3)]">
+        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-teal-500/15 border border-teal-500/30 shadow-[0_0_20px_rgba(20,184,166,0.2)]">
           <svg
             width="18"
             height="18"
@@ -25,7 +25,7 @@ export default async function AssistantPage() {
             strokeWidth="1.8"
             strokeLinecap="round"
             strokeLinejoin="round"
-            className="text-white"
+            className="text-teal-300"
           >
             <path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9L12 3z" />
             <path d="M19 15l.9 2.1L22 18l-2.1.9L19 21l-.9-2.1L16 18l2.1-.9L19 15z" />

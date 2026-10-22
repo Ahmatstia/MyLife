@@ -562,22 +562,22 @@ export function TodayDashboardClient({
       {/* ==================================================================== */}
       {/* 1. TOP HEADER HERO (MEWAH, BERSIH, RAMAH, TANPA SHORTCUT)            */}
       {/* ==================================================================== */}
-      <header className="relative overflow-hidden rounded-3xl bg-white/85 dark:bg-[#131825]/90 border border-slate-200/80 dark:border-white/10 p-6 lg:p-7 shadow-sm dark:shadow-2xl backdrop-blur-xl transition-all">
+      <header className="relative overflow-hidden rounded-3xl bg-white/85 dark:bg-[#0d1b20]/90 border border-slate-200/80 dark:border-teal-500/15 p-6 lg:p-7 shadow-sm dark:shadow-2xl backdrop-blur-xl transition-all">
         {/* Subtle Ambient Radial Glows */}
-        <div className="absolute -right-16 -top-16 w-80 h-80 bg-gradient-to-br from-[#8B5CF6]/15 via-[#38bdf8]/10 to-transparent rounded-full blur-3xl pointer-events-none" />
-        <div className="absolute -left-16 -bottom-16 w-64 h-64 bg-gradient-to-tr from-[#4edea3]/10 via-transparent to-transparent rounded-full blur-2xl pointer-events-none" />
+        <div className="absolute -right-16 -top-16 w-80 h-80 bg-gradient-to-br from-teal-500/10 via-teal-600/5 to-transparent rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute -left-16 -bottom-16 w-64 h-64 bg-gradient-to-tr from-teal-400/10 via-transparent to-transparent rounded-full blur-2xl pointer-events-none" />
 
         <div className="relative z-10 flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6">
           {/* Left Greeting & Date */}
           <div className="flex flex-col gap-1.5 max-w-xl">
             <div className="flex items-center gap-2.5 flex-wrap">
-              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#8B5CF6]/10 text-[#7c3aed] dark:text-[#d0bcff] border border-[#8B5CF6]/20 text-xs font-semibold">
-                <span className="w-2 h-2 rounded-full bg-[#8B5CF6] animate-pulse" />
+              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-teal-500/10 text-teal-700 dark:text-teal-300 border border-teal-500/20 text-xs font-semibold">
+                <span className="w-2 h-2 rounded-full bg-teal-400 animate-pulse" />
                 <span>{greeting}</span>
               </span>
 
               <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-100 dark:bg-white/[0.06] text-slate-600 dark:text-[#94a3b8] text-xs font-medium border border-slate-200/60 dark:border-white/[0.06]">
-                <span className="material-symbols-outlined text-[15px] text-[#38bdf8]">schedule</span>
+                <span className="material-symbols-outlined text-[15px] text-teal-400">schedule</span>
                 <span>{clock} WIB</span>
               </span>
             </div>
@@ -591,10 +591,10 @@ export function TodayDashboardClient({
             </p>
           </div>
 
-          {/* Center/Right: Visual Progress Ring & Action Pills */}
+          {/* Center/Right: Visual Progress Ring & Action */}
           <div className="flex flex-wrap sm:flex-nowrap items-center gap-4 w-full lg:w-auto justify-between lg:justify-end">
             {/* Progress Circular Badge */}
-            <div className="flex items-center gap-3.5 px-4 py-3 rounded-2xl bg-slate-50/80 dark:bg-[#1a2133]/60 border border-slate-200/80 dark:border-white/[0.08] shadow-xs">
+            <div className="flex items-center gap-3.5 px-4 py-3 rounded-2xl bg-slate-50/80 dark:bg-[#14272e]/60 border border-slate-200/80 dark:border-teal-500/15 shadow-xs">
               <div className="relative w-12 h-12 flex items-center justify-center shrink-0">
                 <svg className="w-full h-full transform -rotate-90" viewBox="0 0 36 36">
                   <path
@@ -605,7 +605,7 @@ export function TodayDashboardClient({
                     strokeWidth="3.5"
                   />
                   <path
-                    className="text-[#4edea3] transition-all duration-700 ease-out"
+                    className="text-teal-400 transition-all duration-700 ease-out"
                     d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
                     fill="none"
                     stroke="currentColor"
@@ -622,44 +622,20 @@ export function TodayDashboardClient({
                 <span className="text-xs font-bold text-slate-900 dark:text-white">
                   {completedCount} dari {totalCount} Tugas
                 </span>
-                <span className="text-[11px] text-[#4edea3] font-semibold mt-0.5">
+                <span className="text-[11px] text-teal-400 font-semibold mt-0.5">
                   {completedCount === totalCount && totalCount > 0 ? "Selesai Sempurna! 🎉" : "Selesai Hari Ini"}
                 </span>
               </div>
             </div>
 
-            {/* Quick Action Navigation Buttons (Clean, without shortcut badges) */}
-            <div className="flex items-center gap-2 flex-wrap sm:flex-nowrap">
+            {/* Quick Action: Mode Fokus only (Inbox, Agenda, Progress already 1 click away in sidebar) */}
+            <div className="flex items-center gap-2">
               <Link
                 href={activeSpotlight ? `/focus?taskId=${activeSpotlight.taskId}` : "/focus"}
-                className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-gradient-to-r from-[#8B5CF6] to-[#6366F1] hover:from-[#7c3aed] hover:to-[#4f46e5] text-white text-xs font-bold shadow-md shadow-[#8B5CF6]/25 transition-all active:scale-95"
+                className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-teal-600 hover:bg-teal-500 text-white text-xs font-bold shadow-md shadow-teal-900/25 transition-all active:scale-95"
               >
                 <span className="material-symbols-outlined text-[17px]">timer</span>
                 <span>Mode Fokus</span>
-              </Link>
-
-              <Link
-                href="/capture"
-                className="flex items-center gap-1.5 px-3.5 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-white/[0.06] dark:hover:bg-white/[0.12] text-slate-700 dark:text-[#d0bcff] border border-slate-200 dark:border-white/[0.08] text-xs font-semibold transition-all active:scale-95"
-              >
-                <span className="material-symbols-outlined text-[16px]">edit_note</span>
-                <span>Inbox</span>
-              </Link>
-
-              <Link
-                href="/calendar"
-                className="flex items-center gap-1.5 px-3.5 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-white/[0.06] dark:hover:bg-white/[0.12] text-slate-700 dark:text-[#38bdf8] border border-slate-200 dark:border-white/[0.08] text-xs font-semibold transition-all active:scale-95"
-              >
-                <span className="material-symbols-outlined text-[16px]">calendar_month</span>
-                <span>Kalender</span>
-              </Link>
-
-              <Link
-                href="/progress"
-                className="flex items-center gap-1.5 px-3.5 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-white/[0.06] dark:hover:bg-white/[0.12] text-slate-700 dark:text-[#4edea3] border border-slate-200 dark:border-white/[0.08] text-xs font-semibold transition-all active:scale-95"
-              >
-                <span className="material-symbols-outlined text-[16px]">monitoring</span>
-                <span>Progress</span>
               </Link>
             </div>
           </div>
@@ -700,12 +676,12 @@ export function TodayDashboardClient({
               href="/calendar"
               className="px-3 py-1.5 rounded-xl bg-amber-500 text-white font-semibold text-xs hover:bg-amber-600 transition-colors shadow-xs"
             >
-              Selesaikan di Kalender →
+              Selesaikan di Agenda →
             </Link>
             <button
               type="button"
               onClick={() => setAlertDismissed(true)}
-              className="p-1 rounded-lg text-amber-600 dark:text-amber-400 hover:bg-amber-500/20 transition-colors"
+              className="p-1 rounded-lg text-amber-600 dark:text-amber-400 hover:bg-amber-500/20 transition-colors cursor-pointer"
               title="Abaikan peringatan"
             >
               <span className="material-symbols-outlined text-[18px]">check</span>
@@ -724,18 +700,18 @@ export function TodayDashboardClient({
         <div className="lg:col-span-8 flex flex-col gap-6">
           {/* ── SPOTLIGHT HERO CARD (FOKUS UTAMA HARI INI) ── */}
           {activeSpotlight ? (
-            <section className="relative overflow-hidden rounded-3xl bg-white/90 dark:bg-[#131825]/90 border border-purple-500/30 dark:border-[#8B5CF6]/35 p-6 sm:p-7 shadow-sm dark:shadow-[0_0_40px_-10px_rgba(139,92,246,0.15)] group transition-all">
-              <div className="absolute top-0 right-0 w-80 h-80 bg-[#8B5CF6]/15 rounded-full blur-3xl pointer-events-none group-hover:bg-[#8B5CF6]/20 transition-all" />
+            <section className="relative overflow-hidden rounded-3xl bg-white/90 dark:bg-[#0d1b20]/90 border border-teal-500/25 dark:border-teal-500/25 p-6 sm:p-7 shadow-sm dark:shadow-[0_0_30px_-10px_rgba(20,184,166,0.15)] group transition-all">
+              <div className="absolute top-0 right-0 w-80 h-80 bg-teal-500/10 rounded-full blur-3xl pointer-events-none group-hover:bg-teal-500/15 transition-all" />
 
               <div className="relative z-10 flex flex-col gap-4">
                 <div className="flex items-center justify-between flex-wrap gap-2">
-                  <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#8B5CF6]/15 text-[#7c3aed] dark:text-[#d0bcff] border border-[#8B5CF6]/30 text-xs font-bold uppercase tracking-wider">
-                    <span className="material-symbols-outlined text-[15px] text-[#f59e0b]">local_fire_department</span>
+                  <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-teal-500/15 text-teal-700 dark:text-teal-200 border border-teal-500/30 text-xs font-bold uppercase tracking-wider">
+                    <span className="material-symbols-outlined text-[15px] text-amber-400">local_fire_department</span>
                     <span>Prioritas Tertinggi Hari Ini</span>
                   </span>
 
-                  <span className="text-xs font-medium text-slate-500 dark:text-[#94a3b8] flex items-center gap-1">
-                    <span className="material-symbols-outlined text-[15px] text-[#4edea3]">bolt</span>
+                  <span className="text-xs font-medium text-slate-500 dark:text-teal-300/80 flex items-center gap-1">
+                    <span className="material-symbols-outlined text-[15px] text-teal-400">bolt</span>
                     <span>Fokus Utama</span>
                   </span>
                 </div>
@@ -752,16 +728,16 @@ export function TodayDashboardClient({
                 {/* Metadata Tags */}
                 <div className="flex flex-wrap items-center gap-2 pt-1">
                   <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-xl bg-slate-100 dark:bg-white/[0.06] border border-slate-200 dark:border-white/[0.08] text-xs font-semibold text-slate-800 dark:text-white">
-                    <span className="material-symbols-outlined text-[15px] text-[#8B5CF6]">timer</span>
+                    <span className="material-symbols-outlined text-[15px] text-teal-400">timer</span>
                     <span>Estimasi: {activeSpotlight.estimatedMinutes} Menit</span>
                   </span>
 
-                  <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-xl bg-purple-50 dark:bg-purple-500/10 border border-purple-200 dark:border-purple-500/20 text-xs font-semibold text-purple-700 dark:text-[#d0bcff]">
+                  <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-xl bg-teal-50 dark:bg-teal-500/10 border border-teal-200 dark:border-teal-500/20 text-xs font-semibold text-teal-700 dark:text-teal-300">
                     <span className="material-symbols-outlined text-[15px]">flag</span>
                     <span>{activeSpotlight.goalName}</span>
                   </span>
 
-                  <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-xl bg-amber-50 dark:bg-amber-500/10 border border-amber-200 dark:border-amber-500/20 text-xs font-semibold text-amber-700 dark:text-[#f59e0b]">
+                  <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-xl bg-amber-50 dark:bg-amber-500/10 border border-amber-200 dark:border-amber-500/20 text-xs font-semibold text-amber-700 dark:text-amber-400">
                     <span className="material-symbols-outlined text-[15px]">priority_high</span>
                     <span>Prioritas: {activeSpotlight.priority}</span>
                   </span>
@@ -771,7 +747,7 @@ export function TodayDashboardClient({
                 <div className="flex flex-wrap items-center gap-3 pt-2">
                   <Link
                     href={`/focus?taskId=${activeSpotlight.taskId}`}
-                    className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-[#8B5CF6] to-[#6366F1] hover:from-[#7c3aed] hover:to-[#4f46e5] text-white text-xs sm:text-sm font-bold shadow-md shadow-[#8B5CF6]/30 transition-all active:scale-95"
+                    className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-teal-600 hover:bg-teal-500 text-white text-xs sm:text-sm font-bold shadow-md shadow-teal-900/30 transition-all active:scale-95"
                   >
                     <span className="material-symbols-outlined text-[19px]">play_arrow</span>
                     <span>Mulai Sesi Fokus Sekarang</span>
@@ -780,9 +756,9 @@ export function TodayDashboardClient({
                   <button
                     type="button"
                     onClick={() => toggleTask(activeSpotlight.taskId)}
-                    className="flex items-center gap-1.5 px-4 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-white/[0.06] dark:hover:bg-white/[0.12] text-slate-800 dark:text-white border border-slate-200 dark:border-white/[0.08] text-xs sm:text-sm font-semibold transition-all cursor-pointer"
+                    className="flex items-center gap-1.5 px-4 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-white/[0.06] dark:hover:bg-white/[0.12] text-slate-800 dark:text-teal-100 border border-slate-200 dark:border-teal-500/20 text-xs sm:text-sm font-semibold transition-all cursor-pointer"
                   >
-                    <span className="material-symbols-outlined text-[18px] text-[#4edea3]">check_circle</span>
+                    <span className="material-symbols-outlined text-[18px] text-teal-400">check_circle</span>
                     <span>Tandai Selesai</span>
                   </button>
 
@@ -797,10 +773,10 @@ export function TodayDashboardClient({
               </div>
             </section>
           ) : (
-            <section className="p-6 sm:p-7 rounded-3xl bg-white/90 dark:bg-[#131825]/90 border border-slate-200 dark:border-white/10 shadow-sm dark:shadow-xl relative overflow-hidden">
+            <section className="p-6 sm:p-7 rounded-3xl bg-white/90 dark:bg-[#0d1b20]/90 border border-slate-200 dark:border-teal-500/15 shadow-sm dark:shadow-xl relative overflow-hidden">
               <div className="flex flex-col gap-3.5">
                 <div className="flex items-center gap-2">
-                  <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/15 text-emerald-700 dark:text-[#4edea3] text-xs font-bold">
+                  <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-teal-500/15 text-teal-700 dark:text-teal-300 text-xs font-bold">
                     <span className="material-symbols-outlined text-[16px]">check_circle</span>
                     <span>Semua Tugas Selesai</span>
                   </span>
@@ -814,7 +790,7 @@ export function TodayDashboardClient({
                 <div className="flex flex-wrap items-center gap-3 pt-2">
                   <Link
                     href="/goals"
-                    className="flex items-center gap-1.5 px-4 py-2.5 rounded-xl bg-[#8B5CF6] hover:bg-[#7c3aed] text-white text-xs font-bold transition-all shadow-sm"
+                    className="flex items-center gap-1.5 px-4 py-2.5 rounded-xl bg-teal-600 hover:bg-teal-500 text-white text-xs font-bold transition-all shadow-sm"
                   >
                     <span className="material-symbols-outlined text-[18px]">flag</span>
                     <span>Buka Target &amp; Proyek</span>
@@ -831,16 +807,13 @@ export function TodayDashboardClient({
             </section>
           )}
 
-          {/* ── WIDGET EVALUASI KEBIASAAN TERTUNDA (HABITS V2) [SEMENTARA DISEMBUNYIKAN] ── */}
-          {/* <PendingCheckinWidget /> */}
-
           {/* ── ANTREAN FOKUS HARI INI (TASK QUEUE) ── */}
-          <section className="flex flex-col p-6 sm:p-7 rounded-3xl bg-white/90 dark:bg-[#131825]/90 border border-slate-200/80 dark:border-white/10 shadow-sm dark:shadow-xl">
+          <section className="flex flex-col p-6 sm:p-7 rounded-3xl bg-white/90 dark:bg-[#0d1b20]/90 border border-slate-200/80 dark:border-teal-500/15 shadow-sm dark:shadow-xl">
             {/* Header: Title, Counts, Progress, and Tabs */}
-            <div className="flex flex-col gap-4 pb-4 border-b border-slate-200/70 dark:border-white/[0.08]">
+            <div className="flex flex-col gap-4 pb-4 border-b border-slate-200/70 dark:border-teal-500/15">
               <div className="flex flex-wrap items-center justify-between gap-3">
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-2xl bg-[#8B5CF6]/15 text-[#8B5CF6] flex items-center justify-center font-bold">
+                  <div className="w-10 h-10 rounded-2xl bg-teal-500/15 text-teal-400 flex items-center justify-center font-bold">
                     <span className="material-symbols-outlined text-[20px]">checklist</span>
                   </div>
                   <div>
@@ -854,18 +827,18 @@ export function TodayDashboardClient({
                 </div>
 
                 {/* Segmented Filter Tabs */}
-                <div className="inline-flex p-1 rounded-xl bg-slate-100 dark:bg-[#0c0e14]/60 border border-slate-200 dark:border-white/[0.06] text-xs">
+                <div className="inline-flex p-1 rounded-xl bg-slate-100 dark:bg-[#081013]/60 border border-slate-200 dark:border-teal-500/15 text-xs">
                   <button
                     type="button"
                     onClick={() => setQueueTab("ACTIVE")}
                     className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
                       queueTab === "ACTIVE"
-                        ? "bg-white dark:bg-[#8B5CF6]/25 text-[#6d28d9] dark:text-[#d0bcff] shadow-xs"
+                        ? "bg-white dark:bg-teal-500/20 text-teal-800 dark:text-teal-200 shadow-xs"
                         : "text-slate-600 dark:text-[#94a3b8] hover:text-slate-900 dark:hover:text-white"
                     }`}
                   >
                     <span>Fokus Aktif</span>
-                    <span className="px-1.5 py-0.2 rounded-full text-[10px] font-bold bg-[#8B5CF6]/20 text-[#6d28d9] dark:text-white">
+                    <span className="px-1.5 py-0.2 rounded-full text-[10px] font-bold bg-teal-500/20 text-teal-800 dark:text-teal-200">
                       {activeCount}
                     </span>
                   </button>
@@ -970,14 +943,14 @@ export function TodayDashboardClient({
                           {isDone ? (
                             <span className="material-symbols-outlined text-[16px] font-black">check</span>
                           ) : isRunning ? (
-                            <span className="w-2 h-2 rounded-full bg-[#8B5CF6] animate-pulse" />
+                            <span className="w-2 h-2 rounded-full bg-teal-400 animate-pulse" />
                           ) : null}
                         </button>
 
                         <div className="flex flex-col min-w-0 flex-1">
                           <Link
                             href={`/tasks/${task.id}`}
-                            className={`text-sm font-semibold truncate hover:text-[#8B5CF6] dark:hover:text-[#d0bcff] transition-colors ${
+                            className={`text-sm font-semibold truncate hover:text-teal-600 dark:hover:text-teal-300 transition-colors ${
                               isDone ? "line-through text-slate-400 dark:text-[#94a3b8]" : "text-slate-900 dark:text-white"
                             }`}
                             title="Buka detail tugas"
@@ -989,7 +962,7 @@ export function TodayDashboardClient({
                             {task.projectId ? (
                               <Link
                                 href={`/goals?tab=projects`}
-                                className="hover:underline hover:text-[#8B5CF6] transition-colors truncate"
+                                className="hover:underline hover:text-teal-600 dark:hover:text-teal-300 transition-colors truncate"
                               >
                                 {task.subtitle}
                               </Link>
@@ -1003,13 +976,13 @@ export function TodayDashboardClient({
                       {/* Right Tag / Focus Launcher */}
                       <div className="flex items-center gap-2 shrink-0 ml-3">
                         {isDone ? (
-                          <span className="px-2.5 py-1 rounded-lg bg-emerald-500/10 text-[#4edea3] text-xs font-bold border border-[#4edea3]/20">
+                          <span className="px-2.5 py-1 rounded-lg bg-teal-500/10 text-teal-400 text-xs font-bold border border-teal-500/20">
                             Selesai ✓
                           </span>
                         ) : isRunning ? (
                           <Link
                             href={`/focus?taskId=${task.id}`}
-                            className="px-3 py-1 rounded-xl bg-[#8B5CF6]/20 hover:bg-[#8B5CF6]/30 text-[#8B5CF6] dark:text-[#d0bcff] text-xs font-bold border border-[#8B5CF6]/30 flex items-center gap-1 transition-all"
+                            className="px-3 py-1 rounded-xl bg-teal-500/20 hover:bg-teal-500/30 text-teal-700 dark:text-teal-200 text-xs font-bold border border-teal-500/30 flex items-center gap-1 transition-all"
                           >
                             <span>Sedang Fokus</span>
                             <span>🍅</span>
@@ -1020,7 +993,7 @@ export function TodayDashboardClient({
                               <span
                                 className={`hidden sm:inline-block px-2.5 py-1 rounded-lg text-xs font-semibold ${
                                   task.badgeType === "warning"
-                                    ? "bg-amber-500/15 text-amber-700 dark:text-[#f59e0b] border border-amber-500/30"
+                                    ? "bg-amber-500/15 text-amber-700 dark:text-amber-400 border border-amber-500/30"
                                     : "bg-slate-100 dark:bg-white/[0.06] text-slate-600 dark:text-[#94a3b8]"
                                 }`}
                               >
@@ -1030,7 +1003,7 @@ export function TodayDashboardClient({
 
                             <Link
                               href={`/focus?taskId=${task.id}`}
-                              className="px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-[#8B5CF6] hover:text-white dark:bg-white/[0.06] dark:hover:bg-[#8B5CF6] text-slate-700 dark:text-slate-200 text-xs font-bold transition-all flex items-center gap-1.5 active:scale-95"
+                              className="px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-teal-600 hover:text-white dark:bg-white/[0.06] dark:hover:bg-teal-600 text-slate-700 dark:text-slate-200 text-xs font-bold transition-all flex items-center gap-1.5 active:scale-95"
                               title="Mulai sesi fokus untuk tugas ini"
                             >
                               <span>Fokus</span>
@@ -1050,7 +1023,7 @@ export function TodayDashboardClient({
               <button
                 type="button"
                 onClick={() => setIsQueueExpanded(!isQueueExpanded)}
-                className="w-full py-2.5 mt-2 flex items-center justify-center gap-1.5 rounded-xl bg-slate-50 dark:bg-white/[0.03] hover:bg-slate-100 dark:hover:bg-white/[0.06] border border-slate-200 dark:border-white/[0.06] text-xs font-semibold text-slate-600 dark:text-[#94a3b8] hover:text-slate-900 dark:hover:text-white transition-all cursor-pointer"
+                className="w-full py-2.5 mt-2 flex items-center justify-center gap-1.5 rounded-xl bg-slate-50 dark:bg-white/[0.03] hover:bg-slate-100 dark:hover:bg-white/[0.06] border border-slate-200 dark:border-teal-500/15 text-xs font-semibold text-slate-600 dark:text-[#94a3b8] hover:text-slate-900 dark:hover:text-white transition-all cursor-pointer"
               >
                 <span className="material-symbols-outlined text-[18px]">
                   {isQueueExpanded ? "expand_less" : "expand_more"}
@@ -1067,13 +1040,13 @@ export function TodayDashboardClient({
             {(() => {
               const ambient = parseAmbientTask(newTaskTitle);
               return (
-                <div className="mt-5 pt-4 border-t border-slate-200/70 dark:border-white/[0.08] space-y-2">
+                <div className="mt-5 pt-4 border-t border-slate-200/70 dark:border-teal-500/15 space-y-2">
                   <form
                     onSubmit={handleAddInlineTask}
                     className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5"
                   >
                     <div className="relative flex-1">
-                      <span className="material-symbols-outlined absolute left-3.5 top-2.5 text-[18px] text-slate-400 dark:text-[#94a3b8]">
+                      <span className="material-symbols-outlined absolute left-3.5 top-2.5 text-[18px] text-slate-400 dark:text-teal-400/70">
                         add_task
                       </span>
                       <input
@@ -1081,7 +1054,7 @@ export function TodayDashboardClient({
                         value={newTaskTitle}
                         onChange={(e) => setNewTaskTitle(e.target.value)}
                         placeholder="Tambah tugas cepat... (mis. Review proposal besok penting)"
-                        className="w-full bg-slate-50 dark:bg-[#1a2133]/70 pl-10 pr-10 py-2.5 rounded-xl border border-slate-200 dark:border-white/10 text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-[#94a3b8]/60 text-xs focus:outline-none focus:border-[#8B5CF6] focus:ring-1 focus:ring-[#8B5CF6] transition-all"
+                        className="w-full bg-slate-50 dark:bg-[#14272e] pl-10 pr-10 py-2.5 rounded-xl border border-slate-200 dark:border-teal-500/20 text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-[#94a3b8]/60 text-xs focus:outline-none focus:border-teal-500 focus:ring-1 focus:ring-teal-500 transition-all"
                       />
                       <div className="absolute right-2 top-1.5 flex items-center">
                         <VoiceInputButton
@@ -1095,7 +1068,7 @@ export function TodayDashboardClient({
                       <select
                         value={selectedCategory}
                         onChange={(e) => setSelectedCategory(e.target.value)}
-                        className="px-3 py-2.5 rounded-xl bg-slate-50 dark:bg-[#1a2133]/70 text-slate-700 dark:text-[#d0bcff] border border-slate-200 dark:border-white/10 text-xs font-semibold focus:outline-none cursor-pointer max-w-[170px] truncate"
+                        className="px-3 py-2.5 rounded-xl bg-slate-50 dark:bg-[#14272e] text-slate-700 dark:text-teal-200 border border-slate-200 dark:border-teal-500/20 text-xs font-semibold focus:outline-none cursor-pointer max-w-[170px] truncate"
                       >
                         {projects.map((p) => (
                           <option key={p.id} value={`📁 ${p.title}`}>
@@ -1112,7 +1085,7 @@ export function TodayDashboardClient({
                       <button
                         type="submit"
                         disabled={isAddingTask || !newTaskTitle.trim()}
-                        className="px-4 py-2.5 rounded-xl bg-[#8B5CF6] hover:bg-[#7c3aed] text-white text-xs font-bold shadow-xs disabled:opacity-50 transition-all shrink-0 active:scale-95"
+                        className="px-4 py-2.5 rounded-xl bg-teal-600 hover:bg-teal-500 text-white text-xs font-bold shadow-xs disabled:opacity-50 transition-all shrink-0 active:scale-95"
                       >
                         {isAddingTask ? "Menyimpan..." : "Tambah"}
                       </button>
@@ -1121,20 +1094,20 @@ export function TodayDashboardClient({
 
                   {/* Smart Ambient NLP Detection Pills */}
                   {newTaskTitle.trim() && (ambient.detectedPriority || ambient.detectedDuration || ambient.detectedDate) && (
-                    <div className="flex flex-wrap items-center gap-1.5 text-[11px] text-[#8B5CF6] dark:text-[#d0bcff] pl-1 animate-in fade-in">
+                    <div className="flex flex-wrap items-center gap-1.5 text-[11px] text-teal-600 dark:text-teal-300 pl-1 animate-in fade-in">
                       <span className="font-semibold">Terdeteksi:</span>
                       {ambient.detectedPriority && (
-                        <span className="px-2 py-0.5 rounded-md bg-[#8B5CF6]/15 border border-[#8B5CF6]/30">
+                        <span className="px-2 py-0.5 rounded-md bg-teal-500/15 border border-teal-500/30">
                           {ambient.detectedPriority.label}
                         </span>
                       )}
                       {ambient.detectedDuration && (
-                        <span className="px-2 py-0.5 rounded-md bg-[#38bdf8]/15 border border-[#38bdf8]/30 text-[#38bdf8]">
+                        <span className="px-2 py-0.5 rounded-md bg-cyan-500/15 border border-cyan-500/30 text-cyan-300">
                           {ambient.detectedDuration.label}
                         </span>
                       )}
                       {ambient.detectedDate && (
-                        <span className="px-2 py-0.5 rounded-md bg-[#4edea3]/15 border border-[#4edea3]/30 text-[#4edea3]">
+                        <span className="px-2 py-0.5 rounded-md bg-emerald-500/15 border border-emerald-500/30 text-emerald-400">
                           {ambient.detectedDate.label}
                         </span>
                       )}
@@ -1146,10 +1119,10 @@ export function TodayDashboardClient({
           </section>
 
           {/* ── TIME-BLOCKING & JADWAL KALENDER HARI INI ── */}
-          <section className="p-6 sm:p-7 rounded-3xl bg-white/90 dark:bg-[#131825]/90 border border-slate-200/80 dark:border-white/10 shadow-sm dark:shadow-xl">
+          <section className="p-6 sm:p-7 rounded-3xl bg-white/90 dark:bg-[#0d1b20]/90 border border-slate-200/80 dark:border-teal-500/15 shadow-sm dark:shadow-xl">
             <div className="flex flex-wrap items-center justify-between gap-3 mb-5">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-2xl bg-[#38bdf8]/15 text-[#38bdf8] flex items-center justify-center font-bold">
+                <div className="w-10 h-10 rounded-2xl bg-teal-500/15 text-teal-400 flex items-center justify-center font-bold">
                   <span className="material-symbols-outlined text-[20px]">calendar_today</span>
                 </div>
                 <div>
@@ -1166,7 +1139,7 @@ export function TodayDashboardClient({
                 <button
                   type="button"
                   onClick={() => setIsCreatingTimeblock(true)}
-                  className="px-3.5 py-2 rounded-xl bg-[#8B5CF6]/15 hover:bg-[#8B5CF6]/25 text-[#8B5CF6] dark:text-[#d0bcff] border border-[#8B5CF6]/30 text-xs font-bold flex items-center gap-1.5 transition-all cursor-pointer active:scale-95"
+                  className="px-3.5 py-2 rounded-xl bg-teal-500/15 hover:bg-teal-500/25 text-teal-700 dark:text-teal-200 border border-teal-500/30 text-xs font-bold flex items-center gap-1.5 transition-all cursor-pointer active:scale-95"
                 >
                   <span className="material-symbols-outlined text-[16px]">add</span>
                   <span>Blok Waktu</span>
@@ -1176,14 +1149,14 @@ export function TodayDashboardClient({
                   href="/calendar"
                   className="px-3 py-2 rounded-xl bg-slate-100 dark:bg-white/[0.06] hover:bg-slate-200 dark:hover:bg-white/[0.12] text-slate-700 dark:text-slate-200 text-xs font-semibold transition-colors"
                 >
-                  Kalender →
+                  Agenda →
                 </Link>
               </div>
             </div>
 
             {timeblocks.length === 0 ? (
-              <div className="flex flex-col items-center justify-center py-10 px-4 text-center bg-slate-50 dark:bg-white/[0.02] rounded-2xl border border-slate-200/70 dark:border-white/[0.06]">
-                <span className="material-symbols-outlined text-[28px] text-slate-400 dark:text-[#94a3b8] mb-2">
+              <div className="flex flex-col items-center justify-center py-10 px-4 text-center bg-slate-50 dark:bg-white/[0.02] rounded-2xl border border-slate-200/70 dark:border-teal-500/15">
+                <span className="material-symbols-outlined text-[28px] text-slate-400 dark:text-teal-400/60 mb-2">
                   event_available
                 </span>
                 <h4 className="text-sm font-bold text-slate-900 dark:text-white">
@@ -1195,13 +1168,13 @@ export function TodayDashboardClient({
                 <button
                   type="button"
                   onClick={() => setIsCreatingTimeblock(true)}
-                  className="px-4 py-2 rounded-xl bg-[#8B5CF6] hover:bg-[#7c3aed] text-white text-xs font-bold transition-all shadow-xs"
+                  className="px-4 py-2 rounded-xl bg-teal-600 hover:bg-teal-500 text-white text-xs font-bold transition-all shadow-xs"
                 >
                   Jadwalkan Blok Waktu
                 </button>
               </div>
             ) : (
-              <div className="relative flex flex-col gap-3 pl-4 border-l-2 border-slate-200 dark:border-white/10 ml-2">
+              <div className="relative flex flex-col gap-3 pl-4 border-l-2 border-slate-200 dark:border-teal-500/20 ml-2">
                 {timeblocks.map((block) => {
                   const isCurrent = block.status === "BERJALAN_SEKARANG";
                   const isDone = block.isCompleted || block.status === "SELESAI";
@@ -1211,20 +1184,20 @@ export function TodayDashboardClient({
                       key={block.id}
                       className={`relative flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-4 rounded-2xl border transition-all ${
                         isCurrent
-                          ? "bg-[#8B5CF6]/10 border-[#8B5CF6]/35 shadow-xs"
+                          ? "bg-teal-500/10 border-teal-500/35 shadow-xs"
                           : isDone
-                          ? "bg-slate-50/70 dark:bg-white/[0.02] border-slate-200 dark:border-white/[0.06] opacity-75"
-                          : "bg-white dark:bg-[#1a2133]/40 border-slate-200/80 dark:border-white/[0.08]"
+                          ? "bg-slate-50/70 dark:bg-white/[0.02] border-slate-200 dark:border-teal-500/15 opacity-75"
+                          : "bg-white dark:bg-[#14272e]/40 border-slate-200/80 dark:border-teal-500/15"
                       }`}
                     >
                       {/* Status timeline bead */}
                       <div
-                        className={`absolute -left-[23px] top-5 w-3 h-3 rounded-full ring-4 ring-white dark:ring-[#131825] ${
+                        className={`absolute -left-[23px] top-5 w-3 h-3 rounded-full ring-4 ring-white dark:ring-[#081013] ${
                           isDone
-                            ? "bg-[#4edea3]"
+                            ? "bg-teal-400"
                             : isCurrent
-                            ? "bg-[#8B5CF6] animate-pulse"
-                            : "bg-[#38bdf8]"
+                            ? "bg-teal-400 animate-pulse"
+                            : "bg-cyan-400"
                         }`}
                       />
 
@@ -1235,8 +1208,8 @@ export function TodayDashboardClient({
                           onClick={() => handleToggleTimeblockComplete(block.id, !!block.isCompleted)}
                           className={`w-5 h-5 rounded-lg border flex items-center justify-center transition-all shrink-0 cursor-pointer ${
                             isDone
-                              ? "bg-[#4edea3] border-[#4edea3] text-[#0b0d13]"
-                              : "border-slate-300 dark:border-white/30 text-transparent hover:border-[#4edea3]"
+                              ? "bg-teal-500 border-teal-500 text-[#081013]"
+                              : "border-slate-300 dark:border-white/30 text-transparent hover:border-teal-400"
                           }`}
                           title={isDone ? "Tandai belum selesai" : "Tandai selesai"}
                         >
@@ -1252,7 +1225,7 @@ export function TodayDashboardClient({
                               isDone
                                 ? "line-through text-slate-400 dark:text-[#94a3b8]"
                                 : isCurrent
-                                ? "text-[#8B5CF6] dark:text-white"
+                                ? "text-teal-400 dark:text-white"
                                 : "text-slate-900 dark:text-white"
                             }`}
                           >
@@ -1265,9 +1238,9 @@ export function TodayDashboardClient({
                         <span
                           className={`px-2.5 py-0.5 rounded-full text-xs font-bold ${
                             isCurrent
-                              ? "bg-[#8B5CF6]/20 text-[#8B5CF6] dark:text-[#d0bcff]"
+                              ? "bg-teal-500/20 text-teal-700 dark:text-teal-200"
                               : isDone
-                              ? "bg-[#4edea3]/20 text-[#4edea3]"
+                              ? "bg-teal-500/20 text-teal-400"
                               : "bg-slate-100 dark:bg-white/[0.06] text-slate-600 dark:text-[#94a3b8]"
                           }`}
                         >
@@ -1276,7 +1249,7 @@ export function TodayDashboardClient({
 
                         <Link
                           href="/focus"
-                          className="px-3 py-1 rounded-xl bg-slate-100 dark:bg-white/[0.06] hover:bg-[#8B5CF6] hover:text-white text-slate-700 dark:text-slate-200 text-xs font-bold transition-all flex items-center gap-1"
+                          className="px-3 py-1 rounded-xl bg-slate-100 dark:bg-white/[0.06] hover:bg-teal-600 hover:text-white text-slate-700 dark:text-slate-200 text-xs font-bold transition-all flex items-center gap-1"
                         >
                           <span>Fokus</span>
                           <span>🍅</span>
@@ -1285,7 +1258,7 @@ export function TodayDashboardClient({
                         <button
                           type="button"
                           onClick={() => handleDeleteTimeblock(block.id)}
-                          className="p-1.5 rounded-lg text-slate-400 hover:text-rose-500 hover:bg-rose-500/10 transition-colors"
+                          className="p-1.5 rounded-lg text-slate-400 hover:text-rose-500 hover:bg-rose-500/10 transition-colors cursor-pointer"
                           title="Hapus blok waktu"
                         >
                           <span className="material-symbols-outlined text-[17px]">delete</span>
@@ -1304,45 +1277,45 @@ export function TodayDashboardClient({
         {/* ================================================================== */}
         <div className="lg:col-span-4 flex flex-col gap-6">
           {/* ── 1. RANGKUMAN HARI INI (METRICS BENTO) ── */}
-          <section className="p-6 rounded-3xl bg-white/90 dark:bg-[#131825]/90 border border-slate-200/80 dark:border-white/10 shadow-sm dark:shadow-xl flex flex-col gap-4">
+          <section className="p-6 rounded-3xl bg-white/90 dark:bg-[#0d1b20]/90 border border-slate-200/80 dark:border-teal-500/15 shadow-sm dark:shadow-xl flex flex-col gap-4">
             <div className="flex items-center justify-between">
               <h3 className="text-base font-bold text-slate-900 dark:text-white tracking-tight">
                 Rangkuman Hari Ini
               </h3>
-              <span className="material-symbols-outlined text-[20px] text-[#8B5CF6]">
+              <span className="material-symbols-outlined text-[20px] text-teal-400">
                 monitoring
               </span>
             </div>
 
             <div className="grid grid-cols-1 gap-3">
               {/* Card 1: Waktu Fokus */}
-              <div className="p-4 rounded-2xl bg-slate-50/80 dark:bg-white/[0.03] border border-slate-200/70 dark:border-white/[0.06] flex items-center justify-between">
+              <div className="p-4 rounded-2xl bg-slate-50/80 dark:bg-[#14272e]/60 border border-slate-200/70 dark:border-teal-500/15 flex items-center justify-between">
                 <div className="flex flex-col">
-                  <span className="text-[11px] font-bold text-slate-400 dark:text-[#94a3b8] uppercase tracking-wider">
+                  <span className="text-[11px] font-bold text-slate-400 dark:text-teal-300/70 uppercase tracking-wider">
                     Total Waktu Fokus
                   </span>
                   <span className="text-2xl font-black text-slate-900 dark:text-white mt-1">
                     {focusTimeDisplay}
                   </span>
-                  <span className="text-xs text-[#4edea3] font-semibold flex items-center gap-1 mt-1">
+                  <span className="text-xs text-teal-400 font-semibold flex items-center gap-1 mt-1">
                     <span className="material-symbols-outlined text-[14px]">trending_up</span>
                     <span>Sesi deep work harian</span>
                   </span>
                 </div>
 
                 <div className="w-14 h-8 flex items-end justify-between gap-1 pb-1">
-                  <div className="w-2 bg-[#4edea3]/20 h-3 rounded-t" />
-                  <div className="w-2 bg-[#4edea3]/40 h-5 rounded-t" />
-                  <div className="w-2 bg-[#4edea3]/60 h-4 rounded-t" />
-                  <div className="w-2 bg-[#4edea3]/80 h-7 rounded-t" />
-                  <div className="w-2 bg-[#4edea3] h-8 rounded-t" />
+                  <div className="w-2 bg-teal-500/20 h-3 rounded-t" />
+                  <div className="w-2 bg-teal-500/40 h-5 rounded-t" />
+                  <div className="w-2 bg-teal-500/60 h-4 rounded-t" />
+                  <div className="w-2 bg-teal-500/80 h-7 rounded-t" />
+                  <div className="w-2 bg-teal-400 h-8 rounded-t" />
                 </div>
               </div>
 
               {/* Card 2: Penyelesaian Tugas */}
-              <div className="p-4 rounded-2xl bg-slate-50/80 dark:bg-white/[0.03] border border-slate-200/70 dark:border-white/[0.06] flex items-center justify-between">
+              <div className="p-4 rounded-2xl bg-slate-50/80 dark:bg-[#14272e]/60 border border-slate-200/70 dark:border-teal-500/15 flex items-center justify-between">
                 <div className="flex flex-col">
-                  <span className="text-[11px] font-bold text-slate-400 dark:text-[#94a3b8] uppercase tracking-wider">
+                  <span className="text-[11px] font-bold text-slate-400 dark:text-teal-300/70 uppercase tracking-wider">
                     Penyelesaian Tugas
                   </span>
                   <span className="text-2xl font-black text-slate-900 dark:text-white mt-1">
@@ -1353,37 +1326,37 @@ export function TodayDashboardClient({
                   </span>
                 </div>
 
-                <div className="w-11 h-11 rounded-2xl bg-[#8B5CF6]/15 border border-[#8B5CF6]/30 flex items-center justify-center font-bold text-xs text-[#8B5CF6] dark:text-[#d0bcff]">
+                <div className="w-11 h-11 rounded-2xl bg-teal-500/15 border border-teal-500/30 flex items-center justify-center font-bold text-xs text-teal-300">
                   {progressPercent}%
                 </div>
               </div>
 
-              {/* Card 3: Momentum & XP */}
-              <div className="p-4 rounded-2xl bg-slate-50/80 dark:bg-white/[0.03] border border-slate-200/70 dark:border-white/[0.06] flex items-center justify-between">
+              {/* Card 3: Momentum Hari Ini */}
+              <div className="p-4 rounded-2xl bg-slate-50/80 dark:bg-[#14272e]/60 border border-slate-200/70 dark:border-teal-500/15 flex items-center justify-between">
                 <div className="flex flex-col">
-                  <span className="text-[11px] font-bold text-slate-400 dark:text-[#94a3b8] uppercase tracking-wider">
-                    Momentum &amp; XP
+                  <span className="text-[11px] font-bold text-slate-400 dark:text-teal-300/70 uppercase tracking-wider">
+                    Momentum Hari Ini
                   </span>
-                  <span className="text-2xl font-black text-[#8B5CF6] dark:text-[#d0bcff] mt-1">
-                    +{completedCount * 50} XP
+                  <span className="text-xl font-black text-teal-700 dark:text-teal-300 mt-1">
+                    {completedCount > 0 ? `${completedCount} Selesai` : "Siap Beraksi"}
                   </span>
-                  <span className="text-xs text-[#f59e0b] font-semibold mt-1">
-                    {completedCount > 0 ? "🔥 Rantai fokus menyala" : "⚡ Siap memulai hari"}
+                  <span className="text-xs text-teal-400 font-semibold mt-1">
+                    {completedCount > 0 ? "🔥 Rantai fokus berjalan" : "⚡ Ruang kerja tenang"}
                   </span>
                 </div>
 
-                <div className="w-11 h-11 rounded-2xl bg-amber-500/15 text-[#f59e0b] flex items-center justify-center">
-                  <span className="material-symbols-outlined text-[24px]">military_tech</span>
+                <div className="w-11 h-11 rounded-2xl bg-teal-500/15 text-teal-400 flex items-center justify-center">
+                  <span className="material-symbols-outlined text-[24px]">verified</span>
                 </div>
               </div>
             </div>
           </section>
 
           {/* ── 2. KOTAK CATATAN CEPAT (INBOX CAPTURE) ── */}
-          <section className="p-6 rounded-3xl bg-white/90 dark:bg-[#131825]/90 border border-slate-200/80 dark:border-white/10 shadow-sm dark:shadow-xl flex flex-col gap-3.5">
+          <section className="p-6 rounded-3xl bg-white/90 dark:bg-[#0d1b20]/90 border border-slate-200/80 dark:border-teal-500/15 shadow-sm dark:shadow-xl flex flex-col gap-3.5">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <span className="material-symbols-outlined text-[#8B5CF6] text-[20px]">bolt</span>
+                <span className="material-symbols-outlined text-teal-400 text-[20px]">bolt</span>
                 <h3 className="text-base font-bold text-slate-900 dark:text-white tracking-tight">
                   Kotak Catatan Cepat
                 </h3>
@@ -1399,7 +1372,7 @@ export function TodayDashboardClient({
                 onChange={(e) => setCaptureText(e.target.value)}
                 rows={2}
                 placeholder="Catat ide spontan, pengingat kilat, atau memo mendadak..."
-                className="w-full bg-slate-50 dark:bg-[#1a2133]/70 p-3.5 rounded-2xl border border-slate-200 dark:border-white/10 text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-[#94a3b8]/60 text-xs focus:outline-none focus:border-[#8B5CF6] focus:ring-1 focus:ring-[#8B5CF6] resize-none transition-all"
+                className="w-full bg-slate-50 dark:bg-[#14272e] p-3.5 rounded-2xl border border-slate-200 dark:border-teal-500/20 text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-[#94a3b8]/60 text-xs focus:outline-none focus:border-teal-500 focus:ring-1 focus:ring-teal-500 resize-none transition-all"
               />
 
               {/* Category Filter Chips */}
@@ -1412,7 +1385,7 @@ export function TodayDashboardClient({
                       onClick={() => setCaptureFilter(f)}
                       className={`px-2.5 py-1 rounded-xl text-xs font-semibold transition-all cursor-pointer ${
                         captureFilter === f
-                          ? "bg-[#8B5CF6] text-white shadow-xs"
+                          ? "bg-teal-600 text-white shadow-xs"
                           : "bg-slate-100 dark:bg-white/[0.06] text-slate-600 dark:text-[#94a3b8] hover:text-slate-900 dark:hover:text-white"
                       }`}
                     >
@@ -1424,7 +1397,7 @@ export function TodayDashboardClient({
                 <button
                   type="submit"
                   disabled={isSubmittingCapture || !captureText.trim()}
-                  className="px-3.5 py-1.5 rounded-xl bg-[#8B5CF6] hover:bg-[#7c3aed] text-white text-xs font-bold disabled:opacity-50 transition-all cursor-pointer shadow-xs active:scale-95"
+                  className="px-3.5 py-1.5 rounded-xl bg-teal-600 hover:bg-teal-500 text-white text-xs font-bold disabled:opacity-50 transition-all cursor-pointer shadow-xs active:scale-95"
                 >
                   {isSubmittingCapture ? "Menyimpan..." : "Simpan"}
                 </button>
@@ -1432,7 +1405,7 @@ export function TodayDashboardClient({
             </form>
 
             {/* List of Recent Quick Captures */}
-            <div className="flex flex-col gap-2 divide-y divide-slate-100 dark:divide-white/[0.06] mt-1">
+            <div className="flex flex-col gap-2 divide-y divide-slate-100 dark:divide-teal-500/10 mt-1">
               {filteredCaptures.length === 0 ? (
                 <div className="p-4 text-center text-xs text-slate-400 dark:text-[#94a3b8] bg-slate-50 dark:bg-white/[0.02] rounded-2xl">
                   Kotak catatan bersih. Tuliskan ide kilat di atas untuk mengosongkan pikiran.
@@ -1447,7 +1420,7 @@ export function TodayDashboardClient({
                       <button
                         type="button"
                         onClick={() => convertCaptureToTask(item.id)}
-                        className="text-[#8B5CF6] hover:text-[#7c3aed] dark:text-[#d0bcff] dark:hover:text-white text-[11px] font-bold whitespace-nowrap shrink-0 transition-colors cursor-pointer"
+                        className="text-teal-600 hover:text-teal-500 dark:text-teal-400 dark:hover:text-white text-[11px] font-bold whitespace-nowrap shrink-0 transition-colors cursor-pointer"
                       >
                         Jadi Tugas
                       </button>
@@ -1474,10 +1447,10 @@ export function TodayDashboardClient({
       {/* ==================================================================== */}
       {isCreatingTimeblock && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-md animate-in fade-in duration-200">
-          <div className="w-full max-w-md p-6 sm:p-7 rounded-3xl bg-white dark:bg-[#131825] border border-slate-200 dark:border-white/10 shadow-2xl flex flex-col gap-5 text-slate-800 dark:text-[#e2e2eb]">
-            <div className="flex items-center justify-between border-b border-slate-200 dark:border-white/[0.08] pb-3.5">
+          <div className="w-full max-w-md p-6 sm:p-7 rounded-3xl bg-white dark:bg-[#0d1b20] border border-slate-200 dark:border-teal-500/20 shadow-2xl flex flex-col gap-5 text-slate-800 dark:text-[#e2e2eb]">
+            <div className="flex items-center justify-between border-b border-slate-200 dark:border-teal-500/15 pb-3.5">
               <div className="flex items-center gap-2.5">
-                <span className="material-symbols-outlined text-[#8B5CF6] text-[22px]">calendar_add_on</span>
+                <span className="material-symbols-outlined text-teal-400 text-[22px]">calendar_add_on</span>
                 <h3 className="text-base font-bold text-slate-900 dark:text-white">
                   Jadwalkan Blok Waktu Hari Ini
                 </h3>
@@ -1485,7 +1458,7 @@ export function TodayDashboardClient({
               <button
                 type="button"
                 onClick={() => setIsCreatingTimeblock(false)}
-                className="p-1.5 rounded-xl text-slate-400 hover:text-slate-800 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-white/10 transition-colors"
+                className="p-1.5 rounded-xl text-slate-400 hover:text-slate-800 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-white/10 transition-colors cursor-pointer"
               >
                 <span className="material-symbols-outlined text-[18px]">close</span>
               </button>
@@ -1493,7 +1466,7 @@ export function TodayDashboardClient({
 
             <form onSubmit={handleCreateTimeblock} className="flex flex-col gap-4">
               <div className="flex flex-col gap-1.5">
-                <label className="text-xs font-bold text-slate-700 dark:text-[#d0bcff]">
+                <label className="text-xs font-bold text-slate-700 dark:text-teal-200">
                   Nama Aktivitas / Blok Fokus
                 </label>
                 <input
@@ -1502,39 +1475,39 @@ export function TodayDashboardClient({
                   value={tbTitle}
                   onChange={(e) => setTbTitle(e.target.value)}
                   placeholder="Misal: Deep work laporan, Olahraga sore, Belajar Next.js"
-                  className="w-full bg-slate-50 dark:bg-[#1a2133] px-3.5 py-2.5 rounded-xl border border-slate-200 dark:border-white/10 text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-[#94a3b8]/60 text-xs focus:outline-none focus:border-[#8B5CF6] focus:ring-1 focus:ring-[#8B5CF6]"
+                  className="w-full bg-slate-50 dark:bg-[#14272e] px-3.5 py-2.5 rounded-xl border border-slate-200 dark:border-teal-500/20 text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-[#94a3b8]/60 text-xs focus:outline-none focus:border-teal-500 focus:ring-1 focus:ring-teal-500"
                 />
               </div>
 
               <div className="grid grid-cols-2 gap-3">
                 <div className="flex flex-col gap-1.5">
-                  <label className="text-xs font-bold text-slate-700 dark:text-[#d0bcff]">Jam Mulai</label>
+                  <label className="text-xs font-bold text-slate-700 dark:text-teal-200">Jam Mulai</label>
                   <input
                     type="time"
                     required
                     value={tbStartTime}
                     onChange={(e) => setTbStartTime(e.target.value)}
-                    className="w-full bg-slate-50 dark:bg-[#1a2133] px-3.5 py-2.5 rounded-xl border border-slate-200 dark:border-white/10 text-slate-900 dark:text-white text-xs font-semibold focus:outline-none focus:border-[#8B5CF6]"
+                    className="w-full bg-slate-50 dark:bg-[#14272e] px-3.5 py-2.5 rounded-xl border border-slate-200 dark:border-teal-500/20 text-slate-900 dark:text-white text-xs font-semibold focus:outline-none focus:border-teal-500"
                   />
                 </div>
                 <div className="flex flex-col gap-1.5">
-                  <label className="text-xs font-bold text-slate-700 dark:text-[#d0bcff]">Jam Selesai</label>
+                  <label className="text-xs font-bold text-slate-700 dark:text-teal-200">Jam Selesai</label>
                   <input
                     type="time"
                     required
                     value={tbEndTime}
                     onChange={(e) => setTbEndTime(e.target.value)}
-                    className="w-full bg-slate-50 dark:bg-[#1a2133] px-3.5 py-2.5 rounded-xl border border-slate-200 dark:border-white/10 text-slate-900 dark:text-white text-xs font-semibold focus:outline-none focus:border-[#8B5CF6]"
+                    className="w-full bg-slate-50 dark:bg-[#14272e] px-3.5 py-2.5 rounded-xl border border-slate-200 dark:border-teal-500/20 text-slate-900 dark:text-white text-xs font-semibold focus:outline-none focus:border-teal-500"
                   />
                 </div>
               </div>
 
               <div className="flex flex-col gap-1.5">
-                <label className="text-xs font-bold text-slate-700 dark:text-[#d0bcff]">Kategori</label>
+                <label className="text-xs font-bold text-slate-700 dark:text-teal-200">Kategori</label>
                 <select
                   value={tbType}
                   onChange={(e) => setTbType(e.target.value as "BLOCKED" | "WORK" | "PERSONAL")}
-                  className="w-full bg-slate-50 dark:bg-[#1a2133] px-3.5 py-2.5 rounded-xl border border-slate-200 dark:border-white/10 text-slate-900 dark:text-white text-xs font-semibold focus:outline-none focus:border-[#8B5CF6]"
+                  className="w-full bg-slate-50 dark:bg-[#14272e] px-3.5 py-2.5 rounded-xl border border-slate-200 dark:border-teal-500/20 text-slate-900 dark:text-white text-xs font-semibold focus:outline-none focus:border-teal-500 cursor-pointer"
                 >
                   <option value="BLOCKED">🎯 Fokus Penuh (Deep Work)</option>
                   <option value="WORK">💼 Pekerjaan / Kuliah</option>
@@ -1544,11 +1517,11 @@ export function TodayDashboardClient({
 
               <div className="grid grid-cols-2 gap-3">
                 <div className="flex flex-col gap-1.5">
-                  <label className="text-xs font-bold text-slate-700 dark:text-[#d0bcff]">Pengulangan</label>
+                  <label className="text-xs font-bold text-slate-700 dark:text-teal-200">Pengulangan</label>
                   <select
                     value={tbRecurrence}
                     onChange={(e) => setTbRecurrence(e.target.value as "NONE" | "DAILY" | "WEEKLY" | "MONTHLY")}
-                    className="w-full bg-slate-50 dark:bg-[#1a2133] px-3.5 py-2.5 rounded-xl border border-slate-200 dark:border-white/10 text-slate-900 dark:text-white text-xs font-semibold focus:outline-none focus:border-[#8B5CF6]"
+                    className="w-full bg-slate-50 dark:bg-[#14272e] px-3.5 py-2.5 rounded-xl border border-slate-200 dark:border-teal-500/20 text-slate-900 dark:text-white text-xs font-semibold focus:outline-none focus:border-teal-500 cursor-pointer"
                   >
                     <option value="NONE">Hanya hari ini</option>
                     <option value="DAILY">🔁 Setiap hari</option>
@@ -1557,13 +1530,13 @@ export function TodayDashboardClient({
                   </select>
                 </div>
                 <div className="flex flex-col gap-1.5">
-                  <label className="text-xs font-bold text-slate-700 dark:text-[#d0bcff]">Pengingat</label>
+                  <label className="text-xs font-bold text-slate-700 dark:text-teal-200">Pengingat</label>
                   <select
                     value={tbReminderMinutes === null ? "" : String(tbReminderMinutes)}
                     onChange={(e) =>
                       setTbReminderMinutes(e.target.value === "" ? null : Number(e.target.value))
                     }
-                    className="w-full bg-slate-50 dark:bg-[#1a2133] px-3.5 py-2.5 rounded-xl border border-slate-200 dark:border-white/10 text-slate-900 dark:text-white text-xs font-semibold focus:outline-none focus:border-[#8B5CF6]"
+                    className="w-full bg-slate-50 dark:bg-[#14272e] px-3.5 py-2.5 rounded-xl border border-slate-200 dark:border-teal-500/20 text-slate-900 dark:text-white text-xs font-semibold focus:outline-none focus:border-teal-500 cursor-pointer"
                   >
                     <option value="">🔔 Pengaturan Default</option>
                     <option value="5">5 menit sebelum</option>
@@ -1577,14 +1550,14 @@ export function TodayDashboardClient({
 
               <label
                 htmlFor="tb-ignore-quiet"
-                className="flex items-center gap-3 p-3 rounded-2xl bg-slate-50 dark:bg-[#1a2133]/50 border border-slate-200/80 dark:border-white/10 cursor-pointer"
+                className="flex items-center gap-3 p-3 rounded-2xl bg-slate-50 dark:bg-[#14272e]/50 border border-slate-200/80 dark:border-teal-500/15 cursor-pointer"
               >
                 <input
                   id="tb-ignore-quiet"
                   type="checkbox"
                   checked={tbIgnoreQuietHours}
                   onChange={(e) => setTbIgnoreQuietHours(e.target.checked)}
-                  className="w-4 h-4 rounded accent-[#8B5CF6] cursor-pointer"
+                  className="w-4 h-4 rounded accent-teal-500 cursor-pointer"
                 />
                 <div className="flex flex-col">
                   <span className="text-xs font-bold text-slate-900 dark:text-white">Abaikan Jam Tenang</span>
@@ -1594,18 +1567,18 @@ export function TodayDashboardClient({
                 </div>
               </label>
 
-              <div className="flex items-center justify-end gap-2.5 pt-3 border-t border-slate-200 dark:border-white/[0.08]">
+              <div className="flex items-center justify-end gap-2.5 pt-3 border-t border-slate-200 dark:border-teal-500/15">
                 <button
                   type="button"
                   onClick={() => setIsCreatingTimeblock(false)}
-                  className="px-4 py-2.5 rounded-xl text-xs font-semibold text-slate-600 dark:text-[#94a3b8] hover:bg-slate-100 dark:hover:bg-white/10 transition-colors"
+                  className="px-4 py-2.5 rounded-xl text-xs font-semibold text-slate-600 dark:text-[#94a3b8] hover:bg-slate-100 dark:hover:bg-white/10 transition-colors cursor-pointer"
                 >
                   Batal
                 </button>
                 <button
                   type="submit"
                   disabled={isSubmittingTb || !tbTitle.trim()}
-                  className="px-5 py-2.5 rounded-xl bg-[#8B5CF6] hover:bg-[#7c3aed] text-white text-xs font-bold shadow-md shadow-[#8B5CF6]/25 disabled:opacity-50 transition-all cursor-pointer active:scale-95"
+                  className="px-5 py-2.5 rounded-xl bg-teal-600 hover:bg-teal-500 text-white text-xs font-bold shadow-md shadow-teal-900/25 disabled:opacity-50 transition-all cursor-pointer active:scale-95"
                 >
                   {isSubmittingTb ? "Menyimpan..." : "Simpan Jadwal"}
                 </button>

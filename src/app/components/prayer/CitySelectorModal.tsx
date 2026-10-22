@@ -102,7 +102,7 @@ export function CitySelectorModal({
       onClick={handleClose}
     >
       <div
-        className="relative w-full max-w-lg overflow-hidden rounded-3xl bg-white dark:bg-[#131825] border border-slate-200 dark:border-white/10 shadow-2xl flex flex-col max-h-[85vh] my-auto transition-all"
+        className="relative w-full max-w-lg overflow-hidden rounded-3xl bg-white dark:bg-[#0d1b20] border border-slate-200 dark:border-teal-500/20 shadow-2xl flex flex-col max-h-[85vh] my-auto transition-all"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Subtle decorative glow */}

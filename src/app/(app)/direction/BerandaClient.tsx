@@ -90,9 +90,6 @@ export function BerandaClient({
   // Tab State
   const [activeTab, setActiveTab] = useState<"identity" | "vision" | "principles" | "reflections">("identity");
 
-  // User state & Mood
-  const [userMood, setUserMood] = useState<string>("Semangat");
-  const [isMoodDropdownOpen, setIsMoodDropdownOpen] = useState(false);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
 
   // Hero Sticky Note Checkbox State (Connected to real today tasks!)
@@ -138,9 +135,6 @@ export function BerandaClient({
   const [isFocusAreaModalOpen, setIsFocusAreaModalOpen] = useState(false);
   const [isReflectionModalOpen, setIsReflectionModalOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
-
-  // Avatar upload / selection
-  const [customAvatar, setCustomAvatar] = useState<string>(user.image || "/images/avatar-anime-boy.jpg");
 
   // Name formatting
   const rawName = user.name || "Sobat MyLife";
@@ -607,26 +601,6 @@ export function BerandaClient({
     }
   }
 
-  // Avatar file upload simulation
-  function handleAvatarChange(e: React.ChangeEvent<HTMLInputElement>) {
-    const file = e.target.files?.[0];
-    if (file) {
-      const url = URL.createObjectURL(file);
-      setCustomAvatar(url);
-      showToast("Avatar berhasil diperbarui!");
-    }
-  }
-
-  const moodOptions = [
-    { label: "Semangat", emoji: "😊", quote: `Semangat, ${firstName}! Kamu sudah melangkah dan melakukan banyak hal baik hari ini. 💪` },
-    { label: "Produktif", emoji: "⚡", quote: "Momentum kognitif prima! Manfaatkan energi tinggi ini untuk menyelesaikan fokus utama." },
-    { label: "Tenang", emoji: "🧘", quote: "Pikiran hening dan tenang melahirkan kejernihan arah serta keputusan terbaik." },
-    { label: "Fokus", emoji: "🔥", quote: "Singkirkan distraksi, nikmati alur pengerjaan satu tugas mendalam saat ini." },
-    { label: "Lelah", emoji: "😴", quote: "Istirahat juga bagian dari produktivitas. Pulihkan fisik dan energimu." },
-  ];
-
-  const currentMoodObj = moodOptions.find((m) => m.label === userMood) || moodOptions[0];
-
   // Calculate Real Overall Progress from active goals
   const totalGoalProgress = activeGoals.length > 0
     ? Math.round(activeGoals.reduce((acc, g) => acc + g.progress, 0) / activeGoals.length)
@@ -658,120 +632,50 @@ export function BerandaClient({
       )}
 
       {/* ========================================================================= */}
-      {/* 1. HERO BANNER (Centerpiece Anime Sunset Study Room)                      */}
+      {/* 1. CALM EXECUTIVE HERO BANNER                                             */}
       {/* ========================================================================= */}
-      <section className="relative w-full rounded-3xl overflow-hidden border border-white/10 shadow-2xl min-h-[380px] md:min-h-[420px] flex flex-col justify-between p-6 md:p-8 bg-zinc-950">
-        {/* Background Image with Ambient Glow */}
-        <div className="absolute inset-0 z-0">
-          <Image
-            src="/images/hero-study-sunset.jpg"
-            alt="Study Room Anime Sunset"
-            fill
-            priority
-            sizes="100vw"
-            className="object-cover object-center scale-[1.01]"
-          />
-          <div className="absolute inset-0 bg-gradient-to-r from-zinc-950/85 via-zinc-950/50 to-transparent" />
-          <div className="absolute inset-0 bg-gradient-to-t from-zinc-950/70 via-transparent to-transparent" />
-        </div>
-
-        {/* Hero Top Content (Greeting & Subtitle) */}
-        <div className="relative z-10 max-w-xl space-y-2">
-          <h1 className="text-3xl md:text-4xl font-bold tracking-tight text-white drop-shadow-md">
-            Halo, {rawName}! 👋
-          </h1>
-          <p className="text-sm md:text-[15px] font-normal text-zinc-200/90 leading-relaxed drop-shadow">
-            Setiap langkah kecil yang kamu ambil hari ini, adalah bagian dari masa depan besar yang kamu bangun.
-          </p>
-        </div>
-
-        {/* Hero Bottom Row: Left Quote Card, Right Floating Sticky Notes */}
-        <div className="relative z-10 flex flex-col md:flex-row md:items-end justify-between gap-6 pt-6">
-          {/* Floating Glass Quote Card */}
-          <div className="flex items-start gap-3 rounded-2xl border border-white/15 bg-zinc-950/60 p-3.5 backdrop-blur-md shadow-xl max-w-md">
-            <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-amber-500/25 text-amber-300 shadow-inner">
-              <span className="text-xs font-serif font-black">“</span>
-            </span>
-            <div className="space-y-1">
-              <p className="text-xs italic text-zinc-200 font-serif leading-relaxed">
-                &ldquo;Proses mungkin tidak selalu mudah, tapi kamu sudah sejauh ini, dan itu luar biasa.&rdquo;
-              </p>
-              <p className="text-[10.5px] font-semibold tracking-wider text-zinc-400">
-                — MyLife
-              </p>
+      <section className="relative w-full rounded-3xl overflow-hidden border border-teal-500/15 p-6 md:p-8 bg-gradient-to-br from-[#0d1f24] via-[#091519] to-[#081013] shadow-xl backdrop-blur-xl">
+        <div className="absolute top-0 right-0 w-96 h-96 bg-teal-500/10 rounded-full blur-3xl pointer-events-none" />
+        <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
+          <div className="space-y-2 max-w-xl">
+            <div className="flex items-center gap-2">
+              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-teal-500/10 text-teal-300 border border-teal-500/20 text-xs font-semibold">
+                <span className="w-1.5 h-1.5 rounded-full bg-teal-400 animate-pulse" />
+                <span>Executive Compass</span>
+              </span>
+              <span className="text-xs text-slate-400 font-medium">
+                {new Intl.DateTimeFormat("id-ID", { weekday: "long", day: "numeric", month: "long" }).format(new Date())}
+              </span>
             </div>
+            <h1 className="text-2xl md:text-3xl font-bold tracking-tight text-white">
+              Selamat datang kembali, {firstName}
+            </h1>
+            <p className="text-xs md:text-sm text-slate-300/90 leading-relaxed">
+              Ruang kendali hidup Anda. Jernihkan pikiran dan jalani hari dengan tenang, terarah, dan fokus pada hal esensial.
+            </p>
           </div>
 
-          {/* Right Floating Elements: Sticky Note 1 ("Fokus hari ini") & Sticky Note 2 ("Better Version of Me") */}
-          <div className="flex items-end gap-3 self-end md:self-auto">
-            {/* Sticky Note 1: Fokus Hari Ini Checklist (REAL DATA) */}
-            <div className="relative w-64 md:w-72 rounded-xl bg-[#FFFDF8]/95 p-3.5 text-zinc-800 shadow-2xl border border-amber-200/60 backdrop-blur-md transform hover:-translate-y-0.5 transition-transform">
-              <div className="absolute -top-2 left-1/2 -translate-x-1/2 w-12 h-3.5 rounded-xs bg-amber-200/70 border border-amber-300/40 shadow-xs backdrop-blur-xs" />
-
-              <div className="flex items-center justify-between pb-2 border-b border-zinc-200/70">
-                <span className="flex items-center gap-1.5 text-xs font-bold text-zinc-800 tracking-tight">
-                  <Icon name="check" size={13} />
-                  Fokus hari ini
-                </span>
-                <span className="text-[10px] font-semibold text-zinc-500">
-                  {completedCount}/{tasksState.length}
+          {/* Quick Life Vitals / Mini Stat */}
+          <div className="flex items-center gap-3">
+            <div className="flex items-center gap-3 px-4 py-3 rounded-2xl bg-[#081013]/80 border border-teal-500/15 backdrop-blur-md">
+              <div className="flex flex-col">
+                <span className="text-[10px] font-semibold text-slate-400 uppercase tracking-wider">Fokus Hari Ini</span>
+                <span className="text-sm font-bold text-teal-300 font-mono mt-0.5">
+                  {completedCount}/{tasksState.length} Selesai
                 </span>
               </div>
-
-              {/* Tasks Checklist */}
-              <div className="mt-2 space-y-1.5 max-h-36 overflow-y-auto pr-0.5 scrollbar-thin">
-                {tasksState.map((task) => (
-                  <button
-                    key={task.id}
-                    type="button"
-                    onClick={() => handleToggleTask(task.id, task.done)}
-                    className="flex w-full items-center gap-2 text-left group cursor-pointer"
-                  >
-                    <span
-                      className={`flex h-4 w-4 shrink-0 items-center justify-center rounded border transition-all ${
-                        task.done
-                          ? "bg-indigo-600 border-indigo-600 text-white shadow-xs"
-                          : "border-zinc-400 bg-white group-hover:border-indigo-400"
-                      }`}
-                    >
-                      {task.done && <Icon name="check" size={11} />}
-                    </span>
-                    <span
-                      className={`text-xs truncate transition-colors ${
-                        task.done
-                          ? "line-through text-zinc-400"
-                          : "text-zinc-700 group-hover:text-zinc-900 font-medium"
-                      }`}
-                    >
-                      {task.text}
-                    </span>
-                  </button>
-                ))}
-              </div>
-
-              {/* Progress bar */}
-              <div className="mt-2.5 pt-1.5">
-                <div className="h-1.5 w-full overflow-hidden rounded-full bg-zinc-200">
-                  <div
-                    className="h-full rounded-full bg-gradient-to-r from-blue-500 to-indigo-600 transition-all duration-300"
-                    style={{ width: `${tasksState.length > 0 ? (completedCount / tasksState.length) * 100 : 0}%` }}
-                  />
-                </div>
+              <div className="w-10 h-10 rounded-xl bg-teal-500/15 border border-teal-500/25 flex items-center justify-center text-teal-300 text-sm font-bold">
+                {tasksState.length > 0 ? Math.round((completedCount / tasksState.length) * 100) : 0}%
               </div>
             </div>
 
-            {/* Sticky Note 2: "Better Version of Me" */}
-            <div className="hidden lg:flex flex-col items-center justify-center rounded-lg bg-[#FFF7C2] px-3 py-3 text-center shadow-lg border border-amber-300/60 rotate-2 select-none w-20 shrink-0">
-              <span className="text-[11px] font-serif italic font-bold text-zinc-800 leading-tight">
-                Better
-              </span>
-              <span className="text-[11px] font-serif italic font-bold text-zinc-800 leading-tight">
-                Version
-              </span>
-              <span className="text-[10px] font-serif italic font-medium text-zinc-600 leading-tight mt-0.5">
-                of Me
-              </span>
-            </div>
+            <Link
+              href="/today"
+              className="px-4 py-3 rounded-2xl bg-teal-600 hover:bg-teal-500 text-slate-950 font-bold text-xs shadow-md shadow-teal-950/40 transition-all flex items-center gap-1.5 active:scale-95 shrink-0"
+            >
+              <span>Buka Hari Ini</span>
+              <span>→</span>
+            </Link>
           </div>
         </div>
       </section>
@@ -783,10 +687,10 @@ export function BerandaClient({
         <button
           type="button"
           onClick={() => setActiveTab("identity")}
-          className={`flex items-center gap-2 rounded-xl px-4 py-2 text-xs font-semibold transition-all duration-200 cursor-pointer shrink-0 ${
+          className={`flex items-center gap-2 rounded-xl px-4 py-2 text-xs font-semibold transition-all duration-200 cursor-pointer shrink-0 border ${
             activeTab === "identity"
-              ? "bg-indigo-600 text-white shadow-lg shadow-indigo-600/30 ring-1 ring-indigo-400/40"
-              : "border border-white/10 bg-zinc-900/80 text-zinc-400 hover:bg-white/[0.06] hover:text-zinc-200"
+              ? "bg-teal-500/20 text-teal-200 border-teal-500/40 shadow-xs"
+              : "border-white/[0.06] bg-[#0d1b20]/80 text-slate-400 hover:bg-white/[0.06] hover:text-slate-200"
           }`}
         >
           <Icon name="user" size={14} />
@@ -796,42 +700,42 @@ export function BerandaClient({
         <button
           type="button"
           onClick={() => setActiveTab("vision")}
-          className={`flex items-center gap-2 rounded-xl px-4 py-2 text-xs font-semibold transition-all duration-200 cursor-pointer shrink-0 ${
+          className={`flex items-center gap-2 rounded-xl px-4 py-2 text-xs font-semibold transition-all duration-200 cursor-pointer shrink-0 border ${
             activeTab === "vision"
-              ? "bg-indigo-600 text-white shadow-lg shadow-indigo-600/30 ring-1 ring-indigo-400/40"
-              : "border border-white/10 bg-zinc-900/80 text-zinc-400 hover:bg-white/[0.06] hover:text-zinc-200"
+              ? "bg-teal-500/20 text-teal-200 border-teal-500/40 shadow-xs"
+              : "border-white/[0.06] bg-[#0d1b20]/80 text-slate-400 hover:bg-white/[0.06] hover:text-slate-200"
           }`}
         >
           <span>⭐</span>
-          Visi & Aspirasi
+          Visi &amp; Babak Hidup
         </button>
 
         <button
           type="button"
           onClick={() => setActiveTab("principles")}
-          className={`flex items-center gap-2 rounded-xl px-4 py-2 text-xs font-semibold transition-all duration-200 cursor-pointer shrink-0 ${
+          className={`flex items-center gap-2 rounded-xl px-4 py-2 text-xs font-semibold transition-all duration-200 cursor-pointer shrink-0 border ${
             activeTab === "principles"
-              ? "bg-indigo-600 text-white shadow-lg shadow-indigo-600/30 ring-1 ring-indigo-400/40"
-              : "border border-white/10 bg-zinc-900/80 text-zinc-400 hover:bg-white/[0.06] hover:text-zinc-200"
+              ? "bg-teal-500/20 text-teal-200 border-teal-500/40 shadow-xs"
+              : "border-white/[0.06] bg-[#0d1b20]/80 text-slate-400 hover:bg-white/[0.06] hover:text-slate-200"
           }`}
         >
           <span>🛡️</span>
-          Nilai & Prinsip
+          Nilai &amp; Prinsip
         </button>
 
         <button
           type="button"
           onClick={() => setActiveTab("reflections")}
-          className={`flex items-center gap-2 rounded-xl px-4 py-2 text-xs font-semibold transition-all duration-200 cursor-pointer shrink-0 ${
+          className={`flex items-center gap-2 rounded-xl px-4 py-2 text-xs font-semibold transition-all duration-200 cursor-pointer shrink-0 border ${
             activeTab === "reflections"
-              ? "bg-indigo-600 text-white shadow-lg shadow-indigo-600/30 ring-1 ring-indigo-400/40"
-              : "border border-white/10 bg-zinc-900/80 text-zinc-400 hover:bg-white/[0.06] hover:text-zinc-200"
+              ? "bg-teal-500/20 text-teal-200 border-teal-500/40 shadow-xs"
+              : "border-white/[0.06] bg-[#0d1b20]/80 text-slate-400 hover:bg-white/[0.06] hover:text-slate-200"
           }`}
         >
           <span>📖</span>
           Jurnal Refleksi
           {allReflections.length > 0 && (
-            <span className="ml-1 text-[10px] px-1.5 py-0.2 rounded-full bg-white/20">
+            <span className="ml-1 text-[10px] px-1.5 py-0.2 rounded-full bg-teal-500/30 text-teal-200">
               {allReflections.length}
             </span>
           )}
@@ -983,20 +887,20 @@ export function BerandaClient({
 
             {/* ROW 2: Nilai-Nilai Inti (Cream), Prinsip Hidup (01-09), Kekuatan & Area */}
             <div className="grid grid-cols-1 md:grid-cols-12 gap-5 items-stretch">
-              {/* Card 3: Nilai-Nilai Inti (The Warm Cream Card) - 4 cols */}
-              <div className="md:col-span-4 rounded-2xl border border-[#EADBBD] bg-[#FFFBF0] text-zinc-900 p-4 shadow-lg relative overflow-hidden flex flex-col justify-between">
+              {/* Card 3: Nilai-Nilai Inti - 4 cols */}
+              <div className="md:col-span-4 rounded-2xl border border-teal-500/15 bg-[#0d1b20]/90 text-slate-100 p-4 shadow-xl backdrop-blur-md flex flex-col justify-between">
                 <div className="space-y-2.5">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
                       <span className="text-sm">🌱</span>
-                      <h2 className="text-sm font-bold text-zinc-900 tracking-tight">
+                      <h2 className="text-sm font-bold text-white tracking-tight">
                         Nilai-Nilai Inti
                       </h2>
                     </div>
                     <button
                       type="button"
                       onClick={() => setIsEditValuesOpen(true)}
-                      className="flex h-7 w-7 items-center justify-center rounded-lg border border-[#E8DFC8] text-zinc-600 hover:bg-black/5 hover:text-zinc-900 transition-colors cursor-pointer"
+                      className="flex h-7 w-7 items-center justify-center rounded-lg border border-white/10 text-slate-400 hover:bg-white/10 hover:text-white transition-colors cursor-pointer"
                       title="Edit Nilai-Nilai Inti"
                       aria-label="Edit Nilai-Nilai Inti"
                     >
@@ -1004,50 +908,31 @@ export function BerandaClient({
                     </button>
                   </div>
 
-                  {/* Pills Grid (2 Columns, neat and compact like mockup) */}
+                  {/* Pills Grid */}
                   <div className="grid grid-cols-2 gap-1.5">
                     {parsedValues.length > 0 ? (
                       parsedValues.map((val) => (
                         <div
                           key={val.id}
-                          className="flex items-center gap-1.5 rounded-xl border border-[#E8DFC8] bg-white/90 px-2.5 py-1 text-[11px] font-medium text-zinc-800 shadow-xs hover:border-amber-400 hover:bg-white transition-all"
+                          className="flex items-center gap-1.5 rounded-xl border border-teal-500/20 bg-teal-950/40 px-2.5 py-1 text-[11px] font-medium text-teal-200 shadow-xs hover:border-teal-500/40 hover:bg-teal-900/40 transition-all"
                         >
                           <span className="text-xs shrink-0">{getValueIcon(val.name)}</span>
                           <span className="truncate" title={val.name}>{val.name}</span>
                         </div>
                       ))
                     ) : (
-                      <div className="col-span-2 py-2 text-xs text-zinc-500">
+                      <div className="col-span-2 py-2 text-xs text-slate-400">
                         <p>Belum ada nilai inti.</p>
                         <button
                           type="button"
                           onClick={() => setIsEditValuesOpen(true)}
-                          className="text-amber-800 font-semibold hover:underline"
+                          className="text-teal-400 font-semibold hover:underline"
                         >
                           Tambah Nilai Inti →
                         </button>
                       </div>
                     )}
                   </div>
-                </div>
-
-                {/* Bottom Mountain & Sun Hand-Drawn Doodle */}
-                <div className="self-end pt-1.5 text-zinc-500 opacity-60 flex items-center justify-end">
-                  <svg
-                    className="w-10 h-6 text-amber-800/70"
-                    viewBox="0 0 52 28"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="1.5"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  >
-                    <path d="M4 25L18 8L28 20L36 12L48 25" />
-                    <path d="M14 13L18 8L22 13" fill="currentColor" fillOpacity="0.15" />
-                    <path d="M32 17L36 12L40 17" fill="currentColor" fillOpacity="0.15" />
-                    <circle cx="38" cy="6" r="3" fill="currentColor" fillOpacity="0.3" stroke="none" />
-                    <path d="M7 25H45" strokeWidth="1" strokeDasharray="2 2" />
-                  </svg>
                 </div>
               </div>
 
@@ -1238,198 +1123,128 @@ export function BerandaClient({
 
           {/* ================= RIGHT SIDEBAR WIDGETS (4 COLS) ===================== */}
           <div className="lg:col-span-4 space-y-6">
-            {/* Widget 1: Avatar & Mood */}
-            <div className="rounded-2xl border border-white/10 bg-zinc-900/85 p-5 shadow-xl backdrop-blur-md space-y-4">
+            {/* Widget 1: Tugas Hari Ini (Calm Execution) */}
+            <div className="rounded-2xl border border-teal-500/15 bg-[#0d1b20]/90 p-5 shadow-xl backdrop-blur-md space-y-3.5">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
-                  <span className="text-amber-400 text-sm">👑</span>
+                  <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-teal-500/15 text-teal-300">
+                    <Icon name="check" size={14} />
+                  </span>
                   <h2 className="text-sm font-bold text-white tracking-tight">
-                    Avatar & Mood
+                    Tugas Hari Ini
                   </h2>
                 </div>
-                <div className="text-right">
-                  <p className="text-xs font-bold text-indigo-400">Level 2</p>
-                  <p className="text-[10px] text-zinc-400">Dalam Proses 35%</p>
-                </div>
+                <span className="text-xs font-mono font-bold text-teal-400">
+                  {completedCount}/{tasksState.length} Selesai
+                </span>
               </div>
 
-              {/* Progress bar Level */}
-              <div className="h-1.5 w-full overflow-hidden rounded-full bg-zinc-800">
-                <div className="h-full w-[35%] rounded-full bg-indigo-500 shadow-sm" />
+              {/* Progress bar */}
+              <div className="h-1.5 w-full overflow-hidden rounded-full bg-slate-800">
+                <div
+                  className="h-full rounded-full bg-teal-400 transition-all duration-300"
+                  style={{ width: `${tasksState.length > 0 ? (completedCount / tasksState.length) * 100 : 0}%` }}
+                />
               </div>
 
-              {/* Avatar Portrait & Speech Bubble */}
-              <div className="flex items-center gap-3.5 pt-1">
-                {/* Circular Glowing Avatar */}
-                <div className="relative h-20 w-20 shrink-0 rounded-full ring-4 ring-indigo-500/30 overflow-hidden shadow-xl bg-zinc-950">
-                  <Image
-                    src={customAvatar}
-                    alt="User Avatar"
-                    fill
-                    sizes="80px"
-                    className="object-cover object-top"
-                  />
-                </div>
-
-                {/* Speech Bubble */}
-                <div className="relative flex-1 rounded-2xl border border-amber-200/40 bg-[#FFF7D6] p-3 text-zinc-800 shadow-md">
-                  <div className="absolute -left-2 top-6 h-3 w-3 bg-[#FFF7D6] border-l border-b border-amber-200/40 transform rotate-45" />
-                  <p className="text-[11px] font-medium leading-relaxed">
-                    {currentMoodObj.quote}
-                  </p>
-                </div>
-              </div>
-
-              {/* Mood Selector & Avatar Change Button */}
-              <div className="pt-2 space-y-2">
-                <p className="text-[10.5px] font-semibold text-zinc-400 uppercase tracking-wider">
-                  Mood Hari Ini
-                </p>
-
-                <div className="flex items-center gap-2">
-                  {/* Mood Selector Button */}
-                  <div className="relative flex-1">
-                    <button
-                      type="button"
-                      onClick={() => setIsMoodDropdownOpen(!isMoodDropdownOpen)}
-                      className="flex h-9 w-full items-center justify-between rounded-xl border border-white/10 bg-zinc-800/80 px-3 text-xs text-white hover:bg-zinc-800 transition-colors"
+              {/* Checklist */}
+              <div className="space-y-1.5 max-h-52 overflow-y-auto pr-1">
+                {tasksState.map((task) => (
+                  <button
+                    key={task.id}
+                    type="button"
+                    onClick={() => handleToggleTask(task.id, task.done)}
+                    className="flex w-full items-center gap-2.5 p-2 rounded-xl text-left transition-colors hover:bg-white/[0.04] cursor-pointer"
+                  >
+                    <span
+                      className={`flex h-4 w-4 shrink-0 items-center justify-center rounded border transition-all ${
+                        task.done
+                          ? "bg-teal-500 border-teal-500 text-slate-950 shadow-xs"
+                          : "border-slate-500 bg-slate-900/60 hover:border-teal-400"
+                      }`}
                     >
-                      <span className="flex items-center gap-1.5 font-medium">
-                        <span>{currentMoodObj.emoji}</span>
-                        <span>{currentMoodObj.label}</span>
-                      </span>
-                      <Icon name="chevronDown" size={12} />
-                    </button>
+                      {task.done && <Icon name="check" size={11} />}
+                    </span>
+                    <span
+                      className={`text-xs truncate transition-colors ${
+                        task.done
+                          ? "line-through text-slate-500"
+                          : "text-slate-200 hover:text-white font-medium"
+                      }`}
+                    >
+                      {task.text}
+                    </span>
+                  </button>
+                ))}
+              </div>
 
-                    {/* Mood Dropdown Popover */}
-                    {isMoodDropdownOpen && (
-                      <div className="absolute left-0 top-full mt-1.5 z-30 w-full rounded-xl border border-white/15 bg-zinc-900 p-1.5 shadow-2xl backdrop-blur-xl">
-                        {moodOptions.map((m) => (
-                          <button
-                            key={m.label}
-                            type="button"
-                            onClick={() => {
-                              setUserMood(m.label);
-                              setIsMoodDropdownOpen(false);
-                              showToast(`Mood diubah ke ${m.label}!`);
-                            }}
-                            className={`flex w-full items-center gap-2 rounded-lg px-2.5 py-1.5 text-xs text-left transition-colors ${
-                              userMood === m.label
-                                ? "bg-indigo-600/30 text-indigo-300 font-bold"
-                                : "text-zinc-300 hover:bg-white/10"
-                            }`}
-                          >
-                            <span>{m.emoji}</span>
-                            <span>{m.label}</span>
-                          </button>
-                        ))}
-                      </div>
-                    )}
-                  </div>
-
-                  {/* Ubah Avatar Button */}
-                  <label className="flex h-9 items-center justify-center gap-1.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 px-3 text-xs font-semibold text-white shadow-lg shadow-indigo-600/30 transition-all cursor-pointer shrink-0">
-                    <span>Ubah Avatar</span>
-                    <span>🪄</span>
-                    <input
-                      type="file"
-                      accept="image/*"
-                      onChange={handleAvatarChange}
-                      className="hidden"
-                    />
-                  </label>
-                </div>
+              <div className="pt-2 border-t border-white/[0.06] flex items-center justify-between">
+                <Link
+                  href="/today"
+                  className="text-xs font-semibold text-teal-400 hover:text-teal-300 flex items-center gap-1 transition-colors"
+                >
+                  Lihat Papan Hari Ini <Icon name="arrowRight" size={12} />
+                </Link>
               </div>
             </div>
 
-            {/* Widget 2: Progress Keseluruhan (REAL CALCULATION) */}
-            <div className="rounded-2xl border border-white/10 bg-zinc-900/85 p-5 shadow-xl backdrop-blur-md space-y-4">
-              <div className="flex items-center gap-2">
-                <span className="text-sm">📈</span>
-                <h2 className="text-sm font-bold text-white tracking-tight">
-                  Progress Keseluruhan
-                </h2>
+            {/* Widget 2: Keseimbangan Pilar & Target Aktif */}
+            <div className="rounded-2xl border border-teal-500/15 bg-[#0d1b20]/90 p-5 shadow-xl backdrop-blur-md space-y-4">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-teal-500/15 text-teal-300 text-sm">
+                    📊
+                  </span>
+                  <h2 className="text-sm font-bold text-white tracking-tight">
+                    Keseimbangan Target
+                  </h2>
+                </div>
+                <span className="text-xs font-bold text-teal-400 font-mono">
+                  {totalGoalProgress}% Rata-rata
+                </span>
               </div>
 
-              {/* Donut Gauge & Encouragement */}
-              <div className="flex items-center gap-4">
-                {/* SVG Donut Circle Gauge */}
-                <div className="relative h-20 w-20 shrink-0">
-                  <svg className="h-20 w-20 -rotate-90" viewBox="0 0 36 36">
-                    <path
-                      className="text-zinc-800"
-                      strokeWidth="3.5"
-                      stroke="currentColor"
-                      fill="none"
-                      d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
-                    />
-                    <path
-                      className="text-indigo-500 transition-all duration-1000 ease-out"
-                      strokeDasharray={`${totalGoalProgress}, 100`}
-                      strokeLinecap="round"
-                      strokeWidth="3.5"
-                      stroke="currentColor"
-                      fill="none"
-                      d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
-                    />
-                  </svg>
-                  <div className="absolute inset-0 flex items-center justify-center">
-                    <span className="text-base font-black text-white">{totalGoalProgress}%</span>
-                  </div>
-                </div>
-
-                <div className="space-y-1">
-                  <p className="text-xs font-serif italic text-zinc-200">
-                    &ldquo;Kamu sudah melangkah jauh!&rdquo;
-                  </p>
-                  <p className="text-[10.5px] text-zinc-400 leading-snug">
-                    {activeGoals.length} target aktif sedang berjalan di sistem hidupmu.
-                  </p>
-                </div>
-              </div>
-
-              {/* Progress Breakdown Bars (REAL AREA DATA) */}
-              <div className="space-y-2 pt-1">
+              {/* Progress Breakdown Bars */}
+              <div className="space-y-2.5 pt-1">
                 {areaBreakdown.length > 0 ? (
                   areaBreakdown.slice(0, 5).map((ab) => (
                     <div key={ab.name} className="space-y-1">
                       <div className="flex justify-between text-[11px]">
-                        <span className="text-zinc-300 font-medium">{ab.name}</span>
-                        <span className="font-bold text-indigo-400">{ab.progress}%</span>
+                        <span className="text-slate-300 font-medium">{ab.name}</span>
+                        <span className="font-bold text-teal-300 font-mono">{ab.progress}%</span>
                       </div>
-                      <div className="h-1.5 w-full rounded-full bg-zinc-800">
+                      <div className="h-1.5 w-full rounded-full bg-slate-800">
                         <div
-                          className="h-full rounded-full transition-all duration-500"
+                          className="h-full rounded-full transition-all duration-500 bg-teal-500"
                           style={{
                             width: `${ab.progress}%`,
-                            backgroundColor: ab.color || "#8B5CF6",
                           }}
                         />
                       </div>
                     </div>
                   ))
                 ) : (
-                  <div className="text-xs text-zinc-500 py-2">
-                    Belum ada area kehidupan. Buka Target & Proyek untuk mulai membuat target.
+                  <div className="text-xs text-slate-400 py-2">
+                    Belum ada target aktif di pilar kehidupan Anda.
                   </div>
                 )}
               </div>
             </div>
 
-            {/* Widget 3: Bottom Motivation Card */}
-            <div className="rounded-2xl border border-white/10 bg-gradient-to-br from-zinc-900 via-zinc-900 to-amber-950/40 p-4 shadow-xl flex items-center justify-between gap-3">
-              <div className="flex items-center gap-3">
-                <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-amber-500/20 text-amber-300">
-                  🌱
+            {/* Widget 3: Quick Direction Link */}
+            <div className="rounded-2xl border border-teal-500/15 bg-gradient-to-br from-[#0d1b20] to-[#091519] p-4 shadow-xl flex items-center justify-between gap-3">
+              <div className="flex items-center gap-3 min-w-0">
+                <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-teal-500/20 text-teal-300">
+                  🧭
                 </span>
-                <p className="text-xs text-zinc-200 font-medium leading-snug">
-                  Masa depan yang kamu impikan sedang kamu bangun, hari ini.
+                <p className="text-xs text-slate-200 font-medium leading-snug truncate">
+                  Fokus pada hal penting, singkirkan distraksi.
                 </p>
               </div>
 
               <Link
                 href="/goals"
-                className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-white/10 text-white hover:bg-white/20 transition-colors"
+                className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-teal-500/20 text-teal-300 hover:bg-teal-500/30 transition-colors"
                 title="Lihat Target & Proyek"
               >
                 <Icon name="arrowRight" size={13} />

@@ -95,8 +95,8 @@ export function ProjectsManager({
       {/* Header Bar */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <div className="flex items-center gap-2 text-indigo-400 text-xs font-medium">
-            <span className="w-2 h-2 rounded-full bg-indigo-400 animate-pulse" />
+          <div className="flex items-center gap-2 text-teal-400 text-xs font-medium">
+            <span className="w-2 h-2 rounded-full bg-teal-400 animate-pulse" />
             <span>Portofolio &amp; Eksekusi</span>
           </div>
           <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-white mt-1">
@@ -108,7 +108,7 @@ export function ProjectsManager({
         </div>
         <button
           onClick={() => setIsCreating(!isCreating)}
-          className="self-start sm:self-auto inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-purple-600 to-indigo-600 px-4 py-2.5 text-xs font-semibold text-white shadow-[0_0_20px_rgba(168,85,247,0.35)] hover:brightness-110 transition-all active:scale-[0.98]"
+          className="self-start sm:self-auto inline-flex items-center gap-2 rounded-xl bg-teal-600 px-4 py-2.5 text-xs font-semibold text-white shadow-lg shadow-teal-900/30 hover:bg-teal-500 transition-all active:scale-[0.98] cursor-pointer"
         >
           <Icon name={isCreating ? "x" : "plus"} size={14} />
           {isCreating ? "Batal" : "Proyek Baru"}
@@ -116,10 +116,10 @@ export function ProjectsManager({
       </div>
 
       {isCreating && (
-        <form onSubmit={handleCreate} className="rounded-2xl border border-white/[0.08] bg-[#131825] p-6 shadow-xl space-y-4">
-          <div className="flex items-center justify-between border-b border-white/[0.06] pb-3">
+        <form onSubmit={handleCreate} className="rounded-2xl border border-teal-500/15 bg-[#0d1b20] p-6 shadow-xl space-y-4">
+          <div className="flex items-center justify-between border-b border-teal-500/15 pb-3">
             <h3 className="text-sm font-bold text-white tracking-tight flex items-center gap-2">
-              <span className="w-2 h-2 rounded-full bg-purple-400" />
+              <span className="w-2 h-2 rounded-full bg-teal-400" />
               Buat Proyek Baru
             </h3>
             <span className="text-[11px] text-zinc-400">Inisiatif Terencana</span>
@@ -134,7 +134,7 @@ export function ProjectsManager({
                 onChange={(e) => setTitle(e.target.value)}
                 placeholder="Contoh: Revamp Landing Page & Optimasi Konversi V2"
                 required
-                className="w-full rounded-lg border border-white/[0.1] bg-[#0B0D13] px-3 py-2 text-sm text-white placeholder:text-gray-600 focus:outline-none focus:border-purple-400"
+                className="w-full rounded-lg border border-teal-500/20 bg-[#081013] px-3 py-2 text-sm text-white placeholder:text-gray-600 focus:outline-none focus:border-teal-400"
               />
             </div>
             <div>
@@ -142,7 +142,7 @@ export function ProjectsManager({
               <select
                 value={priority}
                 onChange={(e) => setPriority(e.target.value)}
-                className="w-full rounded-lg border border-white/[0.1] bg-[#0B0D13] px-3 py-2 text-xs font-mono text-white focus:outline-none focus:border-purple-400"
+                className="w-full rounded-lg border border-teal-500/20 bg-[#081013] px-3 py-2 text-xs font-mono text-white focus:outline-none focus:border-teal-400 cursor-pointer"
               >
                 <option value="LOW">Rendah (LOW)</option>
                 <option value="MEDIUM">Sedang (MEDIUM)</option>
@@ -156,7 +156,7 @@ export function ProjectsManager({
                 type="date"
                 value={targetDate}
                 onChange={(e) => setTargetDate(e.target.value)}
-                className="w-full rounded-lg border border-white/[0.1] bg-[#0B0D13] px-3 py-2 text-xs font-mono text-white focus:outline-none focus:border-purple-400"
+                className="w-full rounded-lg border border-teal-500/20 bg-[#081013] px-3 py-2 text-xs font-mono text-white focus:outline-none focus:border-teal-400"
               />
             </div>
             <div>
@@ -164,7 +164,7 @@ export function ProjectsManager({
               <select
                 value={goalId}
                 onChange={(e) => setGoalId(e.target.value)}
-                className="w-full rounded-lg border border-white/[0.1] bg-[#0B0D13] px-3 py-2 text-xs text-white focus:outline-none focus:border-purple-400"
+                className="w-full rounded-lg border border-teal-500/20 bg-[#081013] px-3 py-2 text-xs text-white focus:outline-none focus:border-teal-400 cursor-pointer"
               >
                 <option value="">-- Tanpa Goal Khusus --</option>
                 {goals.map((g) => (
@@ -179,7 +179,7 @@ export function ProjectsManager({
               <select
                 value={areaId}
                 onChange={(e) => setAreaId(e.target.value)}
-                className="w-full rounded-lg border border-white/[0.1] bg-[#0B0D13] px-3 py-2 text-xs text-white focus:outline-none focus:border-purple-400"
+                className="w-full rounded-lg border border-teal-500/20 bg-[#081013] px-3 py-2 text-xs text-white focus:outline-none focus:border-teal-400 cursor-pointer"
               >
                 <option value="">-- Tanpa Bidang Khusus --</option>
                 {areas.map((a) => (
@@ -196,23 +196,23 @@ export function ProjectsManager({
                 onChange={(e) => setDescription(e.target.value)}
                 placeholder="Rincian lingkup kerja, hasil akhir yang diharapkan, dan dependensi..."
                 rows={2}
-                className="w-full rounded-lg border border-white/[0.1] bg-[#0B0D13] px-3 py-2 text-xs text-white placeholder:text-gray-600 focus:outline-none focus:border-purple-400"
+                className="w-full rounded-lg border border-teal-500/20 bg-[#081013] px-3 py-2 text-xs text-white placeholder:text-gray-600 focus:outline-none focus:border-teal-400"
               />
             </div>
           </div>
 
-          <div className="flex justify-end gap-2 pt-2 border-t border-white/[0.06]">
+          <div className="flex justify-end gap-2 pt-2 border-t border-teal-500/15">
             <button
               type="button"
               onClick={() => setIsCreating(false)}
-              className="rounded-lg px-4 py-2 text-xs font-mono text-gray-400 hover:bg-white/[0.05]"
+              className="rounded-lg px-4 py-2 text-xs font-mono text-gray-400 hover:bg-white/[0.05] cursor-pointer"
             >
               Batal
             </button>
             <button
               type="submit"
               disabled={loading || !title.trim()}
-              className="rounded-lg bg-purple-600 px-4 py-2 text-xs font-mono font-semibold text-white hover:bg-purple-500 disabled:opacity-50 transition-colors shadow-[0_0_15px_rgba(168,85,247,0.4)]"
+              className="rounded-lg bg-teal-600 px-4 py-2 text-xs font-mono font-semibold text-white hover:bg-teal-500 disabled:opacity-50 transition-colors shadow-md shadow-teal-900/30 cursor-pointer"
             >
               {loading ? "Menyimpan..." : "Simpan Proyek"}
             </button>
@@ -226,10 +226,10 @@ export function ProjectsManager({
           <Link
             key={p.id}
             href={`/projects/${p.id}`}
-            className="group rounded-2xl border border-white/[0.08] bg-[#131825] p-5 shadow-sm hover:border-purple-500/40 hover:bg-[#1A2133]/60 transition-all flex flex-col justify-between relative overflow-hidden"
+            className="group rounded-2xl border border-teal-500/15 bg-[#0d1b20]/90 p-5 shadow-sm hover:border-teal-500/40 hover:bg-[#14272e] transition-all flex flex-col justify-between relative overflow-hidden"
           >
             {/* Ambient top right glow */}
-            <div className="absolute -top-12 -right-12 w-28 h-28 bg-purple-500/10 rounded-full blur-2xl pointer-events-none" />
+            <div className="absolute -top-12 -right-12 w-28 h-28 bg-teal-500/10 rounded-full blur-2xl pointer-events-none" />
 
             <div>
               <div className="flex items-start justify-between gap-2">
@@ -240,7 +240,7 @@ export function ProjectsManager({
                   {p.priority}
                 </span>
               </div>
-              <h4 className="mt-3 text-base font-bold text-white group-hover:text-purple-300 transition-colors line-clamp-2 leading-tight">
+              <h4 className="mt-3 text-base font-bold text-white group-hover:text-teal-300 transition-colors line-clamp-2 leading-tight">
                 {p.title}
               </h4>
               {p.description && (
@@ -253,7 +253,7 @@ export function ProjectsManager({
             <div className="mt-5 pt-3.5 border-t border-white/[0.06] space-y-2.5 text-xs">
               <div className="flex items-center justify-between font-mono text-[11px] text-gray-400">
                 <span className="flex items-center gap-1">
-                  <span className="material-symbols-outlined text-[14px] text-purple-400">alt_route</span>
+                  <span className="material-symbols-outlined text-[14px] text-teal-400">alt_route</span>
                   {p._count?.milestones ?? 0} Tonggak
                 </span>
                 <span className="flex items-center gap-1">
@@ -278,7 +278,7 @@ export function ProjectsManager({
                     </span>
                   )}
                   {p.goal && (
-                    <span className="rounded px-2 py-0.5 text-[10px] font-mono bg-purple-500/10 text-purple-300 border border-purple-500/20 truncate max-w-[180px]">
+                    <span className="rounded px-2 py-0.5 text-[10px] font-mono bg-teal-500/10 text-teal-300 border border-teal-500/20 truncate max-w-[180px]">
                       🎯 {p.goal.title}
                     </span>
                   )}
@@ -290,8 +290,8 @@ export function ProjectsManager({
       </div>
 
       {initialProjects.length === 0 && !isCreating && (
-        <div className="rounded-2xl border border-dashed border-white/[0.1] p-12 text-center bg-[#131825]/40 flex flex-col items-center justify-center">
-          <div className="w-12 h-12 rounded-2xl bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center text-indigo-400 mb-3">
+        <div className="rounded-2xl border border-dashed border-teal-500/20 p-12 text-center bg-[#0d1b20]/60 flex flex-col items-center justify-center">
+          <div className="w-12 h-12 rounded-2xl bg-teal-500/10 border border-teal-500/20 flex items-center justify-center text-teal-400 mb-3">
             <svg className="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <polygon points="12 2 2 7 12 12 22 7 12 2" />
               <polyline points="2 17 12 22 22 17" />
@@ -304,7 +304,7 @@ export function ProjectsManager({
           </p>
           <button
             onClick={() => setIsCreating(true)}
-            className="mt-4 inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-purple-600 to-indigo-600 px-4 py-2.5 text-xs font-semibold text-white shadow-sm hover:brightness-110 transition-all active:scale-[0.98]"
+            className="mt-4 inline-flex items-center gap-2 rounded-xl bg-teal-600 hover:bg-teal-500 px-4 py-2.5 text-xs font-semibold text-white shadow-sm transition-all active:scale-[0.98] cursor-pointer"
           >
             <Icon name="plus" size={14} />
             Buat Proyek Pertama

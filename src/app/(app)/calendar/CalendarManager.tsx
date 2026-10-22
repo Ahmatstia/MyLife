@@ -529,7 +529,7 @@ function ToDoListView({
                             {ev.taskId && (
                               <Link
                                 href={`/focus?taskId=${ev.taskId}`}
-                                className="px-2.5 py-1 rounded-lg bg-purple-600/20 hover:bg-purple-600/30 text-purple-300 border border-purple-500/30 text-xs font-semibold transition-all flex items-center gap-1"
+                                className="px-2.5 py-1 rounded-lg bg-teal-500/15 hover:bg-teal-500/25 text-teal-300 border border-teal-500/30 text-xs font-semibold transition-all flex items-center gap-1"
                                 title="Buka sesi fokus mendalam untuk tugas ini"
                               >
                                 <span>Fokus</span>

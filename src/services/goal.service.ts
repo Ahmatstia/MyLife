@@ -119,3 +119,12 @@ export async function getGoalDetail(userId: string, id: string) {
   const goal = await findGoalDetailRecord(userId, id);
   return goal ? withGoalNameAlias(goal) : null;
 }
+
+export async function getGoalsForHome(userId: string) {
+  return prisma.goal.findMany({
+    where: { userId },
+    include: { area: true, tasks: true },
+    orderBy: { createdAt: "desc" },
+    take: 10,
+  });
+}

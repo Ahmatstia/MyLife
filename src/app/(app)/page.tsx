@@ -8,7 +8,7 @@ import {
 } from "@/services/direction.service";
 import { getAreas } from "@/services/area.service";
 import { getToday } from "@/services/today.service";
-import { prisma } from "@/lib/prisma";
+import { getGoalsForHome } from "@/services/goal.service";
 import { BerandaClient } from "./direction/BerandaClient";
 
 export const dynamic = "force-dynamic";
@@ -25,8 +25,8 @@ export default async function Home() {
           className="pointer-events-none absolute inset-0"
           style={{
             background:
-              "radial-gradient(ellipse 70% 60% at 30% -10%, rgba(99,102,241,0.08) 0%, transparent 60%), radial-gradient(ellipse 60% 50% at 75% 110%, rgba(139,92,246,0.07) 0%, transparent 60%)",
-            backgroundColor: "hsl(38,28%,97%)",
+              "radial-gradient(ellipse 70% 60% at 30% -10%, rgba(20,184,166,0.08) 0%, transparent 60%), radial-gradient(ellipse 60% 50% at 75% 110%, rgba(13,148,136,0.07) 0%, transparent 60%)",
+            backgroundColor: "hsl(195,20%,97%)",
           }}
         />
         <div aria-hidden="true" className="pointer-events-none absolute inset-0 dot-grid opacity-40" />
@@ -36,7 +36,7 @@ export default async function Home() {
           <div className="rounded-2xl border border-white/80 bg-white/90 p-7 shadow-pop backdrop-blur-sm">
             {/* Brand with Custom Logo */}
             <div className="flex items-center gap-2.5">
-              <div className="relative flex h-10 w-10 shrink-0 items-center justify-center rounded-xl overflow-hidden shadow-[0_0_12px_rgba(99,102,241,0.35)]">
+              <div className="relative flex h-10 w-10 shrink-0 items-center justify-center rounded-xl overflow-hidden shadow-[0_0_12px_rgba(20,184,166,0.25)]">
                 <Image
                   src="/logo.png"
                   alt="MyLife Logo"
@@ -83,12 +83,7 @@ export default async function Home() {
     getReflections(user.id),
     getAreas(user.id),
     getToday(new Date(), user.id),
-    prisma.goal.findMany({
-      where: { userId: user.id },
-      include: { area: true, tasks: true },
-      orderBy: { createdAt: "desc" },
-      take: 10,
-    }),
+    getGoalsForHome(user.id),
   ]);
 
   const rawTasks = [
@@ -114,7 +109,7 @@ export default async function Home() {
       status: g.status,
       progress,
       areaName: g.area?.name || "Umum",
-      areaColor: g.area?.color || "#8B5CF6",
+      areaColor: g.area?.color || "#14b8a6",
     };
   });
 

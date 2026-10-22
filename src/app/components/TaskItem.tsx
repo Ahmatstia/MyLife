@@ -233,10 +233,10 @@ export default function TaskItem({
   return (
     <>
       <div
-        className={`group flex flex-col justify-between rounded-xl border p-3.5 transition-all ${
+        className={`group flex flex-col justify-between rounded-2xl border p-3.5 transition-all ${
           completed
-            ? "border-emerald-500/30 bg-[#0B0D13]/60"
-            : "border-white/[0.08] bg-[#131825] hover:border-purple-500/40 hover:bg-[#1A2133]/50 shadow-sm"
+            ? "border-emerald-500/30 bg-[#081013]/60"
+            : "border-teal-500/15 bg-[#0d1b20]/90 hover:border-teal-500/40 hover:bg-[#14272e]/60 shadow-sm"
         }`}
       >
         <div className="flex items-start gap-2.5">
@@ -246,8 +246,8 @@ export default function TaskItem({
             aria-label={completed ? `Buka kembali ${displayName}` : `Ubah status ${displayName}`}
             className={`mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full border-2 transition-all cursor-pointer active:scale-90 ${
               completed
-                ? "border-emerald-400 bg-emerald-400 text-[#0B0D13] shadow-xs"
-                : "border-white/20 bg-white/[0.05] hover:border-purple-400"
+                ? "border-emerald-400 bg-emerald-400 text-[#081013] shadow-xs"
+                : "border-white/20 bg-white/[0.05] hover:border-teal-400"
             }`}
           >
             {completed && <Icon name="check" size={11} strokeWidth={3} />}
@@ -259,8 +259,8 @@ export default function TaskItem({
                 href={`/tasks/${id}`}
                 className={`text-[13px] font-semibold transition-colors line-clamp-2 ${
                   completed
-                    ? "text-gray-500 line-through"
-                    : "text-gray-200 group-hover:text-purple-300"
+                    ? "text-zinc-500 line-through"
+                    : "text-zinc-200 group-hover:text-teal-300"
                 }`}
               >
                 {displayName}
@@ -273,7 +273,7 @@ export default function TaskItem({
                 <PriorityBadge priority={priority} />
               )}
               {estimatedHours > 0 && (
-                <span className="text-[10.5px] font-mono text-gray-400">
+                <span className="text-[10.5px] font-mono text-zinc-400">
                   ~{estimatedHours}j {actualHours > 0 ? `(${actualHours}j real)` : ""}
                 </span>
               )}
@@ -282,7 +282,7 @@ export default function TaskItem({
         </div>
 
         {/* Card bottom actions */}
-        <div className="mt-3 flex items-center justify-between border-t border-white/[0.06] pt-2 text-[11px] text-gray-400">
+        <div className="mt-3 flex items-center justify-between border-t border-white/[0.06] pt-2 text-[11px] text-zinc-400">
           <span className="truncate max-w-[140px] font-mono text-[10px]">
             {actualHours > 0 ? `${formatHours(actualHours)} fokus` : "Belum ada sesi"}
           </span>
@@ -291,7 +291,7 @@ export default function TaskItem({
               onClick={startEditing}
               disabled={isLoading}
               aria-label={`Edit ${displayName}`}
-              className="flex h-7 w-7 items-center justify-center rounded-lg text-gray-400 hover:bg-white/[0.08] hover:text-white transition-colors"
+              className="flex h-7 w-7 items-center justify-center rounded-lg text-zinc-400 hover:bg-white/[0.08] hover:text-white transition-colors"
             >
               <Icon name="edit" size={13} />
             </button>
@@ -299,14 +299,14 @@ export default function TaskItem({
               onClick={deleteTask}
               disabled={isLoading}
               aria-label={`Hapus ${displayName}`}
-              className="flex h-7 w-7 items-center justify-center rounded-lg text-gray-400 hover:bg-rose-500/10 hover:text-rose-400 transition-colors"
+              className="flex h-7 w-7 items-center justify-center rounded-lg text-zinc-400 hover:bg-rose-500/10 hover:text-rose-400 transition-colors"
             >
               <Icon name="trash" size={13} />
             </button>
             <Link
               href={`/tasks/${id}`}
               aria-label={`Buka ${displayName}`}
-              className="flex h-7 w-7 items-center justify-center rounded-lg bg-white/[0.05] text-gray-300 hover:bg-purple-500/20 hover:text-purple-300 transition-colors"
+              className="flex h-7 w-7 items-center justify-center rounded-lg bg-white/[0.05] text-zinc-300 hover:bg-teal-500/20 hover:text-teal-300 transition-colors"
             >
               <Icon name="arrowRight" size={13} />
             </Link>

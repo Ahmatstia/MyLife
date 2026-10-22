@@ -74,7 +74,7 @@ export default async function GoalPage({ params }: GoalPageProps) {
             <span>/</span>
             <span className="uppercase text-gray-400">RUTE #{goal.id.slice(0, 6).toUpperCase()}</span>
             <span>/</span>
-            <span className="text-purple-300 font-bold truncate max-w-xs">{goal.title}</span>
+            <span className="text-teal-300 font-bold truncate max-w-xs">{goal.title}</span>
           </div>
         </div>
 
@@ -98,7 +98,7 @@ export default async function GoalPage({ params }: GoalPageProps) {
 
       {/* Completion Banner if all stages are done */}
       {allStagesDone && (
-        <div className="relative overflow-hidden rounded-2xl border border-emerald-500/30 bg-gradient-to-r from-emerald-950/40 via-[#131825] to-[#131825] p-5 shadow-lg transform-gpu">
+        <div className="relative overflow-hidden rounded-2xl border border-emerald-500/30 bg-gradient-to-r from-emerald-950/40 via-[#0d1b20] to-[#0d1b20] p-5 shadow-lg transform-gpu">
           <div className="relative flex flex-wrap items-center gap-4">
             <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-emerald-500/20 text-emerald-400 border border-emerald-500/40 text-2xl shadow-sm">
               🏆
@@ -119,14 +119,14 @@ export default async function GoalPage({ params }: GoalPageProps) {
       {/* 2. Expedition Hero Header (Split Grid) */}
       <section className="grid grid-cols-1 lg:grid-cols-12 gap-6">
         {/* Left Col: Strategic Brief & Telemetry */}
-        <div className="lg:col-span-8 flex flex-col justify-between p-6 md:p-8 rounded-2xl bg-[#131825] border border-white/[0.08] shadow-xl relative overflow-hidden transform-gpu">
+        <div className="lg:col-span-8 flex flex-col justify-between p-6 md:p-8 rounded-2xl bg-[#0d1b20]/90 border border-teal-500/15 shadow-xl relative overflow-hidden transform-gpu">
           {/* Subtle ambient glow via fast GPU radial gradient */}
-          <div className="absolute -right-10 -top-10 w-96 h-96 bg-[radial-gradient(circle,rgba(168,85,247,0.12)_0%,transparent_70%)] pointer-events-none transform-gpu" />
+          <div className="absolute -right-10 -top-10 w-96 h-96 bg-[radial-gradient(circle,rgba(20,184,166,0.12)_0%,transparent_70%)] pointer-events-none transform-gpu" />
           
           <div className="flex flex-col gap-4 relative z-10">
             {/* Badges Cluster */}
             <div className="flex flex-wrap items-center gap-2">
-              <span className="px-2.5 py-1 rounded bg-white/[0.06] text-purple-300 font-mono text-xs uppercase tracking-wider border border-white/[0.08]">
+              <span className="px-2.5 py-1 rounded bg-teal-500/10 text-teal-300 font-mono text-xs uppercase tracking-wider border border-teal-500/20">
                 {goal.type || "TARGET UTAMA"}
               </span>
               {goal.area && (
@@ -176,19 +176,19 @@ export default async function GoalPage({ params }: GoalPageProps) {
                   ✓ {completedTasks}/{allTasks.length} Tugas
                 </span>
               </div>
-              <div className="p-3 rounded-xl bg-[#0B0D13]/80 border border-white/[0.05] flex flex-col">
+              <div className="p-3 rounded-xl bg-[#081013]/80 border border-white/[0.05] flex flex-col">
                 <span className="font-mono text-[10px] uppercase text-gray-400">TAHAPAN EKSPEDISI</span>
-                <span className="font-mono text-sm font-bold text-purple-300 mt-1">
+                <span className="font-mono text-sm font-bold text-teal-300 mt-1">
                   📂 {completedStages}/{goal.stages.length} Tahapan
                 </span>
               </div>
-              <div className="p-3 rounded-xl bg-[#0B0D13]/80 border border-white/[0.05] flex flex-col">
+              <div className="p-3 rounded-xl bg-[#081013]/80 border border-white/[0.05] flex flex-col">
                 <span className="font-mono text-[10px] uppercase text-gray-400">TOTAL INVESTASI</span>
-                <span className="font-mono text-sm font-bold text-indigo-300 mt-1">
+                <span className="font-mono text-sm font-bold text-teal-300 mt-1">
                   ⏱ ± {formatHours(totalEstimatedHours)}
                 </span>
               </div>
-              <div className="p-3 rounded-xl bg-[#0B0D13]/80 border border-white/[0.05] flex flex-col">
+              <div className="p-3 rounded-xl bg-[#081013]/80 border border-white/[0.05] flex flex-col">
                 <span className="font-mono text-[10px] uppercase text-gray-400">BATAS AKHIR</span>
                 <span className="font-mono text-sm font-bold text-amber-400 mt-1 truncate">
                   🗓 {goal.targetDate ? formatDate(goal.targetDate) : "Fleksibel"}
@@ -200,14 +200,14 @@ export default async function GoalPage({ params }: GoalPageProps) {
             <div className="flex flex-col gap-1.5 pt-2">
               <div className="flex justify-between items-center font-mono text-xs">
                 <span className="flex items-center gap-1.5 text-gray-400">
-                  <span className="material-symbols-outlined text-[15px] text-emerald-400">trending_up</span>
-                  AGREGASI INTEGRASI SISTEM
+                  <span className="material-symbols-outlined text-[15px] text-teal-400">trending_up</span>
+                  PROGRES KESELURUHAN
                 </span>
-                <span className="text-emerald-400 font-bold">{progress}% TUNTAS</span>
+                <span className="text-teal-400 font-bold">{progress}% TUNTAS</span>
               </div>
-              <div className="w-full h-2 rounded-full bg-[#0B0D13] overflow-hidden p-[1px] border border-white/[0.06]">
+              <div className="w-full h-2 rounded-full bg-[#081013] overflow-hidden p-[1px] border border-white/[0.06]">
                 <div
-                  className="h-full rounded-full bg-gradient-to-r from-purple-700 via-purple-500 to-[#4edea3] transition-all duration-700 shadow-[0_0_12px_rgba(78,222,163,0.5)]"
+                  className="h-full rounded-full bg-gradient-to-r from-teal-600 via-teal-500 to-emerald-400 transition-all duration-700 shadow-[0_0_12px_rgba(20,184,166,0.3)]"
                   style={{ width: `${progress}%` }}
                 />
               </div>
@@ -215,9 +215,9 @@ export default async function GoalPage({ params }: GoalPageProps) {
           </div>
         </div>
 
-        {/* Right Col: Visual Orb & Telemetry Gauge */}
-        <div className="lg:col-span-4 flex flex-col items-center justify-center p-6 md:p-8 rounded-2xl bg-[#131825] border border-white/[0.08] shadow-[0_12px_40px_-15px_rgba(0,0,0,0.7)] relative overflow-hidden text-center">
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-purple-500/10 via-transparent to-transparent pointer-events-none" />
+        {/* Right Col: Visual Orb & Progress Ring */}
+        <div className="lg:col-span-4 flex flex-col items-center justify-center p-6 md:p-8 rounded-2xl bg-[#0d1b20]/90 border border-teal-500/15 shadow-xl relative overflow-hidden text-center">
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-teal-500/10 via-transparent to-transparent pointer-events-none" />
 
           {/* Radial Progress Ring */}
           <div className="relative w-44 h-44 flex items-center justify-center my-2">
@@ -232,7 +232,7 @@ export default async function GoalPage({ params }: GoalPageProps) {
                 strokeWidth="10"
               />
               <circle
-                className="text-emerald-400 transition-all duration-1000"
+                className="text-teal-400 transition-all duration-1000"
                 cx="80"
                 cy="80"
                 fill="transparent"
@@ -272,49 +272,49 @@ export default async function GoalPage({ params }: GoalPageProps) {
       </section>
 
       {/* 3. Waypoint Horizontal Route Track */}
-      <section className="flex flex-col gap-4 p-6 md:p-8 rounded-2xl bg-[#131825] border border-white/[0.08] shadow-sm relative">
+      <section className="flex flex-col gap-4 p-6 md:p-8 rounded-2xl bg-[#0d1b20]/90 border border-teal-500/15 shadow-sm relative">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div className="flex items-center gap-2">
-            <span className="material-symbols-outlined text-purple-400 text-[20px]">timeline</span>
-            <h2 className="text-lg font-bold text-white">Peta Jalan Ekspedisi</h2>
-            <span className="font-mono text-xs text-gray-500">{"//"} LINTASAN WAYPOINT AKTIF</span>
+            <span className="material-symbols-outlined text-teal-400 text-[20px]">timeline</span>
+            <h2 className="text-lg font-bold text-white">Peta Jalan Tahapan</h2>
+            <span className="font-mono text-xs text-gray-500">{"//"} TAHAPAN AKTIF</span>
           </div>
-          <div className="flex items-center gap-2 text-purple-300 font-mono text-xs">
-            <span className="w-2 h-2 rounded-full bg-purple-400 animate-pulse" />
+          <div className="flex items-center gap-2 text-teal-300 font-mono text-xs">
+            <span className="w-2 h-2 rounded-full bg-teal-400 animate-pulse" />
             {currentStageIndex === -1
               ? "SEMUA TAHAP RAMPUNG"
-              : `WAYPOINT 0${currentStageIndex + 1} DARI 0${goal.stages.length} AKTIF`}
+              : `TAHAP 0${currentStageIndex + 1} DARI 0${goal.stages.length} AKTIF`}
           </div>
         </div>
 
         {/* 4 Stats Compact Row */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-2.5 py-1">
-          <div className="px-3.5 py-2.5 rounded-xl bg-[#0B0D13]/60 border border-white/[0.05] flex items-center gap-3">
+          <div className="px-3.5 py-2.5 rounded-xl bg-[#081013]/60 border border-white/[0.05] flex items-center gap-3">
             <span className="material-symbols-outlined text-gray-400 text-[18px]">event</span>
             <div className="flex flex-col">
               <span className="font-mono text-[10px] text-gray-400 uppercase">Dimulai</span>
               <span className="font-mono text-xs font-semibold text-white">{goalStartDate}</span>
             </div>
           </div>
-          <div className="px-3.5 py-2.5 rounded-xl bg-[#0B0D13]/60 border border-white/[0.05] flex items-center gap-3">
+          <div className="px-3.5 py-2.5 rounded-xl bg-[#081013]/60 border border-white/[0.05] flex items-center gap-3">
             <span className="material-symbols-outlined text-gray-400 text-[18px]">timer</span>
             <div className="flex flex-col">
               <span className="font-mono text-[10px] text-gray-400 uppercase">Durasi Aktif</span>
               <span className="font-mono text-xs font-semibold text-white">{daysElapsed} Hari Berjalan</span>
             </div>
           </div>
-          <div className="px-3.5 py-2.5 rounded-xl bg-[#0B0D13]/60 border border-white/[0.05] flex items-center gap-3">
+          <div className="px-3.5 py-2.5 rounded-xl bg-[#081013]/60 border border-white/[0.05] flex items-center gap-3">
             <span className="material-symbols-outlined text-gray-400 text-[18px]">flag</span>
             <div className="flex flex-col">
-              <span className="font-mono text-[10px] text-gray-400 uppercase">Status Milestone</span>
+              <span className="font-mono text-[10px] text-gray-400 uppercase">Status Tahap</span>
               <span className="font-mono text-xs font-semibold text-emerald-400">{completedStages}/{goal.stages.length} Tahap Selesai</span>
             </div>
           </div>
-          <div className="px-3.5 py-2.5 rounded-xl bg-[#0B0D13]/60 border border-white/[0.05] flex items-center gap-3">
+          <div className="px-3.5 py-2.5 rounded-xl bg-[#081013]/60 border border-white/[0.05] flex items-center gap-3">
             <span className="material-symbols-outlined text-gray-400 text-[18px]">task_alt</span>
             <div className="flex flex-col">
               <span className="font-mono text-[10px] text-gray-400 uppercase">Penyelesaian Tugas</span>
-              <span className="font-mono text-xs font-semibold text-purple-300">{completedTasks}/{allTasks.length} Tuntas</span>
+              <span className="font-mono text-xs font-semibold text-teal-300">{completedTasks}/{allTasks.length} Tuntas</span>
             </div>
           </div>
         </div>
@@ -326,7 +326,7 @@ export default async function GoalPage({ params }: GoalPageProps) {
               {/* Connecting line */}
               <div className="absolute top-5 left-12 right-12 h-1 bg-white/[0.08] -z-0">
                 <div
-                  className="h-full bg-gradient-to-r from-emerald-400 via-purple-500 to-purple-400 transition-all duration-700"
+                  className="h-full bg-gradient-to-r from-teal-500 to-teal-400 transition-all duration-700"
                   style={{
                     width: `${
                       goal.stages.length > 1
@@ -348,10 +348,10 @@ export default async function GoalPage({ params }: GoalPageProps) {
                     <div
                       className={`w-10 h-10 rounded-full flex items-center justify-center transition-all ${
                         isCompleted
-                          ? "bg-emerald-400 text-[#0B0D13] font-bold shadow-[0_0_15px_rgba(78,222,163,0.5)]"
+                          ? "bg-emerald-400 text-[#081013] font-bold shadow-[0_0_15px_rgba(78,222,163,0.5)]"
                           : isCurrent
-                            ? "bg-purple-600 text-white font-bold ring-4 ring-purple-500/30 shadow-[0_0_20px_rgba(168,85,247,0.6)]"
-                            : "bg-[#0B0D13] border border-white/20 text-gray-400"
+                            ? "bg-teal-600 text-white font-bold ring-4 ring-teal-500/30 shadow-[0_0_20px_rgba(20,184,166,0.4)]"
+                            : "bg-[#081013] border border-white/20 text-gray-400"
                       }`}
                     >
                       {isCompleted ? (
@@ -371,7 +371,7 @@ export default async function GoalPage({ params }: GoalPageProps) {
                         isCompleted
                           ? "text-emerald-400 bg-emerald-500/10"
                           : isCurrent
-                            ? "text-purple-300 bg-purple-500/10 font-bold"
+                            ? "text-teal-300 bg-teal-500/10 font-bold"
                             : "text-gray-500 bg-white/[0.04]"
                       }`}
                     >
@@ -383,22 +383,22 @@ export default async function GoalPage({ params }: GoalPageProps) {
             </div>
           </div>
         ) : (
-          <div className="py-8 text-center border border-dashed border-white/[0.1] rounded-xl bg-[#0B0D13]/40">
+          <div className="py-8 text-center border border-dashed border-teal-500/20 rounded-xl bg-[#081013]/40">
             <p className="text-xs font-mono text-gray-400">Belum ada tahapan dalam rute ini. Tambahkan tahapan pertama di tombol kanan atas.</p>
           </div>
         )}
 
         {/* Dynamic Callout Bar */}
-        <div className="flex items-center gap-3 p-3.5 rounded-xl bg-[#0B0D13]/70 border border-white/[0.06] text-gray-300 text-xs">
-          <span className="material-symbols-outlined text-purple-400 text-[18px] shrink-0">auto_awesome</span>
+        <div className="flex items-center gap-3 p-3.5 rounded-xl bg-[#081013]/70 border border-teal-500/15 text-gray-300 text-xs">
+          <span className="material-symbols-outlined text-teal-400 text-[18px] shrink-0">auto_awesome</span>
           <p className="leading-relaxed">
-            <strong className="text-white font-semibold">Status Rute:</strong>{" "}
+            <strong className="text-white font-semibold">Status Tahapan:</strong>{" "}
             {currentStageIndex === -1 ? (
-              <span>Seluruh tahapan ekspedisi berhasil dituntaskan dengan sempurna. Selamat atas pencapaian Anda!</span>
+              <span>Seluruh tahapan berhasil dituntaskan dengan sempurna. Selamat atas pencapaian Anda!</span>
             ) : (
               <span>
-                Anda sedang berada di <span className="text-purple-300 font-bold font-mono">Tahap {currentStageIndex + 1} dari {goal.stages.length}</span>.{" "}
-                Fokus aktif teralokasi pada penyelesaian tugas-tugas kritis di tahapan ini.
+                Anda sedang berada di <span className="text-teal-300 font-bold font-mono">Tahap {currentStageIndex + 1} dari {goal.stages.length}</span>.{" "}
+                Fokus aktif dialokasikan pada penyelesaian tugas-tugas di tahapan ini.
               </span>
             )}
           </p>

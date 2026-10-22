@@ -110,11 +110,11 @@ export function ObjectivesSection({
   const previewPct = Math.min(100, Math.round((previewCurrent / previewTarget) * 100));
 
   return (
-    <div className="rounded-2xl border border-white/[0.08] bg-[#131825] p-6 shadow-sm space-y-4">
+    <div className="rounded-2xl border border-teal-500/15 bg-[#0d1b20]/90 p-6 shadow-sm space-y-4">
       {/* Header */}
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div className="flex items-center gap-2.5">
-          <div className="w-8 h-8 rounded-lg bg-purple-500/10 border border-purple-500/20 flex items-center justify-center text-purple-400">
+          <div className="w-8 h-8 rounded-lg bg-teal-500/10 border border-teal-500/20 flex items-center justify-center text-teal-400">
             <span className="material-symbols-outlined text-[18px]">trending_up</span>
           </div>
           <div>
@@ -122,7 +122,7 @@ export function ObjectivesSection({
               <h3 className="text-base font-bold text-white tracking-tight">
                 Indikator Target Angka
               </h3>
-              <span className="font-mono text-[10px] text-purple-300 bg-purple-500/10 border border-purple-500/20 px-2 py-0.5 rounded-full">
+              <span className="font-mono text-[10px] text-teal-300 bg-teal-500/10 border border-teal-500/20 px-2 py-0.5 rounded-full">
                 Key Results
               </span>
             </div>
@@ -138,7 +138,7 @@ export function ObjectivesSection({
           className={`inline-flex items-center gap-1.5 rounded-lg px-3.5 py-1.5 text-xs font-mono font-semibold transition-colors cursor-pointer ${
             isAdding
               ? "bg-white/[0.08] text-gray-300 hover:bg-white/[0.14]"
-              : "bg-purple-600 text-white hover:bg-purple-500 shadow-sm"
+              : "bg-teal-600 text-white hover:bg-teal-500 shadow-sm"
           }`}
         >
           <Icon name={isAdding ? "x" : "plus"} size={14} />
@@ -150,7 +150,7 @@ export function ObjectivesSection({
       {isAdding && (
         <form
           onSubmit={handleAdd}
-          className="rounded-xl border border-purple-500/30 bg-[#0B0D13] p-5 space-y-4 shadow-lg animate-in fade-in-50 duration-150"
+          className="rounded-xl border border-teal-500/30 bg-[#081013] p-5 space-y-4 shadow-lg animate-in fade-in-50 duration-150"
         >
           {/* Quick Presets Bar */}
           <div>
@@ -163,7 +163,7 @@ export function ObjectivesSection({
                   key={p.label}
                   type="button"
                   onClick={() => applyPreset(p)}
-                  className="px-2.5 py-1 rounded-md bg-[#131825] hover:bg-[#1A2133] border border-white/[0.08] hover:border-purple-400/40 text-xs font-mono text-gray-300 hover:text-white transition-colors cursor-pointer"
+                  className="px-2.5 py-1 rounded-md bg-[#0d1b20] hover:bg-[#14272e] border border-teal-500/20 hover:border-teal-400/40 text-xs font-mono text-gray-300 hover:text-white transition-colors cursor-pointer"
                 >
                   {p.label}
                 </button>
@@ -175,7 +175,7 @@ export function ObjectivesSection({
           <div className="space-y-3 pt-1 border-t border-white/[0.06]">
             <div>
               <label className="block text-xs font-mono font-medium text-gray-300 mb-1">
-                1. Apa yang ingin Anda hitung? <span className="text-purple-400">*</span>
+                1. Apa yang ingin Anda hitung? <span className="text-teal-400">*</span>
               </label>
               <input
                 type="text"
@@ -183,7 +183,7 @@ export function ObjectivesSection({
                 onChange={(e) => setTitle(e.target.value)}
                 placeholder="Contoh: Latihan Soal Python, Selesaikan Bab Materi, atau Jam Coding"
                 required
-                className="w-full rounded-lg border border-white/[0.1] bg-[#131825] px-3.5 py-2 text-xs text-white placeholder:text-gray-500 focus:outline-none focus:border-purple-400 transition-colors"
+                className="w-full rounded-lg border border-teal-500/20 bg-[#0d1b20] px-3.5 py-2 text-xs text-white placeholder:text-gray-500 focus:outline-none focus:border-teal-400 transition-colors"
               />
             </div>
 
@@ -198,7 +198,7 @@ export function ObjectivesSection({
                   value={currentValue}
                   onChange={(e) => setCurrentValue(e.target.value)}
                   placeholder="0"
-                  className="w-full rounded-lg border border-white/[0.1] bg-[#131825] px-3.5 py-2 text-xs text-white focus:outline-none focus:border-purple-400 transition-colors font-mono"
+                  className="w-full rounded-lg border border-teal-500/20 bg-[#0d1b20] px-3.5 py-2 text-xs text-white focus:outline-none focus:border-teal-400 transition-colors font-mono"
                 />
                 <span className="text-[10px] text-gray-500 font-mono mt-0.5 block">
                   Capaian awal saat ini
@@ -207,7 +207,7 @@ export function ObjectivesSection({
 
               <div>
                 <label className="block text-xs font-mono font-medium text-gray-300 mb-1">
-                  3. Target Akhir <span className="text-purple-400">*</span>
+                  3. Target Akhir <span className="text-teal-400">*</span>
                 </label>
                 <input
                   type="number"
@@ -216,7 +216,7 @@ export function ObjectivesSection({
                   onChange={(e) => setTargetValue(e.target.value)}
                   required
                   placeholder="40"
-                  className="w-full rounded-lg border border-white/[0.1] bg-[#131825] px-3.5 py-2 text-xs text-white focus:outline-none focus:border-purple-400 transition-colors font-mono"
+                  className="w-full rounded-lg border border-teal-500/20 bg-[#0d1b20] px-3.5 py-2 text-xs text-white focus:outline-none focus:border-teal-400 transition-colors font-mono"
                 />
                 <span className="text-[10px] text-gray-500 font-mono mt-0.5 block">
                   Jumlah total target
@@ -225,7 +225,7 @@ export function ObjectivesSection({
 
               <div>
                 <label className="block text-xs font-mono font-medium text-gray-300 mb-1">
-                  4. Satuan Ukuran <span className="text-purple-400">*</span>
+                  4. Satuan Ukuran <span className="text-teal-400">*</span>
                 </label>
                 <input
                   type="text"
@@ -233,7 +233,7 @@ export function ObjectivesSection({
                   onChange={(e) => setUnit(e.target.value)}
                   placeholder="soal, modul, jam, %"
                   required
-                  className="w-full rounded-lg border border-white/[0.1] bg-[#131825] px-3.5 py-2 text-xs text-white focus:outline-none focus:border-purple-400 transition-colors font-mono"
+                  className="w-full rounded-lg border border-teal-500/20 bg-[#0d1b20] px-3.5 py-2 text-xs text-white focus:outline-none focus:border-teal-400 transition-colors font-mono"
                 />
                 <span className="text-[10px] text-gray-500 font-mono mt-0.5 block">
                   Misal: soal, bab, jam, %
@@ -243,8 +243,8 @@ export function ObjectivesSection({
           </div>
 
           {/* Interactive Live Preview Box */}
-          <div className="p-3 rounded-lg bg-[#131825]/90 border border-purple-500/20 space-y-2">
-            <div className="flex items-center justify-between text-[11px] font-mono text-purple-300">
+          <div className="p-3 rounded-lg bg-[#0d1b20]/90 border border-teal-500/20 space-y-2">
+            <div className="flex items-center justify-between text-[11px] font-mono text-teal-300">
               <span className="flex items-center gap-1.5 font-bold">
                 <span className="material-symbols-outlined text-[14px]">visibility</span>
                 Pratinjau Kartu Hasil:
@@ -252,7 +252,7 @@ export function ObjectivesSection({
               <span>Setelah disimpan, Anda bisa klik tombol [+1] atau [+5]</span>
             </div>
 
-            <div className="rounded-lg border border-white/[0.08] bg-[#0B0D13] p-3 flex flex-col gap-2">
+            <div className="rounded-lg border border-teal-500/15 bg-[#081013] p-3 flex flex-col gap-2">
               <div className="flex items-center justify-between">
                 <div>
                   <span className="text-xs font-semibold text-white">
@@ -274,7 +274,7 @@ export function ObjectivesSection({
 
               <div className="h-1.5 w-full overflow-hidden rounded-full bg-white/[0.08]">
                 <div
-                  className="h-full rounded-full bg-gradient-to-r from-purple-500 to-[#4edea3] transition-all"
+                  className="h-full rounded-full bg-gradient-to-r from-teal-500 to-emerald-400 transition-all"
                   style={{ width: `${previewPct}%` }}
                 />
               </div>
@@ -293,7 +293,7 @@ export function ObjectivesSection({
             <button
               type="submit"
               disabled={loading || !title.trim()}
-              className="rounded-lg bg-purple-600 px-5 py-1.5 text-xs font-semibold text-white hover:bg-purple-500 disabled:opacity-50 transition-colors shadow-sm cursor-pointer"
+              className="rounded-lg bg-teal-600 px-5 py-1.5 text-xs font-semibold text-white hover:bg-teal-500 disabled:opacity-50 transition-colors shadow-sm cursor-pointer"
             >
               {loading ? "Menyimpan..." : "Simpan Indikator"}
             </button>
@@ -311,8 +311,8 @@ export function ObjectivesSection({
               key={obj.id}
               className={`rounded-xl border p-4 shadow-sm flex flex-col justify-between gap-3 transition-colors ${
                 isDone
-                  ? "bg-[#131825] border-emerald-500/30"
-                  : "bg-[#0B0D13]/70 border-white/[0.08] hover:border-white/[0.14]"
+                  ? "bg-[#0d1b20]/90 border-emerald-500/30"
+                  : "bg-[#081013]/70 border-teal-500/15 hover:border-teal-500/30"
               }`}
             >
               <div className="flex items-start justify-between gap-2">
@@ -326,7 +326,7 @@ export function ObjectivesSection({
                         ✓ TERCAPAI
                       </span>
                     ) : (
-                      <span className="text-[10px] font-mono font-bold text-purple-300 bg-purple-500/10 px-1.5 py-0.5 rounded border border-purple-500/20">
+                      <span className="text-[10px] font-mono font-bold text-teal-300 bg-teal-500/10 px-1.5 py-0.5 rounded border border-teal-500/20">
                         BERJALAN
                       </span>
                     )}
@@ -353,7 +353,7 @@ export function ObjectivesSection({
                   <button
                     type="button"
                     onClick={() => handleIncrement(obj, 1)}
-                    className="rounded bg-purple-500/20 hover:bg-purple-500/30 border border-purple-500/30 px-2 py-0.5 text-xs font-mono font-bold text-purple-200 transition-colors cursor-pointer"
+                    className="rounded bg-teal-500/15 hover:bg-teal-500/25 border border-teal-500/30 px-2 py-0.5 text-xs font-mono font-bold text-teal-200 transition-colors cursor-pointer"
                     title="Tambah 1 (+1)"
                   >
                     +1
@@ -361,7 +361,7 @@ export function ObjectivesSection({
                   <button
                     type="button"
                     onClick={() => handleIncrement(obj, 5)}
-                    className="rounded bg-purple-500/20 hover:bg-purple-500/30 border border-purple-500/30 px-2 py-0.5 text-xs font-mono font-bold text-purple-200 transition-colors cursor-pointer"
+                    className="rounded bg-teal-500/15 hover:bg-teal-500/25 border border-teal-500/30 px-2 py-0.5 text-xs font-mono font-bold text-teal-200 transition-colors cursor-pointer"
                     title="Tambah 5 (+5)"
                   >
                     +5
@@ -384,7 +384,7 @@ export function ObjectivesSection({
                     className={`h-full rounded-full transition-all duration-300 ${
                       isDone
                         ? "bg-emerald-400"
-                        : "bg-gradient-to-r from-purple-500 to-[#4edea3]"
+                        : "bg-gradient-to-r from-teal-500 to-emerald-400"
                     }`}
                     style={{ width: `${pct}%` }}
                   />
@@ -396,13 +396,13 @@ export function ObjectivesSection({
 
         {/* Friendly Empty State */}
         {initialObjectives.length === 0 && !isAdding && (
-          <div className="py-6 px-4 rounded-xl border border-dashed border-white/[0.08] bg-[#0B0D13]/50 text-center flex flex-col items-center justify-center gap-1.5 col-span-full">
+          <div className="py-6 px-4 rounded-xl border border-dashed border-teal-500/20 bg-[#081013]/50 text-center flex flex-col items-center justify-center gap-1.5 col-span-full">
             <span className="text-2xl">🎯</span>
             <p className="text-xs font-semibold text-gray-300">
               Belum Ada Indikator Target Angka
             </p>
             <p className="text-[11px] text-gray-500 max-w-md">
-              Ingin mengukur pencapaian dengan angka pasti (seperti menyelesaikan 40 latihan soal atau 5 modul)? Klik tombol <strong className="text-purple-300 font-mono">Buat Target Angka</strong> di atas.
+              Ingin mengukur pencapaian dengan angka pasti (seperti menyelesaikan 40 latihan soal atau 5 modul)? Klik tombol <strong className="text-teal-300 font-mono">Buat Target Angka</strong> di atas.
             </p>
           </div>
         )}
