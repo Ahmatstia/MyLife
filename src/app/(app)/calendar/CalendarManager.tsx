@@ -1879,27 +1879,6 @@ export function CalendarManager({
                 </p>
               </div>
             </div>
-
-            {/* Quick action jump */}
-            <div className="grid grid-cols-2 gap-2.5 pt-1">
-              <Link
-                href="/focus"
-                className="p-3 rounded-2xl bg-purple-600/15 hover:bg-purple-600/25 border border-purple-500/30 text-purple-300 text-xs font-semibold flex flex-col gap-1 transition-all active:scale-95"
-              >
-                <span className="text-base">🍅</span>
-                <span>Ruang Fokus</span>
-                <span className="text-[10px] text-zinc-400 font-normal">Deep work bebas distraksi</span>
-              </Link>
-
-              <Link
-                href="/today"
-                className="p-3 rounded-2xl bg-zinc-950/80 hover:bg-zinc-800/80 border border-white/[0.08] text-zinc-200 text-xs font-semibold flex flex-col gap-1 transition-all active:scale-95"
-              >
-                <span className="text-base">📋</span>
-                <span>Papan Hari Ini</span>
-                <span className="text-[10px] text-zinc-400 font-normal">Prioritas &amp; tugas utama</span>
-              </Link>
-            </div>
           </div>
         </aside>
       </div>
