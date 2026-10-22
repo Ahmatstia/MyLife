@@ -254,6 +254,7 @@ export type GoalWhereInput = {
   objectives?: Prisma.ObjectiveListRelationFilter
   reviews?: Prisma.ReviewListRelationFilter
   tasks?: Prisma.TaskListRelationFilter
+  trackedHabits?: Prisma.TrackedHabitListRelationFilter
 }
 
 export type GoalOrderByWithRelationInput = {
@@ -278,6 +279,7 @@ export type GoalOrderByWithRelationInput = {
   objectives?: Prisma.ObjectiveOrderByRelationAggregateInput
   reviews?: Prisma.ReviewOrderByRelationAggregateInput
   tasks?: Prisma.TaskOrderByRelationAggregateInput
+  trackedHabits?: Prisma.TrackedHabitOrderByRelationAggregateInput
 }
 
 export type GoalWhereUniqueInput = Prisma.AtLeast<{
@@ -305,6 +307,7 @@ export type GoalWhereUniqueInput = Prisma.AtLeast<{
   objectives?: Prisma.ObjectiveListRelationFilter
   reviews?: Prisma.ReviewListRelationFilter
   tasks?: Prisma.TaskListRelationFilter
+  trackedHabits?: Prisma.TrackedHabitListRelationFilter
 }, "id">
 
 export type GoalOrderByWithAggregationInput = {
@@ -364,6 +367,7 @@ export type GoalCreateInput = {
   objectives?: Prisma.ObjectiveCreateNestedManyWithoutGoalInput
   reviews?: Prisma.ReviewCreateNestedManyWithoutGoalInput
   tasks?: Prisma.TaskCreateNestedManyWithoutGoalInput
+  trackedHabits?: Prisma.TrackedHabitCreateNestedManyWithoutGoalInput
 }
 
 export type GoalUncheckedCreateInput = {
@@ -385,6 +389,7 @@ export type GoalUncheckedCreateInput = {
   objectives?: Prisma.ObjectiveUncheckedCreateNestedManyWithoutGoalInput
   reviews?: Prisma.ReviewUncheckedCreateNestedManyWithoutGoalInput
   tasks?: Prisma.TaskUncheckedCreateNestedManyWithoutGoalInput
+  trackedHabits?: Prisma.TrackedHabitUncheckedCreateNestedManyWithoutGoalInput
 }
 
 export type GoalUpdateInput = {
@@ -406,6 +411,7 @@ export type GoalUpdateInput = {
   objectives?: Prisma.ObjectiveUpdateManyWithoutGoalNestedInput
   reviews?: Prisma.ReviewUpdateManyWithoutGoalNestedInput
   tasks?: Prisma.TaskUpdateManyWithoutGoalNestedInput
+  trackedHabits?: Prisma.TrackedHabitUpdateManyWithoutGoalNestedInput
 }
 
 export type GoalUncheckedUpdateInput = {
@@ -427,6 +433,7 @@ export type GoalUncheckedUpdateInput = {
   objectives?: Prisma.ObjectiveUncheckedUpdateManyWithoutGoalNestedInput
   reviews?: Prisma.ReviewUncheckedUpdateManyWithoutGoalNestedInput
   tasks?: Prisma.TaskUncheckedUpdateManyWithoutGoalNestedInput
+  trackedHabits?: Prisma.TrackedHabitUncheckedUpdateManyWithoutGoalNestedInput
 }
 
 export type GoalCreateManyInput = {
@@ -758,6 +765,22 @@ export type GoalUncheckedUpdateManyWithoutChapterNestedInput = {
   deleteMany?: Prisma.GoalScalarWhereInput | Prisma.GoalScalarWhereInput[]
 }
 
+export type GoalCreateNestedOneWithoutTrackedHabitsInput = {
+  create?: Prisma.XOR<Prisma.GoalCreateWithoutTrackedHabitsInput, Prisma.GoalUncheckedCreateWithoutTrackedHabitsInput>
+  connectOrCreate?: Prisma.GoalCreateOrConnectWithoutTrackedHabitsInput
+  connect?: Prisma.GoalWhereUniqueInput
+}
+
+export type GoalUpdateOneWithoutTrackedHabitsNestedInput = {
+  create?: Prisma.XOR<Prisma.GoalCreateWithoutTrackedHabitsInput, Prisma.GoalUncheckedCreateWithoutTrackedHabitsInput>
+  connectOrCreate?: Prisma.GoalCreateOrConnectWithoutTrackedHabitsInput
+  upsert?: Prisma.GoalUpsertWithoutTrackedHabitsInput
+  disconnect?: Prisma.GoalWhereInput | boolean
+  delete?: Prisma.GoalWhereInput | boolean
+  connect?: Prisma.GoalWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.GoalUpdateToOneWithWhereWithoutTrackedHabitsInput, Prisma.GoalUpdateWithoutTrackedHabitsInput>, Prisma.GoalUncheckedUpdateWithoutTrackedHabitsInput>
+}
+
 export type GoalCreateWithoutUserInput = {
   id?: string
   title: string
@@ -776,6 +799,7 @@ export type GoalCreateWithoutUserInput = {
   objectives?: Prisma.ObjectiveCreateNestedManyWithoutGoalInput
   reviews?: Prisma.ReviewCreateNestedManyWithoutGoalInput
   tasks?: Prisma.TaskCreateNestedManyWithoutGoalInput
+  trackedHabits?: Prisma.TrackedHabitCreateNestedManyWithoutGoalInput
 }
 
 export type GoalUncheckedCreateWithoutUserInput = {
@@ -796,6 +820,7 @@ export type GoalUncheckedCreateWithoutUserInput = {
   objectives?: Prisma.ObjectiveUncheckedCreateNestedManyWithoutGoalInput
   reviews?: Prisma.ReviewUncheckedCreateNestedManyWithoutGoalInput
   tasks?: Prisma.TaskUncheckedCreateNestedManyWithoutGoalInput
+  trackedHabits?: Prisma.TrackedHabitUncheckedCreateNestedManyWithoutGoalInput
 }
 
 export type GoalCreateOrConnectWithoutUserInput = {
@@ -861,6 +886,7 @@ export type GoalCreateWithoutAreaInput = {
   objectives?: Prisma.ObjectiveCreateNestedManyWithoutGoalInput
   reviews?: Prisma.ReviewCreateNestedManyWithoutGoalInput
   tasks?: Prisma.TaskCreateNestedManyWithoutGoalInput
+  trackedHabits?: Prisma.TrackedHabitCreateNestedManyWithoutGoalInput
 }
 
 export type GoalUncheckedCreateWithoutAreaInput = {
@@ -881,6 +907,7 @@ export type GoalUncheckedCreateWithoutAreaInput = {
   objectives?: Prisma.ObjectiveUncheckedCreateNestedManyWithoutGoalInput
   reviews?: Prisma.ReviewUncheckedCreateNestedManyWithoutGoalInput
   tasks?: Prisma.TaskUncheckedCreateNestedManyWithoutGoalInput
+  trackedHabits?: Prisma.TrackedHabitUncheckedCreateNestedManyWithoutGoalInput
 }
 
 export type GoalCreateOrConnectWithoutAreaInput = {
@@ -927,6 +954,7 @@ export type GoalCreateWithoutObjectivesInput = {
   projects?: Prisma.ProjectCreateNestedManyWithoutGoalInput
   reviews?: Prisma.ReviewCreateNestedManyWithoutGoalInput
   tasks?: Prisma.TaskCreateNestedManyWithoutGoalInput
+  trackedHabits?: Prisma.TrackedHabitCreateNestedManyWithoutGoalInput
 }
 
 export type GoalUncheckedCreateWithoutObjectivesInput = {
@@ -947,6 +975,7 @@ export type GoalUncheckedCreateWithoutObjectivesInput = {
   projects?: Prisma.ProjectUncheckedCreateNestedManyWithoutGoalInput
   reviews?: Prisma.ReviewUncheckedCreateNestedManyWithoutGoalInput
   tasks?: Prisma.TaskUncheckedCreateNestedManyWithoutGoalInput
+  trackedHabits?: Prisma.TrackedHabitUncheckedCreateNestedManyWithoutGoalInput
 }
 
 export type GoalCreateOrConnectWithoutObjectivesInput = {
@@ -983,6 +1012,7 @@ export type GoalUpdateWithoutObjectivesInput = {
   projects?: Prisma.ProjectUpdateManyWithoutGoalNestedInput
   reviews?: Prisma.ReviewUpdateManyWithoutGoalNestedInput
   tasks?: Prisma.TaskUpdateManyWithoutGoalNestedInput
+  trackedHabits?: Prisma.TrackedHabitUpdateManyWithoutGoalNestedInput
 }
 
 export type GoalUncheckedUpdateWithoutObjectivesInput = {
@@ -1003,6 +1033,7 @@ export type GoalUncheckedUpdateWithoutObjectivesInput = {
   projects?: Prisma.ProjectUncheckedUpdateManyWithoutGoalNestedInput
   reviews?: Prisma.ReviewUncheckedUpdateManyWithoutGoalNestedInput
   tasks?: Prisma.TaskUncheckedUpdateManyWithoutGoalNestedInput
+  trackedHabits?: Prisma.TrackedHabitUncheckedUpdateManyWithoutGoalNestedInput
 }
 
 export type GoalCreateWithoutProjectsInput = {
@@ -1023,6 +1054,7 @@ export type GoalCreateWithoutProjectsInput = {
   objectives?: Prisma.ObjectiveCreateNestedManyWithoutGoalInput
   reviews?: Prisma.ReviewCreateNestedManyWithoutGoalInput
   tasks?: Prisma.TaskCreateNestedManyWithoutGoalInput
+  trackedHabits?: Prisma.TrackedHabitCreateNestedManyWithoutGoalInput
 }
 
 export type GoalUncheckedCreateWithoutProjectsInput = {
@@ -1043,6 +1075,7 @@ export type GoalUncheckedCreateWithoutProjectsInput = {
   objectives?: Prisma.ObjectiveUncheckedCreateNestedManyWithoutGoalInput
   reviews?: Prisma.ReviewUncheckedCreateNestedManyWithoutGoalInput
   tasks?: Prisma.TaskUncheckedCreateNestedManyWithoutGoalInput
+  trackedHabits?: Prisma.TrackedHabitUncheckedCreateNestedManyWithoutGoalInput
 }
 
 export type GoalCreateOrConnectWithoutProjectsInput = {
@@ -1079,6 +1112,7 @@ export type GoalUpdateWithoutProjectsInput = {
   objectives?: Prisma.ObjectiveUpdateManyWithoutGoalNestedInput
   reviews?: Prisma.ReviewUpdateManyWithoutGoalNestedInput
   tasks?: Prisma.TaskUpdateManyWithoutGoalNestedInput
+  trackedHabits?: Prisma.TrackedHabitUpdateManyWithoutGoalNestedInput
 }
 
 export type GoalUncheckedUpdateWithoutProjectsInput = {
@@ -1099,6 +1133,7 @@ export type GoalUncheckedUpdateWithoutProjectsInput = {
   objectives?: Prisma.ObjectiveUncheckedUpdateManyWithoutGoalNestedInput
   reviews?: Prisma.ReviewUncheckedUpdateManyWithoutGoalNestedInput
   tasks?: Prisma.TaskUncheckedUpdateManyWithoutGoalNestedInput
+  trackedHabits?: Prisma.TrackedHabitUncheckedUpdateManyWithoutGoalNestedInput
 }
 
 export type GoalCreateWithoutStagesInput = {
@@ -1119,6 +1154,7 @@ export type GoalCreateWithoutStagesInput = {
   objectives?: Prisma.ObjectiveCreateNestedManyWithoutGoalInput
   reviews?: Prisma.ReviewCreateNestedManyWithoutGoalInput
   tasks?: Prisma.TaskCreateNestedManyWithoutGoalInput
+  trackedHabits?: Prisma.TrackedHabitCreateNestedManyWithoutGoalInput
 }
 
 export type GoalUncheckedCreateWithoutStagesInput = {
@@ -1139,6 +1175,7 @@ export type GoalUncheckedCreateWithoutStagesInput = {
   objectives?: Prisma.ObjectiveUncheckedCreateNestedManyWithoutGoalInput
   reviews?: Prisma.ReviewUncheckedCreateNestedManyWithoutGoalInput
   tasks?: Prisma.TaskUncheckedCreateNestedManyWithoutGoalInput
+  trackedHabits?: Prisma.TrackedHabitUncheckedCreateNestedManyWithoutGoalInput
 }
 
 export type GoalCreateOrConnectWithoutStagesInput = {
@@ -1175,6 +1212,7 @@ export type GoalUpdateWithoutStagesInput = {
   objectives?: Prisma.ObjectiveUpdateManyWithoutGoalNestedInput
   reviews?: Prisma.ReviewUpdateManyWithoutGoalNestedInput
   tasks?: Prisma.TaskUpdateManyWithoutGoalNestedInput
+  trackedHabits?: Prisma.TrackedHabitUpdateManyWithoutGoalNestedInput
 }
 
 export type GoalUncheckedUpdateWithoutStagesInput = {
@@ -1195,6 +1233,7 @@ export type GoalUncheckedUpdateWithoutStagesInput = {
   objectives?: Prisma.ObjectiveUncheckedUpdateManyWithoutGoalNestedInput
   reviews?: Prisma.ReviewUncheckedUpdateManyWithoutGoalNestedInput
   tasks?: Prisma.TaskUncheckedUpdateManyWithoutGoalNestedInput
+  trackedHabits?: Prisma.TrackedHabitUncheckedUpdateManyWithoutGoalNestedInput
 }
 
 export type GoalCreateWithoutTasksInput = {
@@ -1215,6 +1254,7 @@ export type GoalCreateWithoutTasksInput = {
   projects?: Prisma.ProjectCreateNestedManyWithoutGoalInput
   objectives?: Prisma.ObjectiveCreateNestedManyWithoutGoalInput
   reviews?: Prisma.ReviewCreateNestedManyWithoutGoalInput
+  trackedHabits?: Prisma.TrackedHabitCreateNestedManyWithoutGoalInput
 }
 
 export type GoalUncheckedCreateWithoutTasksInput = {
@@ -1235,6 +1275,7 @@ export type GoalUncheckedCreateWithoutTasksInput = {
   projects?: Prisma.ProjectUncheckedCreateNestedManyWithoutGoalInput
   objectives?: Prisma.ObjectiveUncheckedCreateNestedManyWithoutGoalInput
   reviews?: Prisma.ReviewUncheckedCreateNestedManyWithoutGoalInput
+  trackedHabits?: Prisma.TrackedHabitUncheckedCreateNestedManyWithoutGoalInput
 }
 
 export type GoalCreateOrConnectWithoutTasksInput = {
@@ -1271,6 +1312,7 @@ export type GoalUpdateWithoutTasksInput = {
   projects?: Prisma.ProjectUpdateManyWithoutGoalNestedInput
   objectives?: Prisma.ObjectiveUpdateManyWithoutGoalNestedInput
   reviews?: Prisma.ReviewUpdateManyWithoutGoalNestedInput
+  trackedHabits?: Prisma.TrackedHabitUpdateManyWithoutGoalNestedInput
 }
 
 export type GoalUncheckedUpdateWithoutTasksInput = {
@@ -1291,6 +1333,7 @@ export type GoalUncheckedUpdateWithoutTasksInput = {
   projects?: Prisma.ProjectUncheckedUpdateManyWithoutGoalNestedInput
   objectives?: Prisma.ObjectiveUncheckedUpdateManyWithoutGoalNestedInput
   reviews?: Prisma.ReviewUncheckedUpdateManyWithoutGoalNestedInput
+  trackedHabits?: Prisma.TrackedHabitUncheckedUpdateManyWithoutGoalNestedInput
 }
 
 export type GoalCreateWithoutReviewsInput = {
@@ -1311,6 +1354,7 @@ export type GoalCreateWithoutReviewsInput = {
   projects?: Prisma.ProjectCreateNestedManyWithoutGoalInput
   objectives?: Prisma.ObjectiveCreateNestedManyWithoutGoalInput
   tasks?: Prisma.TaskCreateNestedManyWithoutGoalInput
+  trackedHabits?: Prisma.TrackedHabitCreateNestedManyWithoutGoalInput
 }
 
 export type GoalUncheckedCreateWithoutReviewsInput = {
@@ -1331,6 +1375,7 @@ export type GoalUncheckedCreateWithoutReviewsInput = {
   projects?: Prisma.ProjectUncheckedCreateNestedManyWithoutGoalInput
   objectives?: Prisma.ObjectiveUncheckedCreateNestedManyWithoutGoalInput
   tasks?: Prisma.TaskUncheckedCreateNestedManyWithoutGoalInput
+  trackedHabits?: Prisma.TrackedHabitUncheckedCreateNestedManyWithoutGoalInput
 }
 
 export type GoalCreateOrConnectWithoutReviewsInput = {
@@ -1367,6 +1412,7 @@ export type GoalUpdateWithoutReviewsInput = {
   projects?: Prisma.ProjectUpdateManyWithoutGoalNestedInput
   objectives?: Prisma.ObjectiveUpdateManyWithoutGoalNestedInput
   tasks?: Prisma.TaskUpdateManyWithoutGoalNestedInput
+  trackedHabits?: Prisma.TrackedHabitUpdateManyWithoutGoalNestedInput
 }
 
 export type GoalUncheckedUpdateWithoutReviewsInput = {
@@ -1387,6 +1433,7 @@ export type GoalUncheckedUpdateWithoutReviewsInput = {
   projects?: Prisma.ProjectUncheckedUpdateManyWithoutGoalNestedInput
   objectives?: Prisma.ObjectiveUncheckedUpdateManyWithoutGoalNestedInput
   tasks?: Prisma.TaskUncheckedUpdateManyWithoutGoalNestedInput
+  trackedHabits?: Prisma.TrackedHabitUncheckedUpdateManyWithoutGoalNestedInput
 }
 
 export type GoalCreateWithoutChapterInput = {
@@ -1407,6 +1454,7 @@ export type GoalCreateWithoutChapterInput = {
   objectives?: Prisma.ObjectiveCreateNestedManyWithoutGoalInput
   reviews?: Prisma.ReviewCreateNestedManyWithoutGoalInput
   tasks?: Prisma.TaskCreateNestedManyWithoutGoalInput
+  trackedHabits?: Prisma.TrackedHabitCreateNestedManyWithoutGoalInput
 }
 
 export type GoalUncheckedCreateWithoutChapterInput = {
@@ -1427,6 +1475,7 @@ export type GoalUncheckedCreateWithoutChapterInput = {
   objectives?: Prisma.ObjectiveUncheckedCreateNestedManyWithoutGoalInput
   reviews?: Prisma.ReviewUncheckedCreateNestedManyWithoutGoalInput
   tasks?: Prisma.TaskUncheckedCreateNestedManyWithoutGoalInput
+  trackedHabits?: Prisma.TrackedHabitUncheckedCreateNestedManyWithoutGoalInput
 }
 
 export type GoalCreateOrConnectWithoutChapterInput = {
@@ -1453,6 +1502,106 @@ export type GoalUpdateWithWhereUniqueWithoutChapterInput = {
 export type GoalUpdateManyWithWhereWithoutChapterInput = {
   where: Prisma.GoalScalarWhereInput
   data: Prisma.XOR<Prisma.GoalUpdateManyMutationInput, Prisma.GoalUncheckedUpdateManyWithoutChapterInput>
+}
+
+export type GoalCreateWithoutTrackedHabitsInput = {
+  id?: string
+  title: string
+  description?: string | null
+  type?: $Enums.GoalType
+  status?: $Enums.GoalStatus
+  priority?: $Enums.Priority
+  targetDate?: Date | string | null
+  completedAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  user: Prisma.UserCreateNestedOneWithoutGoalsInput
+  area?: Prisma.AreaCreateNestedOneWithoutGoalsInput
+  chapter?: Prisma.LifeChapterCreateNestedOneWithoutGoalsInput
+  stages?: Prisma.StageCreateNestedManyWithoutGoalInput
+  projects?: Prisma.ProjectCreateNestedManyWithoutGoalInput
+  objectives?: Prisma.ObjectiveCreateNestedManyWithoutGoalInput
+  reviews?: Prisma.ReviewCreateNestedManyWithoutGoalInput
+  tasks?: Prisma.TaskCreateNestedManyWithoutGoalInput
+}
+
+export type GoalUncheckedCreateWithoutTrackedHabitsInput = {
+  id?: string
+  userId: string
+  areaId?: string | null
+  chapterId?: string | null
+  title: string
+  description?: string | null
+  type?: $Enums.GoalType
+  status?: $Enums.GoalStatus
+  priority?: $Enums.Priority
+  targetDate?: Date | string | null
+  completedAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  stages?: Prisma.StageUncheckedCreateNestedManyWithoutGoalInput
+  projects?: Prisma.ProjectUncheckedCreateNestedManyWithoutGoalInput
+  objectives?: Prisma.ObjectiveUncheckedCreateNestedManyWithoutGoalInput
+  reviews?: Prisma.ReviewUncheckedCreateNestedManyWithoutGoalInput
+  tasks?: Prisma.TaskUncheckedCreateNestedManyWithoutGoalInput
+}
+
+export type GoalCreateOrConnectWithoutTrackedHabitsInput = {
+  where: Prisma.GoalWhereUniqueInput
+  create: Prisma.XOR<Prisma.GoalCreateWithoutTrackedHabitsInput, Prisma.GoalUncheckedCreateWithoutTrackedHabitsInput>
+}
+
+export type GoalUpsertWithoutTrackedHabitsInput = {
+  update: Prisma.XOR<Prisma.GoalUpdateWithoutTrackedHabitsInput, Prisma.GoalUncheckedUpdateWithoutTrackedHabitsInput>
+  create: Prisma.XOR<Prisma.GoalCreateWithoutTrackedHabitsInput, Prisma.GoalUncheckedCreateWithoutTrackedHabitsInput>
+  where?: Prisma.GoalWhereInput
+}
+
+export type GoalUpdateToOneWithWhereWithoutTrackedHabitsInput = {
+  where?: Prisma.GoalWhereInput
+  data: Prisma.XOR<Prisma.GoalUpdateWithoutTrackedHabitsInput, Prisma.GoalUncheckedUpdateWithoutTrackedHabitsInput>
+}
+
+export type GoalUpdateWithoutTrackedHabitsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  title?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  type?: Prisma.EnumGoalTypeFieldUpdateOperationsInput | $Enums.GoalType
+  status?: Prisma.EnumGoalStatusFieldUpdateOperationsInput | $Enums.GoalStatus
+  priority?: Prisma.EnumPriorityFieldUpdateOperationsInput | $Enums.Priority
+  targetDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  user?: Prisma.UserUpdateOneRequiredWithoutGoalsNestedInput
+  area?: Prisma.AreaUpdateOneWithoutGoalsNestedInput
+  chapter?: Prisma.LifeChapterUpdateOneWithoutGoalsNestedInput
+  stages?: Prisma.StageUpdateManyWithoutGoalNestedInput
+  projects?: Prisma.ProjectUpdateManyWithoutGoalNestedInput
+  objectives?: Prisma.ObjectiveUpdateManyWithoutGoalNestedInput
+  reviews?: Prisma.ReviewUpdateManyWithoutGoalNestedInput
+  tasks?: Prisma.TaskUpdateManyWithoutGoalNestedInput
+}
+
+export type GoalUncheckedUpdateWithoutTrackedHabitsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  userId?: Prisma.StringFieldUpdateOperationsInput | string
+  areaId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  chapterId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  title?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  type?: Prisma.EnumGoalTypeFieldUpdateOperationsInput | $Enums.GoalType
+  status?: Prisma.EnumGoalStatusFieldUpdateOperationsInput | $Enums.GoalStatus
+  priority?: Prisma.EnumPriorityFieldUpdateOperationsInput | $Enums.Priority
+  targetDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  stages?: Prisma.StageUncheckedUpdateManyWithoutGoalNestedInput
+  projects?: Prisma.ProjectUncheckedUpdateManyWithoutGoalNestedInput
+  objectives?: Prisma.ObjectiveUncheckedUpdateManyWithoutGoalNestedInput
+  reviews?: Prisma.ReviewUncheckedUpdateManyWithoutGoalNestedInput
+  tasks?: Prisma.TaskUncheckedUpdateManyWithoutGoalNestedInput
 }
 
 export type GoalCreateManyUserInput = {
@@ -1488,6 +1637,7 @@ export type GoalUpdateWithoutUserInput = {
   objectives?: Prisma.ObjectiveUpdateManyWithoutGoalNestedInput
   reviews?: Prisma.ReviewUpdateManyWithoutGoalNestedInput
   tasks?: Prisma.TaskUpdateManyWithoutGoalNestedInput
+  trackedHabits?: Prisma.TrackedHabitUpdateManyWithoutGoalNestedInput
 }
 
 export type GoalUncheckedUpdateWithoutUserInput = {
@@ -1508,6 +1658,7 @@ export type GoalUncheckedUpdateWithoutUserInput = {
   objectives?: Prisma.ObjectiveUncheckedUpdateManyWithoutGoalNestedInput
   reviews?: Prisma.ReviewUncheckedUpdateManyWithoutGoalNestedInput
   tasks?: Prisma.TaskUncheckedUpdateManyWithoutGoalNestedInput
+  trackedHabits?: Prisma.TrackedHabitUncheckedUpdateManyWithoutGoalNestedInput
 }
 
 export type GoalUncheckedUpdateManyWithoutUserInput = {
@@ -1558,6 +1709,7 @@ export type GoalUpdateWithoutAreaInput = {
   objectives?: Prisma.ObjectiveUpdateManyWithoutGoalNestedInput
   reviews?: Prisma.ReviewUpdateManyWithoutGoalNestedInput
   tasks?: Prisma.TaskUpdateManyWithoutGoalNestedInput
+  trackedHabits?: Prisma.TrackedHabitUpdateManyWithoutGoalNestedInput
 }
 
 export type GoalUncheckedUpdateWithoutAreaInput = {
@@ -1578,6 +1730,7 @@ export type GoalUncheckedUpdateWithoutAreaInput = {
   objectives?: Prisma.ObjectiveUncheckedUpdateManyWithoutGoalNestedInput
   reviews?: Prisma.ReviewUncheckedUpdateManyWithoutGoalNestedInput
   tasks?: Prisma.TaskUncheckedUpdateManyWithoutGoalNestedInput
+  trackedHabits?: Prisma.TrackedHabitUncheckedUpdateManyWithoutGoalNestedInput
 }
 
 export type GoalUncheckedUpdateManyWithoutAreaInput = {
@@ -1628,6 +1781,7 @@ export type GoalUpdateWithoutChapterInput = {
   objectives?: Prisma.ObjectiveUpdateManyWithoutGoalNestedInput
   reviews?: Prisma.ReviewUpdateManyWithoutGoalNestedInput
   tasks?: Prisma.TaskUpdateManyWithoutGoalNestedInput
+  trackedHabits?: Prisma.TrackedHabitUpdateManyWithoutGoalNestedInput
 }
 
 export type GoalUncheckedUpdateWithoutChapterInput = {
@@ -1648,6 +1802,7 @@ export type GoalUncheckedUpdateWithoutChapterInput = {
   objectives?: Prisma.ObjectiveUncheckedUpdateManyWithoutGoalNestedInput
   reviews?: Prisma.ReviewUncheckedUpdateManyWithoutGoalNestedInput
   tasks?: Prisma.TaskUncheckedUpdateManyWithoutGoalNestedInput
+  trackedHabits?: Prisma.TrackedHabitUncheckedUpdateManyWithoutGoalNestedInput
 }
 
 export type GoalUncheckedUpdateManyWithoutChapterInput = {
@@ -1676,6 +1831,7 @@ export type GoalCountOutputType = {
   objectives: number
   reviews: number
   tasks: number
+  trackedHabits: number
 }
 
 export type GoalCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1684,6 +1840,7 @@ export type GoalCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.I
   objectives?: boolean | GoalCountOutputTypeCountObjectivesArgs
   reviews?: boolean | GoalCountOutputTypeCountReviewsArgs
   tasks?: boolean | GoalCountOutputTypeCountTasksArgs
+  trackedHabits?: boolean | GoalCountOutputTypeCountTrackedHabitsArgs
 }
 
 /**
@@ -1731,6 +1888,13 @@ export type GoalCountOutputTypeCountTasksArgs<ExtArgs extends runtime.Types.Exte
   where?: Prisma.TaskWhereInput
 }
 
+/**
+ * GoalCountOutputType without action
+ */
+export type GoalCountOutputTypeCountTrackedHabitsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.TrackedHabitWhereInput
+}
+
 
 export type GoalSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -1754,6 +1918,7 @@ export type GoalSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   objectives?: boolean | Prisma.Goal$objectivesArgs<ExtArgs>
   reviews?: boolean | Prisma.Goal$reviewsArgs<ExtArgs>
   tasks?: boolean | Prisma.Goal$tasksArgs<ExtArgs>
+  trackedHabits?: boolean | Prisma.Goal$trackedHabitsArgs<ExtArgs>
   _count?: boolean | Prisma.GoalCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["goal"]>
 
@@ -1821,6 +1986,7 @@ export type GoalInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   objectives?: boolean | Prisma.Goal$objectivesArgs<ExtArgs>
   reviews?: boolean | Prisma.Goal$reviewsArgs<ExtArgs>
   tasks?: boolean | Prisma.Goal$tasksArgs<ExtArgs>
+  trackedHabits?: boolean | Prisma.Goal$trackedHabitsArgs<ExtArgs>
   _count?: boolean | Prisma.GoalCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type GoalIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1845,6 +2011,7 @@ export type $GoalPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     objectives: Prisma.$ObjectivePayload<ExtArgs>[]
     reviews: Prisma.$ReviewPayload<ExtArgs>[]
     tasks: Prisma.$TaskPayload<ExtArgs>[]
+    trackedHabits: Prisma.$TrackedHabitPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -2262,6 +2429,7 @@ export interface Prisma__GoalClient<T, Null = never, ExtArgs extends runtime.Typ
   objectives<T extends Prisma.Goal$objectivesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Goal$objectivesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ObjectivePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   reviews<T extends Prisma.Goal$reviewsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Goal$reviewsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ReviewPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   tasks<T extends Prisma.Goal$tasksArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Goal$tasksArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$TaskPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  trackedHabits<T extends Prisma.Goal$trackedHabitsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Goal$trackedHabitsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$TrackedHabitPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -2860,6 +3028,30 @@ export type Goal$tasksArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs
   take?: number
   skip?: number
   distinct?: Prisma.TaskScalarFieldEnum | Prisma.TaskScalarFieldEnum[]
+}
+
+/**
+ * Goal.trackedHabits
+ */
+export type Goal$trackedHabitsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the TrackedHabit
+   */
+  select?: Prisma.TrackedHabitSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the TrackedHabit
+   */
+  omit?: Prisma.TrackedHabitOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.TrackedHabitInclude<ExtArgs> | null
+  where?: Prisma.TrackedHabitWhereInput
+  orderBy?: Prisma.TrackedHabitOrderByWithRelationInput | Prisma.TrackedHabitOrderByWithRelationInput[]
+  cursor?: Prisma.TrackedHabitWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.TrackedHabitScalarFieldEnum | Prisma.TrackedHabitScalarFieldEnum[]
 }
 
 /**

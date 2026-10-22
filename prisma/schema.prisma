@@ -128,24 +128,13 @@ enum NotificationType {
   CALENDAR_EVENT
   MILESTONE_DEADLINE
   SYSTEM
+  HABIT_CHECKIN
 }
 
 enum NotificationSeverity {
   INFO
   WARNING
   URGENT
-}
-
-enum HabitType {
-  GOOD
-  BAD
-}
-
-enum HabitDifficulty {
-  EASY
-  MEDIUM
-  HARD
-  EXTREME
 }
 
 // ------------------------------------------------------------------------------
@@ -180,10 +169,10 @@ model User {
   lifeVision      LifeVision?
   lifeChapters    LifeChapter[]
   lifeReflections LifeReflection[]
-  habits          Habit[]
-  habitTasks      HabitTask[]
-  habitLogs       HabitLog[]
-  habitStreaks    HabitStreak[]
+  trackedHabits   TrackedHabit[]
+  habitEvents     HabitEvent[]
+  habitOutbox     HabitNotificationOutbox[]
+  triggers        Trigger[]
 }
 
 model UserPreference {
@@ -224,7 +213,7 @@ model Area {
   tasks       Task[]
   activities  Activity[]
   chapterFocuses ChapterFocusArea[]
-  habits      Habit[]
+  trackedHabits TrackedHabit[]
 
   @@unique([userId, name])
   @@index([userId, order])
@@ -254,6 +243,7 @@ model Goal {
   objectives  Objective[]
   reviews     Review[]
   tasks       Task[]
+  trackedHabits TrackedHabit[]
 
   @@index([userId, status])
   @@index([userId, areaId])
@@ -679,121 +669,394 @@ model LifeReflection {
 }
 
 // ------------------------------------------------------------------------------
-// HABIT DOMAIN
+// HABITS V2 DOMAIN
 // ------------------------------------------------------------------------------
 
-model Habit {
-  id               String          @id @default(cuid())
-  userId           String
-  title            String
-  description      String?
-  type             HabitType       @default(GOOD)
-  difficulty       HabitDifficulty @default(MEDIUM)
-  color            String          @default("#8B5CF6")
-  icon             String          @default("zap")
-  areaId           String?
-  isActive         Boolean         @default(true)
+// ------------------------------------------------------------------------------
+// HABITS V2 DOMAIN (FASE 1)
+// ------------------------------------------------------------------------------
 
-  // Evaluation & Target
-  checkInTime      String          @default("06:00")
-  targetDays       Int?
-
-  // BAD habit specific
-  triggerNotes     String?
-  replacementHabit String?
-  whyQuit          String?
-
-  // GOOD habit specific (Cue-Routine-Reward)
-  cue              String?
-  reward           String?
-
-  startDate        DateTime        @default(now())
-  createdAt        DateTime        @default(now())
-  updatedAt        DateTime        @updatedAt
-
-  user             User            @relation(fields: [userId], references: [id], onDelete: Cascade)
-  area             Area?           @relation(fields: [areaId], references: [id], onDelete: SetNull)
-  phases           HabitPhase[]
-  tasks            HabitTask[]
-  logs             HabitLog[]
-  streaks          HabitStreak[]
-
-  @@index([userId, type])
-  @@index([userId, isActive])
-  @@index([userId, areaId])
+enum HabitKind {
+  BREAK
+  BUILD
 }
 
-model HabitTask {
-  id          String   @id @default(cuid())
-  userId      String
-  habitId     String
-  title       String
-  description String?
-  isCompleted Boolean  @default(false)
-  category    String   @default("ACTION") // ACTION, BARRIER, REPLACEMENT, PROTOCOL
-  order       Int      @default(0)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-
-  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  habit       Habit    @relation(fields: [habitId], references: [id], onDelete: Cascade)
-
-  @@index([habitId, order])
-  @@index([userId, habitId])
+enum HabitMode {
+  ABSTAIN
+  REDUCE
 }
 
-model HabitPhase {
-  id               String    @id @default(cuid())
-  habitId          String
-  order            Int
-  title            String
-  description      String?
-  targetDays       Int
-  afterRelapseDays Int?      // Days of grace after completing phase
-  isCompleted      Boolean   @default(false)
-  completedAt      DateTime?
-  startedAt        DateTime?
-  psychTip         String?
-
-  habit            Habit     @relation(fields: [habitId], references: [id], onDelete: Cascade)
-
-  @@index([habitId, order])
-  @@index([habitId, isCompleted])
+enum HabitScheduleType {
+  DAILY
+  DAYS_OF_WEEK
+  TIMES_PER_WEEK
 }
 
-model HabitLog {
-  id              String    @id @default(cuid())
-  userId          String
+enum HabitStatus {
+  ACTIVE
+  PAUSED
+  ARCHIVED
+}
+
+enum HabitStage {
+  CONTEMPLATION
+  PREPARATION
+  ACTION
+  MAINTENANCE
+}
+
+enum HabitEventType {
+  URGE
+  LAPSE
+  OCCURRENCE
+  COMPLETION
+  SKIP
+}
+
+enum HabitCheckinStatus {
+  PENDING
+  CLEAN
+  LAPSED
+  WITHIN_LIMIT
+  OVER_LIMIT
+  DONE
+  SKIPPED
+  MISSED
+  UNCONFIRMED
+}
+
+model TrackedHabit {
+  id                 String      @id @default(cuid())
+  userId             String
+  user               User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  areaId             String?
+  area               Area?       @relation(fields: [areaId], references: [id], onDelete: SetNull)
+  goalId             String?
+  goal               Goal?       @relation(fields: [goalId], references: [id], onDelete: SetNull)
+  kind               HabitKind
+  mode               HabitMode?
+  name               String
+  displayAlias       String?
+  category           String?
+  status             HabitStatus @default(ACTIVE)
+  stage              HabitStage  @default(PREPARATION)
+  identityStatement  String?
+  timezone           String
+  checkinLocalTime   String                       // "HH:mm"
+  startedAt          DateTime    @db.Timestamptz(3)
+  currentWindowStart DateTime    @db.Timestamptz(3)
+  nextCheckinAt      DateTime?   @db.Timestamptz(3)
+  privacyLevel       Int         @default(1)
+  createdAt          DateTime    @default(now()) @db.Timestamptz(3)
+  updatedAt          DateTime    @updatedAt @db.Timestamptz(3)
+  archivedAt         DateTime?   @db.Timestamptz(3)
+
+  breakProfile        HabitBreakProfile?
+  buildProfile        HabitBuildProfile?   @relation("HabitBuildProfileHabit")
+  replacedByProfiles  HabitBuildProfile[]  @relation("HabitReplaces")
+  events              HabitEvent[]
+  checkins            HabitCheckin[]
+  stats               HabitStats?
+  outbox              HabitNotificationOutbox[]
+  triggers            HabitTrigger[]
+  copingPlans         CopingPlan[]
+  milestones          HabitMilestone[]
+  automaticitySurveys AutomaticitySurvey[]
+  reminders           HabitReminder[]
+  reflections         HabitReflection[]
+
+  @@index([userId, status])
+  @@index([userId, goalId])
+}
+
+model HabitBreakProfile {
+  habitId              String       @id
+  habit                TrackedHabit @relation(fields: [habitId], references: [id], onDelete: Cascade)
+  whyReasons           Json         @default("[]")
+  futureSelfNote       String?
+  rewardAnalysis       Json         @default("{}")
+  baselinePerDay       Decimal?     @db.Decimal(8, 2)
+  costPerOccurrence    Decimal?     @db.Decimal(12, 2)
+  currency             String       @default("IDR")
+  minutesPerOccurrence Int?
+  reduceDailyLimit     Int?
+  reduceStepPercent    Int?
+  reduceStepEveryDays  Int?
+  relapseLapseCount    Int          @default(3)
+  relapseWindowDays    Int          @default(7)
+  highRiskCategory     Boolean      @default(false)
+  safetyAckAt          DateTime?    @db.Timestamptz(3)
+  relapseAckAt         DateTime?    @db.Timestamptz(3)
+  environmentChecklist Json         @default("[]")
+}
+
+model HabitEvent {
+  id              String         @id @default(cuid())
   habitId         String
-  date            DateTime  // Normalized to date only (no time)
-  isSuccess       Boolean   @default(true)
-  mood            Int?      // 1-5
-  energyLevel     Int?      // 1-5
-  notes           String?
-  relapseTrigger  String?
-  createdAt       DateTime  @default(now())
+  habit           TrackedHabit   @relation(fields: [habitId], references: [id], onDelete: Cascade)
+  userId          String
+  user            User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  type            HabitEventType
+  occurredAt      DateTime       @db.Timestamptz(3)
+  loggedAt        DateTime       @default(now()) @db.Timestamptz(3)
+  quantity        Decimal        @default(1) @db.Decimal(8, 2)
+  intensityBefore Int?
+  intensityAfter  Int?
+  outcome         String?        // RESISTED | GAVE_IN
+  severity        String?        // SLIP | RELAPSE
+  mood            Int?
+  halt            String[]       @default([])
+  locationLabel   String?
+  withWhom        String?
+  note            String?
+  meta            Json           @default("{}")
+  source          String         @default("APP")   // APP | CHECKIN | SOS | BACKFILL
+  idempotencyKey  String?
+  deletedAt       DateTime?      @db.Timestamptz(3)
 
-  user            User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-  habit           Habit     @relation(fields: [habitId], references: [id], onDelete: Cascade)
+  eventTriggers   HabitEventTrigger[]
 
-  @@unique([userId, habitId, date])
-  @@index([userId, habitId])
-  @@index([userId, date])
-  @@index([habitId, date])
+  @@unique([userId, idempotencyKey])
+  @@index([habitId, occurredAt(sort: Desc)])
 }
 
-model HabitStreak {
-  id          String    @id @default(cuid())
+model HabitCheckin {
+  id             String             @id @default(cuid())
+  habitId        String
+  habit          TrackedHabit       @relation(fields: [habitId], references: [id], onDelete: Cascade)
+  windowStart    DateTime           @db.Timestamptz(3)
+  windowEnd      DateTime           @db.Timestamptz(3)
+  periodDate     DateTime           @db.Date
+  status         HabitCheckinStatus @default(PENDING)
+  quantity       Decimal?           @db.Decimal(8, 2)
+  mood           Int?
+  note           String?
+  notifiedAt     DateTime?          @db.Timestamptz(3)
+  respondedAt    DateTime?          @db.Timestamptz(3)
+  responseSource String?            // LIVE | BACKFILL | AUTO
+
+  @@unique([habitId, periodDate])
+  @@index([habitId, windowEnd(sort: Desc)])
+}
+
+model HabitStats {
+  habitId            String       @id
+  habit              TrackedHabit @relation(fields: [habitId], references: [id], onDelete: Cascade)
+  lastLapseAt        DateTime?    @db.Timestamptz(3)
+  currentStreakDays  Int          @default(0)
+  longestStreakDays  Int          @default(0)
+  confirmedCleanDays Int          @default(0)
+  totalLapses        Int          @default(0)
+  urgesResisted      Int          @default(0)
+  cleanRate30d       Decimal?     @db.Decimal(5, 2)
+  consistency30d     Decimal?     @db.Decimal(5, 2)
+  resilientStreak    Int          @default(0)
+  moneySavedEst      Decimal?     @db.Decimal(14, 2)
+  minutesSavedEst    Int?
+  relapsePattern     Boolean      @default(false)
+  recomputedAt       DateTime     @default(now()) @db.Timestamptz(3)
+}
+
+model HabitNotificationOutbox {
+  id          String        @id @default(cuid())
   userId      String
-  habitId     String
-  startDate   DateTime
-  endDate     DateTime?
-  days        Int       @default(0)
-  isCurrent   Boolean   @default(true)
+  user        User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  habitId     String?
+  habit       TrackedHabit? @relation(fields: [habitId], references: [id], onDelete: Cascade)
+  kind        String
+  payload     Json
+  scheduledAt DateTime      @db.Timestamptz(3)
+  status      String        @default("PENDING")   // PENDING | SENT | FAILED | CANCELLED
+  attempts    Int           @default(0)
+  dedupeKey   String        @unique
+  lastError   String?
 
-  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-  habit       Habit     @relation(fields: [habitId], references: [id], onDelete: Cascade)
-
-  @@index([userId, habitId, isCurrent])
-  @@index([habitId, isCurrent])
+  @@index([status, scheduledAt])
 }
+
+// ------------------------------------------------------------------------------
+// HABITS V2 DOMAIN (FASE 2: Rencana, Pemicu, SOS, Keselamatan)
+// ------------------------------------------------------------------------------
+
+enum TriggerCategory {
+  TIME
+  PLACE
+  PERSON
+  EMOTION
+  PHYSICAL
+  ACTIVITY
+  DEVICE
+  OTHER
+}
+
+model Trigger {
+  id          String          @id @default(cuid())
+  userId      String?
+  user        User?           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  category    TriggerCategory
+  name        String
+  description String?
+  createdAt   DateTime        @default(now()) @db.Timestamptz(3)
+  updatedAt   DateTime        @updatedAt @db.Timestamptz(3)
+
+  habitTriggers HabitTrigger[]
+
+  @@index([userId, category])
+}
+
+model HabitTrigger {
+  id        String       @id @default(cuid())
+  habitId   String
+  habit     TrackedHabit @relation(fields: [habitId], references: [id], onDelete: Cascade)
+  triggerId String
+  trigger   Trigger      @relation(fields: [triggerId], references: [id], onDelete: Cascade)
+  intensity Int          @default(3) // 1-5
+  note      String?
+  createdAt DateTime     @default(now()) @db.Timestamptz(3)
+  updatedAt DateTime     @updatedAt @db.Timestamptz(3)
+
+  copingPlans   CopingPlan[]
+  eventTriggers HabitEventTrigger[]
+
+  @@unique([habitId, triggerId])
+  @@index([habitId])
+}
+
+model CopingPlan {
+  id                 String        @id @default(cuid())
+  habitId            String
+  habit              TrackedHabit  @relation(fields: [habitId], references: [id], onDelete: Cascade)
+  habitTriggerId     String?
+  habitTrigger       HabitTrigger? @relation(fields: [habitTriggerId], references: [id], onDelete: SetNull)
+  ifCondition        String
+  thenAction         String
+  replacementHabitId String?
+  timesUsed          Int           @default(0)
+  timesHelped        Int           @default(0)
+  order              Int           @default(0)
+  isActive           Boolean       @default(true)
+  createdAt          DateTime      @default(now()) @db.Timestamptz(3)
+  updatedAt          DateTime      @updatedAt @db.Timestamptz(3)
+
+  @@index([habitId, isActive])
+  @@index([habitTriggerId])
+}
+
+model HabitEventTrigger {
+  id             String       @id @default(cuid())
+  eventId        String
+  event          HabitEvent   @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  habitTriggerId String
+  habitTrigger   HabitTrigger @relation(fields: [habitTriggerId], references: [id], onDelete: Cascade)
+  createdAt      DateTime     @default(now()) @db.Timestamptz(3)
+
+  @@unique([eventId, habitTriggerId])
+  @@index([eventId])
+  @@index([habitTriggerId])
+}
+
+model HabitMilestone {
+  id           String       @id @default(cuid())
+  habitId      String
+  habit        TrackedHabit @relation(fields: [habitId], references: [id], onDelete: Cascade)
+  code         String       // STREAK_1..365, FIRST_URGE_RESISTED, etc.
+  title        String
+  achievedAt   DateTime     @db.Timestamptz(3)
+  celebratedAt DateTime?    @db.Timestamptz(3)
+  createdAt    DateTime     @default(now()) @db.Timestamptz(3)
+
+  @@unique([habitId, code])
+  @@index([habitId, achievedAt])
+}
+
+model SupportResource {
+  id          String   @id @default(cuid())
+  country     String   @default("ID")
+  category    String   // GENERAL | SUBSTANCE | GAMBLING | CRISIS | MENTAL_HEALTH
+  name        String
+  contact     String
+  description String?
+  isVerified  Boolean  @default(true)
+  verifiedAt  DateTime @db.Timestamptz(3)
+  sourceUrl   String?
+  createdAt   DateTime @default(now()) @db.Timestamptz(3)
+  updatedAt   DateTime @updatedAt @db.Timestamptz(3)
+
+  @@index([country, category])
+}
+
+model HabitBuildProfile {
+  habitId         String            @id
+  habit           TrackedHabit      @relation("HabitBuildProfileHabit", fields: [habitId], references: [id], onDelete: Cascade)
+  anchorText      String?
+  tinyBehavior    String
+  celebrationText String?
+  versions        Json              @default("{}") // {"tiny": "..", "standard": "..", "stretch": ".."}
+  scheduleType    HabitScheduleType @default(DAILY)
+  daysOfWeek      Int[]             @default([])   // 1=Senin .. 7=Minggu
+  timesPerWeek    Int?
+  restDays        Int[]             @default([])
+  replacesHabitId String?
+  replacesHabit   TrackedHabit?     @relation("HabitReplaces", fields: [replacesHabitId], references: [id], onDelete: SetNull)
+  createdAt       DateTime          @default(now()) @db.Timestamptz(3)
+  updatedAt       DateTime          @updatedAt @db.Timestamptz(3)
+
+  @@index([replacesHabitId])
+}
+
+model AutomaticitySurvey {
+  id         String       @id @default(cuid())
+  habitId    String
+  habit      TrackedHabit @relation(fields: [habitId], references: [id], onDelete: Cascade)
+  answeredAt DateTime     @default(now()) @db.Timestamptz(3)
+  score      Int          // 1 to 7
+  createdAt  DateTime     @default(now()) @db.Timestamptz(3)
+
+  @@index([habitId, answeredAt])
+}
+
+// ------------------------------------------------------------------------------
+// HABITS V2 DOMAIN (FASE 4: Pengingat & Refleksi)
+// ------------------------------------------------------------------------------
+
+enum HabitReminderKind {
+  CHECKIN
+  EVENING_REFLECTION
+  RISK_WINDOW
+  WEEKLY_REVIEW
+  ANCHOR
+}
+
+model HabitReminder {
+  id         String            @id @default(cuid())
+  habitId    String
+  habit      TrackedHabit      @relation(fields: [habitId], references: [id], onDelete: Cascade)
+  kind       HabitReminderKind
+  localTime  String            // "HH:mm"
+  daysOfWeek Int[]             @default([]) // 1=Senin .. 7=Minggu
+  nextFireAt DateTime?         @db.Timestamptz(3)
+  isActive   Boolean           @default(true)
+  createdAt  DateTime          @default(now()) @db.Timestamptz(3)
+  updatedAt  DateTime          @updatedAt @db.Timestamptz(3)
+
+  @@index([habitId, isActive])
+  @@index([isActive, nextFireAt])
+}
+
+model HabitReflection {
+  id          String       @id @default(cuid())
+  habitId     String
+  habit       TrackedHabit @relation(fields: [habitId], references: [id], onDelete: Cascade)
+  weekStart   DateTime     @db.Date
+  summary     Json?
+  question    String
+  answer      String?
+  submittedAt DateTime?    @db.Timestamptz(3)
+  createdAt   DateTime     @default(now()) @db.Timestamptz(3)
+  updatedAt   DateTime     @updatedAt @db.Timestamptz(3)
+
+  @@unique([habitId, weekStart])
+  @@index([habitId, weekStart(sort: Desc)])
+}
+
+

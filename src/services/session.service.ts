@@ -14,6 +14,7 @@ import {
 import { createActivity as createActivityRecord } from "@/repositories/activity.repository";
 import type { EndSessionInput } from "@/schemas/session.schema";
 import { requireUserId } from "../lib/ownership";
+import { prisma } from "@/lib/prisma";
 
 export class SessionServiceError extends Error {
   constructor(
@@ -151,4 +152,31 @@ export async function deleteSession(sessionId: string, userId?: string) {
     await recomputeTaskActualHours(session.taskId, owner);
   }
   return deleted;
+}
+
+export async function getRecentSessionsWithTasks(userId: string, take: number = 5) {
+  return prisma.session.findMany({
+    where: { userId },
+    orderBy: { startedAt: "desc" },
+    take,
+    include: {
+      task: {
+        include: {
+          stage: {
+            include: { goal: true },
+          },
+        },
+      },
+    },
+  });
+}
+
+export async function getTodaySessionDuration(userId: string) {
+  const startOfToday = new Date();
+  startOfToday.setHours(0, 0, 0, 0);
+  const agg = await prisma.session.aggregate({
+    where: { userId, endedAt: { gte: startOfToday } },
+    _sum: { durationMinutes: true },
+  });
+  return agg._sum.durationMinutes ?? 0;
 }

@@ -1,108 +1,79 @@
-# Deployment — Personal Progress OS (V1.0)
+# Deployment — Personal Progress OS (MyLife V2.0)
 
-Model yang didukung V1.0: **satu instance Node.js + SQLite pada filesystem persisten**.
-SQLite membutuhkan disk yang sama antarpanggilan, jadi **jangan** deploy ke runtime
-serverless stateless (lambda/functions) — data tidak dijamin sama antarinstance.
+## Kebutuhan Sistem & Arsitektur
+- **Runtime**: Node.js 22 LTS
+- **Database**: **PostgreSQL 15+** (Supabase connection pooler / direct PostgreSQL instance). SQLite tidak lagi didukung untuk domain Habits V2 karena membutuhkan transaksi ACID, row-level advisory lock (`pg_advisory_xact_lock`), dan constraint check.
+- **Reverse Proxy**: Nginx / Caddy / Cloudflare / Vercel.
 
-> Sebelum deploy (wajib): buat **`AUTH_SECRET`** dan **`AUTH_ACCESS_CODE`** baru.
-> Jangan pernah meng-commit nilai secret. Lihat bagian "Secret Rotation".
+---
 
-## Opsi A — VM / server langsung (tanpa container)
+## Konfigurasi Environment Variables (`.env`)
 
-Prasyarat: Node.js 22.
+Pastikan variabel-variabel berikut telah dikonfigurasi di lingkungan produksi:
 
+```env
+# 1. Database (PostgreSQL)
+DATABASE_URL="postgresql://user:pass@pooler-host:6543/postgres?pgbouncer=true"
+DIRECT_URL="postgresql://user:pass@direct-host:5432/postgres"
+
+# 2. Autentikasi
+AUTH_SECRET="<generate 64-character hex: openssl rand -hex 32>"
+AUTH_ACCESS_CODE="<passphrase-kuat-anda>"
+
+# 3. Kunci Enkripsi Habits V2 (AES-256-GCM) - WAJIB
+# Digunakan untuk enkripsi catatan pribadi, lokasi, dan note masa depan
+HABITS_ENC_KEY="<generate 64-character hex: openssl rand -hex 32>"
+
+# 4. Feature Flag Habits V2
+HABITS_V2="1"
+NEXT_PUBLIC_HABITS_V2="1"
+
+# 5. Cron & Integrasi Eksternal
+CRON_SECRET="<secret-token-untuk-panggilan-cron>"
+TELEGRAM_BOT_TOKEN="<token-bot-telegram>"
+TELEGRAM_CHAT_ID="<chat-id-tujuan>"
+APP_URL="https://app.anda.com"
+```
+
+---
+
+## Langkah Deployment
+
+### 1. Build & Database Setup
 ```bash
-cd personal-progress-os
+git pull origin main
 npm ci
 npx prisma generate
-
-# Env (atau export manual di systemd/supervisor):
-export DATABASE_URL="file:/var/lib/personal-progress-os/app.db"   # lokasi persisten
-export AUTH_SECRET="$(openssl rand -hex 24)"
-export AUTH_ACCESS_CODE="passphrase-panjang-anda"
-export NODE_ENV="production"
-
-npx prisma migrate deploy
 npm run build
-npm start   # bind 3000
 ```
 
-Akses publik via reverse proxy + HTTPS, contoh (Caddy, auto-cert):
-
+### 2. Migrasi Data & Skema
+Skema database menggunakan PostgreSQL DDL idempotent:
 ```bash
-caddy reverse-proxy --domain progress.example.com --to localhost:3000
+# Migrasikan relasi dan tabel Habits V2
+npx tsx scripts/habits-phase5-migrate.ts
+
+# Jalankan migrasi data kebiasaan lama (Jalur A)
+npx tsx scripts/habits-legacy-migrate.ts --mode=A --execute
 ```
 
-## Opsi B — Docker Compose (disarankan)
+---
 
-Prasyarat: Docker dengan Docker Compose.
+## Penjadwal Cron (Scheduler Tick)
 
+Habits V2 menggunakan cron worker untuk mengevaluasi check-in yang jatuh tempo, mengirim pengingat Telegram/in-app, dan memproses jendela waktu.
+
+Jadwalkan cron job setiap **5 atau 10 menit**:
 ```bash
-git pull                                          # ambil versi terbaru
-docker compose up -d --build
+# Contoh cron curl:
+*/10 * * * * curl -X POST -H "Authorization: Bearer ${CRON_SECRET}" https://app.anda.com/api/cron/reminder
 ```
 
-- Database SQLite tersimpan di volume `ppos-data` → `/app/data/app.db` (persisten di host).
-- Migrasi dijalankan otomatis saat container start (`prisma migrate deploy`).
-- `AUTH_SECRET`, `AUTH_ACCESS_CODE`, `DATABASE_URL` dibaca dari `.env` host via `env_file`.
+---
 
-Log & status:
-
-```bash
-docker compose logs -f web
-docker compose ps
-```
-
-Backup volume (crontab harian misalnya):
-
-```bash
-docker run --rm -v ppos-data:/data -v /srv/backups:/backup alpine \
-  tar czf /backup/ppos-$(date +%F).tgz -C /data .
-```
-
-Update versi baru:
-
-```bash
-git pull && docker compose up -d --build
-```
-
-## Rotasi Secret (sebelum rilis pertama)
-
-1. Generate nilai baru:
-
-   ```bash
-   openssl rand -hex 24          # AUTH_SECRET
-   ```
-
-   dan pilih passphrase kuat untuk `AUTH_ACCESS_CODE` (ini satu-satunya gerbang login).
-
-2. Tulis ke `.env` di host (file ini TIDAK pernah masuk Git):
-
-   ```env
-   DATABASE_URL="file:./prisma/dev.db"
-   AUTH_SECRET=<hex-baru>
-   AUTH_ACCESS_CODE=<passphrase-baru>
-   ```
-
-3. Restart:
-
-   ```bash
-   docker compose up -d         # atau restart service Node Anda
-   ```
-
-4. (Docker) Volume `ppos-data` bukan lagi `/app/data/app.db` bila Anda tetap memakai
-   `file:./prisma/dev.db` — pastikan `DATABASE_URL` di compose mengarah ke `/app/data`.
-
-## Smoke Test
-
-- Buka `https://domain-anda` → harus redirect ke halaman login.
-- Login dengan `AUTH_ACCESS_CODE` baru.
-- Pastikan bisa membuat goal → install stage → task → mulai sesi fokus.
-- Cek `/api/auth/me` tetap 200 setelah login dan menolak (401) saat cookie dihapus.
-
-## Ringkasan Latihan Menjaga
-
-- Satu instance saja untuk V1.0 (SQLite).
-- Back up volume SQLite secara berkala.
-- Jangan taruh secret di file apa pun yang masuk Git/CI.
-- Batasi akses port 3000 ke reverse proxy saja (firewall).
+## Smoke Test Pascarilis
+1. Buka `/habits` → Memuat antarmuka Habits V2 (Break & Build Dashboard).
+2. Buka `/today` → Widget *Evaluasi Kebiasaan Tertunda* tampil secara responsif.
+3. Buat kebiasaan baru (Break & Build) → Berhasil tersimpan dengan enkripsi aktif di DB.
+4. Uji `DELETE /api/tracked-habits/[id]` → Modal Arsip / Hapus Permanen berjalan mulus.
+5. Jalankan `npm run test` atau `npx vitest run tests/habits/` → 100% lulus.

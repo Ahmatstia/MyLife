@@ -9,7 +9,6 @@ import {
 } from "@/services/review.service";
 import { getDashboardAnalytics } from "@/services/analytics.service";
 import { calculateGoalProgress } from "@/services/progress.service";
-import { prisma } from "@/lib/prisma";
 import {
   getInsightsAnalytics,
   getPrioritizedTasks,
@@ -21,6 +20,7 @@ import {
 import { getActivities } from "@/services/activity.service";
 import { getAreas } from "@/services/area.service";
 import { getProjects } from "@/services/project.service";
+import { getRecentSessionsWithTasks, getTodaySessionDuration } from "@/services/session.service";
 import { Icon } from "@/app/components/ui/Icon";
 import { Button } from "@/app/components/ui/Button";
 import { ProgressBar } from "@/app/components/ui/Progress";
@@ -239,33 +239,14 @@ async function buildReviewData(userId: string, now: Date) {
 }
 
 async function buildStatistikData(userId: string) {
-  const startOfToday = new Date();
-  startOfToday.setHours(0, 0, 0, 0);
-
-  const [analytics, todayAgg, recentSessions] = await Promise.all([
+  const [analytics, todayMinutes, recentSessions] = await Promise.all([
     getDashboardAnalytics({ days: 365 }, userId),
-    prisma.session.aggregate({
-      where: { userId, endedAt: { gte: startOfToday } },
-      _sum: { durationMinutes: true },
-    }),
-    prisma.session.findMany({
-      where: { userId },
-      orderBy: { startedAt: "desc" },
-      take: 5,
-      include: {
-        task: {
-          include: {
-            stage: {
-              include: { goal: true },
-            },
-          },
-        },
-      },
-    }),
+    getTodaySessionDuration(userId),
+    getRecentSessionsWithTasks(userId, 5),
   ]);
 
   const dashboard = {
-    studyMinutesToday: todayAgg._sum.durationMinutes ?? 0,
+    studyMinutesToday: todayMinutes,
     recentSessions,
   };
 
@@ -539,7 +520,7 @@ function StatistikTab({ data }: { data: Awaited<ReturnType<typeof buildStatistik
               </div>
             ) : (
               <ul className="divide-y divide-white/[0.06]">
-                {dashboard.recentSessions.slice(0, 5).map((session) => (
+                {dashboard.recentSessions.slice(0, 5).map((session: { id: string; durationMinutes: number | null; task: { id: string; title: string; stage?: { goal: { title: string } } | null } }) => (
                   <li key={session.id} className="flex items-start justify-between gap-3 py-3">
                     <div className="min-w-0 flex-1">
                       <Link href={`/tasks/${session.task.id}`} className="block truncate text-xs font-bold text-white hover:text-[#d0bcff] transition-colors">

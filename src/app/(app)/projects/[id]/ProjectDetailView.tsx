@@ -343,25 +343,23 @@ export function ProjectDetailView({ project }: { project: ProjectDetail }) {
           </span>
           <span className="font-medium text-sm">Kembali ke Daftar Proyek</span>
         </Link>
-        <div className="hidden sm:flex items-center gap-2 font-mono text-[11px] text-gray-500">
-          <span className="w-1.5 h-1.5 rounded-full bg-[#4edea3] animate-ping" />
-          <span>MODUL SINKRONISASI AKTIF</span>
-          <span className="text-gray-700">/</span>
-          <span className="text-[#c0c1ff]">PROYEK_ID: PRJ-{project.id.slice(-6).toUpperCase()}</span>
+        <div className="hidden sm:flex items-center gap-2 font-mono text-[11px] text-teal-400/80">
+          <span className="w-1.5 h-1.5 rounded-full bg-teal-400" />
+          <span>PROYEK #{project.id.slice(-6).toUpperCase()}</span>
         </div>
       </div>
 
       {/* 2. Kartu Komando Proyek Utama */}
-      <section className="rounded-2xl bg-[#131825] p-6 md:p-8 border border-white/[0.08] shadow-xl relative overflow-hidden">
+      <section className="rounded-2xl bg-[#0d1b20]/90 p-6 md:p-8 border border-teal-500/15 shadow-xl relative overflow-hidden">
         {/* Ambient Radial Glow */}
-        <div className="absolute -top-24 -right-24 w-96 h-96 bg-purple-600/15 rounded-full blur-3xl pointer-events-none" />
-        <div className="absolute -bottom-24 left-1/3 w-80 h-80 bg-indigo-600/10 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute -top-24 -right-24 w-96 h-96 bg-teal-500/10 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute -bottom-24 left-1/3 w-80 h-80 bg-teal-700/5 rounded-full blur-3xl pointer-events-none" />
 
         <div className="relative flex flex-col gap-4">
           {/* Top navigation row */}
           <div className="flex items-center justify-between gap-3 pb-3 border-b border-white/[0.06]">
             <BackButton fallbackUrl="/projects" label="Kembali" />
-            <span className="text-xs font-mono text-[#958ea0]">PROYEK #{project.id.slice(0, 6).toUpperCase()}</span>
+            <span className="text-xs font-mono text-gray-400">PROYEK #{project.id.slice(0, 6).toUpperCase()}</span>
           </div>
 
           {/* Baris Status & Hubungan Entitas */}
@@ -412,7 +410,7 @@ export function ProjectDetailView({ project }: { project: ProjectDetail }) {
               {project.goal && (
                 <Link
                   href={`/goals/${project.goal.id}`}
-                  className="inline-flex items-center gap-1.5 px-3 py-1 rounded bg-[#1e1f26] hover:bg-[#282a30] text-[#d0bcff] text-xs font-mono border border-purple-500/20 transition-colors"
+                  className="inline-flex items-center gap-1.5 px-3 py-1 rounded bg-[#0d1b20] hover:bg-[#14272e] text-teal-300 text-xs font-mono border border-teal-500/20 transition-colors"
                 >
                   <span className="material-symbols-outlined text-[14px]">flag</span>
                   <span>Target: {project.goal.title}</span>
@@ -504,7 +502,7 @@ export function ProjectDetailView({ project }: { project: ProjectDetail }) {
             <button
               type="button"
               onClick={() => setIsAddingTask(!isAddingTask)}
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-gradient-to-r from-[#d0bcff] via-[#a078ff] to-[#7c3aed] text-white font-semibold text-xs shadow-md shadow-purple-500/20 hover:opacity-95 transition-all cursor-pointer"
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-teal-600 hover:bg-teal-500 text-white font-semibold text-xs shadow-md shadow-teal-900/30 transition-all cursor-pointer"
             >
               <Icon name={isAddingTask ? "x" : "plus"} size={14} />
               <span>{isAddingTask ? "Batal" : "Tambah Tugas"}</span>
@@ -515,11 +513,11 @@ export function ProjectDetailView({ project }: { project: ProjectDetail }) {
           {isAddingTask && (
             <form
               onSubmit={handleAddTask}
-              className="rounded-xl bg-[#131825] border border-white/[0.08] p-4 shadow-md flex flex-col gap-3 relative"
+              className="rounded-xl bg-[#0d1b20]/90 border border-teal-500/20 p-4 shadow-md flex flex-col gap-3 relative"
             >
-              <div className="flex items-center gap-1.5 font-mono text-xs text-[#c0c1ff] uppercase tracking-wider font-semibold">
+              <div className="flex items-center gap-1.5 font-mono text-xs text-teal-300 uppercase tracking-wider font-semibold">
                 <span className="material-symbols-outlined text-[16px]">bolt</span>
-                <span>Perekaman Tugas Baru</span>
+                <span>Tambah Tugas Proyek</span>
               </div>
               <input
                 type="text"
@@ -528,7 +526,7 @@ export function ProjectDetailView({ project }: { project: ProjectDetail }) {
                 placeholder="Ketik judul tugas baru di sini..."
                 required
                 autoFocus
-                className="w-full bg-[#0c0e14] text-white placeholder:text-gray-500 text-sm px-3.5 py-2.5 rounded-lg border border-white/[0.08] focus:outline-none focus:border-[#d0bcff] transition-all"
+                className="w-full bg-[#081013] text-white placeholder:text-gray-500 text-sm px-3.5 py-2.5 rounded-lg border border-teal-500/20 focus:outline-none focus:border-teal-400 transition-all"
               />
 
               <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
@@ -537,7 +535,7 @@ export function ProjectDetailView({ project }: { project: ProjectDetail }) {
                   <select
                     value={taskPriority}
                     onChange={(e) => setTaskPriority(e.target.value as "LOW" | "MEDIUM" | "HIGH" | "URGENT")}
-                    className="bg-[#0c0e14] text-white text-xs font-mono px-3 py-2 rounded-lg border border-white/[0.08] focus:outline-none focus:border-[#d0bcff]"
+                    className="bg-[#081013] text-white text-xs font-mono px-3 py-2 rounded-lg border border-teal-500/20 focus:outline-none focus:border-teal-400"
                   >
                     <option value="URGENT">Mendesak</option>
                     <option value="HIGH">Tinggi</option>
@@ -551,7 +549,7 @@ export function ProjectDetailView({ project }: { project: ProjectDetail }) {
                     type="date"
                     value={taskDueDate}
                     onChange={(e) => setTaskDueDate(e.target.value)}
-                    className="bg-[#0c0e14] text-white text-xs font-mono px-3 py-2 rounded-lg border border-white/[0.08] focus:outline-none focus:border-[#d0bcff]"
+                    className="bg-[#081013] text-white text-xs font-mono px-3 py-2 rounded-lg border border-teal-500/20 focus:outline-none focus:border-teal-400"
                   />
                 </div>
                 <div className="flex flex-col gap-1">
@@ -559,7 +557,7 @@ export function ProjectDetailView({ project }: { project: ProjectDetail }) {
                   <select
                     value={taskMilestoneId}
                     onChange={(e) => setTaskMilestoneId(e.target.value)}
-                    className="bg-[#0c0e14] text-white text-xs font-mono px-3 py-2 rounded-lg border border-white/[0.08] focus:outline-none focus:border-[#d0bcff] truncate"
+                    className="bg-[#081013] text-white text-xs font-mono px-3 py-2 rounded-lg border border-teal-500/20 focus:outline-none focus:border-teal-400 truncate"
                   >
                     <option value="">-- Tanpa Tonggak --</option>
                     {project.milestones.map((m, idx) => (
@@ -582,7 +580,7 @@ export function ProjectDetailView({ project }: { project: ProjectDetail }) {
                 <button
                   type="submit"
                   disabled={loadingTask || !taskTitle.trim()}
-                  className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-lg bg-[#a078ff] text-white font-mono text-xs font-semibold hover:brightness-110 disabled:opacity-50 transition-all shadow-sm"
+                  className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-lg bg-teal-600 hover:bg-teal-500 text-white font-mono text-xs font-semibold disabled:opacity-50 transition-all shadow-sm"
                 >
                   <span className="material-symbols-outlined text-[15px]">check</span>
                   <span>{loadingTask ? "Menyimpan..." : "Simpan Tugas"}</span>
@@ -602,8 +600,8 @@ export function ProjectDetailView({ project }: { project: ProjectDetail }) {
                   key={t.id}
                   className={`group flex items-start gap-3 p-3.5 rounded-xl transition-all ${
                     isDone
-                      ? "bg-[#131825]/60 border border-white/[0.04]"
-                      : "bg-[#131825] border border-white/[0.08] hover:border-purple-500/30 hover:bg-[#1A2133] shadow-sm"
+                      ? "bg-[#0d1b20]/40 border border-white/[0.04]"
+                      : "bg-[#0d1b20]/90 border border-teal-500/15 hover:border-teal-500/30 hover:bg-[#14272e] shadow-sm"
                   }`}
                 >
                   <button
@@ -612,7 +610,7 @@ export function ProjectDetailView({ project }: { project: ProjectDetail }) {
                     className={`mt-0.5 w-5 h-5 rounded flex items-center justify-center transition-all cursor-pointer ${
                       isDone
                         ? "bg-[#00a572] text-[#003824] font-bold shadow-xs"
-                        : "bg-[#1e1f26] border border-white/20 hover:border-[#d0bcff] text-transparent hover:text-[#d0bcff]"
+                        : "bg-[#14272e] border border-teal-500/30 hover:border-teal-400 text-transparent hover:text-teal-400"
                     }`}
                   >
                     <span className="material-symbols-outlined text-[14px]">check</span>
@@ -1223,7 +1221,7 @@ export function ProjectDetailView({ project }: { project: ProjectDetail }) {
               value={editTaskTitle}
               onChange={(e) => setEditTaskTitle(e.target.value)}
               required
-              className="w-full rounded-lg border border-white/[0.1] bg-[#0c0e14] px-3.5 py-2 text-sm text-white focus:outline-none focus:border-purple-400"
+              className="w-full rounded-lg border border-teal-500/20 bg-[#081013] px-3.5 py-2 text-sm text-white focus:outline-none focus:border-teal-400"
             />
           </div>
 
@@ -1233,7 +1231,7 @@ export function ProjectDetailView({ project }: { project: ProjectDetail }) {
               <select
                 value={editTaskPriority}
                 onChange={(e) => setEditTaskPriority(e.target.value as "LOW" | "MEDIUM" | "HIGH" | "URGENT")}
-                className="w-full rounded-lg border border-white/[0.1] bg-[#0c0e14] px-3 py-2 text-xs font-mono text-white focus:outline-none focus:border-purple-400"
+                className="w-full rounded-lg border border-teal-500/20 bg-[#081013] px-3 py-2 text-xs font-mono text-white focus:outline-none focus:border-teal-400"
               >
                 <option value="LOW">Rendah (LOW)</option>
                 <option value="MEDIUM">Sedang (MEDIUM)</option>
@@ -1247,7 +1245,7 @@ export function ProjectDetailView({ project }: { project: ProjectDetail }) {
                 type="date"
                 value={editTaskDueDate}
                 onChange={(e) => setEditTaskDueDate(e.target.value)}
-                className="w-full rounded-lg border border-white/[0.1] bg-[#0c0e14] px-3 py-2 text-xs font-mono text-white focus:outline-none focus:border-purple-400"
+                className="w-full rounded-lg border border-teal-500/20 bg-[#081013] px-3 py-2 text-xs font-mono text-white focus:outline-none focus:border-teal-400"
               />
             </div>
           </div>
@@ -1258,7 +1256,7 @@ export function ProjectDetailView({ project }: { project: ProjectDetail }) {
               <select
                 value={editTaskMilestoneId}
                 onChange={(e) => setEditTaskMilestoneId(e.target.value)}
-                className="w-full rounded-lg border border-white/[0.1] bg-[#0c0e14] px-3 py-2 text-xs font-mono text-white focus:outline-none focus:border-purple-400"
+                className="w-full rounded-lg border border-teal-500/20 bg-[#081013] px-3 py-2 text-xs font-mono text-white focus:outline-none focus:border-teal-400"
               >
                 <option value="">-- Tanpa Tonggak --</option>
                 {project.milestones.map((m, idx) => (
@@ -1281,7 +1279,7 @@ export function ProjectDetailView({ project }: { project: ProjectDetail }) {
             <button
               type="submit"
               disabled={loadingEditTask || !editTaskTitle.trim()}
-              className="rounded-lg bg-purple-600 px-4 py-2 text-xs font-mono font-semibold text-white hover:bg-purple-500 disabled:opacity-50 transition-colors shadow-sm"
+              className="rounded-lg bg-teal-600 px-4 py-2 text-xs font-mono font-semibold text-white hover:bg-teal-500 disabled:opacity-50 transition-colors shadow-sm"
             >
               {loadingEditTask ? "Menyimpan..." : "Simpan Tugas"}
             </button>

@@ -33,8 +33,8 @@ const stages: {
     shortLabel: "Sedang",
     icon: <Icon name="play" size={14} />,
     activeClass:
-      "bg-gradient-to-r from-purple-500/20 to-indigo-500/20 border-purple-400/50 text-purple-200 shadow-[0_0_14px_rgba(168,85,247,0.3)]",
-    dotClass: "bg-purple-400 animate-pulse",
+      "bg-teal-500/20 border-teal-400/50 text-teal-200 shadow-[0_0_14px_rgba(20,184,166,0.25)]",
+    dotClass: "bg-teal-400 animate-pulse",
     description: "Task sedang berjalan",
   },
   {
@@ -117,7 +117,7 @@ export function TaskStatusPicker({
         <div
           role="group"
           aria-label="Pilih status task"
-          className="flex gap-1.5 rounded-2xl border border-white/[0.08] bg-[#0B0D13] p-1.5 shadow-inner"
+          className="flex gap-1.5 rounded-2xl border border-teal-500/15 bg-[#081013] p-1.5 shadow-inner"
         >
           {stages.map((stage, idx) => {
             const isActive = stage.key === current;
@@ -139,7 +139,7 @@ export function TaskStatusPicker({
                   className={`relative flex flex-1 items-center justify-center gap-1.5 rounded-xl border py-2.5 text-[12px] font-semibold transition-all duration-200 disabled:cursor-not-allowed cursor-pointer ${
                     isActive
                       ? `${stage.activeClass} status-ripple`
-                      : "border-transparent text-[#94a3b8] hover:bg-white/[0.06] hover:text-white"
+                      : "border-transparent text-zinc-400 hover:bg-white/[0.06] hover:text-white"
                   }`}
                   {...(stage.key === "COMPLETED" ? { ref: completeBtnRef } : {})}
                 >
@@ -156,7 +156,7 @@ export function TaskStatusPicker({
                   <div
                     aria-hidden="true"
                     className={`mx-1 h-px flex-shrink-0 w-4 transition-colors duration-300 ${
-                      leftDone ? "bg-emerald-500/50" : "bg-white/[0.08]"
+                      leftDone ? "bg-teal-500/50" : "bg-white/[0.08]"
                     }`}
                   />
                 )}
@@ -172,8 +172,8 @@ export function TaskStatusPicker({
               key={stage.key}
               className={`text-[10px] font-mono transition-colors ${
                 stage.key === current
-                  ? "text-[#d0bcff] font-semibold"
-                  : "text-[#64748b]"
+                  ? "text-teal-300 font-semibold"
+                  : "text-zinc-500"
               }`}
             >
               {stage.label}

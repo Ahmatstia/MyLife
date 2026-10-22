@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { requirePageUser } from "@/lib/auth";
 import { getCalendarEvents } from "@/services/calendar-event.service";
 import { getProjects } from "@/services/project.service";
@@ -6,6 +7,11 @@ import { getUserPreference } from "@/services/user-preference.service";
 import { CalendarManager } from "./CalendarManager";
 
 export const dynamic = "force-dynamic";
+
+export const metadata: Metadata = {
+  title: "Agenda & To-Do | MyLife",
+  description: "Kelola agenda, jadwal harian, dan to-do list terstruktur.",
+};
 
 export default async function CalendarPage() {
   const user = await requirePageUser();

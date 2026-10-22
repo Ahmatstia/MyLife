@@ -849,15 +849,15 @@ export function FocusManager({
   });
 
   return (
-    <div className="flex flex-col w-full pb-20 gap-8 selection:bg-purple-500/20 selection:text-purple-300">
+    <div className="flex flex-col w-full pb-20 gap-8 selection:bg-teal-500/20 selection:text-teal-300">
       {/* ── Top Navigation & Header Region ────────────────────────── */}
       <div className="flex flex-col gap-5">
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-5">
           <div className="flex flex-col gap-2.5">
             <div className="flex items-center gap-3">
               <BackButton fallbackUrl="/today" label="Kembali" />
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-purple-500/10 border border-purple-500/20 text-purple-300 text-xs font-medium">
-                <span className="w-2 h-2 rounded-full bg-purple-400 animate-pulse" />
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-teal-500/10 border border-teal-500/20 text-teal-300 text-xs font-medium">
+                <span className="w-2 h-2 rounded-full bg-teal-400 animate-pulse" />
                 <span>Mode Fokus Mendalam</span>
               </div>
             </div>
@@ -870,13 +870,13 @@ export function FocusManager({
           </div>
 
           {/* Quick Mode Switcher */}
-          <div className="inline-flex items-center gap-1.5 p-1.5 rounded-2xl bg-zinc-900/90 border border-white/[0.08] backdrop-blur-md shadow-xl self-start md:self-auto">
+          <div className="inline-flex items-center gap-1.5 p-1.5 rounded-2xl bg-[#0d1b20]/90 border border-teal-500/20 backdrop-blur-md shadow-xl self-start md:self-auto">
             <button
               type="button"
               onClick={() => handleSelectModePreset("pomodoro")}
               className={`px-3.5 py-1.5 rounded-xl text-xs font-semibold transition-all flex items-center gap-2 ${
                 displayModePreset === "pomodoro"
-                  ? "bg-purple-600/30 text-purple-200 border border-purple-400/40 shadow-sm"
+                  ? "bg-teal-600 text-white shadow-sm"
                   : "text-zinc-400 hover:text-zinc-200 hover:bg-white/[0.04] border border-transparent"
               }`}
             >
@@ -888,7 +888,7 @@ export function FocusManager({
               onClick={() => handleSelectModePreset("flow")}
               className={`px-3.5 py-1.5 rounded-xl text-xs font-semibold transition-all flex items-center gap-2 ${
                 displayModePreset === "flow"
-                  ? "bg-purple-600/30 text-purple-200 border border-purple-400/40 shadow-sm"
+                  ? "bg-teal-600 text-white shadow-sm"
                   : "text-zinc-400 hover:text-zinc-200 hover:bg-white/[0.04] border border-transparent"
               }`}
             >
@@ -905,12 +905,12 @@ export function FocusManager({
             onClick={() => setActiveTab("today")}
             className={`pb-3 text-sm font-semibold transition-all relative flex items-center gap-2 ${
               activeTab === "today"
-                ? "text-purple-300 border-b-2 border-purple-400"
+                ? "text-teal-300 border-b-2 border-teal-400"
                 : "text-zinc-400 hover:text-zinc-200"
             }`}
           >
             <span>Fokus Hari Ini</span>
-            <span className="text-xs px-2 py-0.5 rounded-full bg-purple-500/20 text-purple-200 font-medium">
+            <span className="text-xs px-2 py-0.5 rounded-full bg-teal-500/20 text-teal-200 font-medium">
               {focusList.length}
             </span>
           </button>
@@ -919,7 +919,7 @@ export function FocusManager({
             onClick={() => setActiveTab("history")}
             className={`pb-3 text-sm font-semibold transition-all relative flex items-center gap-2 ${
               activeTab === "history"
-                ? "text-purple-300 border-b-2 border-purple-400"
+                ? "text-teal-300 border-b-2 border-teal-400"
                 : "text-zinc-400 hover:text-zinc-200"
             }`}
           >
@@ -937,7 +937,7 @@ export function FocusManager({
           {/* LEFT COLUMN: Main Focus Station (8 Cols) */}
           <div className="lg:col-span-8 flex flex-col gap-6">
             {/* CARD A: Active Pomodoro Engine Hero Card */}
-            <div className="relative overflow-hidden rounded-3xl bg-gradient-to-b from-zinc-900/90 to-zinc-950/90 border border-white/[0.08] shadow-2xl p-6 sm:p-8 flex flex-col gap-6 backdrop-blur-xl">
+            <div className="relative overflow-hidden rounded-3xl bg-[#0d1b20]/90 border border-teal-500/15 shadow-2xl p-6 sm:p-8 flex flex-col gap-6 backdrop-blur-xl">
               {/* Dynamic Radial Ambient Glows */}
               <div
                 className={`absolute -right-16 -top-16 w-80 h-80 rounded-full blur-3xl pointer-events-none transition-all duration-700 ${
@@ -945,10 +945,10 @@ export function FocusManager({
                     ? "bg-amber-500/15"
                     : displayTimerStatus === "paused"
                     ? "bg-blue-500/15"
-                    : "bg-purple-600/15"
+                    : "bg-teal-600/15"
                 }`}
               />
-              <div className="absolute left-1/4 -bottom-24 w-96 h-96 bg-purple-900/15 rounded-full blur-3xl pointer-events-none" />
+              <div className="absolute left-1/4 -bottom-24 w-96 h-96 bg-teal-900/15 rounded-full blur-3xl pointer-events-none" />
 
               {/* Top Meta Bar */}
               <div className="relative z-10 flex flex-wrap items-center justify-between gap-3">
@@ -981,7 +981,7 @@ export function FocusManager({
 
                   {activePomodoroTask && (
                     <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-zinc-800/60 text-zinc-300 text-xs border border-white/[0.06]">
-                      <svg className="w-3.5 h-3.5 text-purple-400" viewBox="0 0 24 24" fill="currentColor">
+                      <svg className="w-3.5 h-3.5 text-teal-400" viewBox="0 0 24 24" fill="currentColor">
                         <path d="M10 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2h-8l-2-2z" />
                       </svg>
                       <span>{getParentLabel(activePomodoroTask)}</span>
@@ -1027,7 +1027,7 @@ export function FocusManager({
                     <div className="flex items-center gap-2 text-xs text-zinc-400 font-medium">
                       <span>Target Prioritas #{String(focusList.findIndex((f) => f.task.id === activePomodoroTask.id) + 1 || 1).padStart(2, "0")}</span>
                       <span>•</span>
-                      <span className="text-purple-300 font-semibold">
+                      <span className="text-teal-300 font-semibold">
                         Estimasi {activePomodoroTask.estimatedHours ? `${activePomodoroTask.estimatedHours * 60} Menit` : `${presetMinutes} Menit`}
                       </span>
                     </div>
@@ -1035,7 +1035,7 @@ export function FocusManager({
                       <h2 className="text-xl sm:text-2xl font-bold text-white tracking-tight">
                         <Link
                           href={`/tasks/${activePomodoroTask.id}`}
-                          className="hover:underline hover:text-purple-300 transition-colors"
+                          className="hover:underline hover:text-teal-300 transition-colors"
                           title="Lihat rincian tugas"
                         >
                           {activePomodoroTask.title}
@@ -1043,7 +1043,7 @@ export function FocusManager({
                       </h2>
                       <Link
                         href={`/tasks/${activePomodoroTask.id}`}
-                        className="text-xs text-purple-300 hover:text-purple-200 flex items-center gap-1 shrink-0 bg-zinc-800/80 hover:bg-zinc-700/80 px-3 py-1.5 rounded-lg border border-white/[0.06] transition-colors font-medium"
+                        className="text-xs text-teal-300 hover:text-teal-200 flex items-center gap-1 shrink-0 bg-zinc-800/80 hover:bg-zinc-700/80 px-3 py-1.5 rounded-lg border border-white/[0.06] transition-colors font-medium"
                       >
                         <span>Rincian Tugas</span>
                         <span>→</span>
@@ -1069,7 +1069,7 @@ export function FocusManager({
                           handleAddBacklogToFocus(topTask.id, topTask.title);
                           toast(`Tugas "${topTask.title}" siap difokuskan. Klik Mulai Sesi untuk mulai!`, "success");
                         }}
-                        className="px-4 py-2 rounded-xl bg-purple-600 hover:bg-purple-500 text-white font-semibold text-xs transition-all flex items-center gap-2 shadow-lg shadow-purple-600/30 active:scale-95"
+                        className="px-4 py-2 rounded-xl bg-teal-600 hover:bg-teal-500 text-white font-semibold text-xs transition-all flex items-center gap-2 shadow-lg shadow-teal-900/30 active:scale-95 cursor-pointer"
                       >
                         <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
                           <path d="M8 5v14l11-7z" />
@@ -1079,7 +1079,7 @@ export function FocusManager({
                     ) : (
                       <Link
                         href="/today"
-                        className="px-4 py-2 rounded-xl bg-zinc-800 hover:bg-zinc-700 text-purple-300 font-medium text-xs transition-all flex items-center gap-1.5 border border-white/[0.08]"
+                        className="px-4 py-2 rounded-xl bg-zinc-800 hover:bg-zinc-700 text-teal-300 font-medium text-xs transition-all flex items-center gap-1.5 border border-white/[0.08]"
                       >
                         <span>Tambah Tugas di Halaman Hari Ini</span>
                       </Link>
@@ -1096,14 +1096,14 @@ export function FocusManager({
                     className={`absolute inset-0 rounded-full blur-2xl transition-all duration-700 ${
                       displayTimerStatus === "running"
                         ? "bg-amber-500/10 scale-105"
-                        : "bg-purple-600/10"
+                        : "bg-teal-500/10"
                     }`}
                   />
                   <svg className="w-full h-full transform -rotate-90" viewBox="0 0 220 220">
                     <defs>
                       <linearGradient id="focusTimerGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                        <stop offset="0%" stopColor="#A855F7" />
-                        <stop offset="100%" stopColor="#8B5CF6" />
+                        <stop offset="0%" stopColor="#14b8a6" />
+                        <stop offset="100%" stopColor="#0d9488" />
                       </linearGradient>
                       <linearGradient id="focusTimerRunning" x1="0%" y1="0%" x2="100%" y2="100%">
                         <stop offset="0%" stopColor="#F59E0B" />
@@ -1117,7 +1117,7 @@ export function FocusManager({
                       cy="110"
                       fill="transparent"
                       r={circleRadius}
-                      stroke="#1c2130"
+                      stroke="#14272e"
                       strokeWidth="9"
                     />
 
@@ -1177,10 +1177,10 @@ export function FocusManager({
               </div>
 
               {/* Real-time Scratchpad Quick Capture */}
-              <div className="relative z-10 flex flex-col gap-2 bg-zinc-950/60 p-4 rounded-2xl border border-white/[0.06] shadow-inner">
+              <div className="relative z-10 flex flex-col gap-2 bg-[#081013]/60 p-4 rounded-2xl border border-teal-500/15 shadow-inner">
                 <div className="flex items-center justify-between">
                   <span className="text-xs text-zinc-400 font-medium flex items-center gap-2">
-                    <svg className="w-3.5 h-3.5 text-purple-400" viewBox="0 0 24 24" fill="currentColor">
+                    <svg className="w-3.5 h-3.5 text-teal-400" viewBox="0 0 24 24" fill="currentColor">
                       <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z" />
                     </svg>
                     <span>Catatan Cepat &amp; Interupsi</span>
@@ -1208,10 +1208,10 @@ export function FocusManager({
                     suppressHydrationWarning
                     type="button"
                     onClick={handleToggleTimer}
-                    className={`px-5 py-2.5 rounded-xl font-semibold text-xs shadow-lg transition-all flex items-center gap-2 active:scale-95 ${
+                    className={`px-5 py-2.5 rounded-xl font-semibold text-xs shadow-lg transition-all flex items-center gap-2 active:scale-95 cursor-pointer ${
                       displayTimerStatus === "running"
                         ? "bg-amber-500 hover:bg-amber-400 text-zinc-950 shadow-amber-500/20"
-                        : "bg-purple-600 hover:bg-purple-500 text-white shadow-purple-600/30"
+                        : "bg-teal-600 hover:bg-teal-500 text-white shadow-teal-900/30"
                     }`}
                   >
                     {displayTimerStatus === "running" ? (
@@ -1235,7 +1235,7 @@ export function FocusManager({
                   <button
                     type="button"
                     onClick={handleCompleteSprint}
-                    className="px-4 py-2.5 rounded-xl bg-emerald-500/15 hover:bg-emerald-500/25 text-emerald-300 border border-emerald-500/30 text-xs font-semibold transition-all flex items-center gap-2 active:scale-95"
+                    className="px-4 py-2.5 rounded-xl bg-emerald-500/15 hover:bg-emerald-500/25 text-emerald-300 border border-emerald-500/30 text-xs font-semibold transition-all flex items-center gap-2 active:scale-95 cursor-pointer"
                   >
                     <svg className="w-4 h-4 text-emerald-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
                       <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
@@ -1247,9 +1247,9 @@ export function FocusManager({
                   <button
                     type="button"
                     onClick={handleAddFiveMinutes}
-                    className="px-3.5 py-2.5 rounded-xl bg-white/[0.05] hover:bg-white/[0.1] text-zinc-200 border border-white/[0.08] text-xs font-medium transition-all flex items-center gap-1.5"
+                    className="px-3.5 py-2.5 rounded-xl bg-white/[0.05] hover:bg-white/[0.1] text-zinc-200 border border-white/[0.08] text-xs font-medium transition-all flex items-center gap-1.5 cursor-pointer"
                   >
-                    <svg className="w-3.5 h-3.5 text-purple-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <svg className="w-3.5 h-3.5 text-teal-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                       <circle cx="12" cy="12" r="10" />
                       <line x1="12" y1="8" x2="12" y2="16" />
                       <line x1="8" y1="12" x2="16" y2="12" />
@@ -1265,7 +1265,7 @@ export function FocusManager({
                     <button
                       type="button"
                       onClick={handleCancelSession}
-                      className="px-3.5 py-2.5 rounded-xl text-rose-400 hover:text-rose-300 hover:bg-rose-500/10 border border-rose-500/20 text-xs font-semibold transition-all flex items-center gap-1.5 active:scale-95"
+                      className="px-3.5 py-2.5 rounded-xl text-rose-400 hover:text-rose-300 hover:bg-rose-500/10 border border-rose-500/20 text-xs font-semibold transition-all flex items-center gap-1.5 active:scale-95 cursor-pointer"
                       title="Batalkan sesi ini tanpa mencatat ke riwayat (berguna jika salah pencet)"
                     >
                       <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
@@ -1279,7 +1279,7 @@ export function FocusManager({
                     <button
                       type="button"
                       onClick={handleStopSession}
-                      className="px-3 py-2.5 rounded-xl text-zinc-400 hover:text-zinc-200 hover:bg-zinc-800/80 border border-white/[0.08] text-xs font-medium transition-colors flex items-center gap-1.5"
+                      className="px-3 py-2.5 rounded-xl text-zinc-400 hover:text-zinc-200 hover:bg-zinc-800/80 border border-white/[0.08] text-xs font-medium transition-colors flex items-center gap-1.5 cursor-pointer"
                       title="Hentikan sesi lebih awal dan simpan menit yang sudah berjalan"
                     >
                       <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="currentColor">
@@ -1298,7 +1298,7 @@ export function FocusManager({
                     🔥 Streak: {streakDays} Hari
                   </span>
                   <span className="text-zinc-600">•</span>
-                  <span className="text-purple-300 font-medium">⚡ Bonus: +150 XP per Sesi</span>
+                  <span className="text-teal-300 font-medium">⚡ Bonus: +150 XP per Sesi</span>
                 </div>
                 <div className="flex items-center gap-1.5 text-xs text-emerald-400 font-medium">
                   <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="currentColor">
@@ -1310,11 +1310,11 @@ export function FocusManager({
             </div>
 
             {/* CARD B: Antrean Prioritas Hari Ini (Today's Focus Queue) */}
-            <div className="flex flex-col bg-zinc-900/70 rounded-3xl border border-white/[0.08] p-6 sm:p-7 gap-5 shadow-xl backdrop-blur-sm">
+            <div className="flex flex-col bg-[#0d1b20]/90 rounded-3xl border border-teal-500/15 p-6 sm:p-7 gap-5 shadow-xl backdrop-blur-sm">
               {/* Queue Header */}
               <div className="flex flex-wrap items-center justify-between gap-3">
                 <div className="flex items-center gap-3">
-                  <div className="w-9 h-9 rounded-xl bg-purple-500/10 flex items-center justify-center text-purple-400 border border-purple-500/20">
+                  <div className="w-9 h-9 rounded-xl bg-teal-500/10 flex items-center justify-center text-teal-400 border border-teal-500/20">
                     <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
                       <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-8 14l-4-4 1.41-1.41L11 14.17l6.59-6.59L19 9l-8 8z" />
                     </svg>
@@ -1347,9 +1347,9 @@ export function FocusManager({
                 <button
                   type="button"
                   onClick={handleAutoSortByEstimate}
-                  className="text-zinc-400 hover:text-zinc-200 flex items-center gap-1.5 transition-colors font-medium"
+                  className="text-zinc-400 hover:text-zinc-200 flex items-center gap-1.5 transition-colors font-medium cursor-pointer"
                 >
-                  <svg className="w-3.5 h-3.5 text-purple-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <svg className="w-3.5 h-3.5 text-teal-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                     <path d="M7 16V4m0 0L3 8m4-4l4 4m6 4v12m0 0l4-4m-4 4l-4-4" />
                   </svg>
                   <span>Urutkan Otomatis (Prioritas &amp; Estimasi)</span>
@@ -1357,7 +1357,7 @@ export function FocusManager({
                 <button
                   type="button"
                   onClick={handleClearCompleted}
-                  className="text-purple-300 hover:text-purple-200 hover:underline flex items-center gap-1 transition-colors font-medium"
+                  className="text-teal-300 hover:text-teal-200 hover:underline flex items-center gap-1 transition-colors font-medium cursor-pointer"
                 >
                   <span>Bersihkan Tugas Selesai</span>
                   <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="currentColor">
@@ -1385,7 +1385,7 @@ export function FocusManager({
                           isDone
                             ? "bg-zinc-950/50 border border-white/[0.04] opacity-75 hover:opacity-100"
                             : isCurrent
-                            ? "bg-purple-950/20 border border-purple-500/30 shadow-sm"
+                            ? "bg-teal-950/20 border border-teal-500/30 shadow-sm"
                             : "bg-zinc-800/40 border border-white/[0.06] hover:bg-zinc-800/70"
                         }`}
                       >
@@ -1413,7 +1413,7 @@ export function FocusManager({
                                 ? "bg-emerald-500/10 text-emerald-400"
                                 : isCurrent
                                 ? "bg-amber-500/20 text-amber-300"
-                                : "bg-purple-500/20 text-purple-300"
+                                : "bg-teal-500/20 text-teal-300"
                             }`}
                           >
                             {String(idx + 1).padStart(2, "0")}
@@ -1424,7 +1424,7 @@ export function FocusManager({
                             <div className="flex items-center gap-2 flex-wrap">
                               <Link
                                 href={`/tasks/${item.task.id}`}
-                                className={`text-sm font-semibold truncate hover:underline hover:text-purple-300 transition-colors ${
+                                className={`text-sm font-semibold truncate hover:underline hover:text-teal-300 transition-colors ${
                                   isDone ? "text-zinc-500 line-through" : "text-white"
                                 }`}
                                 title="Lihat rincian tugas"
@@ -1449,7 +1449,7 @@ export function FocusManager({
                             </div>
 
                             <div className="flex items-center gap-2 text-xs text-zinc-400 mt-1 flex-wrap">
-                              <span className="text-purple-300 flex items-center gap-1">
+                              <span className="text-teal-300 flex items-center gap-1">
                                 <svg className="w-3 h-3" viewBox="0 0 24 24" fill="currentColor">
                                   <path d="M10 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2h-8l-2-2z" />
                                 </svg>
@@ -1482,7 +1482,7 @@ export function FocusManager({
                             type="button"
                             disabled={idx === 0}
                             onClick={() => handleReorder(item.id, "up")}
-                            className="p-1.5 rounded-lg text-zinc-400 hover:text-white hover:bg-zinc-700/60 transition-all disabled:opacity-20 active:scale-95"
+                            className="p-1.5 rounded-lg text-zinc-400 hover:text-white hover:bg-zinc-700/60 transition-all disabled:opacity-20 active:scale-95 cursor-pointer"
                             title="Naikkan Urutan"
                           >
                             <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -1493,7 +1493,7 @@ export function FocusManager({
                             type="button"
                             disabled={idx === focusList.length - 1}
                             onClick={() => handleReorder(item.id, "down")}
-                            className="p-1.5 rounded-lg text-zinc-400 hover:text-white hover:bg-zinc-700/60 transition-all disabled:opacity-20 active:scale-95"
+                            className="p-1.5 rounded-lg text-zinc-400 hover:text-white hover:bg-zinc-700/60 transition-all disabled:opacity-20 active:scale-95 cursor-pointer"
                             title="Turunkan Urutan"
                           >
                             <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -1511,7 +1511,7 @@ export function FocusManager({
                             <button
                               type="button"
                               onClick={() => handleToggleFocusTaskStatus(item.task.id, item.task.status)}
-                              className="p-1.5 rounded-lg text-emerald-400 hover:bg-emerald-500/10 transition-colors"
+                              className="p-1.5 rounded-lg text-emerald-400 hover:bg-emerald-500/10 transition-colors cursor-pointer"
                               title="Tugas Selesai (Klik untuk kembalikan ke antrean)"
                             >
                               <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
@@ -1525,7 +1525,7 @@ export function FocusManager({
                                 setActivePomodoroTask(item.task);
                                 toast(`Target fokus dialihkan ke: "${item.task.title}"`, "info");
                               }}
-                              className="px-3 py-1.5 rounded-xl bg-purple-600/20 hover:bg-purple-600 text-purple-300 hover:text-white text-xs font-semibold transition-all flex items-center gap-1.5 border border-purple-500/30 active:scale-95"
+                              className="px-3 py-1.5 rounded-xl bg-teal-600/20 hover:bg-teal-600 text-teal-300 hover:text-white text-xs font-semibold transition-all flex items-center gap-1.5 border border-teal-500/30 active:scale-95 cursor-pointer"
                             >
                               <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="currentColor">
                                 <path d="M8 5v14l11-7z" />
@@ -1542,7 +1542,7 @@ export function FocusManager({
             </div>
 
             {/* CARD C: Kandidat Tugas dari Backlog Proyek */}
-            <div className="flex flex-col bg-zinc-900/70 rounded-3xl border border-white/[0.08] p-6 sm:p-7 gap-5 shadow-xl backdrop-blur-sm">
+            <div className="flex flex-col bg-[#0d1b20]/90 rounded-3xl border border-teal-500/15 p-6 sm:p-7 gap-5 shadow-xl backdrop-blur-sm">
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
                 <div className="flex items-center gap-3">
                   <div className="w-9 h-9 rounded-xl bg-emerald-500/10 flex items-center justify-center text-emerald-400 border border-emerald-500/20">
@@ -1575,13 +1575,13 @@ export function FocusManager({
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   placeholder="Cari tugas dari Proyek, Target, atau Bidang Hidup..."
-                  className="w-full bg-zinc-950/60 text-zinc-200 text-xs pl-10 pr-10 py-3 rounded-xl border border-white/[0.08] placeholder-zinc-500 focus:outline-none focus:border-purple-400/50 shadow-inner"
+                  className="w-full bg-[#081013]/60 text-zinc-200 text-xs pl-10 pr-10 py-3 rounded-xl border border-teal-500/20 placeholder-zinc-500 focus:outline-none focus:border-teal-400 shadow-inner"
                 />
                 {searchQuery && (
                   <button
                     type="button"
                     onClick={() => setSearchQuery("")}
-                    className="absolute right-3 text-zinc-500 hover:text-zinc-300 text-xs"
+                    className="absolute right-3 text-zinc-500 hover:text-zinc-300 text-xs cursor-pointer"
                   >
                     ✕
                   </button>
@@ -1600,14 +1600,14 @@ export function FocusManager({
                   filteredBacklog.slice(0, 10).map((task) => (
                     <div
                       key={task.id}
-                      className="flex items-center justify-between p-3.5 rounded-2xl bg-zinc-800/40 border border-white/[0.05] hover:bg-zinc-800/70 transition-all"
+                      className="flex items-center justify-between p-3.5 rounded-2xl bg-[#081013]/50 border border-teal-500/10 hover:bg-[#14272e] transition-all"
                     >
                       <div className="flex flex-col min-w-0 pr-3">
                         <span className="text-sm text-zinc-200 font-semibold truncate">
                           {task.title}
                         </span>
                         <div className="flex items-center gap-2 text-xs text-zinc-400 mt-1 flex-wrap">
-                          <span className="text-purple-300 flex items-center gap-1">
+                          <span className="text-teal-300 flex items-center gap-1">
                             <svg className="w-3 h-3" viewBox="0 0 24 24" fill="currentColor">
                               <path d="M12 3L1 9l11 6 9-4.91V17h2V9L12 3z" />
                             </svg>
@@ -1634,7 +1634,7 @@ export function FocusManager({
                         type="button"
                         disabled={loadingTaskId === task.id}
                         onClick={() => handleAddBacklogToFocus(task.id, task.title)}
-                        className="shrink-0 px-3.5 py-1.5 rounded-xl bg-zinc-800 hover:bg-purple-600 text-purple-300 hover:text-white text-xs font-semibold transition-all flex items-center gap-1.5 border border-white/[0.08] disabled:opacity-50 active:scale-95"
+                        className="shrink-0 px-3.5 py-1.5 rounded-xl bg-[#0d1b20] hover:bg-teal-600 text-teal-300 hover:text-white text-xs font-semibold transition-all flex items-center gap-1.5 border border-teal-500/20 disabled:opacity-50 active:scale-95 cursor-pointer"
                       >
                         <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                           <line x1="12" y1="5" x2="12" y2="19" />
@@ -1652,10 +1652,10 @@ export function FocusManager({
           {/* RIGHT COLUMN: Focus Vitals & Momentum (4 Cols) */}
           <div className="lg:col-span-4 flex flex-col gap-6">
             {/* CARD 1: Statistik Fokus Hari Ini */}
-            <div className="flex flex-col bg-zinc-900/70 rounded-3xl border border-white/[0.08] p-6 gap-5 shadow-xl backdrop-blur-sm">
+            <div className="flex flex-col bg-[#0d1b20]/90 rounded-3xl border border-teal-500/15 p-6 gap-5 shadow-xl backdrop-blur-sm">
               <div className="flex items-center justify-between">
                 <span className="text-xs text-zinc-400 font-bold uppercase tracking-wider flex items-center gap-2">
-                  <svg className="w-4 h-4 text-purple-400" viewBox="0 0 24 24" fill="currentColor">
+                  <svg className="w-4 h-4 text-teal-400" viewBox="0 0 24 24" fill="currentColor">
                     <path d="M3 3v18h18v-2H5V3H3zm4 14h2v-5H7v5zm4 0h2V7h-2v10zm4 0h2v-8h-2v8zm4 0h2V4h-2v13z" />
                   </svg>
                   <span>Statistik Fokus Hari Ini</span>
@@ -1669,7 +1669,7 @@ export function FocusManager({
               {/* 3 Metric Bento Boxes */}
               <div className="grid grid-cols-1 gap-3">
                 {/* Metric 1: Total Time */}
-                <div className="flex flex-col p-4 rounded-2xl bg-zinc-950/50 border border-white/[0.05] gap-1">
+                <div className="flex flex-col p-4 rounded-2xl bg-[#081013]/60 border border-white/[0.05] gap-1">
                   <div className="flex items-center justify-between text-zinc-400 text-xs font-medium">
                     <span>Total Waktu Fokus</span>
                     <span className="text-emerald-400 font-semibold">+28% vs Kemarin</span>
@@ -1682,22 +1682,22 @@ export function FocusManager({
                     <div className="flex items-end gap-1 h-7">
                       <div className="w-1.5 h-3 bg-zinc-700 rounded-t" />
                       <div className="w-1.5 h-4 bg-zinc-700 rounded-t" />
-                      <div className="w-1.5 h-5 bg-purple-500/60 rounded-t" />
-                      <div className="w-1.5 h-7 bg-purple-400 rounded-t" />
+                      <div className="w-1.5 h-5 bg-teal-500/60 rounded-t" />
+                      <div className="w-1.5 h-7 bg-teal-400 rounded-t" />
                       <div className="w-1.5 h-6 bg-emerald-400 rounded-t" />
                     </div>
                   </div>
                 </div>
 
                 {/* Metric 2: Pomodoro Sprints */}
-                <div className="flex items-center justify-between p-4 rounded-2xl bg-zinc-950/50 border border-white/[0.05]">
+                <div className="flex items-center justify-between p-4 rounded-2xl bg-[#081013]/60 border border-white/[0.05]">
                   <div className="flex flex-col">
                     <span className="text-zinc-400 text-xs font-medium">Sesi Pomodoro Selesai</span>
                     <span className="text-xl text-white font-bold font-mono mt-0.5">
                       {todaySessions.length} Sesi
                     </span>
                   </div>
-                  <div className="flex flex-col items-end">
+                  <div className="flex items-col items-end">
                     <span className="text-xs text-amber-400 font-medium">Target: 6 Sesi</span>
                     <div className="flex items-center gap-1 mt-1.5">
                       {Array.from({ length: 6 }).map((_, i) => (
@@ -1713,7 +1713,7 @@ export function FocusManager({
                 </div>
 
                 {/* Metric 3: Target Completion Ratio */}
-                <div className="flex items-center justify-between p-4 rounded-2xl bg-zinc-950/50 border border-white/[0.05]">
+                <div className="flex items-center justify-between p-4 rounded-2xl bg-[#081013]/60 border border-white/[0.05]">
                   <div className="flex flex-col">
                     <span className="text-zinc-400 text-xs font-medium">Rasio Tugas Hari Ini</span>
                     <span className="text-xl text-white font-bold font-mono mt-0.5">
@@ -1749,7 +1749,7 @@ export function FocusManager({
             </div>
 
             {/* CARD 2: Momentum & Mindset */}
-            <div className="relative overflow-hidden flex flex-col bg-zinc-900/70 rounded-3xl border border-white/[0.08] p-6 gap-5 shadow-xl backdrop-blur-sm">
+            <div className="relative overflow-hidden flex flex-col bg-[#0d1b20]/90 rounded-3xl border border-teal-500/15 p-6 gap-5 shadow-xl backdrop-blur-sm">
               <div className="absolute -right-10 -bottom-10 w-40 h-40 bg-amber-500/10 rounded-full blur-2xl pointer-events-none" />
 
               <div className="flex items-center justify-between">
@@ -1765,7 +1765,7 @@ export function FocusManager({
               </div>
 
               {/* Mental Flow State Pill */}
-              <div className="flex items-center gap-3.5 p-3.5 rounded-2xl bg-zinc-950/50 border border-white/[0.05]">
+              <div className="flex items-center gap-3.5 p-3.5 rounded-2xl bg-[#081013]/60 border border-white/[0.05]">
                 <div className="w-9 h-9 rounded-xl bg-emerald-500/15 flex items-center justify-center shrink-0">
                   <svg className="w-4 h-4 text-emerald-400" viewBox="0 0 24 24" fill="currentColor">
                     <path d="M7 2v11h3v9l7-12h-4l4-8z" />
@@ -1778,8 +1778,8 @@ export function FocusManager({
               </div>
 
               {/* Deep Work Principle Quote */}
-              <div className="p-4 rounded-2xl bg-zinc-950/60 text-zinc-300 text-xs flex flex-col gap-2 border-l-2 border-purple-400">
-                <span className="text-[11px] text-purple-300 font-bold uppercase tracking-wider">
+              <div className="p-4 rounded-2xl bg-[#081013]/70 text-zinc-300 text-xs flex flex-col gap-2 border-l-2 border-teal-400">
+                <span className="text-[11px] text-teal-300 font-bold uppercase tracking-wider">
                   Prinsip Eksekusi Hari Ini
                 </span>
                 <p className="italic text-zinc-200 leading-relaxed text-xs">
@@ -1791,7 +1791,7 @@ export function FocusManager({
               {/* Soundscape Quick Switcher */}
               <div className="flex items-center justify-between pt-1 text-xs">
                 <span className="text-zinc-400 flex items-center gap-1.5">
-                  <svg className="w-3.5 h-3.5 text-purple-400" viewBox="0 0 24 24" fill="currentColor">
+                  <svg className="w-3.5 h-3.5 text-teal-400" viewBox="0 0 24 24" fill="currentColor">
                     <path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z" />
                   </svg>
                   <span>{SOUNDSCAPES[soundscapeIdx].label}</span>
@@ -1799,7 +1799,7 @@ export function FocusManager({
                 <button
                   type="button"
                   onClick={cycleSoundscape}
-                  className="text-purple-300 hover:text-purple-200 hover:underline font-medium"
+                  className="text-teal-300 hover:text-teal-200 hover:underline font-medium cursor-pointer"
                 >
                   Ganti Suara ⚙
                 </button>
@@ -1807,10 +1807,10 @@ export function FocusManager({
             </div>
 
             {/* CARD 3: Log Sesi Hari Ini */}
-            <div className="flex flex-col bg-zinc-900/70 rounded-3xl border border-white/[0.08] p-6 gap-5 shadow-xl backdrop-blur-sm">
+            <div className="flex flex-col bg-[#0d1b20]/90 rounded-3xl border border-teal-500/15 p-6 gap-5 shadow-xl backdrop-blur-sm">
               <div className="flex items-center justify-between pb-2 border-b border-white/[0.06]">
                 <span className="text-xs text-zinc-400 font-bold uppercase tracking-wider flex items-center gap-2">
-                  <svg className="w-4 h-4 text-purple-400" viewBox="0 0 24 24" fill="currentColor">
+                  <svg className="w-4 h-4 text-teal-400" viewBox="0 0 24 24" fill="currentColor">
                     <path d="M13 3c-4.97 0-9 4.03-9 9H1l3.89 3.89.07.14L9 12H6c0-3.87 3.13-7 7-7s7 3.13 7 7-3.13 7-7 7c-1.93 0-3.68-.79-4.94-2.06l-1.42 1.42C8.27 19.99 10.51 21 13 21c4.97 0 9-4.03 9-9s-4.03-9-9-9zm-1 5v5l4.28 2.54.72-1.21-3.5-2.08V8H12z" />
                   </svg>
                   <span>Log Sesi Hari Ini</span>
@@ -1830,7 +1830,7 @@ export function FocusManager({
                   todaySessions.map((session) => (
                     <div
                       key={session.id}
-                      className="flex items-start gap-3 p-3 rounded-2xl bg-zinc-950/50 border border-white/[0.05] hover:bg-zinc-800/60 transition-colors"
+                      className="flex items-start gap-3 p-3 rounded-2xl bg-[#081013]/60 border border-white/[0.05] hover:bg-[#14272e] transition-colors"
                     >
                       <div className="w-5 h-5 rounded-full bg-emerald-500/20 flex items-center justify-center text-emerald-400 shrink-0 mt-0.5">
                         <svg className="w-3 h-3" viewBox="0 0 24 24" fill="currentColor">
@@ -1862,7 +1862,7 @@ export function FocusManager({
               <button
                 type="button"
                 onClick={exportSessionCSV}
-                className="pt-2 text-purple-300 hover:text-purple-200 text-xs font-semibold flex items-center justify-between group transition-colors"
+                className="pt-2 text-teal-300 hover:text-teal-200 text-xs font-semibold flex items-center justify-between group transition-colors cursor-pointer"
               >
                 <span>Unduh Riwayat Sesi (CSV)</span>
                 <svg className="w-4 h-4 group-hover:translate-x-1 transition-transform" viewBox="0 0 24 24" fill="currentColor">
@@ -1882,14 +1882,14 @@ export function FocusManager({
               <h2 className="text-lg font-bold text-white">
                 Riwayat Sesi &amp; Fokus Harian (30 Hari Terakhir)
               </h2>
-              <span className="text-xs px-2.5 py-0.5 rounded-full bg-purple-500/20 text-purple-300 font-semibold">
+              <span className="text-xs px-2.5 py-0.5 rounded-full bg-teal-500/20 text-teal-300 font-semibold">
                 {initialHistory.length} Log Total
               </span>
             </div>
             <button
               type="button"
               onClick={exportSessionCSV}
-              className="px-4 py-2 rounded-xl bg-zinc-800 hover:bg-purple-600 text-purple-300 hover:text-white text-xs font-semibold transition-all flex items-center gap-2 border border-white/[0.08]"
+              className="px-4 py-2 rounded-xl bg-[#0d1b20] hover:bg-teal-600 text-teal-300 hover:text-white text-xs font-semibold transition-all flex items-center gap-2 border border-teal-500/20 cursor-pointer"
             >
               <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
@@ -1901,7 +1901,7 @@ export function FocusManager({
           </div>
 
           {Object.keys(historyByDate).length === 0 ? (
-            <div className="rounded-3xl border border-dashed border-white/10 bg-zinc-900/50 p-16 text-center flex flex-col items-center justify-center gap-2">
+            <div className="rounded-3xl border border-dashed border-teal-500/20 bg-[#0d1b20]/60 p-16 text-center flex flex-col items-center justify-center gap-2">
               <p className="text-base font-bold text-white">Belum Ada Riwayat Sesi</p>
               <p className="text-xs text-zinc-400 max-w-md">
                 Riwayat fokus harian akan tercatat otomatis setiap kamu menetapkan dan menyelesaikan fokus harian.
@@ -1913,7 +1913,7 @@ export function FocusManager({
               return (
                 <div
                   key={dateLabel}
-                  className="rounded-3xl border border-white/[0.08] bg-zinc-900/70 p-6 shadow-xl space-y-4 backdrop-blur-sm"
+                  className="rounded-3xl border border-teal-500/15 bg-[#0d1b20]/90 p-6 shadow-xl space-y-4 backdrop-blur-sm"
                 >
                   <div className="flex items-center justify-between border-b border-white/[0.06] pb-3">
                     <p className="text-sm font-bold text-white">{dateLabel}</p>
@@ -1927,7 +1927,7 @@ export function FocusManager({
                       return (
                         <div
                           key={item.id}
-                          className="flex items-center justify-between text-xs py-3 px-4 rounded-2xl bg-zinc-950/40 border border-white/[0.04]"
+                          className="flex items-center justify-between text-xs py-3 px-4 rounded-2xl bg-[#081013]/60 border border-white/[0.04]"
                         >
                           <div className="flex items-center gap-3 truncate">
                             <span
@@ -1940,7 +1940,7 @@ export function FocusManager({
                             <Link
                               href={`/tasks/${item.task.id}`}
                               className={`font-medium truncate ${
-                                isDone ? "line-through text-zinc-500" : "text-zinc-200 hover:text-purple-300"
+                                isDone ? "line-through text-zinc-500" : "text-zinc-200 hover:text-teal-300"
                               }`}
                             >
                               {item.task.title}

@@ -29,61 +29,58 @@ export default async function SettingsPage() {
 
   return (
     <div className="space-y-10 pb-16">
-      {/* 1. Header Layar & Telemetri */}
-      <section className="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-white/[0.08] pb-6">
+      {/* 1. Header Layar & Ringkasan */}
+      <section className="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-teal-500/15 pb-6">
         <div className="space-y-2 max-w-2xl">
-          <div className="flex flex-wrap items-center gap-2 font-mono text-[10px] uppercase tracking-widest text-[#94A3B8]">
-            <span>PENGATURAN & PERSONALISASI</span>
-            <span className="text-white/20">{"//"}</span>
-            <span className="text-[#d0bcff]">SISTEM MYLIFE OS v4.2</span>
-            <span className="text-white/20">{"//"}</span>
-            <div className="flex items-center gap-1.5 rounded-full bg-[#4edea3]/10 px-2 py-0.5 text-[#4edea3]">
-              <span className="h-1.5 w-1.5 rounded-full bg-[#4edea3] animate-pulse"></span>
-              <span className="font-semibold">STATUS: ENKRIPSI LOKAL AKTIF</span>
-            </div>
+          <div className="flex flex-wrap items-center gap-2 font-mono text-[10px] uppercase tracking-wider text-teal-400/80">
+            <span className="px-2.5 py-0.5 rounded-full bg-teal-500/10 border border-teal-500/20 font-semibold text-teal-300">
+              Pengaturan &amp; Personalisasi
+            </span>
+            <span className="text-zinc-600">•</span>
+            <span className="text-zinc-400">Preferensi Sistem</span>
           </div>
           <h1 className="text-3xl sm:text-4xl font-bold tracking-tight text-white">
-            Pengaturan Akun & Sistem
+            Pengaturan Akun &amp; Sistem
           </h1>
-          <p className="text-sm text-[#94A3B8] leading-relaxed">
-            Kelola identitas profil, preferensi tema kerja, integrasi pengingat eksternal, dan kedaulatan data pribadi Anda.
+          <p className="text-sm text-zinc-400 leading-relaxed">
+            Kelola preferensi antarmuka kerja, ritme produktivitas, integrasi notifikasi, dan pencadangan data Anda.
           </p>
         </div>
 
         <div className="flex items-center gap-3 shrink-0">
-          <div className="flex items-center gap-2.5 px-4 py-2.5 bg-[#131825] rounded-xl border border-white/[0.08] shadow-lg">
-            <span className="text-[#8B5CF6]">💾</span>
+          <div className="flex items-center gap-2.5 px-3.5 py-2 bg-[#0d1b20] rounded-xl border border-teal-500/15 shadow-sm">
+            <span className="text-teal-400 text-sm">💾</span>
             <div className="flex flex-col">
-              <span className="font-mono text-[9px] uppercase tracking-wider text-[#64748B] leading-none">PENYIMPANAN</span>
-              <span className="font-mono text-xs font-semibold text-white">PostgreSQL Cloud &amp; Sync</span>
+              <span className="font-mono text-[9px] uppercase tracking-wider text-zinc-500 leading-none">Penyimpanan</span>
+              <span className="font-mono text-xs font-semibold text-zinc-200">PostgreSQL Cloud &amp; Sync</span>
             </div>
           </div>
         </div>
       </section>
 
       {/* 2. Kartu Profil & Jejak Data */}
-      <section className="rounded-2xl border border-white/[0.08] bg-[#131825] p-6 shadow-xl relative overflow-hidden">
-        <div className="absolute -right-16 -top-16 w-64 h-64 bg-[#8B5CF6]/10 rounded-full blur-3xl pointer-events-none" />
+      <section className="rounded-3xl border border-teal-500/15 bg-[#0d1b20]/90 p-6 shadow-xl relative overflow-hidden backdrop-blur-sm">
+        <div className="absolute -right-16 -top-16 w-64 h-64 bg-teal-500/10 rounded-full blur-3xl pointer-events-none" />
         
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-center relative z-10">
           {/* Kolom Kiri: Identitas Pengguna */}
           <div className="lg:col-span-5 flex items-start gap-4">
             <div className="relative shrink-0">
-              <div className="w-16 h-16 rounded-full bg-[#1A2133] border-2 border-[#8B5CF6]/50 flex items-center justify-center shadow-[0_0_20px_rgba(139,92,246,0.3)]">
-                <span className="font-bold text-lg font-mono text-[#d0bcff]">{initials}</span>
+              <div className="w-16 h-16 rounded-2xl bg-[#14272e] border-2 border-teal-500/30 flex items-center justify-center shadow-lg">
+                <span className="font-bold text-lg font-mono text-teal-300">{initials}</span>
               </div>
-              <span className="absolute bottom-0 right-0 w-3.5 h-3.5 bg-[#4edea3] rounded-full ring-2 ring-[#131825]" title="Online" />
+              <span className="absolute -bottom-1 -right-1 w-4 h-4 bg-teal-400 rounded-full ring-2 ring-[#0d1b20]" title="Online" />
             </div>
 
             <div className="space-y-1 min-w-0">
               <h2 className="text-xl font-bold text-white truncate">{user.name || "Akun Anda"}</h2>
-              <p className="text-xs text-[#94A3B8] truncate font-mono">{user.email}</p>
+              <p className="text-xs text-zinc-400 truncate font-mono">{user.email}</p>
               
-              <div className="pt-1.5 flex flex-col gap-1.5">
-                <span className="inline-flex items-center font-mono text-[10px] font-bold text-[#c0c1ff] bg-[#3131c0]/20 px-2 py-0.5 rounded w-fit border border-[#c0c1ff]/20">
-                  PENGGUNA UTAMA // DEV & PERSONAL PROGRESS
+              <div className="pt-1.5 flex flex-col gap-1">
+                <span className="inline-flex items-center text-[10px] font-semibold text-teal-300 bg-teal-500/10 px-2.5 py-0.5 rounded-lg w-fit border border-teal-500/20">
+                  Pengguna Terverifikasi
                 </span>
-                <span className="font-mono text-[11px] text-[#64748B] flex items-center gap-1">
+                <span className="text-xs text-zinc-400 flex items-center gap-1.5 mt-0.5">
                   <span>📅</span>
                   Akun aktif sejak {formatDate(user.createdAt)}
                 </span>
@@ -92,43 +89,43 @@ export default async function SettingsPage() {
           </div>
 
           {/* Kolom Kanan: Mini Bento Metrik Data */}
-          <div className="lg:col-span-7 rounded-xl border border-white/[0.06] bg-[#0B0D13]/70 p-4">
+          <div className="lg:col-span-7 rounded-2xl border border-teal-500/15 bg-[#081013]/70 p-4">
             <div className="flex items-center justify-between mb-3">
-              <span className="font-mono text-[10px] uppercase tracking-wider text-[#64748B]">JEJAK DATA PRIBADI ANDA</span>
-              <span className="font-mono text-[10px] text-[#4edea3] flex items-center gap-1">
-                <span className="w-1.5 h-1.5 rounded-full bg-[#4edea3]"></span> SINKRON LOKAL
+              <span className="font-mono text-[10px] uppercase tracking-wider text-zinc-500">Jejak Data Produktivitas</span>
+              <span className="text-[10px] text-teal-400 flex items-center gap-1.5 font-medium">
+                <span className="w-1.5 h-1.5 rounded-full bg-teal-400 animate-pulse"></span> Sinkron Lokal
               </span>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
               {/* Metrik 1: Target */}
-              <div className="rounded-xl border border-white/[0.06] bg-[#131825] p-3 shadow-sm hover:border-white/[0.12] transition-colors">
-                <div className="flex items-center justify-between text-[#F59E0B] mb-2">
+              <div className="rounded-xl border border-teal-500/15 bg-[#0d1b20] p-3 shadow-xs hover:border-teal-500/30 transition-colors">
+                <div className="flex items-center justify-between text-teal-400 mb-2">
                   <Icon name="flag" size={16} />
-                  <span className="font-mono text-[9px] text-[#64748B]">TARGET</span>
+                  <span className="font-mono text-[9px] text-zinc-500">TARGET</span>
                 </div>
                 <div className="text-xl font-bold text-white font-mono">{goalCount} Target</div>
-                <div className="text-[11px] text-[#F59E0B] truncate mt-1">Peta Perjalanan Aktif</div>
+                <div className="text-[11px] text-teal-300/80 truncate mt-1">Peta Perjalanan Aktif</div>
               </div>
 
               {/* Metrik 2: Tasks */}
-              <div className="rounded-xl border border-white/[0.06] bg-[#131825] p-3 shadow-sm hover:border-white/[0.12] transition-colors">
-                <div className="flex items-center justify-between text-[#4edea3] mb-2">
+              <div className="rounded-xl border border-teal-500/15 bg-[#0d1b20] p-3 shadow-xs hover:border-teal-500/30 transition-colors">
+                <div className="flex items-center justify-between text-teal-300 mb-2">
                   <Icon name="check" size={16} />
-                  <span className="font-mono text-[9px] text-[#64748B]">TASKS</span>
+                  <span className="font-mono text-[9px] text-zinc-500">TASKS</span>
                 </div>
                 <div className="text-xl font-bold text-white font-mono">{taskCount} Tugas</div>
-                <div className="text-[11px] text-[#4edea3] truncate mt-1">Total Eksekusi</div>
+                <div className="text-[11px] text-teal-300/80 truncate mt-1">Total Eksekusi</div>
               </div>
 
               {/* Metrik 3: Sesi Fokus */}
-              <div className="rounded-xl border border-white/[0.06] bg-[#131825] p-3 shadow-sm hover:border-white/[0.12] transition-colors">
-                <div className="flex items-center justify-between text-[#d0bcff] mb-2">
+              <div className="rounded-xl border border-teal-500/15 bg-[#0d1b20] p-3 shadow-xs hover:border-teal-500/30 transition-colors">
+                <div className="flex items-center justify-between text-teal-400 mb-2">
                   <Icon name="clock" size={16} />
-                  <span className="font-mono text-[9px] text-[#64748B]">LOGS</span>
+                  <span className="font-mono text-[9px] text-zinc-500">LOGS</span>
                 </div>
                 <div className="text-xl font-bold text-white font-mono">{sessionCount} Sesi</div>
-                <div className="text-[11px] text-[#d0bcff] truncate mt-1">Deep Work Tercatat</div>
+                <div className="text-[11px] text-teal-300/80 truncate mt-1">Deep Work Tercatat</div>
               </div>
             </div>
           </div>
@@ -139,27 +136,27 @@ export default async function SettingsPage() {
       <UserPreferenceControls initialPref={preference} />
 
       {/* 4. Kedaulatan Data (Data Sovereignty) */}
-      <section className="rounded-2xl border border-white/[0.08] bg-[#131825] p-6 shadow-xl relative overflow-hidden">
-        <div className="absolute -left-20 -bottom-20 w-80 h-80 bg-[#c0c1ff]/10 rounded-full blur-3xl pointer-events-none" />
+      <section className="rounded-3xl border border-teal-500/15 bg-[#0d1b20]/90 p-6 shadow-xl relative overflow-hidden backdrop-blur-sm">
+        <div className="absolute -left-20 -bottom-20 w-80 h-80 bg-teal-500/10 rounded-full blur-3xl pointer-events-none" />
         
         <div className="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-6">
           <div className="space-y-2 max-w-2xl">
-            <div className="flex items-center gap-2 font-mono text-[10px] uppercase tracking-wider text-[#c0c1ff]">
+            <div className="flex items-center gap-2 text-[10px] font-semibold uppercase tracking-wider text-teal-300">
               <span>🛡️</span>
-              <span>KEDAULATAN DATA PRIBADI // LOCAL-FIRST & ZERO VENDOR LOCK-IN</span>
+              <span>Kedaulatan Data Pribadi • Bebas Kunci Vendor</span>
             </div>
             <h2 className="text-xl font-bold text-white tracking-tight">
-              Ekspor & Cadangan Mandiri Seluruh Data
+              Ekspor &amp; Cadangan Mandiri Seluruh Data
             </h2>
-            <p className="text-xs text-[#94A3B8] leading-relaxed">
-              Anda memegang kendali penuh atas data Anda. Unduh salinan lengkap seluruh Target, Tugas, Sesi Fokus, Catatan Cepat, Kalender, dan Riwayat Evaluasi Anda dalam format file JSON standar kapan saja.
+            <p className="text-xs text-zinc-400 leading-relaxed">
+              Anda memegang kendali penuh atas data Anda. Unduh salinan lengkap seluruh Target, Tugas, Sesi Fokus, Catatan Cepat, Agenda, dan Riwayat Evaluasi Anda dalam format file JSON standar kapan saja.
             </p>
           </div>
 
           <a
             href="/api/settings/export"
             download
-            className="inline-flex items-center justify-center gap-2.5 rounded-xl border border-white/[0.1] bg-white/[0.04] hover:bg-white/[0.08] px-5 py-3 text-xs font-bold text-white shadow-lg transition-all active:scale-98 shrink-0 hover:border-[#8B5CF6]/50"
+            className="inline-flex items-center justify-center gap-2 rounded-xl border border-teal-500/30 bg-teal-500/10 hover:bg-teal-500/20 px-5 py-3 text-xs font-semibold text-teal-200 shadow-sm transition-all active:scale-95 shrink-0 cursor-pointer"
           >
             <span>📥</span>
             <span>Unduh Cadangan JSON</span>
@@ -168,14 +165,14 @@ export default async function SettingsPage() {
       </section>
 
       {/* 5. Zona Akun & Keluar Sesi */}
-      <section className="rounded-2xl border border-rose-500/20 bg-rose-950/10 p-6 flex flex-wrap items-center justify-between gap-4">
+      <section className="rounded-3xl border border-rose-500/20 bg-rose-950/15 p-6 flex flex-wrap items-center justify-between gap-4 backdrop-blur-sm">
         <div>
           <div className="flex items-center gap-1.5 font-mono text-[10px] uppercase tracking-wider text-rose-400">
             <span>⚠️</span>
-            <span>ZONA KEAMANAN AKUN</span>
+            <span>Zona Keamanan Akun</span>
           </div>
           <h2 className="mt-1 text-base font-bold text-white">Akhiri Sesi Kerja</h2>
-          <p className="text-xs text-[#94A3B8]">Keluar dari akun Anda di perangkat ini dan kunci sesi lokal.</p>
+          <p className="text-xs text-zinc-400">Keluar dari akun Anda di perangkat ini dan amankan sesi lokal.</p>
         </div>
         <LogoutButton />
       </section>

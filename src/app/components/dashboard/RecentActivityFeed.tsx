@@ -39,11 +39,11 @@ interface RecentActivityFeedProps {
 }
 
 const CATEGORY_STYLES: Record<string, { bg: string; text: string; border: string; icon: string }> = {
-  WORK: { bg: "bg-[#8B5CF6]/15", text: "text-[#d0bcff]", border: "border-[#8B5CF6]/30", icon: "laptop_mac" },
+  WORK: { bg: "bg-teal-500/15", text: "text-teal-300", border: "border-teal-500/30", icon: "laptop_mac" },
   LEARNING: { bg: "bg-sky-500/15", text: "text-sky-300", border: "border-sky-500/30", icon: "menu_book" },
   HEALTH_FITNESS: { bg: "bg-emerald-500/15", text: "text-emerald-300", border: "border-emerald-500/30", icon: "fitness_center" },
-  PERSONAL: { bg: "bg-amber-500/15", text: "text-amber-300", border: "border-amber-500/30", icon: "favorite" },
-  REST: { bg: "bg-teal-500/15", text: "text-teal-300", border: "border-teal-500/30", icon: "self_improvement" },
+  PERSONAL: { bg: "bg-cyan-500/15", text: "text-cyan-300", border: "border-cyan-500/30", icon: "favorite" },
+  REST: { bg: "bg-teal-600/15", text: "text-teal-200", border: "border-teal-600/30", icon: "self_improvement" },
   CHORE: { bg: "bg-slate-500/15", text: "text-slate-300", border: "border-slate-500/30", icon: "task_alt" },
 };
 
@@ -177,15 +177,15 @@ export function RecentActivityFeed({
   return (
     <>
       <section
-        className={`p-6 rounded-3xl bg-white/90 dark:bg-[#131825]/90 border border-slate-200/80 dark:border-white/10 shadow-sm dark:shadow-xl flex flex-col gap-4 relative overflow-hidden ${className}`}
+        className={`p-6 rounded-3xl bg-white/90 dark:bg-[#0d1b20]/90 border border-slate-200/80 dark:border-teal-500/15 shadow-sm dark:shadow-xl flex flex-col gap-4 relative overflow-hidden ${className}`}
       >
         {/* Ambient Top Glow */}
-        <div className="absolute top-0 right-0 w-44 h-44 bg-purple-500/5 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute top-0 right-0 w-44 h-44 bg-teal-500/5 rounded-full blur-3xl pointer-events-none" />
 
         {/* ── HEADER ── */}
-        <div className="flex items-center justify-between gap-3 pb-1 border-b border-slate-200/70 dark:border-white/[0.06] relative z-10">
+        <div className="flex items-center justify-between gap-3 pb-1 border-b border-slate-200/70 dark:border-teal-500/15 relative z-10">
           <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-xl bg-purple-500/15 text-[#8B5CF6] dark:text-[#d0bcff] flex items-center justify-center border border-purple-500/20">
+            <div className="w-8 h-8 rounded-xl bg-teal-500/15 text-teal-400 flex items-center justify-center border border-teal-500/20">
               <span className="material-symbols-outlined text-[18px]">history</span>
             </div>
             <div>
@@ -193,8 +193,8 @@ export function RecentActivityFeed({
                 <h3 className="text-base font-bold text-slate-900 dark:text-white tracking-tight">
                   Aktivitas Terbaru
                 </h3>
-                <span className="flex items-center gap-1 px-2 py-0.5 rounded-full bg-emerald-500/10 border border-emerald-500/25 text-[10px] font-bold text-emerald-600 dark:text-emerald-400">
-                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                <span className="flex items-center gap-1 px-2 py-0.5 rounded-full bg-teal-500/10 border border-teal-500/25 text-[10px] font-bold text-teal-600 dark:text-teal-300">
+                  <span className="w-1.5 h-1.5 rounded-full bg-teal-400 animate-pulse" />
                   Live
                 </span>
               </div>
@@ -205,7 +205,7 @@ export function RecentActivityFeed({
             <button
               type="button"
               onClick={() => setIsModalOpen(true)}
-              className="px-2.5 py-1.5 rounded-xl bg-purple-500/15 hover:bg-purple-500/25 text-[#8B5CF6] dark:text-[#d0bcff] border border-purple-500/30 text-xs font-semibold flex items-center gap-1 transition-all cursor-pointer active:scale-95"
+              className="px-2.5 py-1.5 rounded-xl bg-teal-500/15 hover:bg-teal-500/25 text-teal-700 dark:text-teal-200 border border-teal-500/30 text-xs font-semibold flex items-center gap-1 transition-all cursor-pointer active:scale-95"
               title="Catat aktivitas manual"
             >
               <span className="material-symbols-outlined text-[15px]">add</span>
@@ -238,7 +238,7 @@ export function RecentActivityFeed({
               onClick={() => setFilter(tab.id as typeof filter)}
               className={`px-2.5 py-1 rounded-xl text-xs font-semibold transition-all shrink-0 cursor-pointer ${
                 filter === tab.id
-                  ? "bg-[#8B5CF6] text-white shadow-xs"
+                  ? "bg-teal-600 text-white shadow-xs"
                   : "bg-slate-100 dark:bg-white/[0.06] text-slate-600 dark:text-zinc-400 hover:text-slate-900 dark:hover:text-white"
               }`}
             >
@@ -350,7 +350,7 @@ export function RecentActivityFeed({
           <span>Total {activitiesList.length} aktivitas terdaftar</span>
           <Link
             href="/progress?tab=log"
-            className="font-semibold text-[#8B5CF6] dark:text-[#d0bcff] hover:underline flex items-center gap-1"
+            className="font-semibold text-teal-600 dark:text-teal-300 hover:underline flex items-center gap-1"
           >
             Semua Riwayat →
           </Link>
@@ -360,10 +360,10 @@ export function RecentActivityFeed({
       {/* ── MODAL: CATAT AKTIVITAS CEPAT ── */}
       {isModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-md animate-in fade-in duration-200">
-          <div className="w-full max-w-md p-6 rounded-3xl bg-white dark:bg-[#131825] border border-slate-200 dark:border-white/10 shadow-2xl flex flex-col gap-4 text-slate-800 dark:text-[#e2e2eb]">
-            <div className="flex items-center justify-between border-b border-slate-200 dark:border-white/[0.08] pb-3">
+          <div className="w-full max-w-md p-6 rounded-3xl bg-white dark:bg-[#0d1b20] border border-slate-200 dark:border-teal-500/20 shadow-2xl flex flex-col gap-4 text-slate-800 dark:text-[#e2e2eb]">
+            <div className="flex items-center justify-between border-b border-slate-200 dark:border-teal-500/15 pb-3">
               <div className="flex items-center gap-2">
-                <span className="material-symbols-outlined text-[#8B5CF6] text-[22px]">history_edu</span>
+                <span className="material-symbols-outlined text-teal-400 text-[22px]">history_edu</span>
                 <h3 className="text-base font-bold text-slate-900 dark:text-white">
                   Catat Aktivitas Cepat
                 </h3>
@@ -379,7 +379,7 @@ export function RecentActivityFeed({
 
             <form onSubmit={handleQuickLog} className="flex flex-col gap-3.5">
               <div className="flex flex-col gap-1">
-                <label className="text-xs font-bold text-slate-700 dark:text-[#d0bcff]">
+                <label className="text-xs font-bold text-slate-700 dark:text-teal-200">
                   Nama Aktivitas
                 </label>
                 <input
@@ -389,19 +389,19 @@ export function RecentActivityFeed({
                   value={actTitle}
                   onChange={(e) => setActTitle(e.target.value)}
                   placeholder="Contoh: Belajar Next.js, Olahraga Pagi, Rapat Tim..."
-                  className="w-full bg-slate-50 dark:bg-[#1a2133] p-2.5 rounded-xl border border-slate-200 dark:border-white/10 text-xs text-slate-900 dark:text-white focus:outline-none focus:border-[#8B5CF6]"
+                  className="w-full bg-slate-50 dark:bg-[#14272e] p-2.5 rounded-xl border border-slate-200 dark:border-teal-500/20 text-xs text-slate-900 dark:text-white focus:outline-none focus:border-teal-500"
                 />
               </div>
 
               <div className="grid grid-cols-2 gap-3">
                 <div className="flex flex-col gap-1">
-                  <label className="text-xs font-bold text-slate-700 dark:text-[#d0bcff]">
+                  <label className="text-xs font-bold text-slate-700 dark:text-teal-200">
                     Kategori
                   </label>
                   <select
                     value={actCategory}
                     onChange={(e) => setActCategory(e.target.value as typeof actCategory)}
-                    className="w-full bg-slate-50 dark:bg-[#1a2133] p-2.5 rounded-xl border border-slate-200 dark:border-white/10 text-xs text-slate-900 dark:text-white focus:outline-none focus:border-[#8B5CF6] cursor-pointer"
+                    className="w-full bg-slate-50 dark:bg-[#14272e] p-2.5 rounded-xl border border-slate-200 dark:border-teal-500/20 text-xs text-slate-900 dark:text-white focus:outline-none focus:border-teal-500 cursor-pointer"
                   >
                     <option value="WORK">💼 Pekerjaan</option>
                     <option value="LEARNING">📚 Pembelajaran</option>
@@ -413,13 +413,13 @@ export function RecentActivityFeed({
                 </div>
 
                 <div className="flex flex-col gap-1">
-                  <label className="text-xs font-bold text-slate-700 dark:text-[#d0bcff]">
+                  <label className="text-xs font-bold text-slate-700 dark:text-teal-200">
                     Durasi
                   </label>
                   <select
                     value={actDuration}
                     onChange={(e) => setActDuration(Number(e.target.value))}
-                    className="w-full bg-slate-50 dark:bg-[#1a2133] p-2.5 rounded-xl border border-slate-200 dark:border-white/10 text-xs text-slate-900 dark:text-white focus:outline-none focus:border-[#8B5CF6] cursor-pointer"
+                    className="w-full bg-slate-50 dark:bg-[#14272e] p-2.5 rounded-xl border border-slate-200 dark:border-teal-500/20 text-xs text-slate-900 dark:text-white focus:outline-none focus:border-teal-500 cursor-pointer"
                   >
                     <option value={15}>15 menit</option>
                     <option value={25}>25 menit (Pomodoro)</option>
@@ -441,7 +441,7 @@ export function RecentActivityFeed({
                   <select
                     value={actAreaId}
                     onChange={(e) => setActAreaId(e.target.value)}
-                    className="w-full bg-slate-50 dark:bg-[#1a2133] p-2 rounded-xl border border-slate-200 dark:border-white/10 text-xs text-slate-900 dark:text-white focus:outline-none focus:border-[#8B5CF6] cursor-pointer"
+                    className="w-full bg-slate-50 dark:bg-[#14272e] p-2 rounded-xl border border-slate-200 dark:border-teal-500/20 text-xs text-slate-900 dark:text-white focus:outline-none focus:border-teal-500 cursor-pointer"
                   >
                     <option value="">-- Umum --</option>
                     {areas.map((a) => (
@@ -459,7 +459,7 @@ export function RecentActivityFeed({
                   <select
                     value={actProjectId}
                     onChange={(e) => setActProjectId(e.target.value)}
-                    className="w-full bg-slate-50 dark:bg-[#1a2133] p-2 rounded-xl border border-slate-200 dark:border-white/10 text-xs text-slate-900 dark:text-white focus:outline-none focus:border-[#8B5CF6] cursor-pointer"
+                    className="w-full bg-slate-50 dark:bg-[#14272e] p-2 rounded-xl border border-slate-200 dark:border-teal-500/20 text-xs text-slate-900 dark:text-white focus:outline-none focus:border-teal-500 cursor-pointer"
                   >
                     <option value="">-- Tanpa Proyek --</option>
                     {projects.map((p) => (
@@ -481,11 +481,11 @@ export function RecentActivityFeed({
                   value={actNotes}
                   onChange={(e) => setActNotes(e.target.value)}
                   placeholder="Apa hasil atau wawasan yang didapatkan?"
-                  className="w-full bg-slate-50 dark:bg-[#1a2133] p-2.5 rounded-xl border border-slate-200 dark:border-white/10 text-xs text-slate-900 dark:text-white focus:outline-none focus:border-[#8B5CF6] resize-none"
+                  className="w-full bg-slate-50 dark:bg-[#14272e] p-2.5 rounded-xl border border-slate-200 dark:border-teal-500/20 text-xs text-slate-900 dark:text-white focus:outline-none focus:border-teal-500 resize-none"
                 />
               </div>
 
-              <div className="flex items-center justify-end gap-2 pt-2 border-t border-slate-200 dark:border-white/[0.08]">
+              <div className="flex items-center justify-end gap-2 pt-2 border-t border-slate-200 dark:border-teal-500/15">
                 <button
                   type="button"
                   onClick={() => setIsModalOpen(false)}
@@ -496,7 +496,7 @@ export function RecentActivityFeed({
                 <button
                   type="submit"
                   disabled={isSubmitting || !actTitle.trim()}
-                  className="px-4 py-2 rounded-xl bg-[#8B5CF6] hover:bg-[#7c3aed] text-white text-xs font-bold shadow-md shadow-purple-500/20 disabled:opacity-50 transition-all cursor-pointer active:scale-95"
+                  className="px-4 py-2 rounded-xl bg-teal-600 hover:bg-teal-500 text-white text-xs font-bold shadow-md shadow-teal-900/20 disabled:opacity-50 transition-all cursor-pointer active:scale-95"
                 >
                   {isSubmitting ? "Menyimpan..." : "Simpan Aktivitas"}
                 </button>

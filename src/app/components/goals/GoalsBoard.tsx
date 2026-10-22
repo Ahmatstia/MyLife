@@ -120,8 +120,8 @@ export function GoalsBoard({
       {/* ── Header Halaman ─────────────────────────────────────────── */}
       <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 pb-1">
         <div className="flex flex-col gap-1.5 max-w-3xl">
-          <div className="flex items-center gap-2 text-purple-400 text-xs font-medium">
-            <span className="w-2 h-2 rounded-full bg-purple-400 animate-pulse" />
+          <div className="flex items-center gap-2 text-teal-400 text-xs font-medium">
+            <span className="w-2 h-2 rounded-full bg-teal-400 animate-pulse" />
             <span>Arah &amp; Pencapaian Utama</span>
           </div>
           <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-white">
@@ -136,10 +136,10 @@ export function GoalsBoard({
           <button
             type="button"
             onClick={() => setDenseView((v) => !v)}
-            className={`px-3.5 py-2 rounded-xl border transition-all flex items-center gap-2 text-xs font-medium ${
+            className={`px-3.5 py-2 rounded-xl border transition-all flex items-center gap-2 text-xs font-medium cursor-pointer ${
               denseView
-                ? "bg-purple-600/20 text-purple-300 border-purple-500/30 shadow-[0_0_15px_rgba(168,85,247,0.15)]"
-                : "bg-[#131825] text-zinc-300 hover:bg-[#1A2133] border-white/[0.08]"
+                ? "bg-teal-500/20 text-teal-200 border-teal-500/30 shadow-xs"
+                : "bg-[#0d1b20] text-zinc-300 hover:bg-[#14272e] border-teal-500/15"
             }`}
           >
             <svg className="w-4 h-4 text-zinc-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -157,7 +157,7 @@ export function GoalsBoard({
               <button
                 type="button"
                 onClick={openModal}
-                className="px-4 py-2 rounded-xl bg-purple-600 hover:bg-purple-500 text-white text-xs font-semibold flex items-center gap-2 transition-all shadow-[0_0_20px_rgba(168,85,247,0.35)] active:scale-[0.98]"
+                className="px-4 py-2 rounded-xl bg-teal-600 hover:bg-teal-500 text-white text-xs font-semibold flex items-center gap-2 transition-all shadow-md shadow-teal-900/30 active:scale-[0.98] cursor-pointer"
               >
                 <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                   <line x1="12" y1="5" x2="12" y2="19" />
@@ -173,13 +173,13 @@ export function GoalsBoard({
       {/* ── Bento Stats Metrics ────────────────────────────────────── */}
       <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
         {/* Kartu 1: Target Aktif */}
-        <div className="bg-[#131825]/90 rounded-2xl border border-white/[0.08] p-4 sm:p-5 flex flex-col justify-between relative overflow-hidden group hover:border-purple-500/30 hover:bg-[#1A2133]/80 transition-all shadow-sm">
-          <div className="absolute -right-6 -bottom-6 w-24 h-24 bg-purple-500/10 rounded-full blur-2xl pointer-events-none" />
+        <div className="bg-[#0d1b20]/90 rounded-2xl border border-teal-500/15 p-4 sm:p-5 flex flex-col justify-between relative overflow-hidden group hover:border-teal-500/30 transition-all shadow-sm">
+          <div className="absolute -right-6 -bottom-6 w-24 h-24 bg-teal-500/10 rounded-full blur-2xl pointer-events-none" />
           <div className="flex items-center justify-between">
             <span className="text-xs font-medium text-zinc-400">
               Status Target
             </span>
-            <div className="w-8 h-8 rounded-xl bg-purple-500/15 border border-purple-500/20 flex items-center justify-center text-purple-400">
+            <div className="w-8 h-8 rounded-xl bg-teal-500/15 border border-teal-500/20 flex items-center justify-center text-teal-400">
               <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <circle cx="12" cy="12" r="10" />
                 <circle cx="12" cy="12" r="6" />
@@ -189,7 +189,7 @@ export function GoalsBoard({
           </div>
           <div className="mt-4 flex flex-col">
             <div className="flex items-baseline gap-2">
-              <span className="text-3xl font-bold font-mono text-purple-300">{activeCount}</span>
+              <span className="text-3xl font-bold font-mono text-teal-300">{activeCount}</span>
               <span className="text-xs text-zinc-300 font-medium">Target Aktif</span>
             </div>
             <div className="flex items-center gap-1.5 mt-1.5 text-xs font-medium">
@@ -223,13 +223,13 @@ export function GoalsBoard({
         </div>
 
         {/* Kartu 2: Rata-rata Progres */}
-        <div className="bg-[#131825]/90 rounded-2xl border border-white/[0.08] p-4 sm:p-5 flex flex-col justify-between relative overflow-hidden group hover:border-indigo-500/30 hover:bg-[#1A2133]/80 transition-all shadow-sm">
-          <div className="absolute -right-6 -bottom-6 w-24 h-24 bg-indigo-500/10 rounded-full blur-2xl pointer-events-none" />
+        <div className="bg-[#0d1b20]/90 rounded-2xl border border-teal-500/15 p-4 sm:p-5 flex flex-col justify-between relative overflow-hidden group hover:border-teal-500/30 transition-all shadow-sm">
+          <div className="absolute -right-6 -bottom-6 w-24 h-24 bg-cyan-500/10 rounded-full blur-2xl pointer-events-none" />
           <div className="flex items-center justify-between">
             <span className="text-xs font-medium text-zinc-400">
               Rata-rata Kemajuan
             </span>
-            <div className="w-8 h-8 rounded-xl bg-indigo-500/15 border border-indigo-500/20 flex items-center justify-center text-indigo-400">
+            <div className="w-8 h-8 rounded-xl bg-cyan-500/15 border border-cyan-500/20 flex items-center justify-center text-cyan-400">
               <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <line x1="18" y1="20" x2="18" y2="10" />
                 <line x1="12" y1="20" x2="12" y2="4" />
@@ -239,12 +239,12 @@ export function GoalsBoard({
           </div>
           <div className="mt-4 flex flex-col">
             <div className="flex items-baseline gap-2">
-              <span className="text-3xl font-bold font-mono text-indigo-300">{avgProgress}%</span>
+              <span className="text-3xl font-bold font-mono text-cyan-300">{avgProgress}%</span>
               <span className="text-xs text-zinc-300 font-medium">Rata-rata Progres</span>
             </div>
-            <div className="w-full bg-[#0B0D13] h-1.5 rounded-full mt-2.5 overflow-hidden border border-white/[0.04]">
+            <div className="w-full bg-[#081013] h-1.5 rounded-full mt-2.5 overflow-hidden border border-teal-500/15">
               <div
-                className="h-full bg-gradient-to-r from-indigo-500 to-purple-500 rounded-full transition-all duration-500"
+                className="h-full bg-gradient-to-r from-teal-500 to-cyan-400 rounded-full transition-all duration-500"
                 style={{ width: `${avgProgress}%` }}
               />
             </div>
@@ -252,7 +252,7 @@ export function GoalsBoard({
         </div>
 
         {/* Kartu 3: Tugas Terhubung */}
-        <div className="bg-[#131825]/90 rounded-2xl border border-white/[0.08] p-4 sm:p-5 flex flex-col justify-between relative overflow-hidden group hover:border-emerald-500/30 hover:bg-[#1A2133]/80 transition-all shadow-sm">
+        <div className="bg-[#0d1b20]/90 rounded-2xl border border-teal-500/15 p-4 sm:p-5 flex flex-col justify-between relative overflow-hidden group hover:border-teal-500/30 transition-all shadow-sm">
           <div className="absolute -right-6 -bottom-6 w-24 h-24 bg-emerald-500/10 rounded-full blur-2xl pointer-events-none" />
           <div className="flex items-center justify-between">
             <span className="text-xs font-medium text-zinc-400">
@@ -280,13 +280,13 @@ export function GoalsBoard({
         </div>
 
         {/* Kartu 4: Target Selesai */}
-        <div className="bg-[#131825]/90 rounded-2xl border border-white/[0.08] p-4 sm:p-5 flex flex-col justify-between relative overflow-hidden group hover:border-amber-500/30 hover:bg-[#1A2133]/80 transition-all shadow-sm">
-          <div className="absolute -right-6 -bottom-6 w-24 h-24 bg-amber-500/10 rounded-full blur-2xl pointer-events-none" />
+        <div className="bg-[#0d1b20]/90 rounded-2xl border border-teal-500/15 p-4 sm:p-5 flex flex-col justify-between relative overflow-hidden group hover:border-teal-500/30 transition-all shadow-sm">
+          <div className="absolute -right-6 -bottom-6 w-24 h-24 bg-teal-600/10 rounded-full blur-2xl pointer-events-none" />
           <div className="flex items-center justify-between">
             <span className="text-xs font-medium text-zinc-400">
               Target Berhasil
             </span>
-            <div className="w-8 h-8 rounded-xl bg-amber-500/15 border border-amber-500/20 flex items-center justify-center text-amber-400">
+            <div className="w-8 h-8 rounded-xl bg-teal-500/15 border border-teal-500/20 flex items-center justify-center text-teal-400">
               <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <circle cx="12" cy="8" r="7" />
                 <polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88" />
@@ -295,7 +295,7 @@ export function GoalsBoard({
           </div>
           <div className="mt-4 flex flex-col">
             <div className="flex items-baseline gap-2">
-              <span className="text-3xl font-bold font-mono text-amber-300">{completedCount}</span>
+              <span className="text-3xl font-bold font-mono text-teal-300">{completedCount}</span>
               <span className="text-xs text-zinc-300 font-medium">Target Tuntas</span>
             </div>
             <div className="flex items-center gap-1.5 mt-1.5 text-xs text-zinc-400">
@@ -306,16 +306,16 @@ export function GoalsBoard({
       </div>
 
       {/* ── Filter & Search Bar ────────────────────────────────────── */}
-      <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-3 bg-[#131825]/70 backdrop-blur-md p-2.5 sm:p-3 rounded-2xl border border-white/[0.08]">
+      <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-3 bg-[#0d1b20]/70 backdrop-blur-md p-2.5 sm:p-3 rounded-2xl border border-teal-500/15">
         {/* Left: Tab Switcher & Area Filter */}
         <div className="flex flex-wrap items-center gap-2.5">
-          <div className="bg-[#0B0D13] p-1 rounded-xl flex items-center border border-white/[0.06]">
+          <div className="bg-[#081013] p-1 rounded-xl flex items-center border border-teal-500/15">
             <button
               type="button"
               onClick={() => setTab("active")}
-              className={`px-3.5 py-1.5 rounded-lg text-xs font-medium transition-all ${
+              className={`px-3.5 py-1.5 rounded-lg text-xs font-medium transition-all cursor-pointer ${
                 tab === "active"
-                  ? "bg-purple-600/25 text-purple-200 shadow-sm border border-purple-500/30 font-semibold"
+                  ? "bg-teal-500/25 text-teal-200 shadow-sm border border-teal-500/30 font-semibold"
                   : "text-zinc-400 hover:text-white"
               }`}
             >
@@ -324,9 +324,9 @@ export function GoalsBoard({
             <button
               type="button"
               onClick={() => setTab("completed")}
-              className={`px-3.5 py-1.5 rounded-lg text-xs font-medium transition-all ${
+              className={`px-3.5 py-1.5 rounded-lg text-xs font-medium transition-all cursor-pointer ${
                 tab === "completed"
-                  ? "bg-emerald-600/25 text-emerald-200 shadow-sm border border-emerald-500/30 font-semibold"
+                  ? "bg-emerald-500/25 text-emerald-200 shadow-sm border border-emerald-500/30 font-semibold"
                   : "text-zinc-400 hover:text-white"
               }`}
             >
@@ -334,20 +334,20 @@ export function GoalsBoard({
             </button>
           </div>
 
-          <div className="h-5 w-px bg-white/[0.1] hidden sm:block" />
+          <div className="h-5 w-px bg-teal-500/20 hidden sm:block" />
 
           {/* Area Filters */}
           <div className="flex items-center gap-1.5 overflow-x-auto py-0.5 max-w-full no-scrollbar">
             <button
               type="button"
               onClick={() => setSelectedAreaId("ALL")}
-              className={`px-3 py-1.5 rounded-xl text-xs font-medium flex items-center gap-1.5 transition-all ${
+              className={`px-3 py-1.5 rounded-xl text-xs font-medium flex items-center gap-1.5 transition-all cursor-pointer ${
                 selectedAreaId === "ALL"
-                  ? "bg-[#1F2433] text-white border border-white/[0.12] font-semibold"
-                  : "bg-[#131825] hover:bg-[#1A2133] text-zinc-400 hover:text-zinc-200 border border-transparent"
+                  ? "bg-teal-500/20 text-teal-100 border border-teal-500/30 font-semibold"
+                  : "bg-[#081013] hover:bg-[#14272e] text-zinc-400 hover:text-zinc-200 border border-transparent"
               }`}
             >
-              <span className="w-1.5 h-1.5 rounded-full bg-purple-400" />
+              <span className="w-1.5 h-1.5 rounded-full bg-teal-400" />
               <span>Semua</span>
             </button>
 
@@ -356,15 +356,15 @@ export function GoalsBoard({
                 key={area.id}
                 type="button"
                 onClick={() => setSelectedAreaId(area.id)}
-                className={`px-3 py-1.5 rounded-xl text-xs font-medium flex items-center gap-1.5 transition-all whitespace-nowrap ${
+                className={`px-3 py-1.5 rounded-xl text-xs font-medium flex items-center gap-1.5 transition-all whitespace-nowrap cursor-pointer ${
                   selectedAreaId === area.id
-                    ? "bg-[#1F2433] text-white border border-white/[0.12] font-semibold"
-                    : "bg-[#131825] hover:bg-[#1A2133] text-zinc-400 hover:text-zinc-200 border border-transparent"
+                    ? "bg-teal-500/20 text-teal-100 border border-teal-500/30 font-semibold"
+                    : "bg-[#081013] hover:bg-[#14272e] text-zinc-400 hover:text-zinc-200 border border-transparent"
                 }`}
               >
                 <span
                   className="w-1.5 h-1.5 rounded-full"
-                  style={{ backgroundColor: area.color || "#a855f7" }}
+                  style={{ backgroundColor: area.color || "#14b8a6" }}
                 />
                 <span>{area.name}</span>
               </button>
@@ -393,14 +393,14 @@ export function GoalsBoard({
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Cari target atau tahapan..."
-              className="w-full bg-[#0B0D13] text-white placeholder-zinc-500 text-xs pl-9 pr-3 py-2 rounded-xl border border-white/[0.08] focus:outline-none focus:border-purple-500/50"
+              className="w-full bg-[#081013] text-white placeholder-zinc-500 text-xs pl-9 pr-3 py-2 rounded-xl border border-teal-500/20 focus:outline-none focus:border-teal-400"
             />
           </div>
 
           <select
             value={sortBy}
             onChange={(e) => setSortBy(e.target.value as typeof sortBy)}
-            className="px-3 py-2 rounded-xl bg-[#0B0D13] text-zinc-300 border border-white/[0.08] text-xs focus:outline-none focus:border-purple-500/50 cursor-pointer"
+            className="px-3 py-2 rounded-xl bg-[#081013] text-zinc-300 border border-teal-500/20 text-xs focus:outline-none focus:border-teal-400 cursor-pointer"
           >
             <option value="progress">Progres Tertinggi</option>
             <option value="deadline">Tenggat Terdekat</option>
@@ -412,8 +412,8 @@ export function GoalsBoard({
 
       {/* ── Grid Kartu Target ──────────────────────────────────────── */}
       {filteredGoals.length === 0 ? (
-        <div className="rounded-2xl border border-dashed border-white/[0.1] bg-[#131825]/60 p-12 text-center flex flex-col items-center justify-center">
-          <div className="w-12 h-12 rounded-2xl bg-purple-500/10 border border-purple-500/20 flex items-center justify-center text-purple-400 mb-3">
+        <div className="rounded-2xl border border-dashed border-teal-500/20 bg-[#0d1b20]/60 p-12 text-center flex flex-col items-center justify-center">
+          <div className="w-12 h-12 rounded-2xl bg-teal-500/10 border border-teal-500/20 flex items-center justify-center text-teal-400 mb-3">
             <svg className="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <circle cx="12" cy="12" r="10" />
               <polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76" />
@@ -439,7 +439,7 @@ export function GoalsBoard({
                 <button
                   type="button"
                   onClick={openModal}
-                  className="px-4 py-2 rounded-xl bg-gradient-to-r from-purple-600 to-indigo-600 text-white text-xs font-semibold flex items-center gap-2 hover:brightness-110 transition-all shadow-md active:scale-[0.98]"
+                  className="px-4 py-2 rounded-xl bg-teal-600 hover:bg-teal-500 text-white text-xs font-semibold flex items-center gap-2 transition-all shadow-md shadow-teal-900/30 active:scale-[0.98] cursor-pointer"
                 >
                   <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                     <line x1="12" y1="5" x2="12" y2="19" />
@@ -467,12 +467,12 @@ export function GoalsBoard({
                 ? Math.round((completedWaypoints / stageWaypoints.length) * 100)
                 : 0;
 
-            const areaColor = goal.area?.color || "#a855f7";
+            const areaColor = goal.area?.color || "#14b8a6";
 
             return (
               <div
                 key={goal.id}
-                className="bg-[#131825]/90 rounded-2xl border border-white/[0.08] hover:border-purple-500/40 p-5 sm:p-6 flex flex-col justify-between relative group transition-all shadow-md hover:shadow-[0_0_30px_rgba(168,85,247,0.12)]"
+                className="bg-[#0d1b20]/90 rounded-2xl border border-teal-500/15 hover:border-teal-500/40 p-5 sm:p-6 flex flex-col justify-between relative group transition-all shadow-md hover:shadow-[0_0_25px_rgba(20,184,166,0.12)]"
               >
                 <div className="flex flex-col gap-4">
                   {/* Top Row: Area Tag, Priority & Circular Progress Ring */}
@@ -510,7 +510,7 @@ export function GoalsBoard({
                       </div>
 
                       <Link href={`/goals/${goal.id}`}>
-                        <h2 className="text-lg sm:text-xl text-white font-semibold tracking-tight group-hover:text-purple-300 transition-colors line-clamp-2 mt-0.5">
+                        <h2 className="text-lg sm:text-xl text-white font-semibold tracking-tight group-hover:text-teal-300 transition-colors line-clamp-2 mt-0.5">
                           {goal.title}
                         </h2>
                       </Link>
@@ -554,13 +554,13 @@ export function GoalsBoard({
                     {/* SVG Circular Progress Ring */}
                     <div className="relative w-14 h-14 sm:w-16 sm:h-16 flex items-center justify-center shrink-0">
                       <svg className="w-14 h-14 sm:w-16 sm:h-16 transform -rotate-90" viewBox="0 0 64 64">
-                        <circle cx="32" cy="32" fill="none" r={circleRadius} stroke="#1f2433" strokeWidth="5" />
+                        <circle cx="32" cy="32" fill="none" r={circleRadius} stroke="#14272e" strokeWidth="5" />
                         <circle
                           cx="32"
                           cy="32"
                           fill="none"
                           r={circleRadius}
-                          stroke={isDone ? "#10b981" : "#a855f7"}
+                          stroke={isDone ? "#10b981" : "#14b8a6"}
                           strokeDasharray={circumference}
                           strokeDashoffset={strokeOffset}
                           strokeLinecap="round"
@@ -571,7 +571,7 @@ export function GoalsBoard({
                       <div className="absolute flex flex-col items-center justify-center">
                         <span
                           className={`font-mono text-xs font-bold leading-none ${
-                            isDone ? "text-emerald-400" : "text-purple-300"
+                            isDone ? "text-emerald-400" : "text-teal-300"
                           }`}
                         >
                           {goal.progress}%
@@ -581,12 +581,12 @@ export function GoalsBoard({
                   </div>
 
                   {/* Horizontal Progress Bar */}
-                  <div className="w-full bg-[#0B0D13] h-2 rounded-full overflow-hidden p-[1px] border border-white/[0.04]">
+                  <div className="w-full bg-[#081013] h-2 rounded-full overflow-hidden p-[1px] border border-teal-500/15">
                     <div
                       className={`h-full rounded-full transition-all duration-500 ${
                         isDone
                           ? "bg-emerald-400 shadow-[0_0_12px_rgba(52,211,153,0.5)]"
-                          : "bg-gradient-to-r from-purple-500 via-indigo-500 to-emerald-400 shadow-[0_0_12px_rgba(168,85,247,0.4)]"
+                          : "bg-gradient-to-r from-teal-600 via-teal-500 to-emerald-400 shadow-[0_0_12px_rgba(20,184,166,0.4)]"
                       }`}
                       style={{ width: `${goal.progress}%` }}
                     />
@@ -595,7 +595,7 @@ export function GoalsBoard({
                   {!denseView && (
                     <>
                       {/* Waypoint Roadmap Timeline */}
-                      <div className="bg-[#0B0D13]/70 rounded-xl p-3.5 flex flex-col gap-2 border border-white/[0.05]">
+                      <div className="bg-[#081013]/70 rounded-xl p-3.5 flex flex-col gap-2 border border-teal-500/10">
                         <span className="text-[11px] text-zinc-400 font-medium">
                           Tahapan Sasaran
                         </span>
@@ -607,10 +607,10 @@ export function GoalsBoard({
                         ) : (
                           <div className="relative flex items-center justify-between mt-2 px-1">
                             {/* Connector Line Background */}
-                            <div className="absolute top-3.5 left-4 right-4 h-[2px] bg-[#1F2433] -z-0" />
+                            <div className="absolute top-3.5 left-4 right-4 h-[2px] bg-[#14272e] -z-0" />
                             {/* Active Progress Connector Line */}
                             <div
-                              className="absolute top-3.5 left-4 h-[2px] bg-emerald-400 -z-0 shadow-[0_0_8px_rgba(52,211,153,0.5)] transition-all duration-500"
+                              className="absolute top-3.5 left-4 h-[2px] bg-teal-400 -z-0 shadow-[0_0_8px_rgba(20,184,166,0.5)] transition-all duration-500"
                               style={{ width: `${Math.min(100, waypointProgressPercent)}%` }}
                             />
 
@@ -628,11 +628,11 @@ export function GoalsBoard({
                                       </svg>
                                     </div>
                                   ) : isWpCurrent ? (
-                                    <div className="w-7 h-7 rounded-full bg-purple-600 text-white border border-purple-400/50 flex items-center justify-center shadow-[0_0_12px_rgba(168,85,247,0.7)] animate-pulse">
+                                    <div className="w-7 h-7 rounded-full bg-teal-600 text-white border border-teal-400/50 flex items-center justify-center shadow-[0_0_12px_rgba(20,184,166,0.7)] animate-pulse">
                                       <span className="w-2 h-2 rounded-full bg-white" />
                                     </div>
                                   ) : (
-                                    <div className="w-7 h-7 rounded-full bg-[#1F2433] text-zinc-500 flex items-center justify-center border border-white/[0.05]">
+                                    <div className="w-7 h-7 rounded-full bg-[#14272e] text-zinc-500 flex items-center justify-center border border-teal-500/15">
                                       <span className="w-1.5 h-1.5 rounded-full bg-zinc-600" />
                                     </div>
                                   )}
@@ -645,7 +645,7 @@ export function GoalsBoard({
                                       isWpDone
                                         ? "text-emerald-400 font-medium"
                                         : isWpCurrent
-                                        ? "text-purple-300 font-semibold"
+                                        ? "text-teal-300 font-semibold"
                                         : "text-zinc-500"
                                     }`}
                                   >
@@ -659,10 +659,10 @@ export function GoalsBoard({
                       </div>
 
                       {/* Next Action Box (Fokus Tahap Saat Ini) */}
-                      <div className="bg-[#0E131F] hover:bg-[#151C2C] rounded-xl p-3.5 flex flex-col gap-2 border border-white/[0.06] transition-colors">
+                      <div className="bg-[#081013] hover:bg-[#0c161a] rounded-xl p-3.5 flex flex-col gap-2 border border-teal-500/15 transition-colors">
                         <div className="flex items-center justify-between">
-                          <span className="text-xs text-purple-300 font-semibold flex items-center gap-1.5">
-                            <span className="w-1.5 h-1.5 rounded-full bg-purple-400" />
+                          <span className="text-xs text-teal-300 font-semibold flex items-center gap-1.5">
+                            <span className="w-1.5 h-1.5 rounded-full bg-teal-400" />
                             {isDone
                               ? "Target Selesai Tercapai 🎉"
                               : `Fokus Tahap ${goal.currentStageIndex + 1}: ${goal.currentStageName || "Eksekusi"}`}
@@ -684,14 +684,14 @@ export function GoalsBoard({
                           {!isDone && (
                             <Link
                               href={goal.nextTaskId ? `/focus?taskId=${goal.nextTaskId}` : "/focus"}
-                              className="px-3 py-1.5 rounded-lg bg-purple-600 hover:bg-purple-500 text-white text-xs font-semibold flex items-center gap-1.5 transition-all shadow-sm"
+                              className="px-3 py-1.5 rounded-lg bg-teal-600 hover:bg-teal-500 text-white text-xs font-semibold flex items-center gap-1.5 transition-all shadow-sm"
                             >
                               <span>Fokus Tugas Ini 🍅</span>
                             </Link>
                           )}
                           <Link
                             href={`/goals/${goal.id}`}
-                            className="px-3 py-1.5 rounded-lg bg-[#1F2433] hover:bg-[#282F42] text-zinc-300 hover:text-white text-xs font-medium transition-colors border border-white/[0.05]"
+                            className="px-3 py-1.5 rounded-lg bg-[#14272e] hover:bg-[#1a323b] text-zinc-300 hover:text-white text-xs font-medium transition-colors border border-teal-500/15"
                           >
                             Lihat {goal.currentStageTasksCount || goal.totalTasks} Tugas
                           </Link>
@@ -702,13 +702,13 @@ export function GoalsBoard({
                 </div>
 
                 {/* Card Footer */}
-                <div className="mt-4 pt-3 flex items-center justify-between border-t border-white/[0.06] text-xs text-zinc-400">
+                <div className="mt-4 pt-3 flex items-center justify-between border-t border-teal-500/15 text-xs text-zinc-400">
                   <span>
                     {goal.totalStages} Tahap • {goal.completedTasks}/{goal.totalTasks} Tugas
                   </span>
                   <Link
                     href={`/goals/${goal.id}`}
-                    className="text-purple-400 hover:text-purple-300 font-medium flex items-center gap-1 group-hover:translate-x-1 transition-transform"
+                    className="text-teal-400 hover:text-teal-300 font-medium flex items-center gap-1 group-hover:translate-x-1 transition-transform"
                   >
                     <span>Buka Rincian Target</span>
                     <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">

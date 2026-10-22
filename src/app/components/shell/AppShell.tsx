@@ -50,7 +50,7 @@ function NavigationBar() {
   return (
     <div className="fixed top-0 left-0 right-0 z-[9999] h-[2px] pointer-events-none">
       <div
-        className="h-full bg-gradient-to-r from-[#8B5CF6] via-[#a78bfa] to-[#d0bcff] transition-all ease-out shadow-[0_0_8px_rgba(139,92,246,0.8)]"
+        className="h-full bg-gradient-to-r from-teal-500 via-teal-400 to-emerald-400 transition-all ease-out shadow-[0_0_8px_rgba(20,184,166,0.7)]"
         style={{
           width: `${width}%`,
           transitionDuration: width === 100 ? "300ms" : "800ms",
@@ -213,7 +213,7 @@ export function AppShell({
             if (e.target === e.currentTarget) setSidebarOpen(false);
           }}
         >
-          <div className="h-full w-64 bg-white dark:bg-[#0c0e14] p-4 shadow-2xl border-r border-slate-200 dark:border-white/[0.08]">
+          <div className="h-full w-64 bg-white dark:bg-[#081013] p-4 shadow-2xl border-r border-slate-200 dark:border-teal-500/10">
             <Sidebar
               user={user}
               onNavigate={() => setSidebarOpen(false)}
@@ -227,7 +227,7 @@ export function AppShell({
       {/* Main column */}
       <div className={`transition-[padding] duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] ${isPinned ? "lg:pl-60" : "lg:pl-[4.5rem]"}`}>
         {/* Topbar */}
-        <header className="sticky top-0 z-30 border-b border-slate-200/80 dark:border-white/[0.08] bg-white/85 dark:bg-[#0B0D13]/85 backdrop-blur-xl text-slate-900 dark:text-[#e2e2eb] transition-all duration-300">
+        <header className="sticky top-0 z-30 border-b border-slate-200/80 dark:border-teal-500/10 bg-white/85 dark:bg-[#081013]/90 backdrop-blur-xl text-slate-900 dark:text-[#e6f1f2] transition-all duration-300">
           <div className="mx-auto flex h-14 max-w-[1400px] items-center gap-3 px-4 sm:px-6">
             <button
               onClick={() => setSidebarOpen(true)}
@@ -239,7 +239,7 @@ export function AppShell({
 
             {/* Logo mobile */}
             <Link href="/" className="flex items-center gap-2 lg:hidden">
-              <div className="relative flex h-7 w-7 shrink-0 items-center justify-center rounded-lg overflow-hidden shadow-[0_0_8px_rgba(99,102,241,0.35)]">
+              <div className="relative flex h-7 w-7 shrink-0 items-center justify-center rounded-lg overflow-hidden shadow-[0_0_8px_rgba(20,184,166,0.35)]">
                 <Image
                   src="/logo.png"
                   alt="MyLife Logo"
@@ -260,9 +260,9 @@ export function AppShell({
               onClick={() => setAiOpen(true)}
               aria-label="Buka asisten AI"
               title="Tanya apa saja (⌘K)"
-              className="group inline-flex h-8 items-center gap-2 rounded-xl border border-slate-200 dark:border-white/[0.08] bg-slate-100/80 dark:bg-[#131825] px-3 text-[13px] font-medium text-slate-600 dark:text-[#94a3b8] transition-all hover:border-[#8B5CF6]/50 hover:bg-white dark:hover:bg-[#1A2133] hover:text-slate-900 dark:hover:text-white hover:shadow-[0_0_15px_-3px_rgba(139,92,246,0.25)] lg:min-w-[240px]"
+              className="group inline-flex h-8 items-center gap-2 rounded-xl border border-slate-200 dark:border-white/[0.08] bg-slate-100/80 dark:bg-[#0d1b20] px-3 text-[13px] font-medium text-slate-600 dark:text-[#94a3b8] transition-all hover:border-teal-500/50 hover:bg-white dark:hover:bg-[#14272e] hover:text-slate-900 dark:hover:text-white hover:shadow-[0_0_15px_-3px_rgba(20,184,166,0.25)] lg:min-w-[240px]"
             >
-              <span className="flex h-4.5 w-4.5 items-center justify-center rounded-md bg-gradient-to-br from-[#8B5CF6] to-[#6366F1] text-white">
+              <span className="flex h-4.5 w-4.5 items-center justify-center rounded-md bg-gradient-to-br from-teal-500 to-teal-700 text-white">
                 <Icon name="sparkles" size={10} />
               </span>
               <span className="hidden lg:inline text-slate-600 dark:text-[#94a3b8] group-hover:text-slate-900 dark:group-hover:text-white">
@@ -289,7 +289,7 @@ export function AppShell({
               href="/settings"
               className={`hidden h-8 w-8 items-center justify-center rounded-lg lg:flex transition-all ${
                 isActive("/settings", pathname)
-                  ? "bg-slate-100 text-slate-900 dark:bg-white/10 dark:text-white"
+                  ? "bg-slate-100 text-slate-900 dark:bg-teal-500/20 dark:text-teal-200"
                   : "text-slate-500 dark:text-[#94a3b8] hover:bg-slate-100 dark:hover:bg-white/10 hover:text-slate-900 dark:hover:text-white"
               }`}
               aria-label="Pengaturan"
@@ -306,7 +306,7 @@ export function AppShell({
 
       {/* Mobile bottom nav — floating pill */}
       <nav
-        className="fixed inset-x-4 bottom-4 z-40 rounded-2xl border border-white/10 bg-[#131825]/95 shadow-2xl pb-[max(0px,env(safe-area-inset-bottom))] backdrop-blur-xl transition-all duration-300 lg:hidden"
+        className="fixed inset-x-4 bottom-4 z-40 rounded-2xl border border-slate-200/80 dark:border-teal-500/15 bg-white/95 dark:bg-[#0d1b20]/95 shadow-2xl pb-[max(0px,env(safe-area-inset-bottom))] backdrop-blur-xl transition-all duration-300 lg:hidden"
         aria-label="Navigasi utama"
       >
         <div className="flex items-stretch justify-around px-1 py-1">
@@ -319,7 +319,7 @@ export function AppShell({
                 aria-current={active ? "page" : undefined}
                 className={`relative flex min-h-[44px] min-w-0 flex-1 flex-col items-center justify-center gap-0.5 rounded-xl px-1 text-[10px] font-semibold transition-all ${
                   active
-                    ? "bg-[#8B5CF6]/20 text-[#d0bcff]"
+                    ? "bg-teal-500/20 text-teal-800 dark:text-teal-200"
                     : "text-[#94a3b8] hover:text-white"
                 }`}
               >
@@ -328,7 +328,7 @@ export function AppShell({
                 {active && (
                   <span
                     aria-hidden="true"
-                    className="absolute bottom-1.5 h-1 w-1 rounded-full bg-[#8B5CF6]"
+                    className="absolute bottom-1.5 h-1 w-1 rounded-full bg-teal-400"
                   />
                 )}
               </Link>
@@ -336,7 +336,7 @@ export function AppShell({
           })}
           <button
             onClick={() => setAiOpen(true)}
-            className="flex min-h-[44px] min-w-0 flex-1 flex-col items-center justify-center gap-0.5 rounded-xl px-1 text-[10px] font-semibold text-[#a078ff] hover:bg-white/5 transition-all"
+            className="flex min-h-[44px] min-w-0 flex-1 flex-col items-center justify-center gap-0.5 rounded-xl px-1 text-[10px] font-semibold text-teal-400 hover:bg-white/5 transition-all"
           >
             <Icon name="sparkles" size={19} />
             Asisten

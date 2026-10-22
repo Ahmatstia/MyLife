@@ -106,33 +106,33 @@ export default async function GoalsPage({
   return (
     <div className="space-y-6 pb-16 max-w-7xl mx-auto">
       {/* TAB NAVIGATOR */}
-      <div className="flex items-center gap-1.5 p-1.5 rounded-2xl bg-[#131825]/90 border border-white/[0.08] backdrop-blur-md w-fit">
+      <div className="flex items-center gap-1.5 p-1.5 rounded-2xl bg-[#0d1b20]/90 border border-teal-500/15 backdrop-blur-md w-fit">
         {TABS.map((t) => (
           <Link
             key={t.id}
             href={`/goals?tab=${t.id}`}
             className={`flex items-center gap-2 px-4 py-2 rounded-xl transition-all font-medium text-xs sm:text-sm ${
               activeTab === t.id
-                ? "bg-purple-600/20 text-purple-200 border border-purple-500/30 shadow-[0_0_15px_rgba(168,85,247,0.15)] font-semibold"
+                ? "bg-teal-500/20 text-teal-200 border border-teal-500/30 shadow-xs font-semibold"
                 : "text-zinc-400 hover:text-white hover:bg-white/[0.05] border border-transparent"
             }`}
           >
             {t.id === "goals" && (
-              <svg className="w-4 h-4 text-purple-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <svg className="w-4 h-4 text-teal-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <circle cx="12" cy="12" r="10" />
                 <circle cx="12" cy="12" r="6" />
                 <circle cx="12" cy="12" r="2" />
               </svg>
             )}
             {t.id === "projects" && (
-              <svg className="w-4 h-4 text-indigo-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <svg className="w-4 h-4 text-teal-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <polygon points="12 2 2 7 12 12 22 7 12 2" />
                 <polyline points="2 17 12 22 22 17" />
                 <polyline points="2 12 12 17 22 12" />
               </svg>
             )}
             {t.id === "areas" && (
-              <svg className="w-4 h-4 text-emerald-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <svg className="w-4 h-4 text-teal-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <circle cx="12" cy="12" r="10" />
                 <polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76" />
               </svg>

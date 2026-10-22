@@ -1,8 +1,6 @@
-import { notFound } from "next/navigation";
 import { requirePageUser } from "@/lib/auth";
-import { getHabitStats } from "@/services/habit.service";
-import { getAreas } from "@/services/area.service";
-import { HabitDetailClient } from "./HabitDetailClient";
+import { getUserPreference } from "@/services/user-preference.service";
+import { HabitsV2App } from "@/app/components/habits-v2";
 
 export const dynamic = "force-dynamic";
 
@@ -20,20 +18,13 @@ export default async function HabitDetailPage({
 }) {
   const user = await requirePageUser();
   const { id } = await params;
+  const pref = await getUserPreference(user.id);
 
-  let stats = null;
-  try {
-    stats = await getHabitStats(id, user.id);
-  } catch {
-    stats = null;
-  }
-
-  if (!stats) {
-    notFound();
-  }
-
-  const areas = await getAreas(user.id, { isActive: true });
-
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  return <HabitDetailClient stats={stats as any} areas={areas} />;
+  return (
+    <HabitsV2App
+      userTimezone={pref?.timezone || "Asia/Jakarta"}
+      initialHabitId={id}
+    />
+  );
 }
+

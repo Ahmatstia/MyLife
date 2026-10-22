@@ -1,5 +1,6 @@
 import { prisma } from "@/lib/prisma";
 import { requireUserId } from "@/lib/ownership";
+import { decryptText } from "@/lib/habits/safety/crypto";
 
 export interface UserDataExport {
   version: string;
@@ -27,6 +28,7 @@ export interface UserDataExport {
   activities: unknown[];
   captures: unknown[];
   notifications: unknown[];
+  trackedHabits: unknown[];
 }
 
 export async function exportUserData(userId?: string): Promise<UserDataExport> {
@@ -49,6 +51,7 @@ export async function exportUserData(userId?: string): Promise<UserDataExport> {
     activities,
     captures,
     notifications,
+    trackedHabitsRaw,
   ] = await Promise.all([
     prisma.user.findUnique({
       where: { id: owner },
@@ -77,11 +80,44 @@ export async function exportUserData(userId?: string): Promise<UserDataExport> {
     prisma.activity.findMany({ where: { userId: owner } }),
     prisma.capture.findMany({ where: { userId: owner } }),
     prisma.notification.findMany({ where: { userId: owner } }),
+    prisma.trackedHabit.findMany({
+      where: { userId: owner },
+      include: {
+        breakProfile: true,
+        buildProfile: true,
+        stats: true,
+        events: true,
+        checkins: true,
+        milestones: true,
+        triggers: { include: { trigger: true } },
+        copingPlans: true,
+        automaticitySurveys: true,
+        reminders: true,
+        reflections: true,
+      },
+    }),
   ]);
 
   if (!userRecord) {
     throw new Error("User not found for data export.");
   }
+
+  // Dekripsi data sensitif agar ekspor dapat dibaca langsung oleh pengguna
+  const trackedHabits = trackedHabitsRaw.map((th) => ({
+    ...th,
+    breakProfile: th.breakProfile
+      ? {
+          ...th.breakProfile,
+          futureSelfNote: decryptText(th.breakProfile.futureSelfNote),
+        }
+      : null,
+    events: th.events.map((e) => ({
+      ...e,
+      note: decryptText(e.note),
+      locationLabel: decryptText(e.locationLabel),
+      withWhom: decryptText(e.withWhom),
+    })),
+  }));
 
   return {
     version: "1.0.0",
@@ -102,5 +138,7 @@ export async function exportUserData(userId?: string): Promise<UserDataExport> {
     activities,
     captures,
     notifications,
+    trackedHabits,
   };
 }
+

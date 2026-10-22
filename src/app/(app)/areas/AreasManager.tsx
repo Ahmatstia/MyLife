@@ -30,7 +30,7 @@ export function AreasManager({ initialAreas }: { initialAreas: AreaItem[] }) {
   const [isCreating, setIsCreating] = useState(false);
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
-  const [color, setColor] = useState("#6366f1");
+  const [color, setColor] = useState("#14b8a6");
   const [loading, setLoading] = useState(false);
 
   async function handleCreate(e: React.FormEvent) {
@@ -90,8 +90,8 @@ export function AreasManager({ initialAreas }: { initialAreas: AreaItem[] }) {
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <div className="flex items-center gap-2 text-emerald-400 text-xs font-medium">
-            <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+          <div className="flex items-center gap-2 text-teal-400 text-xs font-medium">
+            <span className="w-2 h-2 rounded-full bg-teal-400 animate-pulse" />
             <span>Fondasi &amp; Pilar Kehidupan</span>
           </div>
           <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-white mt-1">
@@ -103,7 +103,7 @@ export function AreasManager({ initialAreas }: { initialAreas: AreaItem[] }) {
         </div>
         <button
           onClick={() => setIsCreating(!isCreating)}
-          className="inline-flex items-center gap-2 rounded-xl bg-violet-600 px-4 py-2.5 text-xs font-semibold text-white shadow-lg shadow-violet-500/25 hover:bg-violet-500 transition-all self-start sm:self-auto active:scale-[0.98]"
+          className="inline-flex items-center gap-2 rounded-xl bg-teal-600 px-4 py-2.5 text-xs font-semibold text-white shadow-lg shadow-teal-900/30 hover:bg-teal-500 transition-all self-start sm:self-auto active:scale-[0.98] cursor-pointer"
         >
           <Icon name={isCreating ? "x" : "plus"} size={14} />
           {isCreating ? "Batal" : "Tambah Pilar"}
@@ -111,7 +111,7 @@ export function AreasManager({ initialAreas }: { initialAreas: AreaItem[] }) {
       </div>
 
       {isCreating && (
-        <form onSubmit={handleCreate} className="rounded-2xl border border-white/10 bg-[#131825]/95 p-5 shadow-2xl backdrop-blur-md space-y-4">
+        <form onSubmit={handleCreate} className="rounded-2xl border border-teal-500/15 bg-[#0d1b20]/95 p-5 shadow-2xl backdrop-blur-md space-y-4">
           <h3 className="text-base font-bold text-white">Bidang Hidup Baru</h3>
           <div className="grid gap-4 sm:grid-cols-2">
             <div>
@@ -122,7 +122,7 @@ export function AreasManager({ initialAreas }: { initialAreas: AreaItem[] }) {
                 onChange={(e) => setName(e.target.value)}
                 placeholder="Contoh: Karier & Profesional"
                 required
-                className="w-full rounded-xl border border-white/10 bg-[#0E131F] px-3.5 py-2 text-sm text-white placeholder:text-surface-500 focus:outline-none focus:border-violet-500/50"
+                className="w-full rounded-xl border border-teal-500/20 bg-[#081013] px-3.5 py-2 text-sm text-white placeholder:text-surface-500 focus:outline-none focus:border-teal-500"
               />
             </div>
             <div>
@@ -132,7 +132,7 @@ export function AreasManager({ initialAreas }: { initialAreas: AreaItem[] }) {
                   type="color"
                   value={color}
                   onChange={(e) => setColor(e.target.value)}
-                  className="h-9 w-12 cursor-pointer rounded-lg border border-white/10 bg-[#0E131F] p-1"
+                  className="h-9 w-12 cursor-pointer rounded-lg border border-teal-500/20 bg-[#081013] p-1"
                 />
                 <span className="text-xs text-surface-400 font-mono">{color}</span>
               </div>
@@ -145,21 +145,21 @@ export function AreasManager({ initialAreas }: { initialAreas: AreaItem[] }) {
               onChange={(e) => setDescription(e.target.value)}
               placeholder="Deskripsi fokus dan misi domain ini..."
               rows={2}
-              className="w-full rounded-xl border border-white/10 bg-[#0E131F] px-3.5 py-2 text-sm text-white placeholder:text-surface-500 focus:outline-none focus:border-violet-500/50"
+              className="w-full rounded-xl border border-teal-500/20 bg-[#081013] px-3.5 py-2 text-sm text-white placeholder:text-surface-500 focus:outline-none focus:border-teal-500"
             />
           </div>
           <div className="flex justify-end gap-2">
             <button
               type="button"
               onClick={() => setIsCreating(false)}
-              className="rounded-lg px-3.5 py-1.5 text-xs font-semibold text-surface-400 hover:bg-white/5 hover:text-white"
+              className="rounded-lg px-3.5 py-1.5 text-xs font-semibold text-surface-400 hover:bg-white/5 hover:text-white cursor-pointer"
             >
               Batal
             </button>
             <button
               type="submit"
               disabled={loading || !name.trim()}
-              className="rounded-lg bg-violet-600 px-4 py-1.5 text-xs font-semibold text-white shadow-md hover:bg-violet-500 disabled:opacity-50"
+              className="rounded-lg bg-teal-600 px-4 py-1.5 text-xs font-semibold text-white shadow-md hover:bg-teal-500 disabled:opacity-50 cursor-pointer"
             >
               {loading ? "Menyimpan..." : "Simpan Bidang"}
             </button>
@@ -173,8 +173,8 @@ export function AreasManager({ initialAreas }: { initialAreas: AreaItem[] }) {
             key={area.id}
             className={`rounded-2xl border p-5 shadow-xl transition-all ${
               area.isActive
-                ? "border-white/[0.08] bg-[#131825]/90 hover:border-violet-500/30"
-                : "border-white/5 bg-[#0E131F]/60 opacity-60"
+                ? "border-teal-500/15 bg-[#0d1b20]/90 hover:border-teal-500/30"
+                : "border-teal-500/10 bg-[#081013]/60 opacity-60"
             }`}
           >
             <div className="flex items-start justify-between">
@@ -185,7 +185,7 @@ export function AreasManager({ initialAreas }: { initialAreas: AreaItem[] }) {
                 />
                 <Link
                   href={`/areas/${area.id}`}
-                  className="font-bold text-white hover:text-violet-300 truncate text-base transition"
+                  className="font-bold text-white hover:text-teal-300 truncate text-base transition"
                 >
                   {area.name}
                 </Link>
@@ -194,14 +194,14 @@ export function AreasManager({ initialAreas }: { initialAreas: AreaItem[] }) {
                 <button
                   onClick={() => handleToggleActive(area)}
                   title={area.isActive ? "Arsipkan" : "Aktifkan"}
-                  className="rounded-lg p-1.5 text-surface-400 hover:bg-white/5 hover:text-white transition-all"
+                  className="rounded-lg p-1.5 text-surface-400 hover:bg-white/5 hover:text-white transition-all cursor-pointer"
                 >
                   <Icon name={area.isActive ? "stop" : "play"} size={14} />
                 </button>
                 <button
                   onClick={() => handleDelete(area)}
                   title="Hapus"
-                  className="rounded-lg p-1.5 text-surface-400 hover:bg-rose-500/10 hover:text-rose-400 transition-all"
+                  className="rounded-lg p-1.5 text-surface-400 hover:bg-rose-500/10 hover:text-rose-400 transition-all cursor-pointer"
                 >
                   <Icon name="trash" size={14} />
                 </button>
@@ -216,7 +216,7 @@ export function AreasManager({ initialAreas }: { initialAreas: AreaItem[] }) {
 
             {/* Linked Goals & Projects */}
             {((area.goals && area.goals.length > 0) || (area.projects && area.projects.length > 0)) && (
-              <div className="mt-3.5 space-y-2 pt-3 border-t border-white/[0.06]">
+              <div className="mt-3.5 space-y-2 pt-3 border-t border-teal-500/15">
                 {area.goals && area.goals.length > 0 && (
                   <div>
                     <span className="text-[10px] font-mono font-semibold uppercase tracking-wider text-surface-400">
@@ -227,7 +227,7 @@ export function AreasManager({ initialAreas }: { initialAreas: AreaItem[] }) {
                         <Link
                           key={g.id}
                           href={`/goals/${g.id}`}
-                          className="inline-flex items-center gap-1 rounded-md border border-white/5 bg-[#0E131F] hover:border-violet-500/30 hover:text-violet-300 px-2 py-0.5 text-[11px] font-medium text-surface-300 transition"
+                          className="inline-flex items-center gap-1 rounded-md border border-teal-500/15 bg-[#081013] hover:border-teal-500/30 hover:text-teal-300 px-2 py-0.5 text-[11px] font-medium text-surface-300 transition"
                         >
                           <span className="text-[10px]">🎯</span>
                           <span className="truncate max-w-[130px]">{g.title}</span>
@@ -246,7 +246,7 @@ export function AreasManager({ initialAreas }: { initialAreas: AreaItem[] }) {
                         <Link
                           key={p.id}
                           href={`/projects/${p.id}`}
-                          className="inline-flex items-center gap-1 rounded-md border border-white/5 bg-[#0E131F] hover:border-violet-500/30 hover:text-violet-300 px-2 py-0.5 text-[11px] font-medium text-surface-300 transition"
+                          className="inline-flex items-center gap-1 rounded-md border border-teal-500/15 bg-[#081013] hover:border-teal-500/30 hover:text-teal-300 px-2 py-0.5 text-[11px] font-medium text-surface-300 transition"
                         >
                           <span className="text-[10px]">📁</span>
                           <span className="truncate max-w-[130px]">{p.title}</span>
@@ -258,8 +258,8 @@ export function AreasManager({ initialAreas }: { initialAreas: AreaItem[] }) {
               </div>
             )}
 
-            <div className="mt-4 flex items-center justify-between text-xs text-surface-400 border-t border-white/[0.06] pt-3 font-mono">
-              <span className="text-violet-300 font-semibold">{area._count?.goals ?? 0} Goals</span>
+            <div className="mt-4 flex items-center justify-between text-xs text-surface-400 border-t border-teal-500/15 pt-3 font-mono">
+              <span className="text-teal-300 font-semibold">{area._count?.goals ?? 0} Goals</span>
               <span>•</span>
               <span className="text-surface-300 font-semibold">{area._count?.projects ?? 0} Proyek</span>
               <span>•</span>
@@ -267,7 +267,7 @@ export function AreasManager({ initialAreas }: { initialAreas: AreaItem[] }) {
             </div>
 
             {/* Quick Actions */}
-            <div className="mt-3 flex items-center justify-between gap-2 pt-2.5 border-t border-white/[0.06]">
+            <div className="mt-3 flex items-center justify-between gap-2 pt-2.5 border-t border-teal-500/15">
               <div className="flex items-center gap-2">
                 <NewGoalButton
                   areas={initialAreas.map((a) => ({ id: a.id, name: a.name, color: a.color }))}
@@ -278,7 +278,7 @@ export function AreasManager({ initialAreas }: { initialAreas: AreaItem[] }) {
                 />
                 <Link
                   href={`/projects?new=true&areaId=${area.id}`}
-                  className="inline-flex h-8 items-center gap-1 rounded-xl border border-white/10 bg-[#0E131F] px-3 text-xs font-semibold text-surface-300 hover:border-violet-500/30 hover:text-white transition"
+                  className="inline-flex h-8 items-center gap-1 rounded-xl border border-teal-500/15 bg-[#081013] px-3 text-xs font-semibold text-surface-300 hover:border-teal-500/30 hover:text-white transition"
                 >
                   <Icon name="plus" size={12} />
                   Proyek
@@ -287,7 +287,7 @@ export function AreasManager({ initialAreas }: { initialAreas: AreaItem[] }) {
 
               <Link
                 href={`/areas/${area.id}`}
-                className="text-xs font-semibold text-violet-400 hover:text-violet-300 flex items-center gap-1"
+                className="text-xs font-semibold text-teal-400 hover:text-teal-300 flex items-center gap-1"
               >
                 Detail →
               </Link>
@@ -297,14 +297,14 @@ export function AreasManager({ initialAreas }: { initialAreas: AreaItem[] }) {
       </div>
 
       {initialAreas.length === 0 && !isCreating && (
-        <div className="rounded-2xl border border-dashed border-white/10 bg-[#131825]/90 p-12 text-center">
+        <div className="rounded-2xl border border-dashed border-teal-500/20 bg-[#0d1b20]/90 p-12 text-center">
           <p className="text-base font-bold text-white">Belum ada Bidang Hidup terdaftar.</p>
           <p className="mt-1 text-xs text-surface-400">
             Mulai kelompokkan aktivitas dan tujuan Anda ke dalam domain kehidupan (mis. Karier, Belajar, Finansial).
           </p>
           <button
             onClick={() => setIsCreating(true)}
-            className="mt-4 inline-flex items-center gap-1.5 rounded-xl bg-violet-600 px-4 py-2 text-xs font-semibold text-white shadow-lg shadow-violet-500/25 hover:bg-violet-500"
+            className="mt-4 inline-flex items-center gap-1.5 rounded-xl bg-teal-600 px-4 py-2 text-xs font-semibold text-white shadow-lg shadow-teal-900/30 hover:bg-teal-500 cursor-pointer"
           >
             <Icon name="plus" size={14} />
             Buat Bidang Pertama

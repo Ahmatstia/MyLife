@@ -5,6 +5,9 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useToast } from "@/app/components/ui/Toast";
 import { BackButton } from "@/app/components/ui/BackButton";
+import { calculatePrayerSchedule } from "@/lib/prayer/calculator";
+import { IndonesianCity } from "@/lib/prayer/cities";
+import { usePrayerSettings } from "@/lib/prayer/usePrayerSettings";
 
 // ── Types ──────────────────────────────────────────────────────────
 export interface EventItem {
@@ -25,6 +28,9 @@ export interface EventItem {
   projectId?: string | null;
   task?: { id: string; title: string } | null;
   project?: { id: string; title: string } | null;
+  isPrayer?: boolean;
+  prayerId?: string;
+  prayerIcon?: string;
 }
 
 export interface ProjectOption {
@@ -138,89 +144,7 @@ function projectRecurringEvents(events: EventItem[], targetDay: Date): EventItem
   );
 }
 
-// ── Category Config ──────────────────────────────────────────────────
-export const CATEGORY_MAP: Record<
-  string,
-  {
-    label: string;
-    dot: string;
-    badgeBg: string;
-    badgeBorder: string;
-    badgeText: string;
-    cardBg: string;
-    cardBorder: string;
-    cardHover: string;
-    icon: string;
-    glow: string;
-  }
-> = {
-  BLOCKED: {
-    label: "Fokus",
-    dot: "#c084fc",
-    badgeBg: "bg-purple-500/15",
-    badgeBorder: "border-purple-500/30",
-    badgeText: "text-purple-300",
-    cardBg: "bg-purple-950/20",
-    cardBorder: "border-purple-500/25",
-    cardHover: "hover:border-purple-500/40 hover:bg-purple-950/30",
-    icon: "🎯",
-    glow: "shadow-[0_0_20px_rgba(192,132,252,0.15)]",
-  },
-  WORK: {
-    label: "Pekerjaan",
-    dot: "#818cf8",
-    badgeBg: "bg-indigo-500/15",
-    badgeBorder: "border-indigo-500/30",
-    badgeText: "text-indigo-300",
-    cardBg: "bg-indigo-950/20",
-    cardBorder: "border-indigo-500/25",
-    cardHover: "hover:border-indigo-500/40 hover:bg-indigo-950/30",
-    icon: "💼",
-    glow: "",
-  },
-  PERSONAL: {
-    label: "Pribadi",
-    dot: "#34d399",
-    badgeBg: "bg-emerald-500/15",
-    badgeBorder: "border-emerald-500/30",
-    badgeText: "text-emerald-300",
-    cardBg: "bg-emerald-950/20",
-    cardBorder: "border-emerald-500/25",
-    cardHover: "hover:border-emerald-500/40 hover:bg-emerald-950/30",
-    icon: "🌱",
-    glow: "",
-  },
-  TASK_DEADLINE: {
-    label: "Tenggat",
-    dot: "#fb7185",
-    badgeBg: "bg-rose-500/15",
-    badgeBorder: "border-rose-500/30",
-    badgeText: "text-rose-300",
-    cardBg: "bg-rose-950/20",
-    cardBorder: "border-rose-500/25",
-    cardHover: "hover:border-rose-500/40 hover:bg-rose-950/30",
-    icon: "🔴",
-    glow: "",
-  },
-  REMINDER: {
-    label: "Pengingat",
-    dot: "#fbbf24",
-    badgeBg: "bg-amber-500/15",
-    badgeBorder: "border-amber-500/30",
-    badgeText: "text-amber-300",
-    cardBg: "bg-amber-950/20",
-    cardBorder: "border-amber-500/25",
-    cardHover: "hover:border-amber-500/40 hover:bg-amber-950/30",
-    icon: "🔔",
-    glow: "",
-  },
-};
-
-const CATEGORIES = [
-  { id: "ALL", label: "Semua", icon: "✨" },
-  ...Object.entries(CATEGORY_MAP).map(([id, v]) => ({ id, label: v.label, icon: v.icon })),
-];
-
+// ── Helpers ──────────────────────────────────────────────────────────
 const recurrenceLabel: Record<string, string> = {
   DAILY: "Setiap hari",
   WEEKLY: "Setiap minggu",
@@ -236,6 +160,11 @@ function ToDoListView({
   onSelectEvent,
   onDeleteEvent,
   onOpenModal,
+  prayerEvents = [],
+  onTogglePrayerCheck,
+  showPrayerTimes = true,
+  onToggleShowPrayerTimes,
+  prayerCity,
 }: {
   events: EventItem[];
   targetDay: Date;
@@ -243,17 +172,20 @@ function ToDoListView({
   onQuickAdd: (
     title: string,
     timeMode: "START_ONLY" | "ALL_DAY",
-    timeStr: string,
-    category: string
+    timeStr: string
   ) => Promise<void>;
   onSelectEvent: (ev: EventItem) => void;
   onDeleteEvent: (id: string) => Promise<void>;
   onOpenModal: () => void;
+  prayerEvents?: EventItem[];
+  onTogglePrayerCheck?: (prayerId: string) => void;
+  showPrayerTimes?: boolean;
+  onToggleShowPrayerTimes?: () => void;
+  prayerCity?: IndonesianCity;
 }) {
   const [quickTitle, setQuickTitle] = useState("");
   const [quickMode, setQuickMode] = useState<"START_ONLY" | "ALL_DAY">("START_ONLY");
   const [quickTime, setQuickTime] = useState("05:00");
-  const [quickCategory, setQuickCategory] = useState("PERSONAL");
   const [submitting, setSubmitting] = useState(false);
   const [statusFilter, setStatusFilter] = useState<"ALL" | "PENDING" | "DONE">("ALL");
 
@@ -262,23 +194,31 @@ function ToDoListView({
     [events, targetDay]
   );
 
-  const totalCount = dayEvents.length;
-  const completedCount = dayEvents.filter((e) => e.isCompleted).length;
-  const pendingCount = totalCount - completedCount;
-  const progressPct = totalCount > 0 ? Math.round((completedCount / totalCount) * 100) : 0;
-
-  const scheduledEvents = dayEvents
-    .filter((e) => !e.isAllDay)
-    .sort((a, b) => new Date(a.startTime).getTime() - new Date(b.startTime).getTime());
+  const scheduledEvents = useMemo(() => {
+    const regular = dayEvents.filter((e) => !e.isAllDay);
+    const combined = [...regular, ...(prayerEvents || [])];
+    return combined.sort(
+      (a, b) => new Date(a.startTime).getTime() - new Date(b.startTime).getTime()
+    );
+  }, [dayEvents, prayerEvents]);
 
   const allDayEvents = dayEvents.filter((e) => e.isAllDay);
+
+  const allCountableItems = useMemo(() => {
+    return [...dayEvents, ...(prayerEvents || [])];
+  }, [dayEvents, prayerEvents]);
+
+  const totalCount = allCountableItems.length;
+  const completedCount = allCountableItems.filter((e) => e.isCompleted).length;
+  const pendingCount = totalCount - completedCount;
+  const progressPct = totalCount > 0 ? Math.round((completedCount / totalCount) * 100) : 0;
 
   async function handleFormSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (!quickTitle.trim() || submitting) return;
     setSubmitting(true);
     try {
-      await onQuickAdd(quickTitle.trim(), quickMode, quickTime, quickCategory);
+      await onQuickAdd(quickTitle.trim(), quickMode, quickTime);
       setQuickTitle("");
     } finally {
       setSubmitting(false);
@@ -298,8 +238,8 @@ function ToDoListView({
               type="text"
               value={quickTitle}
               onChange={(e) => setQuickTitle(e.target.value)}
-              placeholder="Tulis to-do atau agenda baru... (cth: Bangun subuh, Baca jurnal, Beli suplemen)"
-              className="w-full bg-zinc-950/70 pl-9 pr-3.5 py-3 rounded-2xl text-sm text-zinc-100 border border-white/[0.08] placeholder:text-zinc-500 focus:outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 transition-all shadow-inner"
+              placeholder="Tulis agenda atau to-do hari ini..."
+              className="w-full bg-zinc-950/70 pl-9 pr-3.5 py-3 rounded-2xl text-sm text-zinc-100 border border-white/[0.08] placeholder:text-zinc-500 focus:outline-none focus:border-purple-500/50 focus:ring-1 focus:ring-purple-500/20 transition-all shadow-inner"
             />
           </div>
 
@@ -340,17 +280,6 @@ function ToDoListView({
               />
             )}
 
-            <select
-              value={quickCategory}
-              onChange={(e) => setQuickCategory(e.target.value)}
-              className="bg-zinc-950/80 px-3 py-2 rounded-xl text-xs font-medium text-zinc-300 border border-white/[0.08] focus:outline-none focus:border-purple-500 cursor-pointer"
-            >
-              <option value="PERSONAL">🌱 Pribadi</option>
-              <option value="BLOCKED">🎯 Fokus</option>
-              <option value="WORK">💼 Pekerjaan</option>
-              <option value="REMINDER">🔔 Pengingat</option>
-            </select>
-
             <button
               type="submit"
               disabled={submitting || !quickTitle.trim()}
@@ -362,9 +291,8 @@ function ToDoListView({
         </form>
 
         <div className="flex items-center justify-between text-xs text-zinc-400 pt-0.5">
-          <span className="flex items-center gap-1.5">
-            <span className="text-amber-400">💡</span>
-            <span>To-do dengan jam cukup tentukan jam mulai, lalu ceklis saat aktivitas selesai!</span>
+          <span className="text-zinc-500 text-[11px]">
+            To-do dengan jam akan tersusun otomatis. Pilih Bebas untuk tugas tanpa jam.
           </span>
           <button
             type="button"
@@ -389,28 +317,56 @@ function ToDoListView({
             )}
           </div>
 
-          {/* Filter status */}
-          <div className="flex items-center gap-1 bg-zinc-950/80 p-1 rounded-2xl border border-white/[0.06]">
-            {(
-              [
-                { id: "ALL", label: `Semua (${totalCount})` },
-                { id: "PENDING", label: `Belum (${pendingCount})` },
-                { id: "DONE", label: `Selesai (${completedCount})` },
-              ] as const
-            ).map((s) => (
+          {/* Quick prayer toggle & Filter status */}
+          <div className="flex items-center gap-2 flex-wrap">
+            {showPrayerTimes !== undefined && onToggleShowPrayerTimes && (
               <button
-                key={s.id}
                 type="button"
-                onClick={() => setStatusFilter(s.id)}
-                className={`px-3 py-1 rounded-xl text-xs font-semibold transition-all ${
-                  statusFilter === s.id
-                    ? "bg-purple-600/30 text-purple-200 border border-purple-500/30 shadow-sm"
-                    : "text-zinc-400 hover:text-zinc-200"
+                suppressHydrationWarning
+                onClick={onToggleShowPrayerTimes}
+                className={`flex items-center gap-1.5 px-3 py-1 rounded-xl text-xs font-semibold transition-all border ${
+                  showPrayerTimes
+                    ? "bg-emerald-500/15 text-emerald-300 border-emerald-500/30 shadow-xs"
+                    : "bg-zinc-950/80 text-zinc-500 border-white/[0.06] hover:text-zinc-300"
                 }`}
+                title={
+                  showPrayerTimes
+                    ? `Waktu Sholat aktif (${prayerCity?.name || "Jakarta"}). Klik untuk menyembunyikan.`
+                    : "Waktu Sholat disembunyikan. Klik untuk menampilkan."
+                }
               >
-                {s.label}
+                <span>🕌</span>
+                <span>Waktu Sholat: {showPrayerTimes ? "Aktif" : "Mati"}</span>
+                <span
+                  className={`w-1.5 h-1.5 rounded-full ${
+                    showPrayerTimes ? "bg-emerald-400 animate-pulse" : "bg-zinc-600"
+                  }`}
+                />
               </button>
-            ))}
+            )}
+
+            <div className="flex items-center gap-1 bg-zinc-950/80 p-1 rounded-2xl border border-white/[0.06]">
+              {(
+                [
+                  { id: "ALL", label: `Semua (${totalCount})` },
+                  { id: "PENDING", label: `Belum (${pendingCount})` },
+                  { id: "DONE", label: `Selesai (${completedCount})` },
+                ] as const
+              ).map((s) => (
+                <button
+                  key={s.id}
+                  type="button"
+                  onClick={() => setStatusFilter(s.id)}
+                  className={`px-3 py-1 rounded-xl text-xs font-semibold transition-all ${
+                    statusFilter === s.id
+                      ? "bg-purple-600/30 text-purple-200 border border-purple-500/30 shadow-sm"
+                      : "text-zinc-400 hover:text-zinc-200"
+                  }`}
+                >
+                  {s.label}
+                </button>
+              ))}
+            </div>
           </div>
         </div>
 
@@ -459,7 +415,6 @@ function ToDoListView({
                       evEnd.getTime() - evStart.getTime() > 60000 &&
                       (evEnd.getHours() !== evStart.getHours() ||
                         evEnd.getMinutes() !== evStart.getMinutes());
-                    const cat = CATEGORY_MAP[ev.eventType] || CATEGORY_MAP["PERSONAL"];
                     const isDone = !!ev.isCompleted;
 
                     return (
@@ -467,15 +422,23 @@ function ToDoListView({
                         key={ev.id}
                         className={`group flex items-center justify-between gap-3 p-3.5 sm:p-4 rounded-2xl border transition-all ${
                           isDone
-                            ? "bg-zinc-950/40 border-white/[0.04] opacity-60 hover:opacity-90"
-                            : `${cat.cardBg} ${cat.cardBorder} ${cat.cardHover} shadow-sm`
+                            ? "bg-zinc-950/40 border-white/[0.04] opacity-50 hover:opacity-80"
+                            : ev.isPrayer
+                            ? "bg-emerald-950/20 border-emerald-500/25 hover:border-emerald-500/40 hover:bg-emerald-950/30 shadow-sm"
+                            : "bg-zinc-900/80 border-white/[0.06] hover:border-white/15 hover:bg-zinc-800/60 shadow-sm"
                         }`}
                       >
                         <div className="flex items-center gap-3.5 min-w-0 flex-1">
                           {/* Checkbox */}
                           <button
                             type="button"
-                            onClick={() => onToggleComplete(ev.id, isDone)}
+                            onClick={() => {
+                              if (ev.isPrayer) {
+                                onTogglePrayerCheck?.(ev.prayerId || ev.id);
+                              } else {
+                                onToggleComplete(ev.id, isDone);
+                              }
+                            }}
                             className={`w-6 h-6 rounded-lg border flex items-center justify-center transition-all shrink-0 cursor-pointer ${
                               isDone
                                 ? "bg-emerald-400 border-emerald-400 text-zinc-950 shadow-md shadow-emerald-400/30"
@@ -489,10 +452,16 @@ function ToDoListView({
                           </button>
 
                           {/* Time badge */}
-                          <div className="flex items-center gap-1 text-xs px-2.5 py-1 rounded-xl bg-zinc-950/80 border border-white/[0.06] text-purple-300 font-mono font-semibold shrink-0">
-                            <span>{formatTimeStr(evStart)}</span>
-                            {isRange && (
-                              <span className="text-zinc-500 font-normal">
+                          <div
+                            className={`flex items-center gap-1 text-xs px-2.5 py-1 rounded-xl border font-mono font-semibold shrink-0 ${
+                              ev.isPrayer
+                                ? "bg-emerald-950/60 border-emerald-500/25 text-emerald-300"
+                                : "bg-zinc-950/80 border-white/[0.08] text-zinc-300"
+                            }`}
+                          >
+                            <span suppressHydrationWarning>{formatTimeStr(evStart)}</span>
+                            {isRange && !ev.isPrayer && (
+                              <span suppressHydrationWarning className="text-zinc-500 font-normal">
                                 –{formatTimeStr(evEnd)}
                               </span>
                             )}
@@ -503,19 +472,27 @@ function ToDoListView({
                             <div className="flex items-center gap-2 flex-wrap">
                               <span
                                 className={`text-sm font-semibold truncate ${
-                                  isDone ? "line-through text-zinc-500" : "text-white"
+                                  isDone
+                                    ? "line-through text-zinc-500"
+                                    : ev.isPrayer
+                                    ? "text-emerald-200"
+                                    : "text-white"
                                 }`}
                               >
-                                {ev.title}
+                                {ev.isPrayer ? `🕌 ${ev.title}` : ev.title}
                               </span>
-                              {ev.recurrence && ev.recurrence !== "NONE" && (
+                              {ev.isPrayer ? (
+                                <span className="text-[10px] px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-400 border border-emerald-500/25 font-bold uppercase tracking-wider">
+                                  Waktu Sholat
+                                </span>
+                              ) : ev.recurrence && ev.recurrence !== "NONE" ? (
                                 <span
                                   className="text-[11px] px-2 py-0.5 rounded-full bg-purple-500/10 text-purple-300 border border-purple-500/20 shrink-0 font-medium"
                                   title={recurrenceLabel[ev.recurrence]}
                                 >
                                   🔁 {recurrenceLabel[ev.recurrence] || "Rutin"}
                                 </span>
-                              )}
+                              ) : null}
                             </div>
                             {ev.description && (
                               <span className="text-xs text-zinc-400 truncate mt-0.5">
@@ -526,50 +503,66 @@ function ToDoListView({
                         </div>
 
                         {/* Right side actions */}
-                        <div className="flex items-center gap-2 shrink-0">
-                          <span
-                            className={`text-xs px-2.5 py-0.5 rounded-full ${cat.badgeBg} ${cat.badgeText} border ${cat.badgeBorder} hidden sm:inline-block font-medium`}
-                          >
-                            {cat.icon} {cat.label}
-                          </span>
-
-                          {/* Link to focus mode if tied to a task or important */}
-                          {ev.taskId && (
+                        {ev.isPrayer ? (
+                          <div className="flex items-center gap-2 shrink-0">
+                            <span className="text-[11px] px-2.5 py-0.5 rounded-full bg-emerald-500/15 text-emerald-300 border border-emerald-500/30 hidden sm:inline-block font-medium">
+                              🕌 Waktu Sholat
+                            </span>
                             <Link
-                              href={`/focus?taskId=${ev.taskId}`}
-                              className="px-2.5 py-1 rounded-lg bg-purple-600/20 hover:bg-purple-600/30 text-purple-300 border border-purple-500/30 text-xs font-semibold transition-all flex items-center gap-1"
-                              title="Buka sesi fokus mendalam untuk tugas ini"
+                              href="/settings"
+                              className="p-1.5 hover:bg-emerald-500/20 rounded-lg text-emerald-400/80 hover:text-emerald-300 transition-colors"
+                              title="Atur preferensi jadwal sholat di Pengaturan"
                             >
-                              <span>Fokus</span>
-                              <span>🍅</span>
+                              <span className="text-xs">⚙️</span>
                             </Link>
-                          )}
-
-                          <div className="flex items-center gap-1 opacity-80 group-hover:opacity-100 transition-opacity">
-                            <button
-                              type="button"
-                              onClick={() => onSelectEvent(ev)}
-                              className="p-1.5 hover:bg-white/[0.08] rounded-lg text-zinc-400 hover:text-white transition-colors"
-                              title="Edit / Detail"
-                            >
-                              <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                                <path d="M12 20h9" />
-                                <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z" />
-                              </svg>
-                            </button>
-                            <button
-                              type="button"
-                              onClick={() => onDeleteEvent(ev.id)}
-                              className="p-1.5 hover:bg-rose-500/20 rounded-lg text-zinc-400 hover:text-rose-400 transition-colors"
-                              title="Hapus"
-                            >
-                              <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                                <polyline points="3 6 5 6 21 6" />
-                                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
-                              </svg>
-                            </button>
                           </div>
-                        </div>
+                        ) : (
+                          <div className="flex items-center gap-2 shrink-0">
+                            {ev.project && (
+                              <span className="text-[11px] px-2.5 py-0.5 rounded-full bg-white/[0.04] text-zinc-300 border border-white/[0.08] hidden sm:inline-flex items-center gap-1 font-medium">
+                                <span>📁</span>
+                                <span>{ev.project.title}</span>
+                              </span>
+                            )}
+
+                            {/* Link to focus mode if tied to a task */}
+                            {ev.taskId && (
+                              <Link
+                                href={`/focus?taskId=${ev.taskId}`}
+                                className="px-2.5 py-1 rounded-lg bg-teal-500/15 hover:bg-teal-500/25 text-teal-300 border border-teal-500/30 text-xs font-semibold transition-all flex items-center gap-1"
+                                title="Buka sesi fokus mendalam untuk tugas ini"
+                              >
+                                <span>Fokus</span>
+                                <span>🍅</span>
+                              </Link>
+                            )}
+
+                            <div className="flex items-center gap-1 opacity-80 group-hover:opacity-100 transition-opacity">
+                              <button
+                                type="button"
+                                onClick={() => onSelectEvent(ev)}
+                                className="p-1.5 hover:bg-white/[0.08] rounded-lg text-zinc-400 hover:text-white transition-colors"
+                                title="Edit / Detail"
+                              >
+                                <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                  <path d="M12 20h9" />
+                                  <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z" />
+                                </svg>
+                              </button>
+                              <button
+                                type="button"
+                                onClick={() => onDeleteEvent(ev.id)}
+                                className="p-1.5 hover:bg-rose-500/20 rounded-lg text-zinc-400 hover:text-rose-400 transition-colors"
+                                title="Hapus"
+                              >
+                                <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                  <polyline points="3 6 5 6 21 6" />
+                                  <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+                                </svg>
+                              </button>
+                            </div>
+                          </div>
+                        )}
                       </div>
                     );
                   })}
@@ -580,8 +573,8 @@ function ToDoListView({
           {/* 2. ANYTIME / ALL-DAY TO-DOS */}
           {allDayEvents.length > 0 && (
             <div className="flex flex-col gap-3">
-              <div className="flex items-center gap-2 text-xs font-bold text-emerald-400 tracking-wider uppercase">
-                <span>📌 To-Do Fleksibel (Kapan Saja Hari Ini)</span>
+              <div className="flex items-center gap-2 text-xs font-bold text-zinc-400 tracking-wider uppercase">
+                <span>📌 To-Do Fleksibel (Bebas Jam)</span>
                 <span className="text-zinc-500">({allDayEvents.length})</span>
               </div>
 
@@ -593,7 +586,6 @@ function ToDoListView({
                     return true;
                   })
                   .map((ev) => {
-                    const cat = CATEGORY_MAP[ev.eventType] || CATEGORY_MAP["PERSONAL"];
                     const isDone = !!ev.isCompleted;
 
                     return (
@@ -601,8 +593,8 @@ function ToDoListView({
                         key={ev.id}
                         className={`group flex items-center justify-between gap-3 p-3.5 sm:p-4 rounded-2xl border transition-all ${
                           isDone
-                            ? "bg-zinc-950/40 border-white/[0.04] opacity-60 hover:opacity-90"
-                            : "bg-zinc-900/60 border-white/[0.06] hover:border-emerald-500/40 shadow-sm"
+                            ? "bg-zinc-950/40 border-white/[0.04] opacity-50 hover:opacity-80"
+                            : "bg-zinc-900/80 border-white/[0.06] hover:border-white/15 hover:bg-zinc-800/60 shadow-sm"
                         }`}
                       >
                         <div className="flex items-center gap-3.5 min-w-0 flex-1">
@@ -644,11 +636,12 @@ function ToDoListView({
 
                         {/* Actions */}
                         <div className="flex items-center gap-2 shrink-0">
-                          <span
-                            className={`text-xs px-2.5 py-0.5 rounded-full ${cat.badgeBg} ${cat.badgeText} border ${cat.badgeBorder} hidden sm:inline-block font-medium`}
-                          >
-                            {cat.icon} {cat.label}
-                          </span>
+                          {ev.project && (
+                            <span className="text-[11px] px-2.5 py-0.5 rounded-full bg-white/[0.04] text-zinc-300 border border-white/[0.08] hidden sm:inline-flex items-center gap-1 font-medium">
+                              <span>📁</span>
+                              <span>{ev.project.title}</span>
+                            </span>
+                          )}
 
                           <div className="flex items-center gap-1 opacity-80 group-hover:opacity-100 transition-opacity">
                             <button
@@ -699,6 +692,8 @@ function DailyFlowView({
   onAddAtHour,
   onSelectEvent,
   onToggleComplete,
+  prayerEvents = [],
+  onTogglePrayerCheck,
 }: {
   events: EventItem[];
   now: Date;
@@ -706,11 +701,13 @@ function DailyFlowView({
   onAddAtHour: (h: number) => void;
   onSelectEvent: (ev: EventItem) => void;
   onToggleComplete: (id: string, currentCompleted: boolean) => Promise<void>;
+  prayerEvents?: EventItem[];
+  onTogglePrayerCheck?: (prayerId: string) => void;
 }) {
-  const dayEvents = useMemo(
-    () => projectRecurringEvents(events, targetDay),
-    [events, targetDay]
-  );
+  const dayEvents = useMemo(() => {
+    const regular = projectRecurringEvents(events, targetDay);
+    return [...regular, ...(prayerEvents || [])];
+  }, [events, targetDay, prayerEvents]);
   const isToday = sameDay(targetDay, now);
 
   const nowMinutes = now.getHours() * 60 + now.getMinutes();
@@ -857,14 +854,25 @@ function DailyFlowView({
 
               const isOngoing = !ev.isCompleted && evStart <= now && now <= evEnd;
               const isDone = !!ev.isCompleted;
-              const cat = CATEGORY_MAP[ev.eventType] ?? CATEGORY_MAP["BLOCKED"];
               const hasRecurrence = ev.recurrence && ev.recurrence !== "NONE";
 
               return (
                 <div
                   key={ev.id}
-                  onClick={() => onSelectEvent(ev)}
-                  className={`pointer-events-auto absolute left-0 right-0 rounded-xl px-3.5 py-2 cursor-pointer transition-all hover:scale-[1.008] hover:z-20 flex flex-col justify-between overflow-hidden border ${cat.cardBg} ${cat.cardBorder} ${isOngoing ? cat.glow : ""} ${isDone ? "opacity-50" : ""}`}
+                  onClick={() => {
+                    if (ev.isPrayer) {
+                      onTogglePrayerCheck?.(ev.prayerId || ev.id);
+                    } else {
+                      onSelectEvent(ev);
+                    }
+                  }}
+                  className={`pointer-events-auto absolute left-0 right-0 rounded-xl px-3.5 py-2 cursor-pointer transition-all hover:scale-[1.008] hover:z-20 flex flex-col justify-between overflow-hidden border ${
+                    ev.isPrayer
+                      ? "bg-emerald-950/40 border-emerald-500/30 hover:border-emerald-500/50"
+                      : isOngoing
+                      ? "bg-zinc-900 border-purple-500/50 shadow-md shadow-purple-500/10"
+                      : "bg-zinc-900/90 border-white/[0.08] hover:border-white/20"
+                  } ${isDone ? "opacity-50" : ""}`}
                   style={{ top: `${topPx}px`, height: `${heightPx}px` }}
                 >
                   <div className="flex items-center justify-between gap-2">
@@ -874,7 +882,11 @@ function DailyFlowView({
                         type="button"
                         onClick={(e) => {
                           e.stopPropagation();
-                          onToggleComplete(ev.id, isDone);
+                          if (ev.isPrayer) {
+                            onTogglePrayerCheck?.(ev.prayerId || ev.id);
+                          } else {
+                            onToggleComplete(ev.id, isDone);
+                          }
                         }}
                         className={`w-4 h-4 rounded border flex items-center justify-center transition-all shrink-0 cursor-pointer ${
                           isDone
@@ -892,9 +904,14 @@ function DailyFlowView({
                           BERJALAN
                         </span>
                       )}
-                      <span className={`text-xs font-semibold truncate ${cat.badgeText} ${isDone ? "line-through text-zinc-500" : ""}`}>
+                      <span className={`text-xs font-semibold truncate ${isDone ? "line-through text-zinc-500" : "text-zinc-100"}`}>
                         {ev.title}
                       </span>
+                      {ev.project && (
+                        <span className="text-[10px] text-zinc-400 font-normal shrink-0 hidden sm:inline">
+                          📁 {ev.project.title}
+                        </span>
+                      )}
                     </div>
 
                     <div className="flex items-center gap-2 shrink-0">
@@ -946,13 +963,108 @@ export function CalendarManager({
 
   const [events, setEvents] = useState<EventItem[]>(initialEvents);
   const [viewMode, setViewMode] = useState<"TODO" | "DAILY" | "WEEKLY" | "AGENDA">("TODO");
-  const [typeFilter, setTypeFilter] = useState<string>("ALL");
   const [weekOffset, setWeekOffset] = useState(0);
   const [selectedDay, setSelectedDay] = useState<Date>(() => {
     const d = new Date();
     d.setHours(0, 0, 0, 0);
     return d;
   });
+
+  // Prayer Times in Calendar State (hydrated safely via usePrayerSettings)
+  const {
+    isHydrated,
+    city: prayerCity,
+    showInCalendar: showPrayerTimes,
+    showSunnah,
+    setShowInCalendar,
+  } = usePrayerSettings();
+
+  const selectedDateKey = formatLocalDateOnly(selectedDay);
+  const [prayerChecksMap, setPrayerChecksMap] = useState<Record<string, Record<string, boolean>>>({});
+
+  const prayerChecks = useMemo(() => {
+    if (prayerChecksMap[selectedDateKey]) return prayerChecksMap[selectedDateKey];
+    if (!isHydrated || typeof window === "undefined") return {};
+    try {
+      const saved = localStorage.getItem(`mylife_prayer_checks_${selectedDateKey}`);
+      if (saved) return JSON.parse(saved);
+    } catch {
+      // fallback
+    }
+    return {};
+  }, [prayerChecksMap, selectedDateKey, isHydrated]);
+
+  const handleTogglePrayerCheck = useCallback(
+    (prayerId: string) => {
+      setPrayerChecksMap((prev) => {
+        let currentForDate = prev[selectedDateKey];
+        if (!currentForDate && typeof window !== "undefined") {
+          try {
+            const saved = localStorage.getItem(`mylife_prayer_checks_${selectedDateKey}`);
+            if (saved) currentForDate = JSON.parse(saved);
+          } catch {
+            // fallback
+          }
+        }
+        currentForDate = currentForDate || {};
+        const nextForDate = { ...currentForDate, [prayerId]: !currentForDate[prayerId] };
+        try {
+          localStorage.setItem(
+            `mylife_prayer_checks_${selectedDateKey}`,
+            JSON.stringify(nextForDate)
+          );
+        } catch {
+          // fallback
+        }
+        return { ...prev, [selectedDateKey]: nextForDate };
+      });
+    },
+    [selectedDateKey]
+  );
+
+  const handleToggleShowPrayerTimes = () => {
+    const nextVal = !showPrayerTimes;
+    setShowInCalendar(nextVal);
+    toast(
+      nextVal
+        ? `Waktu Sholat (${prayerCity.name}) diaktifkan di To-Do List! 🕌`
+        : "Waktu Sholat disembunyikan dari Kalender",
+      "info"
+    );
+  };
+
+  const prayerSchedule = useMemo(() => {
+    return calculatePrayerSchedule(selectedDay, prayerCity);
+  }, [selectedDay, prayerCity]);
+
+  const prayerEvents: EventItem[] = useMemo(() => {
+    if (!showPrayerTimes) return [];
+    const items = [
+      ...(showSunnah ? [prayerSchedule.imsak] : []),
+      prayerSchedule.subuh,
+      ...(showSunnah ? [prayerSchedule.dhuha] : []),
+      prayerSchedule.dzuhur,
+      prayerSchedule.ashar,
+      prayerSchedule.maghrib,
+      prayerSchedule.isya,
+    ];
+
+    return items.map((p) => {
+      const isDone = !!prayerChecks[p.id];
+      return {
+        id: `prayer-${p.id}`,
+        prayerId: p.id,
+        title: `Sholat ${p.name}`,
+        startTime: p.time,
+        endTime: new Date(p.time.getTime() + 20 * 60000),
+        isAllDay: false,
+        eventType: "PRAYER",
+        isCompleted: isDone,
+        isPrayer: true,
+        prayerIcon: p.icon,
+      };
+    });
+  }, [showPrayerTimes, showSunnah, prayerSchedule, prayerChecks]);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingEventId, setEditingEventId] = useState<string | null>(null);
@@ -1093,8 +1205,7 @@ export function CalendarManager({
   async function handleQuickAdd(
     title: string,
     timeMode: "START_ONLY" | "ALL_DAY",
-    timeStr: string,
-    category: string
+    timeStr: string
   ) {
     const dateStr = formatLocalDateOnly(selectedDay);
     let startIso: string;
@@ -1124,7 +1235,7 @@ export function CalendarManager({
           startTime: startIso,
           endTime: endIso,
           isAllDay,
-          eventType: category,
+          eventType: "PERSONAL",
           recurrence: "NONE",
           ignoreQuietHours,
         }),
@@ -1241,10 +1352,7 @@ export function CalendarManager({
     });
   };
 
-  const filteredEvents = useMemo(() => {
-    if (typeFilter === "ALL") return events;
-    return events.filter((e) => e.eventType === typeFilter);
-  }, [events, typeFilter]);
+  const filteredEvents = events;
 
   const selectedDayLabel = useMemo(() => getDayLabel(selectedDay), [selectedDay]);
 
@@ -1276,11 +1384,11 @@ export function CalendarManager({
               <BackButton fallbackUrl="/today" label="Kembali ke Hari Ini" />
               <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-purple-500/10 border border-purple-500/20 text-purple-300 text-xs font-medium">
                 <span className="w-2 h-2 rounded-full bg-purple-400 animate-pulse" />
-                <span>Jadwal &amp; To-Do Harian</span>
+                <span>Agenda &amp; To-Do Harian</span>
               </div>
             </div>
             <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-white flex items-center gap-3 flex-wrap">
-              <span>To-Do &amp; Jadwal</span>
+              <span>Agenda &amp; To-Do</span>
               {(viewMode === "TODO" || viewMode === "DAILY") && (
                 <span className="text-xs px-2.5 py-1 rounded-full bg-emerald-500/15 text-emerald-300 border border-emerald-500/25 font-semibold">
                   {selectedDayLabel}
@@ -1436,29 +1544,6 @@ export function CalendarManager({
           </div>
         )}
 
-        {/* Filter pills */}
-        <div className="flex items-center gap-1.5 overflow-x-auto pb-1 lg:pb-0 scrollbar-none">
-          {CATEGORIES.map((cat) => (
-            <button
-              key={cat.id}
-              type="button"
-              onClick={() => setTypeFilter(cat.id)}
-              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap transition-all border ${
-                typeFilter === cat.id
-                  ? "bg-purple-600/30 text-purple-200 border-purple-400/40 shadow-sm"
-                  : "bg-zinc-950/60 text-zinc-400 hover:text-zinc-200 border-white/[0.06] hover:bg-zinc-900"
-              }`}
-            >
-              {cat.id !== "ALL" && CATEGORY_MAP[cat.id] && (
-                <span
-                  className="w-2 h-2 rounded-full"
-                  style={{ backgroundColor: CATEGORY_MAP[cat.id].dot }}
-                />
-              )}
-              <span>{cat.label}</span>
-            </button>
-          ))}
-        </div>
       </section>
 
       {/* ── MAIN CONTENT ───────────────────────────────────────────── */}
@@ -1475,6 +1560,11 @@ export function CalendarManager({
               onSelectEvent={openEditModal}
               onDeleteEvent={handleDeleteEvent}
               onOpenModal={() => openCreateModal(selectedDay)}
+              prayerEvents={prayerEvents}
+              onTogglePrayerCheck={handleTogglePrayerCheck}
+              showPrayerTimes={showPrayerTimes}
+              onToggleShowPrayerTimes={handleToggleShowPrayerTimes}
+              prayerCity={prayerCity}
             />
           )}
 
@@ -1487,6 +1577,8 @@ export function CalendarManager({
               onAddAtHour={(h) => openCreateModal(selectedDay, h)}
               onSelectEvent={openEditModal}
               onToggleComplete={handleToggleComplete}
+              prayerEvents={prayerEvents}
+              onTogglePrayerCheck={handleTogglePrayerCheck}
             />
           )}
 
@@ -1629,7 +1721,6 @@ export function CalendarManager({
                               eh * 60 + em - (sh * 60 + sm)
                             );
                             const height = Math.max(26, (durMin / 60) * 56);
-                            const cat = CATEGORY_MAP[ev.eventType] || CATEGORY_MAP["PERSONAL"];
 
                             return (
                               <div
@@ -1638,11 +1729,11 @@ export function CalendarManager({
                                   e.stopPropagation();
                                   openEditModal(ev);
                                 }}
-                                className={`pointer-events-auto absolute left-1 right-1 rounded-lg p-1.5 cursor-pointer transition-all hover:scale-105 hover:z-20 border overflow-hidden ${cat.cardBg} ${cat.cardBorder} ${ev.isCompleted ? "opacity-50" : ""}`}
+                                className={`pointer-events-auto absolute left-1 right-1 rounded-lg p-1.5 cursor-pointer transition-all hover:scale-105 hover:z-20 border overflow-hidden bg-zinc-900/90 border-white/[0.08] hover:border-white/20 ${ev.isCompleted ? "opacity-50" : ""}`}
                                 style={{ top: `${top}px`, height: `${height}px` }}
                                 title={`${ev.title} (${formatTimeStr(start)}–${formatTimeStr(end)})`}
                               >
-                                <p className={`text-[11px] font-semibold truncate ${cat.badgeText}`}>
+                                <p className={`text-[11px] font-semibold truncate ${ev.isCompleted ? "line-through text-zinc-500" : "text-zinc-200"}`}>
                                   {ev.title}
                                 </p>
                                 <p className="text-[10px] font-mono text-zinc-400">
@@ -1668,7 +1759,6 @@ export function CalendarManager({
               </h3>
               <div className="flex flex-col gap-2.5">
                 {events.map((ev) => {
-                  const cat = CATEGORY_MAP[ev.eventType] || CATEGORY_MAP["PERSONAL"];
                   const st = new Date(ev.startTime);
                   const isDone = !!ev.isCompleted;
 
@@ -1709,11 +1799,11 @@ export function CalendarManager({
                         </div>
                       </div>
                       <div className="flex items-center gap-2 shrink-0">
-                        <span
-                          className={`text-xs px-2.5 py-0.5 rounded-full ${cat.badgeBg} ${cat.badgeText} border ${cat.badgeBorder} hidden sm:inline-block font-medium`}
-                        >
-                          {cat.icon} {cat.label}
-                        </span>
+                        {ev.project && (
+                          <span className="text-xs px-2.5 py-0.5 rounded-full bg-zinc-800 text-zinc-300 border border-white/[0.06] hidden sm:inline-block font-medium">
+                            📁 {ev.project.title}
+                          </span>
+                        )}
                         <button
                           type="button"
                           onClick={() => openEditModal(ev)}
@@ -1789,48 +1879,6 @@ export function CalendarManager({
                 </p>
               </div>
             </div>
-
-            {/* Quick action jump */}
-            <div className="grid grid-cols-2 gap-2.5 pt-1">
-              <Link
-                href="/focus"
-                className="p-3 rounded-2xl bg-purple-600/15 hover:bg-purple-600/25 border border-purple-500/30 text-purple-300 text-xs font-semibold flex flex-col gap-1 transition-all active:scale-95"
-              >
-                <span className="text-base">🍅</span>
-                <span>Ruang Fokus</span>
-                <span className="text-[10px] text-zinc-400 font-normal">Deep work bebas distraksi</span>
-              </Link>
-
-              <Link
-                href="/today"
-                className="p-3 rounded-2xl bg-zinc-950/80 hover:bg-zinc-800/80 border border-white/[0.08] text-zinc-200 text-xs font-semibold flex flex-col gap-1 transition-all active:scale-95"
-              >
-                <span className="text-base">📋</span>
-                <span>Papan Hari Ini</span>
-                <span className="text-[10px] text-zinc-400 font-normal">Prioritas &amp; tugas utama</span>
-              </Link>
-            </div>
-          </div>
-
-          {/* Card 2: Productivity Tips & Rhythm */}
-          <div className="bg-zinc-900/90 rounded-3xl border border-white/[0.08] p-6 shadow-xl flex flex-col gap-3.5 backdrop-blur-xl">
-            <div className="flex items-center gap-2 text-sm font-bold text-white">
-              <span>💡 Panduan To-Do &amp; Jadwal</span>
-            </div>
-            <ul className="flex flex-col gap-2.5 text-xs text-zinc-300 leading-relaxed">
-              <li className="flex items-start gap-2.5">
-                <span className="text-emerald-400 font-bold shrink-0">✓</span>
-                <span>Ceklis to-do langsung dari daftar ataupun timeline alur jam tanpa reload halaman.</span>
-              </li>
-              <li className="flex items-start gap-2.5">
-                <span className="text-purple-400 font-bold shrink-0">⏰</span>
-                <span>To-do dengan jam tidak wajib punya jam selesai. Praktis untuk bangun subuh, minum obat, atau jadwal kelas.</span>
-              </li>
-              <li className="flex items-start gap-2.5">
-                <span className="text-amber-400 font-bold shrink-0">🔁</span>
-                <span>Gunakan pengulangan <strong>Setiap Hari</strong> untuk kebiasaan rutin yang ingin Anda bangun konsisten.</span>
-              </li>
-            </ul>
           </div>
         </aside>
       </div>
@@ -1970,24 +2018,6 @@ export function CalendarManager({
                 )}
               </div>
 
-              {/* Category */}
-              <div className="flex flex-col gap-1.5">
-                <label className="text-xs font-semibold text-zinc-300">
-                  Kategori
-                </label>
-                <select
-                  value={formCategory}
-                  onChange={(e) => setFormCategory(e.target.value)}
-                  className="w-full bg-zinc-950 px-3.5 py-2.5 rounded-xl text-xs text-zinc-200 border border-white/[0.08] focus:outline-none focus:border-purple-500 cursor-pointer"
-                >
-                  <option value="PERSONAL">🌱 Pribadi &amp; Kebiasaan (Bangun tidur, Sarapan, Ibadah, Olahraga)</option>
-                  <option value="BLOCKED">🎯 Sesi Fokus / Deep Work (Belajar, Skripsi, Tugas Utama)</option>
-                  <option value="WORK">💼 Pekerjaan &amp; Kuliah (Kelas, Meeting, Kerja)</option>
-                  <option value="REMINDER">🔔 Pengingat &amp; Tugas Ringan (Beli barang, Telepon)</option>
-                  <option value="TASK_DEADLINE">🔴 Tenggat Waktu</option>
-                </select>
-              </div>
-
               {/* Recurrence */}
               <div className="flex flex-col gap-1.5 bg-zinc-950/60 p-3.5 rounded-2xl border border-white/[0.06]">
                 <label className="text-xs font-semibold text-purple-300 flex items-center gap-1.5">
@@ -2090,7 +2120,9 @@ export function CalendarManager({
                 {editingEventId ? (
                   <button
                     type="button"
-                    onClick={() => handleDeleteEvent(editingEventId)}
+                    onClick={() => {
+                      if (editingEventId) handleDeleteEvent(editingEventId);
+                    }}
                     className="px-3.5 py-2 rounded-xl bg-rose-500/15 hover:bg-rose-500/25 text-rose-300 text-xs font-semibold transition-colors flex items-center gap-1.5 border border-rose-500/30"
                   >
                     <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
